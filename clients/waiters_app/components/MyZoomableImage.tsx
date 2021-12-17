@@ -10,8 +10,11 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
+import Location from '../data/Location';
 import PointOfInterest from '../data/PointOfInterest';
+import ClientLocationMarker from './ClientLocationMarker';
 import PointMarker from './PointMarker';
+import WaiterLocationMarker from './WaiterLocationMarker';
 
 function calcDistance(x1: number, y1: number, x2: number, y2: number) {
     const dx = x1 - x2;
@@ -32,6 +35,8 @@ type MyZoomableImageProps = {
     source: ImageSourcePropType;
     style?: StyleProp<ViewStyle>;
     pointsOfInterest?: PointOfInterest[];
+    clientLocation: Location;
+    myLocation: Location;
 };
 const MAX_ZOOM = 3.5;
 
@@ -41,6 +46,8 @@ export default function MyZoomableImage({
     style,
     source,
     pointsOfInterest,
+    clientLocation,
+    myLocation
 }: MyZoomableImageProps) {
     const [top, setTop] = useState<number>(0);
     const [left, setLeft] = useState<number>(0);
@@ -199,6 +206,20 @@ export default function MyZoomableImage({
                         scale={zoom}
                     />
                 ))}
+                 <WaiterLocationMarker
+                    point={myLocation.translate(
+                            imageWidth * zoom,
+                            imageHeight * zoom,
+                        )}
+                        scale={zoom}
+                    />
+                <ClientLocationMarker
+                    point={clientLocation.translate(
+                        imageWidth * zoom,
+                        imageHeight * zoom,
+                    )}
+                    scale={zoom}
+                />
                 <Image style={styles.map} source={source} />
             </View>
         </View>
