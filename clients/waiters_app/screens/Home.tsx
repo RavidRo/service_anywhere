@@ -1,7 +1,12 @@
 import React from 'react';
 import {Image} from 'react-native';
 import MyZoomableImage from '../components/MyZoomableImage';
-// import {StyleSheet} from 'react-native';
+import Location from '../data/Location';
+import PointOfInterest from '../data/PointOfInterest';
+
+const points: PointOfInterest[] = [
+    new PointOfInterest('P1', new Location(0.7, 0.7)),
+];
 
 type HomeProps = {};
 
@@ -15,7 +20,7 @@ export default function home(_: HomeProps) {
             imageHeight={Math.max(image_height)}
             imageWidth={Math.max(image_width)}
             source={map}
-            // order={}
+            pointsOfInterest={points}
         />
     );
 }
