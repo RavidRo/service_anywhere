@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import Location from '../data/Location';
 import PointOfInterest from '../data/PointOfInterest';
-import ClientLocationMarker from './ClientLocationMarker';
-import PointMarker from './PointMarker';
-import WaiterLocationMarker from './WaiterLocationMarker';
+import ClientLocationMarker from './markers/ClientLocationMarker';
+import PointMarker from './Markers/PointMarker';
+import WaiterLocationMarker from './Markers/WaiterLocationMarker';
 
 function calcDistance(x1: number, y1: number, x2: number, y2: number) {
     const dx = x1 - x2;
@@ -47,7 +47,7 @@ export default function MyZoomableImage({
     source,
     pointsOfInterest,
     clientLocation,
-    myLocation
+    myLocation,
 }: MyZoomableImageProps) {
     const [top, setTop] = useState<number>(0);
     const [left, setLeft] = useState<number>(0);
@@ -206,13 +206,13 @@ export default function MyZoomableImage({
                         scale={zoom}
                     />
                 ))}
-                 <WaiterLocationMarker
+                <WaiterLocationMarker
                     point={myLocation.translate(
-                            imageWidth * zoom,
-                            imageHeight * zoom,
-                        )}
-                        scale={zoom}
-                    />
+                        imageWidth * zoom,
+                        imageHeight * zoom,
+                    )}
+                    scale={zoom}
+                />
                 <ClientLocationMarker
                     point={clientLocation.translate(
                         imageWidth * zoom,

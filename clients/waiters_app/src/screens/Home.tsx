@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {Image} from 'react-native';
 import MyZoomableImage from '../components/MyZoomableImage';
 import Location from '../data/Location';
@@ -15,10 +15,18 @@ const map = require('../images/map.jpg');
 const {width: image_width, height: image_height} =
     Image.resolveAssetSource(map);
 
-export default function home(_: HomeProps) {
-    const [myLocation, setMyLocation] = useState<Location>(new Location(0,0));
-    const [clientLocation, setClientLocation] = useState<Location>(new Location(1,1));
-    useInterval(() => setMyLocation(new Location(myLocation.x +  0.01, myLocation.y + 0.01)), 500);
+export default function Home(_props: HomeProps) {
+    const [myLocation, setMyLocation] = useState<Location>(new Location(0, 0));
+    const [clientLocation, _setClientLocation] = useState<Location>(
+        new Location(1, 1),
+    );
+    useInterval(
+        () =>
+            setMyLocation(
+                new Location(myLocation.x + 0.01, myLocation.y + 0.01),
+            ),
+        500,
+    );
     return (
         <MyZoomableImage
             imageHeight={Math.max(image_height)}

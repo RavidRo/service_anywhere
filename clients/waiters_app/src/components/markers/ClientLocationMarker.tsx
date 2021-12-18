@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import PointOfInterest from '../data/PointOfInterest';
-import { Location } from '../data/types';
+import {View, StyleSheet} from 'react-native';
+import {Location} from '../../data/types';
 
 type PointMarkerProps = {
     point: Location;
@@ -22,7 +21,7 @@ export default function PointMarker({point, scale}: PointMarkerProps) {
             width: SIZE * scale,
             height: SIZE * scale,
             borderRadius: (SIZE * scale) / 2,
-            backgroundColor: 'blue',
+            backgroundColor: 'green',
             position: 'absolute',
         },
         text: {

@@ -6,6 +6,11 @@ export default class Location {
         this.x = x;
         this.y = y;
     }
+
+    public subtract(otherLoc: Location) {
+        return new Location(this.x - otherLoc.x, this.y - otherLoc.y);
+    }
+
     public translate(
         ratioX: number,
         ratioY: number,
