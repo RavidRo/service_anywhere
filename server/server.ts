@@ -6,15 +6,19 @@ app.use(express.json())
 app.get('/', (req, res) => {
     res.send('Hello World! 123')
 })
-app.post('/sendOrder', (req, res) => {
-    var items = req.body["items"];
-    var location = req.body["location"];
-    if (!backend.applyOrder(items, location)){
-        res.send('Order Failed');
-        return;
-    }
-    res.send('Order Received Successfully');
+
+app.post('/order', (req, res) => {
+    res.send('Order received. First item: ' + req.body['items'][0])
 })
+// app.post('/sendOrder', (req, res) => {
+//     var items = req.body["items"];
+//     var location = req.body["location"];
+//     if (!backend.applyOrder(items, location)){
+//         res.send('Order Failed');
+//         return;
+//     }
+//     res.send('Order Received Successfully');
+// })
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
