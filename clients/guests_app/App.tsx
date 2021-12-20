@@ -8,108 +8,102 @@
  * @format
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import axios from 'axios';
+import React, { useState } from 'react';
+import {Alert, Button, SafeAreaView, StatusBar, StyleSheet, useColorScheme} from 'react-native';
+import { ActivityIndicator, Text, View } from "react-native";
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import ImageView from './Components/ImageView';
 
-const Section: React.FC<{
-  title: string;
-}> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+// const url = `${base_route}/enter`;
+// return axios({
+//   method: "post",
+//   url: url,
+// }).then((res) => {
+//   if (res.data.status) {
+//     return res.data
+//   } else {
+//     throw new Error(res.data.description)
+//   }
+// }).catch((err) => alert(`failed to enter the system due to ${err}`))
 
+const base_route = "server_adress";
+function SendOrderToServer(items: String[])
+{
+  const url = `${base_route}/order`;
+  return axios({
+    method: "post",
+    url: url,
+  }).then((res) => {
+      if (res.data.status) {
+        return res.data
+      } else {
+        throw new Error(res.data.description)
+      }
+    }).catch((err) => Alert.alert(`failed to send order due to ${err}`))
+}
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+      
+    const [orderInProgress, setOrderInProgress] = useState(false);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+      
+    async function SendOrder() {
+      // if (await SendOrderToServer([])) {
+      //    Alert.alert("Order Sent!");
+      //    setOrderInProgress(true)
+      // }
+      Alert.alert("Order Sent!");
+      setOrderInProgress(true)
+    }
+    function GotOrder() {
+      const x = 1;
+      Alert.alert("Bonne Appetit :)");
+      setOrderInProgress(false)
+    }
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Hello World">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+    return (
+        <SafeAreaView>
+       
+        <Button 
+          title="Order"
+
+           onPress={() => {SendOrder();} }
+          />
+        <Button
+          title="Got My Order"
+
+           onPress={() => {GotOrder();} }
+          />
+
+          <View style={[styles.container, styles.horizontal]}>
+            {/* <ActivityIndicator />
+            <ActivityIndicator size="large" />
+            <ActivityIndicator size="small" color="#0000ff" /> */}
+            {/* <ActivityIndicator size="large" color="#00ff00" /> */}
+            {orderInProgress?
+              <View>
+              <ActivityIndicator size="large" color="#00ff00" />
+  
+              </View>
+              : <></> }
+            
+          </View>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+    container: {
+      flex: 1,
+      justifyContent: "center"
+    },
+    horizontal: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      padding: 10
+    }
+  });
+
 
 export default App;
