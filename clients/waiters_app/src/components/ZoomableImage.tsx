@@ -8,6 +8,7 @@ import {
     ViewStyle,
     LayoutChangeEvent,
     PanResponderInstance,
+    ImageStyle,
 } from 'react-native';
 
 function calcDistance(x1: number, y1: number, x2: number, y2: number) {
@@ -275,21 +276,20 @@ class ZoomableImage extends Component<ZoomableImageProps, ZoomableImageState> {
     }
 
     render() {
+        const imageStyle: StyleProp<ImageStyle> = {
+            position: 'absolute',
+            top: this.state.offsetTop + this.state.top,
+            left: this.state.offsetLeft + this.state.left,
+            width: this.props.imageWidth * this.state.zoom,
+            height: this.props.imageHeight * this.state.zoom,
+        };
+
         return (
             <View
                 style={this.props.style}
                 {...this.panResponder?.panHandlers}
                 onLayout={this._onLayout}>
-                <Image
-                    style={{
-                        position: 'absolute',
-                        top: this.state.offsetTop + this.state.top,
-                        left: this.state.offsetLeft + this.state.left,
-                        width: this.props.imageWidth * this.state.zoom,
-                        height: this.props.imageHeight * this.state.zoom,
-                    }}
-                    source={this.props.source}
-                />
+                <Image style={imageStyle} source={this.props.source} />
             </View>
         );
     }

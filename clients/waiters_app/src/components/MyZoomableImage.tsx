@@ -3,7 +3,6 @@ import {
     View,
     PanResponder,
     Image,
-    ImageSourcePropType,
     StyleProp,
     ViewStyle,
     NativeTouchEvent,
@@ -12,9 +11,7 @@ import {
 } from 'react-native';
 import Location from '../data/Location';
 import PointOfInterest from '../data/PointOfInterest';
-import ClientLocationMarker from './markers/ClientLocationMarker';
-import PointMarker from './Markers/PointMarker';
-import WaiterLocationMarker from './Markers/WaiterLocationMarker';
+import {Marker} from './markers/Marker';
 
 function calcDistance(x1: number, y1: number, x2: number, y2: number) {
     const dx = x1 - x2;
@@ -32,9 +29,9 @@ function calcDistance(x1: number, y1: number, x2: number, y2: number) {
 type MyZoomableImageProps = {
     imageWidth: number;
     imageHeight: number;
-    source: ImageSourcePropType;
+    uri: string;
     style?: StyleProp<ViewStyle>;
-    pointsOfInterest?: PointOfInterest[];
+    pointsOfInterest?: [PointOfInterest, Marker][];
     clientLocation: Location;
     myLocation: Location;
 };
@@ -44,10 +41,8 @@ export default function MyZoomableImage({
     imageWidth,
     imageHeight,
     style,
-    source,
+    uri,
     pointsOfInterest,
-    clientLocation,
-    myLocation,
 }: MyZoomableImageProps) {
     const [top, setTop] = useState<number>(0);
     const [left, setLeft] = useState<number>(0);
@@ -196,7 +191,7 @@ export default function MyZoomableImage({
     return (
         <View style={style} {...panResponder.panHandlers}>
             <View style={styles.container}>
-                {pointsOfInterest?.map((point, index) => (
+                {pointsOfInterest?.map(([point, PointMarker], index) => (
                     <PointMarker
                         key={index}
                         point={point.translate(
@@ -206,21 +201,12 @@ export default function MyZoomableImage({
                         scale={zoom}
                     />
                 ))}
-                <WaiterLocationMarker
-                    point={myLocation.translate(
-                        imageWidth * zoom,
-                        imageHeight * zoom,
-                    )}
-                    scale={zoom}
+                <Image
+                    style={styles.map}
+                    source={{
+                        uri: uri,
+                    }}
                 />
-                <ClientLocationMarker
-                    point={clientLocation.translate(
-                        imageWidth * zoom,
-                        imageHeight * zoom,
-                    )}
-                    scale={zoom}
-                />
-                <Image style={styles.map} source={source} />
             </View>
         </View>
     );

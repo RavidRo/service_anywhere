@@ -1,44 +1,79 @@
 import React, {useState} from 'react';
-import {Image} from 'react-native';
+import {Image, Text} from 'react-native';
+
+import ClientMarker from '../components/markers/ClientMarker';
+import {Marker} from '../components/markers/Marker';
+import PointMarker from '../components/markers/PointMarker';
+import WaiterMarker from '../components/markers/WaiterMarker';
 import MyZoomableImage from '../components/MyZoomableImage';
+
 import Location from '../data/Location';
+import Map from '../data/Map';
 import PointOfInterest from '../data/PointOfInterest';
-import useInterval from '../hooks/useInterval';
+
+import DummyLocation from '../location_service/DummyLocation';
+import {LocationService} from '../location_service/LocationService';
 
 const points: PointOfInterest[] = [
     new PointOfInterest('P1', new Location(0.7, 0.7)),
+    new PointOfInterest('P2', new Location(0.3, 0.55)),
 ];
+const map = new Map(
+    'https://www.hotelkillarney.ie/upload/slide_images/killarney_maps.jpg',
+    {
+        bottomLeftGPS: new Location(0, 1),
+        bottomRightGPS: new Location(1, 1),
+        topRightGPS: new Location(1, 0),
+        topLeftGPS: new Location(0, 0),
+    },
+    points,
+);
+
+const locationService: LocationService = new DummyLocation();
+
+const markers = points.map(point => [point, PointMarker]);
 
 type HomeProps = {};
-
-const map = require('../images/map.jpg');
-const {width: image_width, height: image_height} =
-    Image.resolveAssetSource(map);
-
 export default function Home(_props: HomeProps) {
     const [myLocation, setMyLocation] = useState<Location>(new Location(0, 0));
     const [clientLocation, _setClientLocation] = useState<Location>(
-        new Location(1, 1),
+        new Location(0.5, 0.5),
     );
-    useInterval(
-        () =>
-            setMyLocation(
-                new Location(myLocation.x + 0.01, myLocation.y + 0.01),
-            ),
-        500,
+
+    const waiter = [new PointOfInterest('Waiter', myLocation), WaiterMarker];
+    const client = [
+        new PointOfInterest('Client', clientLocation),
+        ClientMarker,
+    ];
+
+    const markersWithClient = [...markers, client, waiter] as [
+        PointOfInterest,
+        Marker,
+    ][];
+
+    locationService.watchLocation(
+        location => setMyLocation(location),
+        () => {},
     );
-    return (
+
+    const [imageWidth, setImageWidth] = useState<number | undefined>();
+    const [imageHeight, setImageHeight] = useState<number | undefined>();
+
+    Image.getSize(map.image, (width, height) => {
+        setImageWidth(width);
+        setImageHeight(height);
+    });
+
+    return imageHeight && imageWidth ? (
         <MyZoomableImage
-            imageHeight={Math.max(image_height)}
-            imageWidth={Math.max(image_width)}
-            source={map}
-            pointsOfInterest={points}
+            imageHeight={imageHeight}
+            imageWidth={imageWidth}
+            uri={map.image}
+            pointsOfInterest={markersWithClient}
             myLocation={myLocation}
             clientLocation={clientLocation}
         />
+    ) : (
+        <Text>Loading</Text>
     );
 }
-
-// const styles = StyleSheet.create({
-//     container: {},
-// });

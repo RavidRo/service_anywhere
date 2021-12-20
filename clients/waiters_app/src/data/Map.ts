@@ -1,4 +1,7 @@
+import DummyLocation from '../location_service/DummyLocation';
+import LocationService from '../location_service/LocationService';
 import Location from './Location';
+import PointOfInterest from './PointOfInterest';
 
 // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
 function distanceFromLine(end1: Location, end2: Location, p: Location) {
@@ -8,7 +11,7 @@ function distanceFromLine(end1: Location, end2: Location, p: Location) {
     return Math.abs(numerator) / Math.sqrt(denominator);
 }
 
-type corners = {
+type Corners = {
     topRightGPS: Location;
     topLeftGPS: Location;
     bottomRightGPS: Location;
@@ -16,18 +19,23 @@ type corners = {
 };
 
 export default class Map {
-    public readonly image: String;
+    public readonly image: string;
 
     // Translation from GPS to local coordination
-    private readonly corners: corners;
+    private readonly corners: Corners;
     private readonly width: number;
     private readonly height: number;
 
-    constructor(image: String, corners: corners) {
+    // In local coordinates
+    public readonly points: PointOfInterest[];
+
+    constructor(image: string, corners: Corners, points: PointOfInterest[]) {
         this.image = image;
         this.corners = corners;
         this.width = corners.bottomRightGPS.x - corners.bottomLeftGPS.x;
         this.height = corners.bottomRightGPS.x - corners.topRightGPS.x;
+
+        this.points = points;
     }
 
     translateGps(locationGps: Location) {

@@ -1,6 +1,6 @@
 import Location from '../data/Location';
 
-export default interface LocationService {
+export interface LocationService {
     getLocation(
         successCallback: (location: Location) => void,
         errorCallback: (error: string) => void,

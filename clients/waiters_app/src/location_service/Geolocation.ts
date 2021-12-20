@@ -1,7 +1,6 @@
 import Geolocation from 'react-native-geolocation-service';
 import Location from '../data/Location';
-
-import LocationService from './LocationService';
+import {LocationService} from './LocationService';
 
 export default class Gps implements LocationService {
     watchLocation(

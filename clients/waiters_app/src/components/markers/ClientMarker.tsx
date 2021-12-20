@@ -1,27 +1,22 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Location} from '../../data/types';
+import {Marker} from './Marker';
 
-type PointMarkerProps = {
-    point: Location;
-    scale: number;
-};
+const SIZE = 40;
 
-const SIZE = 10;
-
-export default function PointMarker({point, scale}: PointMarkerProps) {
+const ClientMarker: Marker = ({point, scale}) => {
     const styles = StyleSheet.create({
         container: {
             position: 'absolute',
-            top: point.y,
-            left: point.x,
+            top: point.location.x,
+            left: point.location.y,
             zIndex: 1,
         },
         point: {
             width: SIZE * scale,
             height: SIZE * scale,
             borderRadius: (SIZE * scale) / 2,
-            backgroundColor: 'blue',
+            backgroundColor: 'green',
             position: 'absolute',
         },
         text: {
@@ -36,4 +31,6 @@ export default function PointMarker({point, scale}: PointMarkerProps) {
             <View style={styles.point} />
         </View>
     );
-}
+};
+
+export default ClientMarker;

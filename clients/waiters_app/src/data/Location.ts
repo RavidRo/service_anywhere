@@ -7,6 +7,10 @@ export default class Location {
         this.y = y;
     }
 
+    public add(inX: number, inY: number) {
+        return new Location(this.x + inX, this.y + inY);
+    }
+
     public subtract(otherLoc: Location) {
         return new Location(this.x - otherLoc.x, this.y - otherLoc.y);
     }
