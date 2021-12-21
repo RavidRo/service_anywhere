@@ -1,7 +1,7 @@
 import {useState} from 'react';
 // import {CookieContext} from '../contexts';
 
-export function useAPI2<T extends unknown[], R = unknown>(
+export function useAPI<T extends unknown[], R = unknown>(
     // apiFunc: (cookie: string, ...args: T) => Promise<R>,
     apiFunc: (...args: T) => Promise<R>,
 ) {

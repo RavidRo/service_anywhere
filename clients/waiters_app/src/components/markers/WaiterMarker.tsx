@@ -1,17 +1,12 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
+
 import {Marker} from './Marker';
 
 const SIZE = 10;
 
-const WaiterMarker: Marker = ({point, scale}) => {
+const WaiterMarker: Marker = ({scale}) => {
     const styles = StyleSheet.create({
-        container: {
-            position: 'absolute',
-            top: point.location.y,
-            left: point.location.x,
-            zIndex: 1,
-        },
         point: {
             width: SIZE * scale,
             height: SIZE * scale,
@@ -26,11 +21,7 @@ const WaiterMarker: Marker = ({point, scale}) => {
         },
     });
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.point} />
-        </View>
-    );
+    return <View style={styles.point} />;
 };
 
 export default WaiterMarker;

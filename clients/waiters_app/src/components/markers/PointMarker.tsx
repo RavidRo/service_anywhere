@@ -1,17 +1,12 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+
 import {Marker} from './Marker';
 
 const SIZE = 20;
 
-const PointMarker: Marker = ({point, scale}) => {
+const PointMarker: Marker = ({scale, name}) => {
     const styles = StyleSheet.create({
-        container: {
-            position: 'absolute',
-            top: point.location.y,
-            left: point.location.x,
-            zIndex: 1,
-        },
         point: {
             position: 'absolute',
 
@@ -31,10 +26,10 @@ const PointMarker: Marker = ({point, scale}) => {
     });
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>{point.name}</Text>
+        <>
+            <Text style={styles.text}>{name}</Text>
             <View style={styles.point} />
-        </View>
+        </>
     );
 };
 

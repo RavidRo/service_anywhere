@@ -1,5 +1,3 @@
-import DummyLocation from '../location_service/DummyLocation';
-import LocationService from '../location_service/LocationService';
 import Location from './Location';
 import PointOfInterest from './PointOfInterest';
 

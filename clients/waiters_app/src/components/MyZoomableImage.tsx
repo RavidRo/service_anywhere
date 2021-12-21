@@ -7,11 +7,11 @@ import {
     ViewStyle,
     NativeTouchEvent,
     StyleSheet,
-    Dimensions,
 } from 'react-native';
-import Location from '../data/Location';
-import PointOfInterest from '../data/PointOfInterest';
+
 import {Marker} from './markers/Marker';
+
+import PointOfInterest from '../data/PointOfInterest';
 
 function calcDistance(x1: number, y1: number, x2: number, y2: number) {
     const dx = x1 - x2;
@@ -29,17 +29,19 @@ function calcDistance(x1: number, y1: number, x2: number, y2: number) {
 type MyZoomableImageProps = {
     imageWidth: number;
     imageHeight: number;
+    parentWidth: number;
+    parentHeight: number;
     uri: string;
     style?: StyleProp<ViewStyle>;
     pointsOfInterest?: [PointOfInterest, Marker][];
-    clientLocation: Location;
-    myLocation: Location;
 };
 const MAX_ZOOM = 3.5;
 
 export default function MyZoomableImage({
     imageWidth,
     imageHeight,
+    parentWidth,
+    parentHeight,
     style,
     uri,
     pointsOfInterest,
@@ -61,14 +63,11 @@ export default function MyZoomableImage({
             setTop(top => {
                 let newTop = set(top);
                 newTop = Math.min(0, newTop);
-                newTop = Math.max(
-                    Dimensions.get('window').height - imageHeight * zoom,
-                    newTop,
-                );
+                newTop = Math.max(parentHeight - imageHeight * zoom, newTop);
                 return newTop;
             });
         },
-        [imageHeight, zoom],
+        [imageHeight, zoom, parentHeight],
     );
 
     const safeSetLeft = useCallback(
@@ -76,25 +75,22 @@ export default function MyZoomableImage({
             setLeft(left => {
                 let newLeft = set(left);
                 newLeft = Math.min(0, newLeft);
-                newLeft = Math.max(
-                    Dimensions.get('window').width - imageWidth * zoom,
-                    newLeft,
-                );
+                newLeft = Math.max(parentWidth - imageWidth * zoom, newLeft);
                 return newLeft;
             });
         },
-        [imageWidth, zoom],
+        [imageWidth, zoom, parentWidth],
     );
 
     useEffect(() => {
         // imageHeight * zoom >= dimension.height -> zoom >= dimensions.height/imageHeight
         // imageWidth * zoom >= dimension.width -> zoom >= dimensions.width/imageWidth
-        const minZoomHeight = Dimensions.get('window').height / imageHeight;
-        const minZoomWidth = Dimensions.get('window').width / imageWidth;
+        const minZoomHeight = parentHeight / imageHeight;
+        const minZoomWidth = parentWidth / imageWidth;
         const minZoom = Math.max(minZoomHeight, minZoomWidth);
         setMinZoom(minZoom);
         setZoom(minZoom);
-    }, [imageHeight, imageWidth]);
+    }, [imageHeight, imageWidth, parentHeight, parentWidth]);
 
     function processPinch(touch1: NativeTouchEvent, touch2: NativeTouchEvent) {
         const {pageX: x1, pageY: y1} = touch1;
@@ -186,20 +182,27 @@ export default function MyZoomableImage({
             left: left,
             zIndex: -1,
         },
+        marker: {
+            position: 'absolute',
+            zIndex: 1,
+        },
     });
 
     return (
         <View style={style} {...panResponder.panHandlers}>
             <View style={styles.container}>
                 {pointsOfInterest?.map(([point, PointMarker], index) => (
-                    <PointMarker
+                    <View
                         key={index}
-                        point={point.translate(
-                            imageWidth * zoom,
-                            imageHeight * zoom,
-                        )}
-                        scale={zoom}
-                    />
+                        style={[
+                            styles.marker,
+                            {
+                                top: point.location.y * imageHeight * zoom,
+                                left: point.location.x * imageWidth * zoom,
+                            },
+                        ]}>
+                        <PointMarker name={point.name} scale={zoom} />
+                    </View>
                 ))}
                 <Image
                     style={styles.map}

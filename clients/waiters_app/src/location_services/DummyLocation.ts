@@ -1,4 +1,5 @@
 import Location from '../data/Location';
+
 import {LocationService} from './LocationService';
 
 export default class DummyLocation implements LocationService {
