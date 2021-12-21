@@ -5,19 +5,22 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import WaiterDialog from './waitersDialog';
+import {assignWaiter, getWaiterByOrder, getOrders} from "../api";
 
 function Order(props){
     const [open, setOpen] = React.useState(false);    
-    
+    const [assignedWaiter, setAssignedWaiter] = React.useState("");
+    const order = props.order
+
     const handleClickOpen = () => {
         setOpen(true);
       };
     
-      const handleClose = (value) => {
+      const handleClose = (waiter) => {
+        val !== "" ? assignWaiter(order.id, waiter.id) :"";
         setOpen(false);
       };
 
-    const order = props.order
     return(
     <Card sx={{ minWidth: 275 }} variant="outlined" >
     <CardContent>
@@ -38,8 +41,18 @@ function Order(props){
 }
 
 export default function Orders(){
-    const orders = [{name: "Order 1"}, {name: "Order 2"}, {name: "Order 3"}]; // TODO get orders call 
-
+    const [orders, setOrders] = React.useState([]);
+    // [{name: "Order 1"}, {name: "Order 2"}, {name: "Order 3"}]; // TODO get orders call 
+    useEffect(() => {
+      let mounted = true;
+      getOrders()
+        .then(orders => {
+          if(mounted) {
+            setOrders(orders)
+          }
+        })
+      return () => mounted = false;
+    }, [])
     return (
         orders.map((order) => <Order order={order}/>)
       );
