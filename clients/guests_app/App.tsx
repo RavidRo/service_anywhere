@@ -16,79 +16,92 @@ import { ActivityIndicator, Text, View } from "react-native";
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import ImageView from './Components/ImageView';
 
-// const url = `${base_route}/enter`;
-// return axios({
-//   method: "post",
-//   url: url,
-// }).then((res) => {
-//   if (res.data.status) {
-//     return res.data
-//   } else {
-//     throw new Error(res.data.description)
-//   }
-// }).catch((err) => alert(`failed to enter the system due to ${err}`))
 
-const base_route = "server_adress";
+const server_adress = ""
+const server_port = ""
+const base_route = server_adress + ':' + server_port;
+
 function SendOrderToServer(items: String[])
 {
-  const url = `${base_route}/order`;
+  const url = `${base_route}/createOrder`;
   return axios({
     method: "post",
     url: url,
   }).then((res) => {
-      if (res.data.status) {
-        return res.data
-      } else {
-        throw new Error(res.data.description)
-      }
+      console.log("response: " + res)
+      if (res.data) {
+        waitForOrder(res.data)
+      } 
     }).catch((err) => Alert.alert(`failed to send order due to ${err}`))
 }
-const App = () => {
-      
-    const [orderInProgress, setOrderInProgress] = useState(false);
 
-      
-    async function SendOrder() {
-      // if (await SendOrderToServer([])) {
-      //    Alert.alert("Order Sent!");
-      //    setOrderInProgress(true)
-      // }
-      Alert.alert("Order Sent!");
-      setOrderInProgress(true)
-    }
-    function GotOrder() {
-      const x = 1;
-      Alert.alert("Bonne Appetit :)");
-      setOrderInProgress(false)
-    }
+// asks server if order has arrived every 5 seconds until receiving positive response
+function waitForOrder(orderId: String){
+
+    // while(!hasOrderArrived(orderId))
+    // {
+    //   wait(5)
+    // }
+   setWaitingForOrder(false)
+}
+
+// sending "hasOrderArrived" get request
+function hasOrderArrived(orderId: String) {
+  const url = `${base_route}/hasOrderArrived`;
+  return axios({
+    method: "get",
+    url: url,
+  }).then((res) => {
+      console.log("hasOrderArrived response: " + res)
+      return res.data;
+    }).catch((err) => Alert.alert(`failed to send order due to ${err}`))
+}
+
+// function just to check connection with server
+function GetHomePage()
+{
+  axios.get(base_route)
+  .then(function(response) {
+       Alert.alert("got server home: "  + response)
+      // handle response
+  }).catch(function(error) {
+      // handle error
+      Alert.alert(`failed to send order due to ${error}`)
+  }).finally(function() {
+      // always executes at the last of any API call
+  });
+} 
+
+
+const [waitingForOrder, setWaitingForOrder] = useState(false);
+const order_items = ['bamba', 'Beer'];
+
+function GotOrder() {
+  const x = 1;
+  Alert.alert("Bonne Appetit :)");
+  setWaitingForOrder(false)
+}
+
+const App = () => {
 
     return (
         <SafeAreaView>
        
-        <Button 
-          title="Order"
+          <Button title="Order" onPress={() => {SendOrderToServer(order_items);} }/>
 
-           onPress={() => {SendOrder();} }
-          />
-        <Button
-          title="Got My Order"
+          {/* will be romoved*/}
+          <Button title="Got My Order" onPress={() => {GotOrder();} } />
 
-           onPress={() => {GotOrder();} }
-          />
-
-          <View style={[styles.container, styles.horizontal]}>
-            {/* <ActivityIndicator />
-            <ActivityIndicator size="large" />
-            <ActivityIndicator size="small" color="#0000ff" /> */}
-            {/* <ActivityIndicator size="large" color="#00ff00" /> */}
-            {orderInProgress?
-              <View>
-              <ActivityIndicator size="large" color="#00ff00" />
-  
-              </View>
-              : <></> }
-            
-          </View>
+          {/* will be romoved, just for checking connection with server */}
+          <Button title="Get Server Home Page" onPress={() => {GetHomePage();} }/>
+          
+            <View style={[styles.container, styles.horizontal]}>
+              {waitingForOrder?
+                <View>
+                <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+                : <></> }
+            </View>
         </SafeAreaView>
     );
 };
