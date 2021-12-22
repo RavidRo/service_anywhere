@@ -16,7 +16,7 @@ export type Api = {
     // Guest
     createOrder: () => OrderID;
     updateLocationGuest: (location: Location, orderID: OrderID) => void;
-    hasOrderArrived: () => Arrived;
+    hasOrderArrived: (orderID: OrderID) => Arrived;
 
     // Dashboard
     getOrders: () => Order[];
@@ -25,6 +25,7 @@ export type Api = {
     getWaiterByOrder: (orderID: OrderID) => WaiterID;
 
     // Waiter
+    connectWaiter: () => WaiterID;
     getWaiterOrder: (waiterID: WaiterID) => Order[];
     getGuestLocation: (orderID: OrderID) => Location;
     orderArrived: (orderID: OrderID) => void;

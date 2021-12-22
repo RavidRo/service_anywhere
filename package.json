@@ -1,0 +1,14 @@
+{
+    "name": "secondTryServer",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+      "postInstall": "cd ./server && npm start"
+    },
+    "dependencies": {},
+    "devDependencies": {},
+    "author": "",
+    "license": "MIT",
+    "repository": ""
+  }
+  

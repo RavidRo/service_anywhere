@@ -1,9 +1,8 @@
-import {Order, OrderID, WaiterID} from '../api'
+import {OrderID, WaiterID} from '../api'
+import {Order} from '../Logic/Order'
 
 function getOrders(): Order[]{
-    var ret: Order[] = []
-    return ret
-    //return dashboard.getOrders()
+    return Order.orderList;
 }
 
 function assignWaiter(orderID: OrderID, waiterID: WaiterID): void{
