@@ -9,6 +9,9 @@
     "devDependencies": {},
     "author": "",
     "license": "MIT",
-    "repository": ""
+    "repository": "",
+    "engines": {
+        "node": "14.x"
+    }
   }
   
