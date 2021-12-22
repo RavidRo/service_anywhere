@@ -1,9 +1,9 @@
 {
-    "name": "secondTryServer",
+    "name": "service_everywhere",
     "version": "1.0.0",
     "description": "",
     "scripts": {
-      "postInstall": "cd ./server && npm start"
+      "postinstall": "cd ./server && npm install && npm start"
     },
     "dependencies": {},
     "devDependencies": {},
