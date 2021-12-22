@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-      "postinstall": "cd ./server && npm install --dev && npm start"
+      "postinstall": "cd ./server && npm install --dev",
+      "start": "cd ./server && npm start"
     },
     "dependencies": {},
     "devDependencies": {},
