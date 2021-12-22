@@ -5,7 +5,7 @@ import dashboard from './Interface/DashboardInterface'
 import waiter from './Interface/WaiterInterface'
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 app.use(express.json())
 
 app.get('/', (req, res) => {
