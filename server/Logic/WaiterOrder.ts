@@ -14,12 +14,14 @@ export class WaiterOrder{
     
     static assignWaiter(orderId: OrderID, waiterId: WaiterID): void{
         let orders = this.waiterToOrders.get(waiterId)
+        console.log(this.waiterToOrders.get(waiterId))
         if(orders){
             orders.push(orderId)
         }
         else{
             this.waiterToOrders.set(waiterId, [orderId])
         }
+        console.log(this.waiterToOrders.get(waiterId))
         let waiters = this.orderToWaiters.get(orderId)
         if(waiters){
             waiters.push(waiterId)
