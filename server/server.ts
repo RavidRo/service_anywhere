@@ -74,7 +74,7 @@ app.get('/getWaiterOrders', (req, res) => {
 })
 
 app.get('/getGuestLocation', (req, res) => {
-    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg), () => waiter.getGuestLocation(String(req.query['orderID'])))
+    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg), () => res.send(waiter.getGuestLocation(String(req.query['orderID']))))
 })
 
 app.post('/orderArrived', (req, res) => {
