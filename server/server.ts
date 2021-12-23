@@ -4,25 +4,49 @@ import guest from './Interface/GuestInterface'
 import dashboard from './Interface/DashboardInterface'
 import waiter from './Interface/WaiterInterface'
 
+var cors = require('cors')
 const app = express()
 const PORT = process.env.PORT || 3000
 app.use(express.json())
+
+
+// use it before all route definitions
+app.use(cors({origin: '*'}))
 
 app.get('/', (req, res) => {
     res.send('Hello World! 123')
 })
 
+function checkInputs(inputs: string[], reqBody: any, sendErrorMsg: (msg: string) => void, doIfLegal: () => void){
+    let answer = ''
+    let missing = false
+    for (const input of inputs){
+        if(!(input in reqBody)){
+            answer += `\"${input}\", `
+            missing = true
+        }
+    }
+    if(missing){
+        answer = answer.substring(0, answer.length-2) + ' not in request.'
+        sendErrorMsg(answer)
+    }
+    else{
+        doIfLegal()
+    }
+}
+
 //Guest
 app.post('/createOrder', (req, res) => {
-    res.send(guest.createOrder(req.body['items']));
+    checkInputs(['items'], req.body, (msg: string) => res.send(msg), () => res.send(guest.createOrder(req.body['items'])))
 })
 
 app.post('/updateLocationGuest', (req, res) => {
-    guest.updateLocationGuest(req.body["location"], req.body["orderID"])
+    checkInputs(['location', 'orderID'], req.body, (msg: string) => res.send(msg),
+     () => guest.updateLocationGuest(req.body["location"], req.body["orderID"]))
 })
 
 app.get('/hasOrderArrived', (req, res) => {
-    res.send(guest.hasOrderArrived(req.body['orderID']))
+    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => res.send(guest.hasOrderArrived(req.body['orderID'])))
 })
 
 //Dashboard
@@ -31,7 +55,8 @@ app.get('/getOrders', (req, res) => {
 })
 
 app.post('/assignWaiter', (req, res) => {
-    dashboard.assignWaiter(req.body['orderID'], req.body['waiterID'])
+    checkInputs(['orderID', 'waiterID'], req.body, (msg: string) => res.send(msg),
+     () => dashboard.assignWaiter(req.body['orderID'], req.body['waiterID']))
 })
 
 app.get('/getWaiters', (req, res) => {
@@ -39,20 +64,20 @@ app.get('/getWaiters', (req, res) => {
 })
 
 app.get('/getWaiterByOrder', (req, res) => {
-    res.send(dashboard.getWaiterByOrder(req.body['orderID']))
+    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => res.send(dashboard.getWaiterByOrder(req.body['orderID'])))
 })
 
 //waiter
 app.get('/getWaiterOrder', (req, res) => {
-    res.send(waiter.getWaiterOrder(req.body['waiterID']))
+    checkInputs(['waiterID'], req.body, (msg: string) => res.send(msg), () => res.send(waiter.getWaiterOrder(req.body['waiterID'])))
 })
 
 app.get('/getGuestLocation', (req, res) => {
-    waiter.getGuestLocation(req.body['orderID'])
+    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => waiter.getGuestLocation(req.body['orderID']))
 })
 
 app.post('/orderArrived', (req, res) => {
-    waiter.orderArrived(req.body['orderID'])
+    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => waiter.orderArrived(req.body['orderID']))
 })
 
 app.listen(PORT, () => {

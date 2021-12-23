@@ -13,13 +13,12 @@ class Review{
 }
 
 export class Order{
-    static orderList: Order[];
+    static orderList: Order[] = [];
     status: Status;
     id: string;
     items: string[];
     review: Review;
     guestLocation: Location;
-    arrived: boolean;
     
     static createOrder(items: string[]): string{
         let order = new Order(items);
@@ -49,7 +48,7 @@ export class Order{
         this.items = items;
         this.status = Status.RECEIVED;
         this.id = uuidv4();
-        this.arrived = false;
+        console.log(this.id);
     }
 
     giveFeedback(content: string, rating: number): boolean{
@@ -63,12 +62,10 @@ export class Order{
     }
 
     hasOrderArrived(): boolean{
-        return this.arrived;
+        return this.status === Status.DELIVERED;
     }
 
     orderArrived(): void{
-        this.arrived = true;
+        this.status = Status.DELIVERED;
     }
-
-    
 }
