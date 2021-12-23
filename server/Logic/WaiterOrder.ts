@@ -15,7 +15,7 @@ export class WaiterOrder{
     static assignWaiter(orderId: OrderID, waiterId: WaiterID): void{
         let orders = this.waiterToOrders.get(waiterId)
         console.log(`assigned waiter id: ${waiterId}`)
-        console.log(this.waiterToOrders.get(waiterId))
+        console.log(orders)
         if(orders){
             orders.push(orderId)
         }
@@ -44,9 +44,8 @@ export class WaiterOrder{
     static getWaiterOrder(waiterId: WaiterID): string[]{
         console.log(`waiter id: ${waiterId}`)
         let orders = this.waiterToOrders.get(waiterId)
-        console.log(this.waiterToOrders.get(waiterId))
+        console.log(orders)
         if(orders){
-            console.log('here')
             return orders;  //makeGood(orders)
         }
         return []   //makeFail('this waiter does not exist or has no orders')

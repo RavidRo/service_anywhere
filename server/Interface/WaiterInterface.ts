@@ -4,6 +4,7 @@ import { WaiterOrder } from '../Logic/WaiterOrder'
 
 function getWaiterOrder(waiterID: WaiterID): Order[]{
     let orderIds = WaiterOrder.getWaiterOrder(waiterID);
+    console.log(Order.orderList)
     return Order.orderList.filter(order => order.id in orderIds)
 }
 
