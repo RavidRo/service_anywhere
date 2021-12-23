@@ -3,9 +3,8 @@ import { Order } from '../Logic/Order'
 import { WaiterOrder } from '../Logic/WaiterOrder'
 
 function getWaiterOrder(waiterID: WaiterID): Order[]{
-    var ret: Order[] = []
-    return ret
-    //return waiter.getWaiterOrder(waiterID)
+    let orderIds = WaiterOrder.getWaiterOrder(waiterID);
+    return Order.orderList.filter(order => order.id in orderIds)
 }
 
 function getGuestLocation(orderID: OrderID): Location{

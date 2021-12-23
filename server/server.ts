@@ -45,9 +45,10 @@ app.post('/updateLocationGuest', (req, res) => {
      () => guest.updateLocationGuest(req.body["location"], req.body["orderID"]))
 })
 
-app.get('/hasOrderArrived', (req, res) => {
-    console.log(req.body)
-    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => res.send(guest.hasOrderArrived(req.body['orderID'])))
+app.get('/hasOrderArrived/:orderID', (req, res) => {
+    console.log(req.params)
+    checkInputs(['orderID'], req.params, (msg: string) => res.send(msg),
+     () => res.send(guest.hasOrderArrived(req.params.orderID)))
 })
 
 //Dashboard
@@ -64,17 +65,17 @@ app.get('/getWaiters', (req, res) => {
     res.send(dashboard.getWaiters())
 })
 
-app.get('/getWaiterByOrder', (req, res) => {
-    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => res.send(dashboard.getWaiterByOrder(req.body['orderID'])))
+app.get('/getWaiterByOrder/:orderID', (req, res) => {
+    checkInputs(['orderID'], req.params, (msg: string) => res.send(msg), () => res.send(dashboard.getWaiterByOrder(req.params.orderID)))
 })
 
 //waiter
-app.get('/getWaiterOrder', (req, res) => {
-    checkInputs(['waiterID'], req.body, (msg: string) => res.send(msg), () => res.send(waiter.getWaiterOrder(req.body['waiterID'])))
+app.get('/getWaiterOrder/:waiterID', (req, res) => {
+    checkInputs(['waiterID'], req.params, (msg: string) => res.send(msg), () => res.send(waiter.getWaiterOrder(req.params.waiterID)))
 })
 
-app.get('/getGuestLocation', (req, res) => {
-    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => waiter.getGuestLocation(req.body['orderID']))
+app.get('/getGuestLocation/:orderID', (req, res) => {
+    checkInputs(['orderID'], req.params, (msg: string) => res.send(msg), () => waiter.getGuestLocation(req.params.orderID))
 })
 
 app.post('/orderArrived', (req, res) => {

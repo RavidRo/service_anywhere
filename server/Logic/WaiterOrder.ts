@@ -36,4 +36,12 @@ export class WaiterOrder{
         }
         return [] //TODO: not this
     }
+
+    static getWaiterOrder(waiterId: WaiterID): string[]{
+        let orders = this.orderToWaiters.get(waiterId)
+        if(orders){
+            return orders;
+        }
+        return [] //TODO: not this
+    }
 }

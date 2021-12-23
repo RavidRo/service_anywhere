@@ -14,8 +14,12 @@ function getWaiters(): WaiterID[]{
     return WaiterOrder.waiterList
 }
 
-function getWaiterByOrder(orderID: OrderID): WaiterID[]{
-    return WaiterOrder.getWaiterByOrder(orderID);
+function getWaiterByOrder(orderID: OrderID): string[]{
+    let waiters = WaiterOrder.orderToWaiters.get(orderID)
+    if(waiters){
+        return waiters
+    } 
+    return [] //TODO: not this
 }
 
 export default {
