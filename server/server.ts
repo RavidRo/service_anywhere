@@ -46,14 +46,7 @@ app.post('/updateLocationGuest', (req, res) => {
 })
 
 app.get('/hasOrderArrived', (req, res) => {
-    let orderID = req.query.orderID
-    console.log(orderID)
-    if(orderID){
-        res.send(guest.hasOrderArrived(String(orderID)))
-    }
-    else{
-        res.send('not arrived')  //abstract
-    }
+    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg), () => guest.hasOrderArrived(String(req.query['orderID'])))
 })
 
 //Dashboard
@@ -70,17 +63,18 @@ app.get('/getWaiters', (req, res) => {
     res.send(dashboard.getWaiters())
 })
 
-app.get('/getWaiterByOrder/:orderID', (req, res) => {
-    checkInputs(['orderID'], req.params, (msg: string) => res.send(msg), () => res.send(dashboard.getWaiterByOrder(req.params.orderID)))
+app.get('/getWaiterByOrder', (req, res) => {
+    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg),
+     () => res.send(dashboard.getWaiterByOrder(String(req.query['orderID']))))
 })
 
 //waiter
-app.get('/getWaiterOrder/:waiterID', (req, res) => {
-    checkInputs(['waiterID'], req.params, (msg: string) => res.send(msg), () => res.send(waiter.getWaiterOrder(req.params.waiterID)))
+app.get('/getWaiterOrder', (req, res) => {
+    checkInputs(['waiterID'], req.query, (msg: string) => res.send(msg), () => res.send(waiter.getWaiterOrder(String(req.query['waiterID']))))
 })
 
-app.get('/getGuestLocation/:orderID', (req, res) => {
-    checkInputs(['orderID'], req.params, (msg: string) => res.send(msg), () => waiter.getGuestLocation(req.params.orderID))
+app.get('/getGuestLocation', (req, res) => {
+    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg), () => waiter.getGuestLocation(String(req.query['orderID'])))
 })
 
 app.post('/orderArrived', (req, res) => {
