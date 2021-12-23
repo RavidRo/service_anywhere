@@ -7,16 +7,15 @@ function getOrders(): Order[]{
 }
 
 function assignWaiter(orderID: OrderID, waiterID: WaiterID): void{
-    //dashboard.assignWaiter(orderID, waiterID)
+    WaiterOrder.assignWaiter(orderID, waiterID)
 }
 
 function getWaiters(): WaiterID[]{
     return WaiterOrder.waiterList
 }
 
-function getWaiterByOrder(orderID: OrderID): WaiterID{
-    return ''
-    //return WaiterOrder.getWaiterByOrder(orderID);
+function getWaiterByOrder(orderID: OrderID): WaiterID[]{
+    return WaiterOrder.getWaiterByOrder(orderID);
 }
 
 export default {

@@ -9,11 +9,31 @@ export class WaiterOrder{
     static connectWaiter(): string{
         let waiterId = uuidv4()
         this.waiterList.push(waiterId);
-        this.waiterToOrders.set(waiterId, [])
         return waiterId;
     }
     
     static assignWaiter(orderId: OrderID, waiterId: WaiterID): void{
-        //this.waiterToOrders.set(waiterId, this.waiterToOrders.get(waiterId).push(orderId))
+        let orders = this.waiterToOrders.get(waiterId)
+        if(orders){
+            orders.push(orderId)
+        }
+        else{
+            this.waiterToOrders.set(waiterId, [orderId])
+        }
+        let waiters = this.orderToWaiters.get(orderId)
+        if(waiters){
+            waiters.push(waiterId)
+        }
+        else{
+            this.orderToWaiters.set(orderId, [waiterId])
+        }
+    }
+
+    static getWaiterByOrder(orderId: OrderID): string[]{
+        let waiters = this.orderToWaiters.get(orderId)
+        if(waiters){
+            return waiters;
+        }
+        return [] //TODO: not this
     }
 }
