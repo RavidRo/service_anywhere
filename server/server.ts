@@ -42,7 +42,7 @@ app.post('/createOrder', (req, res) => {
 
 app.post('/updateLocationGuest', (req, res) => {
     checkInputs(['location', 'orderID'], req.body, (msg: string) => res.send(msg),
-     () => guest.updateLocationGuest(req.body["location"], req.body["orderID"]))
+     () => res.send(guest.updateLocationGuest(req.body["location"], req.body["orderID"])))
 })
 
 app.get('/hasOrderArrived', (req, res) => {
