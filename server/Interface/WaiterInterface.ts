@@ -4,8 +4,15 @@ import { WaiterOrder } from '../Logic/WaiterOrder'
 
 function getWaiterOrder(waiterID: WaiterID): Order[]{
     let orderIds = WaiterOrder.getWaiterOrder(waiterID);
-    console.log(Order.orderList)
-    return Order.orderList.filter(order => order.id in orderIds)
+    // let orders: Order[] = []
+    // for(const element of Order.orderList){
+    //     console.log(`element: ${element}`)
+    //     console.log(element.id in orderIds)
+    //     if(element.id in orderIds){
+    //         orders.push(element)
+    //     }
+    // }
+    return Order.orderList.filter(order => orderIds.includes(order.id))
 }
 
 function getGuestLocation(orderID: OrderID): Location{
