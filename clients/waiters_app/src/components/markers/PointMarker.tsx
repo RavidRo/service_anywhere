@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 
 import {Marker} from './Marker';
 
-const SIZE = 20;
+const SIZE = 40;
 
 const PointMarker: Marker = ({scale, name}) => {
     const styles = StyleSheet.create({

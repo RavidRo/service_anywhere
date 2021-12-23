@@ -26,7 +26,6 @@ type MapComponentProps = {
 export default function MapComponent({style, map}: MapComponentProps) {
     const [myLocation, setMyLocation] = useState<Location>();
     const ordersLocations = useContext(OrdersContext);
-
     useEffect(() => {
         myLocationService.watchLocation(
             location => setMyLocation(location),
@@ -35,7 +34,7 @@ export default function MapComponent({style, map}: MapComponentProps) {
             },
         );
     }, []);
-    const available = Array.from(ordersLocations).filter(
+    const available = Object.values(ordersLocations).filter(
         ([_, location]) => location,
     ) as [Order, Location][];
     const guestsMarkers = available.map(([order, location]) => [
@@ -47,10 +46,9 @@ export default function MapComponent({style, map}: MapComponentProps) {
         ? [new PointOfInterest('Waiter', myLocation), WaiterMarker]
         : undefined;
 
-    const allMarkers = [...markers, ...guestsMarkers, waiter] as [
-        PointOfInterest,
-        Marker,
-    ][];
+    const allMarkers = markers
+        .concat(guestsMarkers)
+        .concat(waiter ? [waiter] : []) as [PointOfInterest, Marker][];
 
     const [imageWidth, setImageWidth] = useState<number | undefined>();
     const [imageHeight, setImageHeight] = useState<number | undefined>();

@@ -3,7 +3,9 @@ import axios, {AxiosResponse} from 'axios';
 import {Order as OrderApi, Location as LocationApi} from '../data/api';
 import Location from '../data/Location';
 
-const axiosInstance = axios.create({baseURL: 'http://localhost/'});
+const axiosInstance = axios.create({
+    baseURL: 'https://service-everywhere.herokuapp.com/',
+});
 
 function request<T>(endPoint: string, params: object, GET = true) {
     console.debug(`Request ${endPoint}`, params);
@@ -42,59 +44,57 @@ function post<T>(endPoint: string, params = {}) {
     return request<T>(endPoint, params, false);
 }
 
-// function getGuestLocation(...params: [orderID: string]) {
-//     return get<LocationApi>('getGuestLocation', params).then(
-//         location => new Location(location.x, location.y),
-//     );
-// }
-
-// function getWaiterOrders(...params: [waiterID: string]) {
-//     return get<OrderApi[]>('getWaiterOrders', params).then(orders =>
-//         orders.map(order => new Order(order)),
-//     );
-// }
-
-// function orderArrived(...params: [orderID: string]) {
-//     return post<void>('orderArrived', params);
-// }
-
-// function login(...params: []) {
-//     return post<string>('login', params);
-// }
-
-function getGuestLocation(..._params: [orderID: string]): Promise<Location> {
-    return new Promise(() => new Location(0.4, 0.4));
-}
-
-function getWaiterOrders(..._params: [waiterID: string]): Promise<OrderApi[]> {
-    return new Promise(resolve =>
-        resolve([
-            {
-                id: 'OmerID',
-                items: ['Item1', 'Item2'],
-                status: 'inprogress',
-            },
-            {
-                id: 'AvivID',
-                items: ['Item1', 'Item2'],
-                status: 'inprogress',
-            },
-            {
-                id: 'TommerID',
-                items: ['Item1', 'Item2'],
-                status: 'inprogress',
-            },
-        ]),
+function getGuestLocation(...params: [orderID: string]) {
+    return get<LocationApi>('getGuestLocation', params).then(
+        location => new Location(location.x, location.y),
     );
 }
 
-function orderArrived(..._params: [orderID: string]): Promise<void> {
-    return new Promise(resolve => resolve());
+function getWaiterOrders(...params: [waiterID: string]) {
+    return get<OrderApi[]>('getWaiterOrders', params);
 }
 
-function login(..._params: []): Promise<string> {
-    return new Promise(resolve => resolve('MYID'));
+function orderArrived(...params: [orderID: string]) {
+    return post<void>('orderArrived', params);
 }
+
+function login(...params: []) {
+    return post<string>('login', params);
+}
+
+// function getGuestLocation(..._params: [orderID: string]): Promise<Location> {
+//     return new Promise(resolve => resolve(new Location(0.2, 0.2)));
+// }
+
+// function getWaiterOrders(..._params: [waiterID: string]): Promise<OrderApi[]> {
+//     return new Promise(resolve =>
+//         resolve([
+//             {
+//                 id: 'OmerID',
+//                 items: ['Item1', 'Item2'],
+//                 status: 'inprogress',
+//             },
+//             {
+//                 id: 'AvivID',
+//                 items: ['Item1', 'Item2'],
+//                 status: 'inprogress',
+//             },
+//             {
+//                 id: 'TommerID',
+//                 items: ['Item1', 'Item2'],
+//                 status: 'inprogress',
+//             },
+//         ]),
+//     );
+// }
+
+// function orderArrived(..._params: [orderID: string]): Promise<void> {
+//     return new Promise(resolve => resolve());
+// }
+
+// function login(..._params: []): Promise<string> {
+//     return new Promise(resolve => resolve('MYID'));
+// }
 
 export default {
     getGuestLocation,

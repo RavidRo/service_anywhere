@@ -10,7 +10,7 @@ export default function OrdersList(_: OrdersProps) {
     const orders = useContext(OrdersContext);
     return (
         <>
-            {Array.from(orders.keys()).map((order, index) => {
+            {Object.values(orders).map(([order, _], index) => {
                 return (
                     <TouchableOpacity
                         key={order.id}

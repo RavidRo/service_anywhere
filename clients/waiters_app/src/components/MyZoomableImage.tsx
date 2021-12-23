@@ -44,7 +44,7 @@ export default function MyZoomableImage({
     parentHeight,
     style,
     uri,
-    pointsOfInterest,
+    pointsOfInterest = [],
 }: MyZoomableImageProps) {
     const [top, setTop] = useState<number>(0);
     const [left, setLeft] = useState<number>(0);
@@ -191,19 +191,23 @@ export default function MyZoomableImage({
     return (
         <View style={style} {...panResponder.panHandlers}>
             <View style={styles.container}>
-                {pointsOfInterest?.map(([point, PointMarker], index) => (
-                    <View
-                        key={index}
-                        style={[
-                            styles.marker,
-                            {
-                                top: point.location.y * imageHeight * zoom,
-                                left: point.location.x * imageWidth * zoom,
-                            },
-                        ]}>
-                        <PointMarker name={point.name} scale={zoom} />
-                    </View>
-                ))}
+                {pointsOfInterest.map((pointAndMarker, index) => {
+                    const point = pointAndMarker[0];
+                    const PointMarker = pointAndMarker[1];
+                    return (
+                        <View
+                            key={index}
+                            style={[
+                                styles.marker,
+                                {
+                                    top: point.location.y * imageHeight * zoom,
+                                    left: point.location.x * imageWidth * zoom,
+                                },
+                            ]}>
+                            <PointMarker name={point.name} scale={zoom} />
+                        </View>
+                    );
+                })}
                 <Image
                     style={styles.map}
                     source={{

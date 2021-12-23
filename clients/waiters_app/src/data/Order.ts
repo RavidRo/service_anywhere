@@ -9,6 +9,7 @@ export default class Order {
     public readonly id: string;
     public readonly items: string[];
     private status: 'unassigned' | 'inprogress' | 'completed';
+    private location?: Location;
 
     private readonly locationService: LocationService;
 
@@ -22,7 +23,13 @@ export default class Order {
 
     onNewLocation(callback: (location: Location) => void) {
         this.locationService.stopWatching();
-        this.locationService.watchLocation(callback, () => {});
+        this.locationService.watchLocation(
+            newLocation => {
+                this.location = newLocation;
+                callback(newLocation);
+            },
+            () => {},
+        );
     }
 
     completed() {

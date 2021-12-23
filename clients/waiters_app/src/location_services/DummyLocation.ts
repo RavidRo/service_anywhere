@@ -11,7 +11,7 @@ export default class DummyLocation implements LocationService {
     }
 
     private getCurrentLocation(): Location {
-        this.location = this.location.add(0.05, 0.05);
+        // this.location = this.location.add(0.05, 0.05);
         return this.location;
     }
 

@@ -11,7 +11,6 @@ export default class Gps implements LocationService {
     ) {
         Geolocation.watchPosition(
             position => {
-                console.log(position);
                 successCallback(
                     new Location(
                         position.coords.latitude,
@@ -38,7 +37,6 @@ export default class Gps implements LocationService {
     ): void {
         Geolocation.getCurrentPosition(
             position => {
-                console.log(position);
                 successCallback(
                     new Location(
                         position.coords.latitude,
@@ -58,18 +56,3 @@ export default class Gps implements LocationService {
         );
     }
 }
-
-// componentDidMount() {
-//   if (hasLocationPermission) {
-//     Geolocation.getCurrentPosition(
-//         (position) => {
-//           console.log(position);
-//         },
-//         (error) => {
-//           // See error code charts below.
-//           console.log(error.code, error.message);
-//         },
-//         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-//     );
-//   }
-// }

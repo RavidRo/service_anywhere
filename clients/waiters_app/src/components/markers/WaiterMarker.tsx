@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 
 import {Marker} from './Marker';
 
-const SIZE = 10;
+const SIZE = 40;
 
 const WaiterMarker: Marker = ({scale}) => {
     const styles = StyleSheet.create({

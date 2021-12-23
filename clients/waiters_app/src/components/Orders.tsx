@@ -16,9 +16,9 @@ type OrdersProps = {
 const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
     const id = useContext(IDContext);
 
-    const [ordersLocations, setOrdersLocations] = useState<
-        Map<Order, Location | undefined>
-    >(new Map());
+    const [ordersLocations, setOrdersLocations] = useState<{
+        [orderID: string]: [Order, Location | undefined];
+    }>({});
 
     const {request} = useAPI(requests.getWaiterOrders);
     useEffect(() => {
@@ -26,15 +26,22 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
             request(id)
                 .then(ordersDetails => {
                     const orders = ordersDetails.map(order => new Order(order));
-                    setOrdersLocations(
-                        new Map(orders.map(order => [order, undefined])),
+                    setOrdersLocations(() =>
+                        orders.reduce(
+                            (o, order) => ({
+                                ...o,
+                                [order.id]: [order, undefined],
+                            }),
+                            {},
+                        ),
                     );
                     orders.forEach(order => {
                         order.onNewLocation(newLocation => {
-                            setOrdersLocations(ordersLocations => {
-                                console.log('WIIII');
-                                ordersLocations.set(order, newLocation);
-                                return ordersLocations;
+                            setOrdersLocations(ordersLocations2 => {
+                                return {
+                                    ...ordersLocations2,
+                                    [order.id]: [order, newLocation],
+                                };
                             });
                         });
                     });
@@ -44,7 +51,7 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
             Alert.alert('Something went wrong, waiterID is undefined...');
         }
         return () => {
-            Array.from(ordersLocations.keys()).forEach(order =>
+            Array.from(Object.values(ordersLocations)).forEach(([order, _]) =>
                 order.stopTracking(),
             );
         };
