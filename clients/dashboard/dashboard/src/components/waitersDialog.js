@@ -12,9 +12,9 @@ const dialogTitle = "Choose Waiter"
 
 export default function WaiterDialog(props) {
   const { onClose, open } = props;
-  const [waiters, setWaiters] = useState([]);
+  const [waiters, setWaiters] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     let mounted = true;
     getWaiters()
       .then(waiters => {

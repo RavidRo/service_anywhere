@@ -8,6 +8,7 @@ const host_port = `${host}:${port}`;
 const base_route = `${host_port}`;
 
 export function getOrders(){
+  console.log("Getting orders")
   const url = `${base_route}/getOrders`;
   return axios({
     method: "GET",
@@ -20,10 +21,14 @@ export function getOrders(){
         throw new Error();
       }
     })
-    .catch((err) => alert(`failed to get orders due to ${err}`));
+    .catch((err) => {
+      alert(`failed to get orders due to ${err}`);
+      return []
+  });
 };
 
 export function getWaiters(){
+  
     const url = `${base_route}/getWaiters`;
     return axios({
       method: "GET",

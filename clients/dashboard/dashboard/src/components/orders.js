@@ -17,7 +17,9 @@ function Order(props){
       };
     
       const handleClose = (waiter) => {
-        val !== "" ? assignWaiter(order.id, waiter.id) :"";
+        if(waiter !== ""){
+           assignWaiter(order.id, waiter.id);
+          }
         setOpen(false);
       };
 
@@ -43,7 +45,7 @@ function Order(props){
 export default function Orders(){
     const [orders, setOrders] = React.useState([]);
     // [{name: "Order 1"}, {name: "Order 2"}, {name: "Order 3"}]; // TODO get orders call 
-    useEffect(() => {
+    React.useEffect(() => {
       let mounted = true;
       getOrders()
         .then(orders => {
