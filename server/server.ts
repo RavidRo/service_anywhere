@@ -63,13 +63,13 @@ app.get('/getWaiters', (req, res) => {
     res.send(dashboard.getWaiters())
 })
 
-app.get('/getWaiterByOrder', (req, res) => {
+app.get('/getWaitersByOrder', (req, res) => {
     checkInputs(['orderID'], req.query, (msg: string) => res.send(msg),
      () => res.send(dashboard.getWaiterByOrder(String(req.query['orderID']))))
 })
 
 //waiter
-app.get('/getWaiterOrder', (req, res) => {
+app.get('/getWaiterOrders', (req, res) => {
     checkInputs(['waiterID'], req.query, (msg: string) => res.send(msg), () => res.send(waiter.getWaiterOrder(String(req.query['waiterID']))))
 })
 
