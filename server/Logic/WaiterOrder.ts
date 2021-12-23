@@ -32,16 +32,16 @@ export class WaiterOrder{
     static getWaiterByOrder(orderId: OrderID): string[]{
         let waiters = this.orderToWaiters.get(orderId)
         if(waiters){
-            return waiters;
+            return waiters; //makeGood(waiters)
         }
-        return []
+        return []   //makeFail('this order does not exists or it has no waiters assigned.')
     }
 
     static getWaiterOrder(waiterId: WaiterID): string[]{
         let orders = this.orderToWaiters.get(waiterId)
         if(orders){
-            return orders;
+            return orders;  //makeGood(orders)
         }
-        return []
+        return []   //makeFail('this waiter does not exist or has no orders assigned.')
     }
 }

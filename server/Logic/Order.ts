@@ -38,10 +38,10 @@ export class Order{
     static getGuestLocation(orderID: OrderID): Location{
         for (const element of Order.orderList) {
             if(element.id === orderID){
-                return element.guestLocation;
+                return element.guestLocation;   //makeGood(element.guestLocation)
             }
         }
-        return {x: -1, y: -1}
+        return {x: -1, y: -1}   //makeFail("no such order.")
     }
 
     constructor(items: string[]){
