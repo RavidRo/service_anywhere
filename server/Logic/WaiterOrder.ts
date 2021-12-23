@@ -46,6 +46,7 @@ export class WaiterOrder{
         let orders = this.waiterToOrders.get(waiterId)
         console.log(this.waiterToOrders.get(waiterId))
         if(orders){
+            console.log('here')
             return orders;  //makeGood(orders)
         }
         return []   //makeFail('this waiter does not exist or has no orders')
