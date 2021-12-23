@@ -48,7 +48,6 @@ export class Order{
         this.items = items;
         this.status = Status.RECEIVED;
         this.id = uuidv4();
-        console.log(this.id);
     }
 
     giveFeedback(content: string, rating: number): boolean{

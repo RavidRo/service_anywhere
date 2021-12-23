@@ -37,13 +37,7 @@ function checkInputs(inputs: string[], reqBody: any, sendErrorMsg: (msg: string)
 
 //Guest
 app.post('/createOrder', (req, res) => {
-    try{
-        checkInputs(['items'], req.body, (msg: string) => res.send(msg), () => res.send(guest.createOrder(req.body['items'])))
-    }
-    catch(e){
-        console.error(e)
-        res.send(e)
-    }
+    checkInputs(['items'], req.body, (msg: string) => res.send(msg), () => res.send(guest.createOrder(req.body['items'])))
 })
 
 app.post('/updateLocationGuest', (req, res) => {
