@@ -46,7 +46,7 @@ app.post('/updateLocationGuest', (req, res) => {
 })
 
 app.get('/hasOrderArrived', (req, res) => {
-    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg), () => guest.hasOrderArrived(String(req.query['orderID'])))
+    checkInputs(['orderID'], req.query, (msg: string) => res.send(msg), () => res.send(guest.hasOrderArrived(String(req.query['orderID']))))
 })
 
 //Dashboard
@@ -56,7 +56,7 @@ app.get('/getOrders', (req, res) => {
 
 app.post('/assignWaiter', (req, res) => {
     checkInputs(['orderID', 'waiterID'], req.body, (msg: string) => res.send(msg),
-     () => dashboard.assignWaiter(req.body['orderID'], req.body['waiterID']))
+     () => res.send(dashboard.assignWaiter(req.body['orderID'], req.body['waiterID'])))
 })
 
 app.get('/getWaiters', (req, res) => {
@@ -78,7 +78,7 @@ app.get('/getGuestLocation', (req, res) => {
 })
 
 app.post('/orderArrived', (req, res) => {
-    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => waiter.orderArrived(req.body['orderID']))
+    checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => res.send(waiter.orderArrived(req.body['orderID'])))
 })
 
 app.post('/connectWaiter', (req, res) => {
