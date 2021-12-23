@@ -2,7 +2,7 @@ import {v4 as uuidv4} from 'uuid'
 import { OrderID, WaiterID } from '../api';
 
 export class WaiterOrder{
-    static waiterList: string[] = [];
+    static waiterList: string[] = ["ima shel Tommer", "aba shel Tommer"];
     static waiterToOrders: Map<string, string[]> = new Map();
     static orderToWaiters: Map<string, string[]> = new Map();
     
