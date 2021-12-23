@@ -29,7 +29,7 @@ export class WaiterOrder{
         }
     }
 
-    static getWaiterByOrder(orderId: OrderID): string[]{
+    static getWaitersByOrder(orderId: OrderID): string[]{
         let waiters = this.orderToWaiters.get(orderId)
         if(waiters){
             return waiters; //makeGood(waiters)
@@ -37,7 +37,7 @@ export class WaiterOrder{
         return []   //makeFail('this order does not exists or it has no waiters assigned.')
     }
 
-    static getWaiterOrder(waiterId: WaiterID): string[]{
+    static getWaiterOrders(waiterId: WaiterID): string[]{
         let orders = this.orderToWaiters.get(waiterId)
         if(orders){
             return orders;  //makeGood(orders)
