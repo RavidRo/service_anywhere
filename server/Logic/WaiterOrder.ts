@@ -14,15 +14,12 @@ export class WaiterOrder{
     
     static assignWaiter(orderId: OrderID, waiterId: WaiterID): void{
         let orders = this.waiterToOrders.get(waiterId)
-        console.log(`assigned waiter id: ${waiterId}`)
-        console.log(orders)
         if(orders){
             orders.push(orderId)
         }
         else{
             this.waiterToOrders.set(waiterId, [orderId])
         }
-        console.log(this.waiterToOrders.get(waiterId))
         let waiters = this.orderToWaiters.get(orderId)
         if(waiters){
             waiters.push(waiterId)
@@ -33,7 +30,6 @@ export class WaiterOrder{
     }
 
     static getWaiterByOrder(orderId: OrderID): string[]{
-        console.log(`order id: ${orderId}`)
         let waiters = this.orderToWaiters.get(orderId)
         if(waiters){
             return waiters; //makeGood(waiters)
@@ -42,9 +38,7 @@ export class WaiterOrder{
     }
 
     static getWaiterOrder(waiterId: WaiterID): string[]{
-        console.log(`waiter id: ${waiterId}`)
         let orders = this.waiterToOrders.get(waiterId)
-        console.log(orders)
         if(orders){
             return orders;  //makeGood(orders)
         }
