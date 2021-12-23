@@ -1,5 +1,6 @@
 import {Location, OrderID, WaiterID} from '../api'
 import { Order } from '../Logic/Order'
+import { WaiterOrder } from '../Logic/WaiterOrder'
 
 function getWaiterOrder(waiterID: WaiterID): Order[]{
     var ret: Order[] = []
@@ -15,8 +16,13 @@ function orderArrived(orderID: OrderID): void{
     Order.delegate(orderID, (order: Order) => {order.orderArrived(); return true})
 }
 
+function connectWaiter(): string{
+    return WaiterOrder.connectWaiter()
+}
+
 export default {
     getWaiterOrder,
     getGuestLocation,
-    orderArrived
+    orderArrived,
+    connectWaiter
 }

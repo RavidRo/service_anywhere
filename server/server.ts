@@ -37,7 +37,12 @@ function checkInputs(inputs: string[], reqBody: any, sendErrorMsg: (msg: string)
 
 //Guest
 app.post('/createOrder', (req, res) => {
-    checkInputs(['items'], req.body, (msg: string) => res.send(msg), () => res.send(guest.createOrder(req.body['items'])))
+    try{
+        checkInputs(['items'], req.body, (msg: string) => res.send(msg), () => res.send(guest.createOrder(req.body['items'])))
+    }
+    catch(e){
+        res.send(e)
+    }
 })
 
 app.post('/updateLocationGuest', (req, res) => {
@@ -78,6 +83,10 @@ app.get('/getGuestLocation', (req, res) => {
 
 app.post('/orderArrived', (req, res) => {
     checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => waiter.orderArrived(req.body['orderID']))
+})
+
+app.post('/connectWaiter', (req, res) => {
+    res.send(waiter.connectWaiter())
 })
 
 app.listen(PORT, () => {
