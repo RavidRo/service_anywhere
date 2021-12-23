@@ -45,10 +45,10 @@ app.post('/updateLocationGuest', (req, res) => {
      () => guest.updateLocationGuest(req.body["location"], req.body["orderID"]))
 })
 
-app.get('/hasOrderArrived/:orderID', (req, res) => {
-    console.log(req.params)
+app.get('/hasOrderArrived', (req, res) => {
+    console.log(req.query.orderID)
     checkInputs(['orderID'], req.params, (msg: string) => res.send(msg),
-     () => res.send(guest.hasOrderArrived(req.params.orderID)))
+     () => res.send(guest.hasOrderArrived(''/*req.query.orderID */)))
 })
 
 //Dashboard
