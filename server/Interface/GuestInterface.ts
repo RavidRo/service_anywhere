@@ -1,19 +1,16 @@
 import {Api, Arrived, Location, OrderID} from '../api'
+import { Order } from '../Logic/Order'
 
-function createOrder(): OrderID{
-    var ret: OrderID = ''
-    return ret
-    //return guest.createOrder()
+function createOrder(items: string[]): OrderID{
+    return Order.createOrder(items)
 }
 
 function updateLocationGuest(location: Location, orderID: OrderID): void{
-    //guest.updateLocationGuest(location, orderID)
+    Order.delegate(orderID, (order: Order) => order.updateLocationGuest(location))
 }
 
 function hasOrderArrived(orderID: OrderID): Arrived{
-    var ret: Arrived = true
-    return ret
-    //return guest.hasOrderArrived()
+    return Order.delegate(orderID, (order: Order) => order.hasOrderArrived())
 }
 
 export default {

@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 
 //Guest
 app.post('/createOrder', (req, res) => {
-    res.send(guest.createOrder());
+    res.send(guest.createOrder(req.body['items']));
 })
 
 app.post('/updateLocationGuest', (req, res) => {
@@ -54,8 +54,6 @@ app.get('/getGuestLocation', (req, res) => {
 app.post('/orderArrived', (req, res) => {
     waiter.orderArrived(req.body['orderID'])
 })
-
-
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
