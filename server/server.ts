@@ -1,5 +1,5 @@
 import express from 'express'
-import api from './api'
+import api, { OrderID } from './api'
 import guest from './Interface/GuestInterface'
 import dashboard from './Interface/DashboardInterface'
 import waiter from './Interface/WaiterInterface'
@@ -46,9 +46,14 @@ app.post('/updateLocationGuest', (req, res) => {
 })
 
 app.get('/hasOrderArrived', (req, res) => {
-    console.log(req.query.orderID)
-    checkInputs(['orderID'], req.params, (msg: string) => res.send(msg),
-     () => res.send(guest.hasOrderArrived(''/*req.query.orderID */)))
+    let orderID = req.query.orderID
+    console.log(orderID)
+    if(orderID){
+        res.send(guest.hasOrderArrived(String(orderID)))
+    }
+    else{
+        res.send('not arrived')  //abstract
+    }
 })
 
 //Dashboard
