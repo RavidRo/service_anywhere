@@ -19,7 +19,7 @@ function getWaiterByOrder(orderID: OrderID): string[]{
     if(waiters){
         return waiters
     } 
-    return [] //TODO: not this
+    return []
 }
 
 export default {

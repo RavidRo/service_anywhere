@@ -34,7 +34,7 @@ export class WaiterOrder{
         if(waiters){
             return waiters;
         }
-        return [] //TODO: not this
+        return []
     }
 
     static getWaiterOrder(waiterId: WaiterID): string[]{
@@ -42,6 +42,6 @@ export class WaiterOrder{
         if(orders){
             return orders;
         }
-        return [] //TODO: not this
+        return []
     }
 }
