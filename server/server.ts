@@ -4,14 +4,14 @@ import guest from './Interface/GuestInterface'
 import dashboard from './Interface/DashboardInterface'
 import waiter from './Interface/WaiterInterface'
 
-var cors = require('cors')
+//var cors = require('cors')
 const app = express()
 const PORT = process.env.PORT || 3000
 app.use(express.json())
 
 
 // use it before all route definitions
-app.use(cors({origin: '*'}))
+//app.use(cors({origin: '*'}))
 
 app.get('/', (req, res) => {
     res.send('Hello World! 123')
