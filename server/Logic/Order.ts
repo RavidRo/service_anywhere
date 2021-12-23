@@ -21,7 +21,6 @@ export class Order{
     guestLocation: Location;
     
     static createOrder(items: string[]): string{
-        console.log(items)
         let order = new Order(items);
         this.orderList.push(order);
         return order.id;

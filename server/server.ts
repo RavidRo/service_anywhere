@@ -46,6 +46,7 @@ app.post('/updateLocationGuest', (req, res) => {
 })
 
 app.get('/hasOrderArrived', (req, res) => {
+    console.log(req.body)
     checkInputs(['orderID'], req.body, (msg: string) => res.send(msg), () => res.send(guest.hasOrderArrived(req.body['orderID'])))
 })
 
