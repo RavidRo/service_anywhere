@@ -9,99 +9,131 @@
  */
 
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {Alert, Button, SafeAreaView, StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import { ActivityIndicator, Text, View } from "react-native";
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import ImageView from './Components/ImageView';
-
-
-const server_adress = ""
-const server_port = ""
-const base_route = server_adress + ':' + server_port;
-
-function SendOrderToServer(items: String[])
-{
-  const url = `${base_route}/createOrder`;
-  return axios({
-    method: "post",
-    url: url,
-  }).then((res) => {
-      console.log("response: " + res)
-      if (res.data) {
-        waitForOrder(res.data)
-      } 
-    }).catch((err) => Alert.alert(`failed to send order due to ${err}`))
-}
-
-// asks server if order has arrived every 5 seconds until receiving positive response
-function waitForOrder(orderId: String){
-
-    // while(!hasOrderArrived(orderId))
-    // {
-    //   wait(5)
-    // }
-   setWaitingForOrder(false)
-}
-
-// sending "hasOrderArrived" get request
-function hasOrderArrived(orderId: String) {
-  const url = `${base_route}/hasOrderArrived`;
-  return axios({
-    method: "get",
-    url: url,
-  }).then((res) => {
-      console.log("hasOrderArrived response: " + res)
-      return res.data;
-    }).catch((err) => Alert.alert(`failed to send order due to ${err}`))
-}
-
-// function just to check connection with server
-function GetHomePage()
-{
-  axios.get(base_route)
-  .then(function(response) {
-       Alert.alert("got server home: "  + response)
-      // handle response
-  }).catch(function(error) {
-      // handle error
-      Alert.alert(`failed to send order due to ${error}`)
-  }).finally(function() {
-      // always executes at the last of any API call
-  });
-} 
+import { FlatGrid, SectionGrid } from 'react-native-super-grid';
+import {updateLocationGuest} from './requests';
 
 
-const [waitingForOrder, setWaitingForOrder] = useState(false);
-const order_items = ['bamba', 'Beer'];
+import { Platform, PermissionsAndroid } from 'react-native';
 
-function GotOrder() {
-  const x = 1;
-  Alert.alert("Bonne Appetit :)");
-  setWaitingForOrder(false)
-}
+import Geolocation from 'react-native-geolocation-service';
+
+
+const server_adress = "https://service-everywhere.herokuapp.com"
 
 const App = () => {
+  const interval = useRef<NodeJS.Timer>();
+
+  async function requestPermissions() {
+    // if (Platform.OS === 'ios') {
+    //   Geolocation.requestAuthorization();
+    //   Geolocation.setRNConfiguration({
+    //     skipPermissionRequests: false,
+    //    authorizationLevel: 'whenInUse',
+    //  });
+    // }
+  
+    if (Platform.OS === 'android') {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+    }
+  }
+
+
+  function SendOrderToServer(items: String[])
+  {
+    requestPermissions();
+    const url = `${server_adress}/createOrder`;
+    return axios({
+      method: "post",
+      url: url,
+      data:{
+        'items': order_items
+      }
+    }).then((res) => {
+        console.log("create order response: " + res.data)
+        if (res.data) {
+          setWaitingForOrder(true)
+          setOrderID(res.data)
+          waitForOrder(res.data)
+        } 
+      }).catch((err) =>{console.log(err); Alert.alert(`failed to send order due to ${err}`) } )
+  }
+  
+  // sending "hasOrderArrived" get request
+  function hasOrderArrived(orderID: String) {
+    console.log("sending hasOrderArrived request")
+    const url = `${server_adress}/hasOrderArrived`;
+    return axios({
+      method: "get",
+      url: url,
+      params: {
+        'orderID': orderID
+      }
+    }).then((res) => {
+        console.log("has order arrived response:" + res.data)
+        if(res.data){
+          if(interval.current){
+            clearInterval(interval.current);
+            interval.current = undefined;
+          }
+          setWaitingForOrder(false)
+          orderArrived();
+        }
+        return res.data;
+      }).catch((err) => {console.log("hasOrderArrived error: " + err); Alert.alert(`failed to send order due to ${err}`)})
+  }
+  
+   // asks server if order has arrived every __ seconds until receiving positive response
+  // posts the guest's location 
+  function waitForOrder(_orderID: String){
+    // if(interval.current){
+    //   clearInterval(interval.current);
+    // }
+    //;
+    // interval.current = setInterval(() => {hasOrderArrived(_orderID) } , 6000);
+    updateLocationGuest(_orderID);
+  }
+
+  function orderArrived(){
+     Alert.alert("Order Arrived, disfrute de su comida Mi Hermano");
+  }
+
+  const [waitingForOrder, setWaitingForOrder] = useState(false);
+  const order_items = ['bamba', 'Beer'];
+  const [orderID, setOrderID] = useState('');
+
+  function GotOrder() {
+    if(interval.current){
+      clearInterval(interval.current);
+      interval.current = undefined;
+    }
+    Alert.alert("Bonne Appetit :)");
+    setWaitingForOrder(false)
+  }
+  
 
     return (
-        <SafeAreaView>
-       
-          <Button title="Order" onPress={() => {SendOrderToServer(order_items);} }/>
-
-          {/* will be romoved*/}
-          <Button title="Got My Order" onPress={() => {GotOrder();} } />
-
-          {/* will be romoved, just for checking connection with server */}
-          <Button title="Get Server Home Page" onPress={() => {GetHomePage();} }/>
-          
-            <View style={[styles.container, styles.horizontal]}>
+      
+        <SafeAreaView style={styles.safeAreaView}>
+          <View style={styles.FlatGrid}>
+            <Button title="Order" onPress={() => {SendOrderToServer(order_items);} }/>
+            <Button title="Got My Order" onPress={() => {GotOrder();} } />
+                
               {waitingForOrder?
+            <View style={[styles.container, styles.horizontal]}>
                 <View>
-                <ActivityIndicator size="large" color="#00ff00" />
+                  <Text>Order in progres.. {"\n"}
+                        order id = {orderID}
+                  </Text>
+                  <ActivityIndicator size="large" color="#00ff00" />
                 </View>
-                : <></> }
             </View>
+                : <></> }
+          </View>
         </SafeAreaView>
     );
 };
@@ -109,12 +141,25 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center"
+      justifyContent: "center",
+      position: "absolute",
+      bottom: '26%',
     },
     horizontal: {
       flexDirection: "row",
       justifyContent: "space-around",
       padding: 10
+    },
+    safeAreaView:{
+      height: '100%'
+    },
+    FlatGrid:{
+      height: '100%',
+      // backgroundColor: 'blue',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
     }
   });
 
