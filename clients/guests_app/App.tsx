@@ -9,85 +9,130 @@
  */
 
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {Alert, Button, SafeAreaView, StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import { ActivityIndicator, Text, View } from "react-native";
+import { FlatGrid, SectionGrid } from 'react-native-super-grid';
+import {updateLocationGuest} from './requests';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import ImageView from './Components/ImageView';
 
-// const url = `${base_route}/enter`;
-// return axios({
-//   method: "post",
-//   url: url,
-// }).then((res) => {
-//   if (res.data.status) {
-//     return res.data
-//   } else {
-//     throw new Error(res.data.description)
-//   }
-// }).catch((err) => alert(`failed to enter the system due to ${err}`))
+import { Platform, PermissionsAndroid } from 'react-native';
 
-const base_route = "server_adress";
-function SendOrderToServer(items: String[])
-{
-  const url = `${base_route}/order`;
-  return axios({
-    method: "post",
-    url: url,
-  }).then((res) => {
-      if (res.data.status) {
-        return res.data
-      } else {
-        throw new Error(res.data.description)
-      }
-    }).catch((err) => Alert.alert(`failed to send order due to ${err}`))
-}
+import Geolocation from 'react-native-geolocation-service';
+
+
+const server_adress = "https://service-everywhere.herokuapp.com"
+
 const App = () => {
-      
-    const [orderInProgress, setOrderInProgress] = useState(false);
+  const interval = useRef<NodeJS.Timer>();
 
-      
-    async function SendOrder() {
-      // if (await SendOrderToServer([])) {
-      //    Alert.alert("Order Sent!");
-      //    setOrderInProgress(true)
-      // }
-      Alert.alert("Order Sent!");
-      setOrderInProgress(true)
+  async function requestPermissions() {
+    // if (Platform.OS === 'ios') {
+    //   Geolocation.requestAuthorization();
+    //   Geolocation.setRNConfiguration({
+    //     skipPermissionRequests: false,
+    //    authorizationLevel: 'whenInUse',
+    //  });
+    // }
+  
+    if (Platform.OS === 'android') {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
     }
-    function GotOrder() {
-      const x = 1;
-      Alert.alert("Bonne Appetit :)");
-      setOrderInProgress(false)
+  }
+
+
+  function SendOrderToServer(items: String[])
+  {
+    requestPermissions();
+    const url = `${server_adress}/createOrder`;
+    return axios({
+      method: "post",
+      url: url,
+      data:{
+        'items': order_items
+      }
+    }).then((res) => {
+        console.log("create order response: " + res.data)
+        if (res.data) {
+          setWaitingForOrder(true)
+          setOrderID(res.data)
+          waitForOrder(res.data)
+        } 
+      }).catch((err) =>{console.log(err); Alert.alert(`failed to send order due to ${err}`) } )
+  }
+  
+  // sending "hasOrderArrived" get request
+  function hasOrderArrived(orderID: String) {
+    console.log("sending hasOrderArrived request")
+    const url = `${server_adress}/hasOrderArrived`;
+    return axios({
+      method: "get",
+      url: url,
+      params: {
+        'orderID': orderID
+      }
+    }).then((res) => {
+        console.log("has order arrived response:" + res.data)
+        if(res.data){
+          if(interval.current){
+            clearInterval(interval.current);
+            interval.current = undefined;
+          }
+          setWaitingForOrder(false)
+          orderArrived();
+        }
+        return res.data;
+      }).catch((err) => {console.log("hasOrderArrived error: " + err); Alert.alert(`failed to send order due to ${err}`)})
+  }
+  
+   // asks server if order has arrived every __ seconds until receiving positive response
+  // posts the guest's location 
+  function waitForOrder(_orderID: String){
+    // if(interval.current){
+    //   clearInterval(interval.current);
+    // }
+    //;
+    // interval.current = setInterval(() => {hasOrderArrived(_orderID) } , 6000);
+    updateLocationGuest(_orderID);
+  }
+
+  function orderArrived(){
+     Alert.alert("Order Arrived, disfrute de su comida Mi Hermano");
+  }
+
+  const [waitingForOrder, setWaitingForOrder] = useState(false);
+  const order_items = ['bamba', 'Beer'];
+  const [orderID, setOrderID] = useState('');
+
+  function GotOrder() {
+    if(interval.current){
+      clearInterval(interval.current);
+      interval.current = undefined;
     }
+    Alert.alert("Bonne Appetit :)");
+    setWaitingForOrder(false)
+  }
+  
 
     return (
-        <SafeAreaView>
-       
-        <Button 
-          title="Order"
-
-           onPress={() => {SendOrder();} }
-          />
-        <Button
-          title="Got My Order"
-
-           onPress={() => {GotOrder();} }
-          />
-
-          <View style={[styles.container, styles.horizontal]}>
-            {/* <ActivityIndicator />
-            <ActivityIndicator size="large" />
-            <ActivityIndicator size="small" color="#0000ff" /> */}
-            {/* <ActivityIndicator size="large" color="#00ff00" /> */}
-            {orderInProgress?
-              <View>
-              <ActivityIndicator size="large" color="#00ff00" />
-  
-              </View>
-              : <></> }
-            
+      
+        <SafeAreaView style={styles.safeAreaView}>
+          <View style={styles.FlatGrid}>
+            <Button title="Order" onPress={() => {SendOrderToServer(order_items);} }/>
+            <Button title="Got My Order" onPress={() => {GotOrder();} } />
+                
+              {waitingForOrder?
+            <View style={[styles.container, styles.horizontal]}>
+                <View>
+                  <Text>Order in progres.. {"\n"}
+                        order id = {orderID}
+                  </Text>
+                  <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+            </View>
+                : <></> }
           </View>
         </SafeAreaView>
     );
@@ -96,12 +141,25 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center"
+      justifyContent: "center",
+      position: "absolute",
+      bottom: '26%',
     },
     horizontal: {
       flexDirection: "row",
       justifyContent: "space-around",
       padding: 10
+    },
+    safeAreaView:{
+      height: '100%'
+    },
+    FlatGrid:{
+      height: '100%',
+      // backgroundColor: 'blue',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
     }
   });
 
