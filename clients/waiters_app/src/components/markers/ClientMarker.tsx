@@ -1,35 +1,32 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
+
 import {Marker} from './Marker';
 
 const SIZE = 40;
 
-const ClientMarker: Marker = ({point, scale}) => {
+const ClientMarker: Marker = ({scale, name}) => {
     const styles = StyleSheet.create({
-        container: {
-            position: 'absolute',
-            top: point.location.x,
-            left: point.location.y,
-            zIndex: 1,
-        },
         point: {
             width: SIZE * scale,
             height: SIZE * scale,
             borderRadius: (SIZE * scale) / 2,
-            backgroundColor: 'green',
+            backgroundColor: 'orange',
             position: 'absolute',
         },
         text: {
-            width: 50,
+            // width: 50,
             position: 'absolute',
-            bottom: SIZE * scale,
+            bottom: 0,
+            left: 0,
         },
     });
 
     return (
-        <View style={styles.container}>
+        <>
+            <Text style={styles.text}>{name}</Text>
             <View style={styles.point} />
-        </View>
+        </>
     );
 };
 

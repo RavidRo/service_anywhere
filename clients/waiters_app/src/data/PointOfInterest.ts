@@ -1,10 +1,10 @@
 import Location from './Location';
 
 export default class PointOfInterest {
-    public readonly name: String;
+    public readonly name: string;
     public location: Location;
 
-    constructor(name: String, location: Location) {
+    constructor(name: string, location: Location) {
         this.name = name;
         this.location = location;
     }

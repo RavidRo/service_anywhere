@@ -1,8 +1,7 @@
 import React from 'react';
-import PointOfInterest from '../../data/PointOfInterest';
 
 type MarkerProps = {
-    point: PointOfInterest;
+    name: string;
     scale: number;
 };
 
