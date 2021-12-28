@@ -37,12 +37,20 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
                     );
                     orders.forEach(order => {
                         order.onNewLocation(newLocation => {
-                            setOrdersLocations(ordersLocations2 => {
-                                return {
-                                    ...ordersLocations2,
-                                    [order.id]: [order, newLocation],
-                                };
-                            });
+                            if (newLocation && newLocation.x && newLocation.y) {
+                                setOrdersLocations(ordersLocations2 => {
+                                    console.log('Guest location:', newLocation);
+                                    return {
+                                        ...ordersLocations2,
+                                        [order.id]: [order, newLocation],
+                                    };
+                                });
+                            } else {
+                                console.debug(
+                                    'New guest location was not goodi :(',
+                                    newLocation,
+                                );
+                            }
                         });
                     });
                 })

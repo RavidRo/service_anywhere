@@ -35,7 +35,7 @@ export default class ServerLocation implements LocationService {
                         errorCallback(e);
                         this.stopWatching();
                     }),
-            500,
+            1000,
         );
     }
     stopWatching(): void {

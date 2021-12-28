@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 
 import {Marker} from './Marker';
 
-const SIZE = 40;
+const SIZE = 15;
 
 const WaiterMarker: Marker = ({scale}) => {
     const styles = StyleSheet.create({
@@ -13,15 +13,23 @@ const WaiterMarker: Marker = ({scale}) => {
             borderRadius: (SIZE * scale) / 2,
             backgroundColor: 'blue',
             position: 'absolute',
+
+            borderColor: 'black',
+            borderWidth: 2,
         },
         text: {
-            width: 50,
             position: 'absolute',
-            bottom: SIZE * scale,
+            bottom: 0,
+            left: 0,
         },
     });
 
-    return <View style={styles.point} />;
+    return (
+        <>
+            <Text style={styles.text}>Me!</Text>
+            <View style={styles.point} />
+        </>
+    );
 };
 
 export default WaiterMarker;

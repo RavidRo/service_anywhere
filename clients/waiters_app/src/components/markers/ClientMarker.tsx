@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 
 import {Marker} from './Marker';
 
-const SIZE = 40;
+const SIZE = 15;
 
 const ClientMarker: Marker = ({scale, name}) => {
     const styles = StyleSheet.create({
@@ -13,6 +13,9 @@ const ClientMarker: Marker = ({scale, name}) => {
             borderRadius: (SIZE * scale) / 2,
             backgroundColor: 'orange',
             position: 'absolute',
+
+            borderColor: 'black',
+            borderWidth: 2,
         },
         text: {
             // width: 50,
@@ -24,7 +27,7 @@ const ClientMarker: Marker = ({scale, name}) => {
 
     return (
         <>
-            <Text style={styles.text}>{name}</Text>
+            <Text style={styles.text}>Aviv&Tomer</Text>
             <View style={styles.point} />
         </>
     );

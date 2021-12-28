@@ -12,12 +12,13 @@ import Map from '../data/Map';
 import PointOfInterest from '../data/PointOfInterest';
 import Order from '../data/Order';
 
-import DummyLocation from '../location_services/DummyLocation';
+// import DummyLocation from '../location_services/DummyLocation';
 import {LocationService} from '../location_services/LocationService';
 
 import {OrdersContext} from '../contexts';
+import Geolocation from '../location_services/Geolocation';
 
-const myLocationService: LocationService = new DummyLocation();
+const myLocationService: LocationService = new Geolocation();
 
 type MapComponentProps = {
     style: StyleProp<ViewStyle>;
@@ -28,19 +29,31 @@ export default function MapComponent({style, map}: MapComponentProps) {
     const ordersLocations = useContext(OrdersContext);
     useEffect(() => {
         myLocationService.watchLocation(
-            location => setMyLocation(location),
+            location => {
+                const localLocation = map.translateGps(location);
+                console.log('My location:', localLocation);
+                setMyLocation(localLocation);
+            },
             () => {
                 Alert.alert("Can't find your location", 'Your GPS is on?');
             },
         );
-    }, []);
+        return () => myLocationService.stopWatching();
+    }, [map]);
+
     const available = Object.values(ordersLocations).filter(
         ([_, location]) => location,
     ) as [Order, Location][];
+    console.log(
+        'My visual locations',
+        myLocation,
+        // Object.values(available).map(([_, location]) => location),
+    );
     const guestsMarkers = available.map(([order, location]) => [
         new PointOfInterest(order.id, location),
         ClientMarker,
     ]);
+    // const guestsMarkers: [PointOfInterest, Marker][] = [];
     const markers = map.points.map(point => [point, PointMarker]);
     const waiter = myLocation
         ? [new PointOfInterest('Waiter', myLocation), WaiterMarker]

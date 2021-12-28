@@ -28,7 +28,9 @@ export default class Order {
                 this.location = newLocation;
                 callback(newLocation);
             },
-            () => {},
+            e => {
+                console.log(e);
+            },
         );
     }
 

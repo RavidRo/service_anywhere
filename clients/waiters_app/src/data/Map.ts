@@ -31,7 +31,7 @@ export default class Map {
         this.image = image;
         this.corners = corners;
         this.width = corners.bottomRightGPS.x - corners.bottomLeftGPS.x;
-        this.height = corners.bottomRightGPS.x - corners.topRightGPS.x;
+        this.height = corners.topRightGPS.y - corners.bottomRightGPS.y;
 
         this.points = points;
     }
