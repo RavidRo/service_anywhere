@@ -10,16 +10,21 @@ import Map from '../data/Map';
 import PointOfInterest from '../data/PointOfInterest';
 
 const points: PointOfInterest[] = [
-    new PointOfInterest('P1', new Location(0.7, 0.7)),
-    new PointOfInterest('P2', new Location(0.3, 0.55)),
+    // new PointOfInterest('P1', new Location(0.7, 0.7)),
+    // new PointOfInterest('P2', new Location(0.3, 0.55)),
 ];
+// topLeft: 31.263550, 34.800838
+// topRight:  31.263550, 34.802516
+// bottomLeft: 31.261649, 34.800838
+// bottomRight: 31.261649, 34.802516
 const map = new Map(
-    'https://www.hotelkillarney.ie/upload/slide_images/killarney_maps.jpg',
+    'https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png',
+    // 'https://www.hotelkillarney.ie/upload/slide_images/killarney_maps.jpg',
     {
-        bottomLeftGPS: new Location(0, 1),
-        bottomRightGPS: new Location(1, 1),
-        topRightGPS: new Location(1, 0),
-        topLeftGPS: new Location(0, 0),
+        bottomRightGPS: new Location(34.802516, 31.261649),
+        bottomLeftGPS: new Location(34.800838, 31.261649),
+        topRightGPS: new Location(34.802516, 31.26355),
+        topLeftGPS: new Location(34.800838, 31.26355),
     },
     points,
 );
