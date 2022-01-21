@@ -45,17 +45,18 @@ export function getWaiters() {
 
 export function assignWaiter(orderId, waiterId) {
   const url = `${base_route}assignWaiter`;
+  console.log(`${orderId}, ${waiterId}`);
   return axios({
     method: "POST",
     url: url,
-    data: JSON.stringify({
+    data: {
       orderID: orderId,
       waiterID: waiterId,
-    }),
+    },
   })
     .then((res) => {
-      if (res.data) {
-        return res.data;
+      if (res.status) {
+        return res.status < 400;
       } else {
         console.log("Error in assign waiter");
       }
@@ -63,14 +64,14 @@ export function assignWaiter(orderId, waiterId) {
     .catch((err) => alert(`failed to assign waiter due to ${err}`));
 }
 
-export function getWaiterByOrder(orderId) {
-  const url = `${base_route}getWaiterByOrder`;
+export function getWaitersByOrder(orderId) {
+  const url = `${base_route}getWaitersByOrder`;
   return axios({
-    method: "POST",
+    method: "GET",
     url: url,
-    data: JSON.stringify({
+    params: {
       orderID: orderId,
-    }),
+    },
   })
     .then((res) => {
       if (res.data) {
@@ -79,5 +80,5 @@ export function getWaiterByOrder(orderId) {
         console.log("Error in get waiter by order");
       }
     })
-    .catch((err) => console.log(`failed to assign waiter due to ${err}`));
+    .catch((err) => console.log(`failed to get waiter by order due to ${err}`));
 }
