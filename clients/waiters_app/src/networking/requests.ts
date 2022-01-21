@@ -67,40 +67,6 @@ function connectWaiter() {
     return post<string>('connectWaiter');
 }
 
-// function getGuestLocation(..._params: [orderID: string]): Promise<Location> {
-//     return new Promise(resolve => resolve(new Location(0.2, 0.2)));
-// }
-
-// function getWaiterOrders(..._params: [waiterID: string]): Promise<OrderApi[]> {
-//     return new Promise(resolve =>
-//         resolve([
-//             {
-//                 id: 'OmerID',
-//                 items: ['Item1', 'Item2'],
-//                 status: 'inprogress',
-//             },
-//             {
-//                 id: 'AvivID',
-//                 items: ['Item1', 'Item2'],
-//                 status: 'inprogress',
-//             },
-//             {
-//                 id: 'TommerID',
-//                 items: ['Item1', 'Item2'],
-//                 status: 'inprogress',
-//             },
-//         ]),
-//     );
-// }
-
-// function orderArrived(..._params: [orderID: string]): Promise<void> {
-//     return new Promise(resolve => resolve());
-// }
-
-// function login(..._params: []): Promise<string> {
-//     return new Promise(resolve => resolve('MYID'));
-// }
-
 export default {
     getGuestLocation,
     getWaiterOrders,
