@@ -13,15 +13,13 @@ import React, { useRef, useState } from 'react';
 import {Alert, Button, SafeAreaView, StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import { ActivityIndicator, Text, View } from "react-native";
 import { FlatGrid, SectionGrid } from 'react-native-super-grid';
-import {updateLocationGuest} from './requests';
+import {createOrder, hasOrderArrived, updateLocationGuest} from './requests';
 
 
 import { Platform, PermissionsAndroid } from 'react-native';
 
 import Geolocation from 'react-native-geolocation-service';
 
-
-const server_adress = "https://service-everywhere.herokuapp.com"
 
 const App = () => {
   const interval = useRef<NodeJS.Timer>();
@@ -46,14 +44,7 @@ const App = () => {
   function SendOrderToServer(items: String[])
   {
     requestPermissions();
-    const url = `${server_adress}/createOrder`;
-    return axios({
-      method: "post",
-      url: url,
-      data:{
-        'items': order_items
-      }
-    }).then((res) => {
+    createOrder(items).then((res) => {
         console.log("create order response: " + res.data)
         if (res.data) {
           setWaitingForOrder(true)
@@ -63,17 +54,8 @@ const App = () => {
       }).catch((err) =>{console.log(err); Alert.alert(`failed to send order due to ${err}`) } )
   }
   
-  // sending "hasOrderArrived" get request
-  function hasOrderArrived(orderID: String) {
-    console.log("sending hasOrderArrived request")
-    const url = `${server_adress}/hasOrderArrived`;
-    return axios({
-      method: "get",
-      url: url,
-      params: {
-        'orderID': orderID
-      }
-    }).then((res) => {
+  function checkOrderArrived(orderID: String) {
+    hasOrderArrived(orderID).then((res) => {
         console.log("has order arrived response:" + res.data)
         if(res.data){
           if(interval.current){
@@ -106,6 +88,8 @@ const App = () => {
   const order_items = ['bamba', 'Beer'];
   const [orderID, setOrderID] = useState('');
 
+  
+  // just for testing
   function GotOrder() {
     if(interval.current){
       clearInterval(interval.current);

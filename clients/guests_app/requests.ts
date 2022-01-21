@@ -43,3 +43,25 @@ export function updateLocationGuest (orderID: OrderID) {
     (err) => console.log("get location eror - " + err))
   }
 
+export function createOrder(order_items: String[])
+{
+    const url = `${server_adress}/createOrder`;
+    return axios({
+      method: "post",
+      url: url,
+      data:{
+        'items': order_items
+      }
+    })
+}
+export function hasOrderArrived(orderID: String)
+{
+    const url = `${server_adress}/hasOrderArrived`;
+    return axios({
+      method: "get",
+      url: url,
+      params: {
+        'orderID': orderID
+      }
+    })
+}
