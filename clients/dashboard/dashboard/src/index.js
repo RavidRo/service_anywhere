@@ -1,10 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
-import { Helmet } from "react-helmet";
-
-const siteTitle = "Order Dashboard";
+import App from "./components/App";
 
 ReactDOM.render(
   <React.StrictMode>

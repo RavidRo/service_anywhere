@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import WaiterDialog from "./waitersDialog";
-import { assignWaiter, getWaitersByOrder, getOrders } from "../api";
+import { assignWaiter, getWaitersByOrder, getOrders } from "../network/api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
