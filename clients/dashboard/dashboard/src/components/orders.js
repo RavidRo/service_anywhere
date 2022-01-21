@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import WaiterDialog from "./waitersDialog";
-import { assignWaiter, getWaiterByOrder, getOrders } from "../api";
+import { assignWaiter, getWaitersByOrder, getOrders } from "../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,13 +25,13 @@ const useStyles = makeStyles((theme) => ({
 
 function Order(props) {
   const [open, setOpen] = React.useState(false);
-  const [assignedWaiter, setAssignedWaiter] = React.useState(undefined);
+  const [assignedWaiter, setAssignedWaiter] = React.useState([]);
   const order = props.order;
   const classes = useStyles();
 
   React.useEffect(() => {
     let mounted = true;
-    getWaiterByOrder(order.id).then((assignedWaiter) => {
+    getWaitersByOrder(order.id).then((assignedWaiter) => {
       if (mounted) {
         setAssignedWaiter(assignedWaiter);
       }
@@ -46,11 +46,12 @@ function Order(props) {
 
   const handleClose = (waiter) => {
     if (waiter !== "") {
-      assignWaiter(order.id, waiter.id);
+      if (assignWaiter(order.id, waiter)) {
+        setAssignedWaiter(waiter);
+      }
     }
     setOpen(false);
   };
-
   return (
     <Card sx={{ minWidth: 275 }} variant="outlined">
       <CardContent>
@@ -79,7 +80,7 @@ function Order(props) {
           />
           <div style={{ width: "30%", marginLeft: "5%" }}>
             <Typography variant="h6" component="p">
-              {assignedWaiter === undefined ? (
+              {assignedWaiter.length === 0 ? (
                 <IconButton
                   color="primary"
                   aria-label="service"
