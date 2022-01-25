@@ -10,9 +10,6 @@
 	},
 	"scripts": {
 		"start": "npm run start --workspace=server",
-		"preparelint:guest": "cd ./guests_app && npm i typescript eslint @react-native-community/eslint-config",
-		"preparelint:waiter": "cd ./waiters_app && npm i typescript eslint @react-native-community/eslint-config",
-		"preinstall": "npm run preparelint:guest && npm run preparelint:waiter",
 		"test": "npm run test --workspaces",
 		"format": "npx prettier --write .",
 		"lint": "npx eslint . && npx tsc --noEmit --jsx react-native"

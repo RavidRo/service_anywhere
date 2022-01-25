@@ -3,14 +3,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Grid from '@material-ui/core/Grid';
 import {makeStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import WaiterDialog from './waitersDialog';
 import {assignWaiter, getWaitersByOrder, getOrders} from '../api';
 
-const useStyles = makeStyles(theme => ({
+const _useStyles = makeStyles(theme => ({
 	root: {
 		width: 'fit-content',
 		color: theme.palette.text.secondary,
@@ -27,7 +26,6 @@ function Order(props) {
 	const [open, setOpen] = React.useState(false);
 	const [assignedWaiter, setAssignedWaiter] = React.useState([]);
 	const order = props.order;
-	const classes = useStyles();
 
 	React.useEffect(() => {
 		let mounted = true;
@@ -112,6 +110,17 @@ function Order(props) {
 		</Card>
 	);
 }
+
+import PropTypes from 'prop-types'; // ES6
+
+Order.propTypes = {
+	order: PropTypes.shape({
+		id: PropTypes.string,
+		items: PropTypes.array,
+		name: PropTypes.string,
+		status: PropTypes.string,
+	}),
+};
 
 export default function Orders() {
 	const [orders, setOrders] = React.useState([]);

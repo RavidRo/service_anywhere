@@ -47,3 +47,9 @@ export default function WaiterDialog(props) {
 		</Dialog>
 	);
 }
+import PropTypes from 'prop-types'; // ES6
+
+WaiterDialog.propTypes = {
+	onClose: PropTypes.func,
+	open: PropTypes.func,
+};

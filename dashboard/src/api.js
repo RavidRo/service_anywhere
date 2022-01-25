@@ -4,7 +4,7 @@ const config = require('./config.json');
 const host = config.host;
 const port = config.port;
 
-const host_port = `${host}:${port}`;
+const _host_port = `${host}:${port}`;
 const base_route = `${host}`;
 
 export function getOrders() {
