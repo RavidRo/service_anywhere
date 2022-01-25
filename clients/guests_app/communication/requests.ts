@@ -1,13 +1,35 @@
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
-import Geolocation from 'react-native-geolocation-service';
-import Location, {OrderID} from './types';
-import Gps from './LocationService';
-import Map from './mapScaling'
-
 
 const server_adress = "https://service-everywhere.herokuapp.com"
-const service = new Gps();
+
+// items = Map<item_id,Quantity>
+export function createOrder(order_items: Map<String,Number>)
+{
+    const url = `${server_adress}/createOrder`;
+    return axios({
+      method: "post",
+      url: url,
+      data:{
+        'items': order_items
+      }
+    })
+}
+export function hasOrderArrived(orderID: String)
+{
+    const url = `${server_adress}/hasOrderArrived`;
+    return axios({
+      method: "get",
+      url: url,
+      params: {
+        'orderID': orderID
+      }
+    })
+}
+
+
+
+
+/* const service = new Gps();
 const corners = { topRightGPS: new Location(34.802516, 31.263550),
                   topLeftGPS: new Location(34.800838, 31.263550), 
                   bottomRightGPS: new Location(34.802516, 31.261649),
@@ -41,27 +63,4 @@ export function updateLocationGuest (orderID: OrderID) {
         .catch((err) => console.log("update Location guest error - " + err))
     },
     (err) => console.log("get location eror - " + err))
-  }
-
-export function createOrder(order_items: String[])
-{
-    const url = `${server_adress}/createOrder`;
-    return axios({
-      method: "post",
-      url: url,
-      data:{
-        'items': order_items
-      }
-    })
-}
-export function hasOrderArrived(orderID: String)
-{
-    const url = `${server_adress}/hasOrderArrived`;
-    return axios({
-      method: "get",
-      url: url,
-      params: {
-        'orderID': orderID
-      }
-    })
-}
+  } */

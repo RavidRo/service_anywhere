@@ -45,7 +45,7 @@ export interface LocationService {
 export type OrderID = String;
 export type Order = {
   id: OrderID;
-  items: String[];
-  status: 'unassigned' | 'inprogress' | 'completed';
+  items: Map<String, Number>;
+  status: 'recieved' | 'unassigned' | 'inprogress' | 'completed';
 };
 

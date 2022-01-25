@@ -1,5 +1,7 @@
+import { resolvePlugin } from "@babel/core";
+import { createOrder } from "../communication/requests";
 import { OrderModel } from "../Model/OrderModel";
-import {} from "../requests"
+import {} from "../communication/requests"
 
 type Location = {
     x: number;
@@ -16,7 +18,7 @@ type LocalizationDetailsIDO = {
 }
 export type Order = {
     id: OrderID;
-    items: string[];
+    items: Map<String,Number>;
     status: OrderStatus;
 };
 
@@ -30,11 +32,11 @@ export default class OrderViewModel{
 
     private order_model = OrderModel.getInstance();
 
-    createOrder(items: String[]):Promise<OrderID>
+    createOrder(items: Map<String,Number>):Promise<OrderID>
     {
-       // const location = getLocation()     need to send location on HTTP POST?
-        requests.createOrder()
-        res.then(())
+        return createOrder(items)
+        .then((res) => {this.order_model.setOrder({id: res.data, items: items, status: "recieved"}); return res.data})
+        
     }
 
 
