@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"repository": "",
 	"engines": {
-		"node": "14.x"
+		"node": "16.x"
 	},
 	"scripts": {
 		"start": "npm run start --workspace=server",
