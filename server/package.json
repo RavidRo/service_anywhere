@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "tsc && node build/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node build/server/Network/RequestHandler.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
