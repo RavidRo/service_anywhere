@@ -1,4 +1,4 @@
-   const   x= "2";
-	  if (x === x) {
-	console.log(true)
+const x = '2';
+if (x === x) {
+	console.log(true);
 }
