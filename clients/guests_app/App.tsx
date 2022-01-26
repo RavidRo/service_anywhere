@@ -8,20 +8,18 @@
  * @format
  */
 
-import axios from 'axios';
 import React, { useRef, useState } from 'react';
-import {Alert, Button, SafeAreaView, StatusBar, StyleSheet, useColorScheme} from 'react-native';
-import { ActivityIndicator, Text, View } from "react-native";
-import { FlatGrid, SectionGrid } from 'react-native-super-grid';
-import {createOrder, hasOrderArrived, updateLocationGuest} from './requests';
+import { MainPageViewController } from './ViewController/MainPageViewController';
 
-
-import { Platform, PermissionsAndroid } from 'react-native';
-
-import Geolocation from 'react-native-geolocation-service';
 
 
 const App = () => {
+  return <MainPageViewController/>
+};
+
+export default App;
+
+  /*
   const interval = useRef<NodeJS.Timer>();
 
   async function requestPermissions() {
@@ -120,32 +118,4 @@ const App = () => {
           </View>
         </SafeAreaView>
     );
-};
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      position: "absolute",
-      bottom: '26%',
-    },
-    horizontal: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-      padding: 10
-    },
-    safeAreaView:{
-      height: '100%'
-    },
-    FlatGrid:{
-      height: '100%',
-      // backgroundColor: 'blue',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-    }
-  });
-
-
-export default App;
+              */ 
