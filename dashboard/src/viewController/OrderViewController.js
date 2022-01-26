@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {assignWaiter, getWaitersByOrder, getOrders} from '../network/api';
 import OrderView from '../view/OrderView';
 import WaiterDialogViewController from './WaiterDialogViewController';
+import propTypes from 'prop-types';
 
 export default function OrderViewController(props) {
 	const [open, setOpen] = React.useState(false);
@@ -50,3 +50,8 @@ export default function OrderViewController(props) {
 		</div>
 	);
 }
+
+OrderViewController.propTypes = {
+	order: propTypes.object,
+	waitersViewModel: propTypes.object,
+};

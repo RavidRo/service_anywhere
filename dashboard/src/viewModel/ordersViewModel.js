@@ -1,4 +1,4 @@
-import {assignWaiter, getWaitersByOrder, getOrders} from '../network/api';
+import {getOrders} from '../network/api';
 
 export default class OrdersViewModel {
 	getOrders() {

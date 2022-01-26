@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {getWaiters} from '../network/api';
 import WaiterDialogView from '../view/WaiterDialogView';
+import propTypes from 'prop-types';
 
 // const waiters = ["Waiter 1", "Waiter 2", "Waiter 3"]
 
@@ -34,3 +34,9 @@ export default function WaiterDialogViewController(props) {
 		/>
 	);
 }
+
+WaiterDialogViewController.propTypes = {
+	onClose: propTypes.func,
+	open: propTypes.func,
+	waitersViewModel: propTypes.object,
+};

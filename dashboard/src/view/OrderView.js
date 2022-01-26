@@ -2,12 +2,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Grid from '@material-ui/core/Grid';
 import {makeStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles(theme => ({
+const _useStyles = makeStyles(theme => ({
 	root: {
 		width: 'fit-content',
 		color: theme.palette.text.secondary,
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function OrderView(props) {
-	const {assignedWaiter, order, handleClickOpen, handleClose} = props;
+	const {assignedWaiter, order, handleClickOpen} = props;
 	return (
 		<Card sx={{minWidth: 275}} variant='outlined'>
 			<CardContent>
@@ -69,3 +70,9 @@ export default function OrderView(props) {
 		</Card>
 	);
 }
+
+OrderView.propTypes = {
+	assignedWaiter: PropTypes.string,
+	order: PropTypes.object,
+	handleClickOpen: PropTypes.func,
+};
