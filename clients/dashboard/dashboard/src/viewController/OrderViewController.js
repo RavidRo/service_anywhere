@@ -7,10 +7,11 @@ export default function OrderViewController(props) {
   const [open, setOpen] = React.useState(false);
   const [assignedWaiter, setAssignedWaiter] = React.useState([]);
   const order = props.order;
+  const waitersViewModel = props.waitersViewModel;
 
   React.useEffect(() => {
     let mounted = true;
-    getWaitersByOrder(order.id).then((assignedWaiter) => {
+    waitersViewModel.getWaitersByOrder(order.id).then((assignedWaiter) => {
       if (mounted) {
         setAssignedWaiter(assignedWaiter);
       }
@@ -25,7 +26,7 @@ export default function OrderViewController(props) {
 
   const handleClose = (waiter) => {
     if (waiter !== "") {
-      if (assignWaiter(order.id, waiter)) {
+      if (waitersViewModel.assignWaiter(order.id, waiter)) {
         setAssignedWaiter(waiter);
       }
     }
@@ -44,6 +45,7 @@ export default function OrderViewController(props) {
         open={open}
         onClose={handleClose}
         order={order.name}
+        waitersViewModel={waitersViewModel}
       />
     </div>
   );

@@ -5,11 +5,11 @@ import WaiterDialogView from "../view/WaiterDialogView";
 // const waiters = ["Waiter 1", "Waiter 2", "Waiter 3"]
 
 export default function WaiterDialogViewController(props) {
-  const { onClose, open } = props;
+  const { onClose, open, waitersViewModel } = props;
   const [waiters, setWaiters] = React.useState([]);
   React.useEffect(() => {
     let mounted = true;
-    getWaiters().then((waiters) => {
+    waitersViewModel.getWaiters().then((waiters) => {
       if (mounted) {
         setWaiters(waiters);
       }
