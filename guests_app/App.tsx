@@ -8,18 +8,16 @@
  * @format
  */
 
- import React, { useRef, useState } from 'react';
- import { MainPageViewController } from './ViewController/MainPageViewController';
- 
- 
- 
- const App = () => {
-   return <MainPageViewController/>
- };
- 
- export default App;
- 
-   /*
+import React, {useRef, useState} from 'react';
+import {MainPageViewController} from './ViewController/MainPageViewController';
+
+const App = () => {
+	return <MainPageViewController />;
+};
+
+export default App;
+
+/*
    const interval = useRef<NodeJS.Timer>();
  
    async function requestPermissions() {
@@ -118,5 +116,4 @@
 		   </View>
 		 </SafeAreaView>
 	 );
-			   */ 
- 
+			   */
