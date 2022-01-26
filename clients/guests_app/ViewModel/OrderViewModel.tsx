@@ -35,7 +35,7 @@ export default class OrderViewModel{
     createOrder(items: Map<String,Number>):Promise<OrderID>
     {
         return createOrder(items)
-        .then((res) => {this.order_model.setOrder({id: res.data, items: items, status: "recieved"}); return res.data})
+        .then((order_id) => {this.order_model.setOrder({id: order_id, items: items, status: "recieved"}); return order_id})
         
     }
 
@@ -47,11 +47,11 @@ export default class OrderViewModel{
         });
     }
 
-    getItems!: () => Promise<[Item]>;
-    getMaps!: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
-    getMyOrders!: () => Promise<[Order]>;
+    // getItems!: () => Promise<[Item]>;
+    // getMaps!: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
+    // getMyOrders!: () => Promise<[Order]>;
     
-    submitReview!: (deatils: String, rating: Number) => Promise<void>;
-    cancelOrder!: (order_id: OrderID) => Promise<void>;
-    updateGuestLocation!: (location: Location, orderID: OrderID) => void;
+    // submitReview!: (deatils: String, rating: Number) => Promise<void>;
+    // cancelOrder!: (order_id: OrderID) => Promise<void>;
+    // updateGuestLocation!: (location: Location, orderID: OrderID) => void;
 }

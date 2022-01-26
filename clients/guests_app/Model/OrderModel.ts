@@ -42,19 +42,3 @@ export class OrderModel {
         return this.order;
     }
 }
-
-/**
- * The client code.
- */
-function clientCode() {
-    const s1 = OrderModel.getInstance();
-    const s2 = OrderModel.getInstance();
-
-    if (s1 === s2) {
-        console.log('Singleton works, both variables contain the same instance.');
-    } else {
-        console.log('Singleton failed, variables contain different instances.');
-    }
-}
-
-clientCode();

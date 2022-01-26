@@ -12,7 +12,7 @@ export function createOrder(order_items: Map<String,Number>)
       data:{
         'items': order_items
       }
-    })
+    }).then((res) => res.data)
 }
 export function hasOrderArrived(orderID: String)
 {
