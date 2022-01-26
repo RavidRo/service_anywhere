@@ -14,6 +14,8 @@ type OrdersProps = {
     children: Element;
 };
 
+const CHECK_INTERVAL_TIME = 10;
+
 const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
     const id = useContext(IDContext);
 
@@ -65,7 +67,7 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
             );
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, 10000);
+    }, CHECK_INTERVAL_TIME * 1000); // seconds * 1000 -> milliseconds
     return (
         <OrdersContext.Provider value={ordersLocations}>
             {children}
