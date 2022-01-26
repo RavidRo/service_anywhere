@@ -1,15 +1,15 @@
-import { getWaiters, assignWaiter, getWaitersByOrder } from "../network/api";
+import {getWaiters, assignWaiter, getWaitersByOrder} from '../network/api';
 
 export default class WaiterDialogViewModel {
-  getWaiters() {
-    return getWaiters();
-  }
+	getWaiters() {
+		return getWaiters();
+	}
 
-  assignWaiter(orderId, waiter) {
-    return assignWaiter(orderId, waiter);
-  }
+	assignWaiter(orderId, waiter) {
+		return assignWaiter(orderId, waiter);
+	}
 
-  getWaitersByOrder(orderId) {
-    return getWaitersByOrder(orderId);
-  }
+	getWaitersByOrder(orderId) {
+		return getWaitersByOrder(orderId);
+	}
 }
