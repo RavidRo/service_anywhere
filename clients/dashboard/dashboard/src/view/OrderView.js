@@ -1,4 +1,3 @@
-import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -7,8 +6,6 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
-import WaiterDialog from "./waitersDialog";
-import { assignWaiter, getWaitersByOrder, getOrders } from "../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,35 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Order(props) {
-  const [open, setOpen] = React.useState(false);
-  const [assignedWaiter, setAssignedWaiter] = React.useState([]);
-  const order = props.order;
-  const classes = useStyles();
-
-  React.useEffect(() => {
-    let mounted = true;
-    getWaitersByOrder(order.id).then((assignedWaiter) => {
-      if (mounted) {
-        setAssignedWaiter(assignedWaiter);
-      }
-    });
-    return () => (mounted = false);
-  }, []);
-
-  console.log(order);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (waiter) => {
-    if (waiter !== "") {
-      if (assignWaiter(order.id, waiter)) {
-        setAssignedWaiter(waiter);
-      }
-    }
-    setOpen(false);
-  };
+export default function OrderView(props) {
+  const { assignedWaiter, order, handleClickOpen, handleClose } = props;
   return (
     <Card sx={{ minWidth: 275 }} variant="outlined">
       <CardContent>
@@ -99,22 +69,6 @@ function Order(props) {
           </div>
         </div>
       </CardContent>
-
-      <WaiterDialog open={open} onClose={handleClose} order={order.name} />
     </Card>
   );
-}
-
-export default function Orders() {
-  const [orders, setOrders] = React.useState([]);
-  React.useEffect(() => {
-    let mounted = true;
-    getOrders().then((orders) => {
-      if (mounted) {
-        setOrders(orders);
-      }
-    });
-    return () => (mounted = false);
-  }, []);
-  return orders.map((order, index) => <Order order={order} key={index} />);
 }

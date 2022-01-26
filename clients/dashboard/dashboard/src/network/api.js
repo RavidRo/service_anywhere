@@ -59,6 +59,7 @@ export function assignWaiter(orderId, waiterId) {
         return res.status < 400;
       } else {
         console.log("Error in assign waiter");
+        return false;
       }
     })
     .catch((err) => alert(`failed to assign waiter due to ${err}`));
