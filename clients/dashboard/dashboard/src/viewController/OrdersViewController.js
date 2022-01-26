@@ -1,6 +1,5 @@
 import * as React from "react";
 import AppBarView from "../view/AppBarView";
-import Orders from "../components/orders";
 import { assignWaiter, getWaitersByOrder, getOrders } from "../network/api";
 import OrderViewController from "./OrderViewController";
 
