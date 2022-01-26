@@ -1,4 +1,3 @@
-import {resolvePlugin} from '@babel/core';
 import {createOrder} from '../communication/requests';
 import {OrderModel} from '../Model/OrderModel';
 import {} from '../communication/requests';
@@ -39,8 +38,8 @@ export default class OrderViewModel {
 		});
 	}
 
-	login(password: String): Promise<void> {
-		return new Promise<void>((resolve, reject) => {});
+	login(_password: String): Promise<void> {
+		return new Promise<void>((_resolve, _reject) => {});
 	}
 
 	// getItems!: () => Promise<[Item]>;

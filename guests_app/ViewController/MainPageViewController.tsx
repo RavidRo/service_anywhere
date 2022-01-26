@@ -1,3 +1,4 @@
+import React from 'react';
 import {useState} from 'react';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import {MainPage} from '../View/MainPageView';
@@ -38,7 +39,7 @@ export const MainPageViewController = () => {
 					})
 					.catch(err => Alert.alert(err));
 			})
-			.catch(err => Alert.alert('Please Approve using location'));
+			.catch(() => Alert.alert('Please Approve using location'));
 	}
 
 	/*  function waitForOrder(_orderID: String){
@@ -64,5 +65,5 @@ export const MainPageViewController = () => {
 		order_items: order_items,
 	};
 
-	return <MainPage {...Props}></MainPage>;
+	return <MainPage {...Props} />;
 };

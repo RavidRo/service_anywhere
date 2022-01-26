@@ -25,10 +25,10 @@ export function hasOrderArrived(orderID: String) {
 }
 
 /* const service = new Gps();
-const corners = { topRightGPS: new Location(34.802516, 31.263550),
-                  topLeftGPS: new Location(34.800838, 31.263550), 
-                  bottomRightGPS: new Location(34.802516, 31.261649),
-                  bottomLeftGPS: new Location(34.800838, 31.261649)}
+const corners = {   topRightGPS: new Location(34.802516, 31.263550),
+                    topLeftGPS: new Location(34.800838, 31.263550),
+                    bottomRightGPS: new Location(34.802516, 31.261649),
+                    bottomLeftGPS: new Location(34.800838, 31.261649)}
 
 // topLeft: 31.263550, 34.800838
 // topRight:  31.263550, 34.802516
@@ -50,7 +50,7 @@ export function updateLocationGuest (orderID: OrderID) {
             data:{
                 'location': {
                     'x': newLocation.x,
-                    'y': newLocation.y 
+                    'y': newLocation.y
                 },
                 'orderID': orderID
             }
