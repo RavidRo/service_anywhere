@@ -1,5 +1,3 @@
-import Location from './Location';
-
 export default class PointOfInterest {
 	public readonly name: string;
 	public location: Location;

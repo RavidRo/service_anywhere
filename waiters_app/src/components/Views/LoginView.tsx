@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text} from 'react-native';
-import Home from 'waiters_app/src/screens/Home';
+import MapScreenController from '../Controllers/MapScreenController';
 import OrdersController from '../Controllers/OrdersController';
 
 type LoginViewProps = {
@@ -10,7 +10,7 @@ type LoginViewProps = {
 export default function LoginView(props: LoginViewProps) {
 	return props.connected ? (
 		<OrdersController>
-			<Home />
+			<MapScreenController />
 		</OrdersController>
 	) : (
 		<Text>Connecting to server...</Text>
