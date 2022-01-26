@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./components/App";
+import OrdersViewController from "./viewController/OrdersViewController";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <OrdersViewController />
   </React.StrictMode>,
   document.getElementById("root")
 );

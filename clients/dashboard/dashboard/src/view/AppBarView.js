@@ -2,9 +2,8 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Orders from "./orders";
 
-function App() {
+function AppBarView() {
   return (
     <div className="App">
       <Box sx={{ flexGrow: 1 }}>
@@ -21,10 +20,8 @@ function App() {
           </Toolbar>
         </AppBar>
       </Box>
-
-      <Orders />
     </div>
   );
 }
 
-export default App;
+export default AppBarView;
