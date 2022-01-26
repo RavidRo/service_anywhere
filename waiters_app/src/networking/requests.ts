@@ -1,6 +1,6 @@
 import RequestsHandler from './RequestsHandler';
 import {Order as OrderApi, Location as LocationApi} from '../data/api';
-import Singleton from '../Singelton';
+import Singleton from '../Singleton';
 
 export default class Requests extends Singleton {
 	private handler: RequestsHandler;
