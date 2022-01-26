@@ -1,33 +1,28 @@
 import axios from 'axios';
 
-const server_adress = "https://service-everywhere.herokuapp.com"
+const server_adress = 'https://service-everywhere.herokuapp.com';
 
 // items = Map<item_id,Quantity>
-export function createOrder(order_items: Map<String,Number>)
-{
-    const url = `${server_adress}/createOrder`;
-    return axios({
-      method: "post",
-      url: url,
-      data:{
-        'items': order_items
-      }
-    }).then((res) => res.data)
+export function createOrder(order_items: Map<String, Number>) {
+	const url = `${server_adress}/createOrder`;
+	return axios({
+		method: 'post',
+		url: url,
+		data: {
+			items: order_items,
+		},
+	}).then(res => res.data);
 }
-export function hasOrderArrived(orderID: String)
-{
-    const url = `${server_adress}/hasOrderArrived`;
-    return axios({
-      method: "get",
-      url: url,
-      params: {
-        'orderID': orderID
-      }
-    })
+export function hasOrderArrived(orderID: String) {
+	const url = `${server_adress}/hasOrderArrived`;
+	return axios({
+		method: 'get',
+		url: url,
+		params: {
+			orderID: orderID,
+		},
+	});
 }
-
-
-
 
 /* const service = new Gps();
 const corners = { topRightGPS: new Location(34.802516, 31.263550),
