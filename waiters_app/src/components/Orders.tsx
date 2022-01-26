@@ -7,7 +7,7 @@ import Order from '../data/Order';
 import {IDContext, OrdersContext} from '../contexts';
 import {useAPI} from '../hooks/useApi';
 
-import requests from '../networking/requests';
+import Requests from '../networking/requests';
 
 const Orders: React.FC = ({children}) => {
 	const id = useContext(IDContext);
@@ -16,6 +16,7 @@ const Orders: React.FC = ({children}) => {
 		[orderID: string]: [Order, Location | undefined];
 	}>({});
 
+	const requests = new Requests();
 	const {request} = useAPI(requests.getWaiterOrders);
 	useEffect(() => {
 		if (id) {

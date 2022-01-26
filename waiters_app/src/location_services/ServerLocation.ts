@@ -1,22 +1,26 @@
 import {LocationService} from './LocationService';
-import requests from '../networking/requests';
 import Location from '../data/Location';
+import Requests from '../networking/requests';
 
 export default class ServerLocation implements LocationService {
 	private orderID: string;
 	private timer: NodeJS.Timer | undefined;
+	private requests: Requests;
 
 	constructor(orderID: string) {
 		this.orderID = orderID;
+		this.requests = new Requests();
 	}
 
 	getLocation(
 		successCallback: (_location: Location) => void,
 		errorCallback: (_error: string) => void
 	): void {
-		requests
+		this.requests
 			.getGuestLocation(this.orderID)
-			.then(successCallback)
+			.then(location => {
+				successCallback(new Location(location.x, location.y));
+			})
 			.catch(errorCallback);
 	}
 	watchLocation(
@@ -28,9 +32,11 @@ export default class ServerLocation implements LocationService {
 		}
 		this.timer = setInterval(
 			() =>
-				requests
+				this.requests
 					.getGuestLocation(this.orderID)
-					.then(successCallback)
+					.then(location => {
+						successCallback(new Location(location.x, location.y));
+					})
 					.catch(e => {
 						errorCallback(e);
 						this.stopWatching();
