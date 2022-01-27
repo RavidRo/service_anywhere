@@ -25,12 +25,10 @@ type MapComponentProps = {
 };
 
 export default function MapComponent({style}: MapComponentProps) {
+	//Setting up the markers
 	const myLocationViewModel = new MyLocationViewModel();
-	const mapViewModel = new MapsViewModel();
-
-	const imageURL = mapViewModel.getMapDetails().imageURL;
-
 	const myLocation = myLocationViewModel.getLocation();
+
 	const ordersLocations = useContext(OrdersContext);
 
 	const availableOrders = ordersLocations.filter(
@@ -50,6 +48,10 @@ export default function MapComponent({style}: MapComponentProps) {
 		PointOfInterest,
 		Marker
 	][];
+
+	// Setting up the image size
+	const mapViewModel = new MapsViewModel();
+	const imageURL = mapViewModel.getMapDetails().imageURL;
 
 	const [imageWidth, setImageWidth] = useState<number | undefined>();
 	const [imageHeight, setImageHeight] = useState<number | undefined>();
