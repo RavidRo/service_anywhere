@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Alert} from 'react-native';
 
 import Location from '../data/Location';
@@ -8,10 +8,13 @@ import {IDContext, OrdersContext} from '../contexts';
 import {useAPI} from '../hooks/useApi';
 
 import requests from '../networking/requests';
+import useInterval from '../hooks/useInterval';
 
 type OrdersProps = {
     children: Element;
 };
+
+const CHECK_INTERVAL_TIME = 10;
 
 const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
     const id = useContext(IDContext);
@@ -21,7 +24,7 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
     }>({});
 
     const {request} = useAPI(requests.getWaiterOrders);
-    useEffect(() => {
+    useInterval(() => {
         if (id) {
             request(id)
                 .then(ordersDetails => {
@@ -64,7 +67,7 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
             );
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id]);
+    }, CHECK_INTERVAL_TIME * 1000); // seconds * 1000 -> milliseconds
     return (
         <OrdersContext.Provider value={ordersLocations}>
             {children}
