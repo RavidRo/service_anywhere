@@ -1,3 +1,4 @@
+import {observer} from 'mobx-react-lite';
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import Order from 'waiters_app/src/Models/Order';
@@ -8,7 +9,7 @@ type OrdersViewProps = {
 	selectedOrderId: string | undefined;
 };
 
-export default function OrdersListView(props: OrdersViewProps) {
+const OrdersListView = observer((props: OrdersViewProps) => {
 	return (
 		<>
 			{props.orders.map((order, index) => {
@@ -33,7 +34,8 @@ export default function OrdersListView(props: OrdersViewProps) {
 			})}
 		</>
 	);
-}
+});
+export default OrdersListView;
 
 const styles = StyleSheet.create({
 	background1: {

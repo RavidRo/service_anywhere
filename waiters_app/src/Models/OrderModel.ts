@@ -1,12 +1,11 @@
+import {makeAutoObservable} from 'mobx';
 import Order from './Order';
 
 export default class OrderModel {
 	private _orders: Map<string, Order>;
 	constructor() {
 		this._orders = new Map();
-		// makeObservable(this, {
-		// 	_orders:
-		// })
+		makeAutoObservable(this);
 	}
 
 	get orders() {
