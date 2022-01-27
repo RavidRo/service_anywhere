@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
 import {Image, LayoutChangeEvent, StyleProp, ViewStyle} from 'react-native';
-import PointOfInterest from 'waiters_app/src/data/PointOfInterest';
 
 import MapsViewModel from '../../ViewModel/MapsViewModel';
-import {Marker} from '../markers/Marker';
 import MapView from '../Views/MapView';
+import {PointMarker} from 'waiters_app/src/map';
 
 type MapComponentProps = {
 	style?: StyleProp<ViewStyle>;
-	markers: [PointOfInterest, Marker][];
+	markers: PointMarker[];
 };
 
 export default function MapLayoutController({

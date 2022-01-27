@@ -6,14 +6,12 @@ import {
 	View,
 	ViewStyle,
 } from 'react-native';
-import PointOfInterest from 'waiters_app/src/data/PointOfInterest';
-import {Marker} from '../markers/Marker';
-
-import MyZoomableImage from '../MyZoomableImage';
+import {PointMarker} from 'waiters_app/src/map';
+import ZoomableImageController from '../Controllers/ZoomableImageController';
 
 type MapComponentProps = {
 	style?: StyleProp<ViewStyle>;
-	markers: [PointOfInterest, Marker][];
+	markers: PointMarker[];
 	onLayout: (event: LayoutChangeEvent) => void;
 	imageHeight: number | undefined;
 	imageWidth: number | undefined;
@@ -29,10 +27,10 @@ export default function MapComponent(props: MapComponentProps) {
 			props.imageWidth &&
 			props.width &&
 			props.height ? (
-				<MyZoomableImage
+				<ZoomableImageController
 					imageHeight={props.imageHeight}
 					imageWidth={props.imageWidth}
-					uri={props.imageURL}
+					url={props.imageURL}
 					pointsOfInterest={props.markers}
 					parentWidth={props.width}
 					parentHeight={props.height}

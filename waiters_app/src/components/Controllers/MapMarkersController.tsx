@@ -1,46 +1,56 @@
 import React, {useContext} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 
-import {Marker} from '../markers/Marker';
-import WaiterMarker from '../markers/WaiterMarker';
-import ClientMarker from '../markers/ClientMarker';
+import WaiterMarker from '../Views/markers/WaiterMarker';
+import GuestMarker from '../Views/markers/ClientMarker';
 
-import Location from '../../data/Location';
-import PointOfInterest from '../../data/PointOfInterest';
-
-import {OrdersContext} from '../../contexts';
+import {IDContext} from '../../contexts';
 import MyLocationViewModel from '../../ViewModel/MyLocationViewModel';
 
 import MapLayoutController from './MapLayoutController';
+import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
+import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
 
 type MapComponentProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
-export default function MapMarkersController({style}: MapComponentProps) {
-	//Setting up the markers
+function createGuestMarker(): PointMarker | undefined {
 	const myLocationViewModel = new MyLocationViewModel();
 	const myLocation = myLocationViewModel.getLocation();
+	if (!myLocation) {
+		return undefined;
+	}
 
-	const ordersLocations = useContext(OrdersContext);
+	const myLocationPoint = {name: 'Waiter', location: myLocation};
+	return {point: myLocationPoint, marker: WaiterMarker};
+}
 
-	const availableOrders = ordersLocations.filter(
-		order => order.location !== undefined
-	);
+export default function MapMarkersController({style}: MapComponentProps) {
+	const id = useContext(IDContext);
+	if (!id) {
+		console.error('id is not initialized in the Map component');
+		return <></>;
+	}
 
-	const guestsMarkers = availableOrders.map(order => [
-		new PointOfInterest(order.id, order.location as Location),
-		ClientMarker,
-	]);
+	//Guests Markers
+	const ordersViewModel = new OrdersViewModel(id);
+	const availableOrders = ordersViewModel.getAvailableOrders();
+	const availableOrdersPoints = availableOrders.map(order => ({
+		name: order.id,
+		location: order.location as Location,
+	}));
 
-	const waiter = myLocation
-		? [new PointOfInterest('Waiter', myLocation), WaiterMarker]
-		: undefined;
+	const orderToMarker = (order: PointOfInterest): PointMarker => ({
+		point: order,
+		marker: GuestMarker,
+	});
+	const guestsMarkers = availableOrdersPoints.map(orderToMarker);
 
-	const allMarkers = guestsMarkers.concat(waiter ? [waiter] : []) as [
-		PointOfInterest,
-		Marker
-	][];
+	//Waiter Marker
+	const waiterMarker = createGuestMarker();
+
+	const allMarkers = guestsMarkers.concat(waiterMarker ? [waiterMarker] : []);
 
 	return <MapLayoutController markers={allMarkers} style={style} />;
 }

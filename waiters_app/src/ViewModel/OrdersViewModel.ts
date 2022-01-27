@@ -37,4 +37,8 @@ export default class OrdersViewModel extends Singleton {
 	getOrders() {
 		return this.ordersModel.orders;
 	}
+
+	getAvailableOrders() {
+		return this.getOrders().filter(order => order.location);
+	}
 }

@@ -1,17 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {
-	View,
 	PanResponder,
-	Image,
 	StyleProp,
 	ViewStyle,
 	NativeTouchEvent,
-	StyleSheet,
 } from 'react-native';
-
-import {Marker} from './markers/Marker';
-
-import PointOfInterest from '../data/PointOfInterest';
+import {PointMarker} from '../../map';
+import ZoomableImageView from '../Views/ZoomableImageView';
 
 function calcDistance(x1: number, y1: number, x2: number, y2: number) {
 	const dx = x1 - x2;
@@ -31,9 +26,9 @@ type MyZoomableImageProps = {
 	imageHeight: number;
 	parentWidth: number;
 	parentHeight: number;
-	uri: string;
+	url: string;
 	style?: StyleProp<ViewStyle>;
-	pointsOfInterest?: [PointOfInterest, Marker][];
+	pointsOfInterest: PointMarker[];
 };
 const MAX_ZOOM = 3.5;
 
@@ -43,7 +38,7 @@ export default function MyZoomableImage({
 	parentWidth,
 	parentHeight,
 	style,
-	uri,
+	url,
 	pointsOfInterest = [],
 }: MyZoomableImageProps) {
 	const [top, setTop] = useState<number>(0);
@@ -171,50 +166,16 @@ export default function MyZoomableImage({
 		},
 	});
 
-	const styles = StyleSheet.create({
-		map: {
-			width: imageWidth * zoom,
-			height: imageHeight * zoom,
-		},
-		container: {
-			position: 'absolute',
-			top: top,
-			left: left,
-			zIndex: -1,
-		},
-		marker: {
-			position: 'absolute',
-			zIndex: 1,
-		},
-	});
-
-	return (
-		<View style={style} {...panResponder.panHandlers}>
-			<View style={styles.container}>
-				{pointsOfInterest.map((pointAndMarker, index) => {
-					const point = pointAndMarker[0];
-					const PointMarker = pointAndMarker[1];
-					return (
-						<View
-							key={index}
-							style={[
-								styles.marker,
-								{
-									top: point.location.y * imageHeight * zoom,
-									left: point.location.x * imageWidth * zoom,
-								},
-							]}>
-							<PointMarker name={point.name} scale={zoom} />
-						</View>
-					);
-				})}
-				<Image
-					style={styles.map}
-					source={{
-						uri: uri,
-					}}
-				/>
-			</View>
-		</View>
-	);
+	const props = {
+		style,
+		panHandlers: panResponder.panHandlers,
+		pointsOfInterest,
+		imageURL: url,
+		zoom,
+		imageHeight,
+		imageWidth,
+		top,
+		left,
+	};
+	return <ZoomableImageView {...props} />;
 }

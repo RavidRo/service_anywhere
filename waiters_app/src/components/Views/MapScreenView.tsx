@@ -2,9 +2,8 @@ import React from 'react';
 import {Button, StyleSheet, View} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
-import MapComponent from '../MapComponent';
-import PointOfInterest from '../../data/PointOfInterest';
 import OrdersListController from '../Controllers/OrdersListController';
+import MapMarkersController from '../Controllers/MapMarkersController';
 
 type MapScreenViewProps = {
 	openBottomSheet: () => void;
@@ -14,7 +13,7 @@ export default function MapScreenView(props: MapScreenViewProps): JSX.Element {
 	return (
 		<>
 			<View style={styles.screen}>
-				<MapComponent style={styles.map} />
+				<MapMarkersController style={styles.map} />
 				<View style={styles.openDrawerButton}>
 					<Button title='Order' onPress={props.openBottomSheet} />
 				</View>
