@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {ReactNode, useContext, useState} from 'react';
 import {Alert} from 'react-native';
 
 import Location from '../data/Location';
@@ -11,7 +11,7 @@ import requests from '../networking/requests';
 import useInterval from '../hooks/useInterval';
 
 type OrdersProps = {
-	children: Element;
+	children?: ReactNode;
 };
 
 const CHECK_INTERVAL_TIME = 10;
