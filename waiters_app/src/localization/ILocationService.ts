@@ -1,5 +1,3 @@
-import Location from '../data/Location';
-
 export interface ILocationService {
 	getLocation(
 		successCallback: (location: Location) => void,

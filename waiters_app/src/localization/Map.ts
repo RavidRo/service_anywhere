@@ -1,5 +1,3 @@
-import Location from '../data/Location';
-
 export default class LocationMap {
 	private corners: Corners;
 	private width: number;
@@ -37,6 +35,6 @@ export default class LocationMap {
 				location
 			) / this.height;
 
-		return new Location(localX, localY);
+		return {x: localX, y: localY};
 	}
 }

@@ -1,4 +1,3 @@
-import Location from '../data/Location';
 import GeolocationAdapter from './GeolocationAdapter';
 
 import {ILocationService} from './ILocationService';

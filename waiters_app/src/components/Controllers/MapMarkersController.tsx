@@ -18,7 +18,7 @@ type MapMarkerControllerProps = {
 
 function createGuestMarker(): PointMarker | undefined {
 	const myLocationViewModel = new MyLocationViewModel();
-	const myLocation = myLocationViewModel.getLocation();
+	const myLocation = myLocationViewModel.location;
 	if (!myLocation) {
 		return undefined;
 	}

@@ -28,7 +28,7 @@ export default class MyLocationViewModel extends Singleton {
 		);
 	}
 
-	getLocation(): Location | undefined {
+	get location(): Location | undefined {
 		return this.locationModel.location;
 	}
 }
