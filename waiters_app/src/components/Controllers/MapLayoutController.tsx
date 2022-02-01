@@ -5,15 +5,12 @@ import MapsViewModel from '../../ViewModel/MapsViewModel';
 import MapView from '../Views/MapView';
 import {PointMarker} from 'waiters_app/src/map';
 
-type MapComponentProps = {
+type MapLayoutProps = {
 	style?: StyleProp<ViewStyle>;
 	markers: PointMarker[];
 };
 
-export default function MapLayoutController({
-	style,
-	markers,
-}: MapComponentProps) {
+export default function MapLayoutController({style, markers}: MapLayoutProps) {
 	const mapViewModel = new MapsViewModel();
 	const imageURL = mapViewModel.getMapDetails().imageURL;
 

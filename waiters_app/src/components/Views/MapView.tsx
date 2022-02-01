@@ -9,7 +9,7 @@ import {
 import {PointMarker} from 'waiters_app/src/map';
 import ZoomableImageController from '../Controllers/ZoomableImageController';
 
-type MapComponentProps = {
+type MapViewProps = {
 	style?: StyleProp<ViewStyle>;
 	markers: PointMarker[];
 	onLayout: (event: LayoutChangeEvent) => void;
@@ -20,7 +20,7 @@ type MapComponentProps = {
 	imageURL: string;
 };
 
-export default function MapComponent(props: MapComponentProps) {
+export default function MapView(props: MapViewProps) {
 	return (
 		<View style={props.style} onLayout={props.onLayout}>
 			{props.imageHeight &&

@@ -22,7 +22,9 @@ export default class OrdersViewModel extends Singleton {
 		this.requests = new Requests();
 		this.ordersModel = new OrderModel();
 		this.ordersIntervals = {};
-		this.requests.getWaiterOrders(id).then(this.onNewOrders);
+		this.requests
+			.getWaiterOrders(id)
+			.then(newOrders => this.onNewOrders(newOrders));
 	}
 
 	private onNewOrders(ordersIdos: OrderIdo[]) {
@@ -34,11 +36,11 @@ export default class OrdersViewModel extends Singleton {
 		});
 	}
 
-	getOrders() {
+	get orders() {
 		return this.ordersModel.orders;
 	}
 
-	getAvailableOrders() {
-		return this.getOrders().filter(order => order.location);
+	get availableOrders() {
+		return this.orders.filter(order => order.location);
 	}
 }

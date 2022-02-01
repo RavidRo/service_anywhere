@@ -19,7 +19,7 @@ export default function OrdersList(_: OrdersProps) {
 	};
 	return (
 		<OrdersListView
-			orders={ordersViewModel.getOrders()}
+			orders={ordersViewModel.orders}
 			selectOrder={selectOrder}
 			selectedOrderId={selectedOrder}
 		/>

@@ -12,7 +12,7 @@ import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
 import {observer} from 'mobx-react-lite';
 
-type MapComponentProps = {
+type MapMarkerControllerProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -27,7 +27,7 @@ function createGuestMarker(): PointMarker | undefined {
 	return {point: myLocationPoint, marker: WaiterMarker};
 }
 
-const MapMarkersController = observer(({style}: MapComponentProps) => {
+const MapMarkersController = observer(({style}: MapMarkerControllerProps) => {
 	const id = useContext(IDContext);
 	if (!id) {
 		console.error('id is not initialized in the Map component');
@@ -36,7 +36,7 @@ const MapMarkersController = observer(({style}: MapComponentProps) => {
 
 	//Guests Markers
 	const ordersViewModel = new OrdersViewModel(id);
-	const availableOrders = ordersViewModel.getAvailableOrders();
+	const availableOrders = ordersViewModel.availableOrders;
 	const availableOrdersPoints = availableOrders.map(order => ({
 		name: order.id,
 		location: order.location as Location,

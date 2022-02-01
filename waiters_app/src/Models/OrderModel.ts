@@ -2,7 +2,7 @@ import {makeAutoObservable} from 'mobx';
 import Order from './Order';
 
 export default class OrderModel {
-	private _orders: Map<string, Order>;
+	private _orders: Map<string, Order>; //<ID, Object>
 	constructor() {
 		this._orders = new Map();
 		makeAutoObservable(this);
