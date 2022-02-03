@@ -1,7 +1,7 @@
 import {
 	flushPromises,
 	makePromise as mockMakePromise,
-} from 'waiters_app/mocks/PromiseUtils';
+} from 'waiters_app/__tests__/PromiseUtils';
 import Order from 'waiters_app/src/Models/Order';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 
@@ -64,6 +64,7 @@ jest.mock('../src/Models/OrderModel', () => {
 
 import Requests from '../src/networking/requests';
 import OrderModel from '../src/Models/OrderModel';
+import {Location, OrderIdo} from 'waiters_app/src/ido';
 
 beforeEach(() => {
 	(Requests as unknown as jest.Mock).mockClear();

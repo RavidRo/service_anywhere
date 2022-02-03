@@ -1,3 +1,5 @@
+import {Location} from '../src/ido';
+
 const myLocation = {x: 14, y: 12};
 const mockWatchLocation = jest
 	.fn()

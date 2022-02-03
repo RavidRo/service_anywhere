@@ -11,6 +11,7 @@ import MapLayoutController from './MapLayoutController';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
 import {observer} from 'mobx-react-lite';
+import {Location} from 'waiters_app/src/ido';
 
 type MapMarkerControllerProps = {
 	style?: StyleProp<ViewStyle>;

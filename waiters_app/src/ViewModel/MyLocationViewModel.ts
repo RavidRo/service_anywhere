@@ -1,3 +1,4 @@
+import {Corners, Location} from '../ido';
 import Geolocation from '../localization/Geolocation';
 import {ILocationService} from '../localization/ILocationService';
 import MyLocationModel from '../Models/MyLocationModel';

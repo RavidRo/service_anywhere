@@ -1,5 +1,6 @@
 // import Singleton from '../Singleton';
 import {makeAutoObservable} from 'mobx';
+import {Location} from '../ido';
 
 export default class MyLocationModel {
 	private _location: Location | undefined;

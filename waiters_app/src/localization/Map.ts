@@ -1,3 +1,6 @@
+import {Corners} from '../ido';
+import {GPS} from '../map';
+
 export default class LocationMap {
 	private corners: Corners;
 	private width: number;

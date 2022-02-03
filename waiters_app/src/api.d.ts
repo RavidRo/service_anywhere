@@ -1,13 +1,5 @@
-export type Order = {
-	id: OrderID;
-	items: string[];
-	status: 'unassigned' | 'inprogress' | 'completed';
-};
+import {Location, OrderIdo} from './ido';
 
-type Location = {
-	x: number;
-	y: number;
-};
 type Arrived = boolean;
 type OrderID = string;
 type WaiterID = string;
@@ -19,13 +11,13 @@ type Api = {
 	hasOrderArrived: () => Arrived;
 
 	// Dashboard
-	getOrders: () => Order[];
+	getOrders: () => OrderIdo[];
 	assignWaiter: (orderID: OrderID, waiterID: WaiterID) => void;
 	getWaiters: () => WaiterID[];
 	getWaiterByOrder: (orderID: OrderID) => WaiterID;
 
 	// Waiter
-	getWaiterOrders: (waiterID: WaiterID) => Order[];
+	getWaiterOrders: (waiterID: WaiterID) => OrderIdo[];
 	getGuestLocation: (orderID: OrderID) => Location;
 	orderArrived: (orderID: OrderID) => void;
 	login: () => WaiterID;

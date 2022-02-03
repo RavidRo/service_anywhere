@@ -1,3 +1,5 @@
+import {Location} from '../ido';
+
 export interface ILocationService {
 	getLocation(
 		successCallback: (location: Location) => void,

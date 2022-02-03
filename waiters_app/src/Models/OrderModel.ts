@@ -1,4 +1,5 @@
 import {makeAutoObservable} from 'mobx';
+import {Location} from '../ido';
 import Order from './Order';
 
 export default class OrderModel {

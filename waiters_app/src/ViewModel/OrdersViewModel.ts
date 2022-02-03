@@ -1,3 +1,4 @@
+import {OrderIdo} from '../ido';
 import Order from '../Models/Order';
 import OrderModel from '../Models/OrderModel';
 import Requests from '../networking/requests';

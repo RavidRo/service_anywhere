@@ -1,16 +1,23 @@
-type PointOfInterest = {
+import {Location} from './ido';
+import React from 'react';
+
+export type PointOfInterest = {
 	name: string;
 	location: Location;
 };
-type PointMarker = {
+export type PointMarker = {
 	point: PointOfInterest;
 	marker: Marker;
 };
 
-type MarkerProps = {
+export type MarkerProps = {
 	name: string;
 	scale: number;
 };
 
-import React from 'react';
-type Marker = (props: MarkerProps) => React.ReactElement;
+export type GPS = {
+	longitude: number;
+	latitude: number;
+};
+
+export type Marker = (props: MarkerProps) => React.ReactElement;

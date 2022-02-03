@@ -1,5 +1,6 @@
 import RequestsHandler from './RequestsHandler';
 import Singleton from '../Singleton';
+import {Location, OrderIdo} from '../ido';
 
 export default class Requests extends Singleton {
 	private handler: RequestsHandler;

@@ -1,3 +1,5 @@
+import {Location, OrderIdo, OrderStatus} from '../ido';
+
 export default class Order {
 	public readonly id: string;
 	// public readonly guestID: string;
