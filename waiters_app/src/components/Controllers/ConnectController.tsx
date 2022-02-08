@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Alert} from 'react-native';
 import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandlers';
 import {useAPI} from 'waiters_app/src/hooks/useApi';
-import AuthenticateViewModel from 'waiters_app/src/ViewModel/AuthenticateViewMode';
+import AuthenticateViewModel from 'waiters_app/src/ViewModel/AuthenticateViewModel';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import ConnectView from '../Views/ConnectView';
 

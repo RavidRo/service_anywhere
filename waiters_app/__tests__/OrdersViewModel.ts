@@ -1,7 +1,7 @@
 import {
 	flushPromises,
 	makePromise as mockMakePromise,
-} from 'waiters_app/__tests__/PromiseUtils';
+} from 'waiters_app/PromiseUtils';
 import Order from 'waiters_app/src/Models/Order';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 
@@ -83,18 +83,22 @@ afterEach(() => {
 
 describe('Constructor', () => {
 	test('The class can be created successfully', async () => {
-		const orders = new OrdersViewModel('0');
-		expect(orders).toBeTruthy();
+		const ordersViewModel = new OrdersViewModel();
+
+		expect(ordersViewModel).toBeTruthy();
 	});
 
 	test('Looked for orders in the server', async () => {
-		const _ordersViewModel = new OrdersViewModel('0');
+		const ordersViewModel = new OrdersViewModel();
+		ordersViewModel.synchronizeOrders('id');
+
 		expect(mockGetWaiterOrders).toHaveBeenCalled();
 	});
 
 	test('Initializing orders to the orders in the server', async () => {
 		expect.assertions(2);
-		const _ordersViewModel = new OrdersViewModel('0');
+		const ordersViewModel = new OrdersViewModel();
+		ordersViewModel.synchronizeOrders('id');
 		await flushPromises();
 		expect(mockSetOrders).toHaveBeenCalledTimes(1);
 		expect(mockSetOrders.mock.calls[0][0]).toHaveLength(
@@ -105,7 +109,8 @@ describe('Constructor', () => {
 
 test('Getting only the available orders', async () => {
 	expect.assertions(1);
-	const ordersViewModel = new OrdersViewModel('0');
+	const ordersViewModel = new OrdersViewModel();
+	ordersViewModel.synchronizeOrders('id');
 	await flushPromises();
 	expect(ordersViewModel.availableOrders).toEqual([order1]);
 });

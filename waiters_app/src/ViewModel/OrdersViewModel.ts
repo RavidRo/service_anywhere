@@ -29,13 +29,13 @@ export default class OrdersViewModel extends Singleton {
 		return this.requests.getWaiterOrders(id).then(newOrders => {
 			const orders = newOrders.map(order => new Order(order));
 			this.ordersModel.setOrders(orders);
-			orders.forEach(order => {
-				const interval = setInterval(
-					() => this.getLocation(order),
-					10000
-				);
-				this.ordersIntervals[order.id] = interval;
-			});
+			// orders.forEach(order => {
+			// 	const interval = setInterval(
+			// 		() => this.getLocation(order),
+			// 		10000
+			// 	);
+			// 	this.ordersIntervals[order.id] = interval;
+			// });
 		});
 	}
 
