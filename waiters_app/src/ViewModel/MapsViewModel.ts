@@ -1,4 +1,5 @@
 import Singleton from '../Singleton';
+import configuration from '../../configuration.json';
 
 type MapDetails = {
 	id: string;
@@ -14,8 +15,7 @@ export default class MapsViewModel extends Singleton {
 		return {
 			id: '',
 			name: '',
-			imageURL:
-				'https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png',
+			imageURL: configuration['map-image-url'],
 		};
 	}
 }

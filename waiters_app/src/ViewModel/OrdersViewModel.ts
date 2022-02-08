@@ -1,7 +1,7 @@
 import {Location, OrderStatus} from '../ido';
 import Order from '../Models/Order';
 import OrderModel from '../Models/OrderModel';
-import Requests from '../networking/requests';
+import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
 
 export default class OrdersViewModel extends Singleton {

@@ -1,11 +1,12 @@
 import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import configuration from '../../configuration.json';
 
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
 
 	constructor() {
 		this.axiosInstance = axios.create({
-			baseURL: 'https://service-everywhere.herokuapp.com/',
+			baseURL: configuration['server-url'],
 		});
 	}
 

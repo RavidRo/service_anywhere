@@ -1,5 +1,5 @@
 import AuthenticationModel from '../Models/Authentication';
-import Requests from '../networking/requests';
+import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
 
 export default class AuthenticateViewModel extends Singleton {

@@ -62,7 +62,7 @@ jest.mock('../src/Models/OrderModel', () => {
 	});
 });
 
-import Requests from '../src/networking/requests';
+import Requests from '../src/networking/Requests';
 import OrderModel from '../src/Models/OrderModel';
 import {Location, OrderIdo} from 'waiters_app/src/ido';
 
