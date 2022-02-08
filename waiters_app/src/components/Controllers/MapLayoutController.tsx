@@ -10,8 +10,9 @@ type MapLayoutProps = {
 	markers: PointMarker[];
 };
 
+const mapViewModel = new MapsViewModel();
+
 export default function MapLayoutController({style, markers}: MapLayoutProps) {
-	const mapViewModel = new MapsViewModel();
 	const imageURL = mapViewModel.getMapDetails().imageURL;
 
 	const [imageWidth, setImageWidth] = useState<number | undefined>();

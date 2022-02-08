@@ -1,5 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-import {Location} from '../ido';
+import {Location, OrderStatus} from '../ido';
 import Order from './Order';
 
 export default class OrderModel {
@@ -24,6 +24,20 @@ export default class OrderModel {
 		const order = this._orders.get(orderID);
 		if (order) {
 			order.location = location;
+		}
+	}
+
+	updateGuestLocation(guestID: string, guestLocation: Location): void {
+		this._orders.forEach(order => {
+			if (order.guestID === guestID) {
+				order.location = guestLocation;
+			}
+		});
+	}
+	updateOrderStatus(orderID: string, status: OrderStatus): void {
+		const order = this._orders.get(orderID);
+		if (order) {
+			order.orderStatus = status;
 		}
 	}
 }

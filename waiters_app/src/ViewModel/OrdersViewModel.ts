@@ -1,4 +1,4 @@
-import {OrderIdo} from '../ido';
+import {Location, OrderStatus} from '../ido';
 import Order from '../Models/Order';
 import OrderModel from '../Models/OrderModel';
 import Requests from '../networking/requests';
@@ -18,30 +18,40 @@ export default class OrdersViewModel extends Singleton {
 	}
 	// ------------------
 
-	constructor(id: string) {
+	constructor() {
 		super();
 		this.requests = new Requests();
 		this.ordersModel = new OrderModel();
 		this.ordersIntervals = {};
-		this.requests
-			.getWaiterOrders(id)
-			.then(newOrders => this.onNewOrders(newOrders));
 	}
 
-	private onNewOrders(ordersIdos: OrderIdo[]) {
-		const orders = ordersIdos.map(order => new Order(order));
-		this.ordersModel.setOrders(orders);
-		orders.forEach(order => {
-			const interval = setInterval(() => this.getLocation(order), 10000);
-			this.ordersIntervals[order.id] = interval;
+	public synchronizeOrders(id: string): Promise<void> {
+		return this.requests.getWaiterOrders(id).then(newOrders => {
+			const orders = newOrders.map(order => new Order(order));
+			this.ordersModel.setOrders(orders);
+			orders.forEach(order => {
+				const interval = setInterval(
+					() => this.getLocation(order),
+					10000
+				);
+				this.ordersIntervals[order.id] = interval;
+			});
 		});
 	}
 
-	get orders() {
+	get orders(): Order[] {
 		return this.ordersModel.orders;
 	}
 
-	get availableOrders() {
+	get availableOrders(): Order[] {
 		return this.orders.filter(order => order.location);
+	}
+
+	public updateGuestLocation(guestID: string, guestLocation: Location): void {
+		this.ordersModel.updateGuestLocation(guestID, guestLocation);
+	}
+
+	public updateOrderStatus(orderID: string, status: OrderStatus): void {
+		this.ordersModel.updateOrderStatus(orderID, status);
 	}
 }

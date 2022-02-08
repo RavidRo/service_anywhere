@@ -1,10 +1,9 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 
 import WaiterMarker from '../Views/markers/WaiterMarker';
 import GuestMarker from '../Views/markers/ClientMarker';
 
-import {IDContext} from '../../contexts';
 import MyLocationViewModel from '../../ViewModel/MyLocationViewModel';
 
 import MapLayoutController from './MapLayoutController';
@@ -17,8 +16,10 @@ type MapMarkerControllerProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
+const myLocationViewModel = new MyLocationViewModel();
+const ordersViewModel = new OrdersViewModel();
+
 function createGuestMarker(): PointMarker | undefined {
-	const myLocationViewModel = new MyLocationViewModel();
 	const myLocation = myLocationViewModel.location;
 	if (!myLocation) {
 		return undefined;
@@ -29,14 +30,7 @@ function createGuestMarker(): PointMarker | undefined {
 }
 
 const MapMarkersController = observer(({style}: MapMarkerControllerProps) => {
-	const id = useContext(IDContext);
-	if (!id) {
-		console.error('id is not initialized in the Map component');
-		return <></>;
-	}
-
 	//Guests Markers
-	const ordersViewModel = new OrdersViewModel(id);
 	const availableOrders = ordersViewModel.availableOrders;
 	const availableOrdersPoints = availableOrders.map(order => ({
 		name: order.id,

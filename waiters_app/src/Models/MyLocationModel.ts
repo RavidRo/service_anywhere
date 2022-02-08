@@ -6,7 +6,6 @@ export default class MyLocationModel {
 	private _location: Location | undefined;
 
 	constructor() {
-		// super();
 		makeAutoObservable(this);
 	}
 

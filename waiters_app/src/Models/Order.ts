@@ -5,6 +5,7 @@ export default class Order {
 	// public readonly guestID: string;
 	// public readonly items: Record<string, number>;
 	public readonly items: string[];
+	public readonly guestID: string;
 	public orderStatus: OrderStatus;
 	public location?: Location;
 
