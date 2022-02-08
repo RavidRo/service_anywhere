@@ -1,6 +1,5 @@
 import {Location} from '../ido';
 import ConnectionHandler from './ConnectionHandlers';
-
 export default class Communicate {
 	private connectionHandler: ConnectionHandler;
 	constructor() {

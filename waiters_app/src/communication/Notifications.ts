@@ -17,7 +17,9 @@ export default class Notifications {
 				return;
 			}
 		}
-		console.error('Parameters are not in the right format');
+		console.warn(
+			`In the event, "updateGuestLocation", parameters ${params} are not in the right format`
+		);
 	}
 
 	private updateOrderStatus(params: any[]): void {
@@ -29,6 +31,8 @@ export default class Notifications {
 				return;
 			}
 		}
-		console.error('Parameters are not in the right format');
+		console.warn(
+			`In the event, "updateOrderStatus", parameters ${params} are not in the right format`
+		);
 	}
 }

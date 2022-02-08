@@ -25,7 +25,7 @@ export default class MyLocationViewModel extends Singleton {
 				this.locationModel.location = location;
 			},
 			error => {
-				console.error('Could not get your location: ', error);
+				console.warn('Could not get the user location', error);
 			}
 		);
 	}
