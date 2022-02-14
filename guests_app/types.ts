@@ -39,9 +39,15 @@ export interface LocationService {
 	stopWatching(): void;
 }
 
-export type OrderID = String;
+export type OrderID = string;
 export type Order = {
 	id: OrderID;
 	items: Map<String, Number>;
 	status: 'recieved' | 'unassigned' | 'inprogress' | 'completed';
+};
+
+export type Item = {
+	id: string;
+	name: string;
+	prepare_time: Number;
 };
