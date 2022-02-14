@@ -1,6 +1,5 @@
-import {createOrder} from '../communication/requests';
+import Requests from 'guests_app/Networking/requests';
 import {OrderModel} from '../Model/OrderModel';
-import {} from '../communication/requests';
 
 type Location = {
 	x: number;
@@ -8,14 +7,14 @@ type Location = {
 };
 
 type Item = {
-	id: String;
-	name: String;
+	id: string;
+	name: string;
 	time: Number;
 };
 type LocalizationDetailsIDO = {};
 export type Order = {
 	id: OrderID;
-	items: Map<String, Number>;
+	items: Map<string, Number>;
 	status: OrderStatus;
 };
 
@@ -26,9 +25,15 @@ type OrderStatus = 'a' | 'B'; // what status will we be on each system?
 
 export default class OrderViewModel {
 	private order_model = OrderModel.getInstance();
+	private requests;
+	constructor() {
+		this.order_model = OrderModel.getInstance();
+		this.requests = new Requests();
+	} 
 
-	createOrder(items: Map<String, Number>): Promise<OrderID> {
-		return createOrder(items).then(order_id => {
+	createOrder(items: Map<string, Number>): Promise<OrderID> {
+		return this.requests.createOrder(items)
+		.then(order_id => {
 			this.order_model.setOrder({
 				id: order_id,
 				items: items,
@@ -36,10 +41,6 @@ export default class OrderViewModel {
 			});
 			return order_id;
 		});
-	}
-
-	login(_password: String): Promise<void> {
-		return new Promise<void>((_resolve, _reject) => {});
 	}
 
 	// getItems!: () => Promise<[Item]>;
