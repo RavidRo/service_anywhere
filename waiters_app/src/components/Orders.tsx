@@ -7,7 +7,7 @@ import Order from '../data/Order';
 import {IDContext, OrdersContext} from '../contexts';
 import {useAPI} from '../hooks/useApi';
 
-import requests from '../networking/requests';
+import Requests from '../networking/requests';
 import useInterval from '../hooks/useInterval';
 
 type OrdersProps = {
@@ -23,6 +23,7 @@ const Orders: React.FC<OrdersProps> = ({children}: OrdersProps) => {
 		[orderID: string]: [Order, Location | undefined];
 	}>({});
 
+	const requests = new Requests();
 	const {request} = useAPI(requests.getWaiterOrders);
 	useInterval(() => {
 		if (id) {
