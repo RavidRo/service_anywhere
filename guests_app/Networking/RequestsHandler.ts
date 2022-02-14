@@ -11,22 +11,21 @@ class RequestsHandler {
 
 	private request<T>(
 		endPoint: string,
-        token: string,
+		token: string,
 		params: Record<string, unknown>,
 		GET = true
 	) {
 		console.debug(`Request ${endPoint}`, params);
 
 		const request = GET ? this.axiosInstance.get : this.axiosInstance.post;
-		return request(`${endPoint}`, GET ? {params} : params, 
-        {
-            headers:{'Authorization': token}
-        })
-        .then(response => this.handleResponse<T>(response))
-        .catch(e => {
-            console.debug(e);
-            return Promise.reject(e);
-        });
+		return request(`${endPoint}`, GET ? {params} : params, {
+			headers: {Authorization: token},
+		})
+			.then(response => this.handleResponse<T>(response))
+			.catch(e => {
+				console.debug(e);
+				return Promise.reject(e);
+			});
 	}
 
 	private handleResponse<T>(response: AxiosResponse<T>) {

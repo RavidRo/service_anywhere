@@ -29,11 +29,10 @@ export default class OrderViewModel {
 	constructor() {
 		this.order_model = OrderModel.getInstance();
 		this.requests = new Requests();
-	} 
+	}
 
 	createOrder(items: Map<string, Number>): Promise<OrderID> {
-		return this.requests.createOrder(items)
-		.then(order_id => {
+		return this.requests.createOrder(items).then(order_id => {
 			this.order_model.setOrder({
 				id: order_id,
 				items: items,

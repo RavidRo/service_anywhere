@@ -47,7 +47,7 @@ export type Order = {
 };
 
 export type Item = {
-	id: string
-	name: string
-	prepare_time: Number
-}
+	id: string;
+	name: string;
+	prepare_time: Number;
+};
