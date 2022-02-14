@@ -1,7 +1,7 @@
 import axios, {AxiosInstance, AxiosResponse} from 'axios';
 
 class RequestsHandler {
-	private axiosInstance: AxiosInstance;
+	private axiosInstance: AxiosInstance  ;
 
 	constructor() {
 		this.axiosInstance = axios.create({
