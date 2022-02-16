@@ -2,18 +2,17 @@ import express from 'express';
 import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
 import waiter from '../Interface/WaiterInterface';
-import * as socketio from "socket.io";
-import * as path from "path";
+import * as socketio from 'socket.io';
+import * as path from 'path';
 
 var cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-var http = require("http").Server(app);
-var sockets: socketio.Socket[] =[];
+var http = require('http').Server(app);
+var sockets: socketio.Socket[] = [];
 var socketToken = new Map<socketio.Socket, string>();
-let io = require("socket.io")(http);
-
+let io = require('socket.io')(http);
 
 // use it before all route definitions
 app.use(cors({origin: '*'}));
@@ -128,27 +127,36 @@ app.post('/connectWaiter', (_req, res) => {
 	res.send(waiter.connectWaiter());
 });
 
-io.on("connection", function(socket: socketio.Socket) {
-	console.log("a user connected");
+io.on('connection', function (socket: socketio.Socket) {
+	console.log('a user connected');
 	sockets.push(socket);
-	socket.on("message", (message: any) => {
-		switch(message["kind"]){
-			case "updateGuestLocation": {
-				guest.updateLocationGuest(message["location"], socket.handshake.auth["token"])
+	socket.on('message', (message: any) => {
+		switch (message['kind']) {
+			case 'updateGuestLocation': {
+				guest.updateLocationGuest(
+					message['location'],
+					socket.handshake.auth['token']
+				);
 				break;
 			}
-			case "updateWaiterLocation": {
-				waiter.updateLocationWaiter(socket.handshake.auth["token"], message["map"], message["location"]);
+			case 'updateWaiterLocation': {
+				waiter.updateLocationWaiter(
+					socket.handshake.auth['token'],
+					message['map'],
+					message['location']
+				);
 				break;
 			}
 			default: {
-				socket.emit("message", {"kind": "error",
-					"content": "This kind of massage is not supported"})
+				socket.emit('message', {
+					kind: 'error',
+					content: 'This kind of massage is not supported',
+				});
 				break;
 			}
 		}
-	  });
-  });
+	});
+});
 
 http.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}`);

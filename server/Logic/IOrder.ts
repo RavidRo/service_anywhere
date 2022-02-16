@@ -2,8 +2,8 @@ export class IOrder {
 	id: string;
 
 	updateWaiterLocation(mapId: string, location: Location): void {
-        mapId;
+		mapId;
 		location;
 		//todo: this
-    }
+	}
 }
