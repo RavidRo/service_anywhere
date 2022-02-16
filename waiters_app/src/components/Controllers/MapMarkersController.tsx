@@ -12,6 +12,7 @@ import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
 import {observer} from 'mobx-react-lite';
 import {Location} from 'waiters_app/src/ido';
+import Requests from 'waiters_app/src/networking/Requests';
 
 type MapMarkerControllerProps = {
 	style?: StyleProp<ViewStyle>;
@@ -36,7 +37,7 @@ const MapMarkersController = observer(({style}: MapMarkerControllerProps) => {
 	}
 
 	//Guests Markers
-	const ordersViewModel = new OrdersViewModel(id);
+	const ordersViewModel = new OrdersViewModel(id, new Requests());
 	const availableOrders = ordersViewModel.availableOrders;
 	const availableOrdersPoints = availableOrders.map(order => ({
 		name: order.id,

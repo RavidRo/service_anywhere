@@ -7,9 +7,10 @@ export class ItemsViewModel extends Singleton {
 	private itemsModel: ItemModel;
 	private requests: Requests;
 
-	constructor() {
+	constructor(requests: Requests) {
 		super();
 		this.itemsModel = new ItemModel();
+		this.requests = requests;
 	}
 
 	get items(): ItemIdo[] {

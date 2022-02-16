@@ -18,9 +18,9 @@ export default class OrdersViewModel extends Singleton {
 	}
 	// ------------------
 
-	constructor(id: string) {
+	constructor(id: string, requests: Requests) {
 		super();
-		this.requests = new Requests();
+		this.requests = requests;
 		this.ordersModel = new OrderModel();
 		this.ordersIntervals = {};
 		this.requests

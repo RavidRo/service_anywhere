@@ -2,13 +2,14 @@ import React, {useEffect} from 'react';
 import {Alert} from 'react-native';
 import {IDContext} from 'waiters_app/src/contexts';
 import {useAPI} from 'waiters_app/src/hooks/useApi';
+import Requests from 'waiters_app/src/networking/Requests';
 import AuthenticateViewModel from 'waiters_app/src/ViewModel/AuthenticateViewMode';
 import LoginView from '../Views/LoginView';
 
 type LoginControllerProps = {};
 
 export default function LoginController(_props: LoginControllerProps) {
-	const authentication = new AuthenticateViewModel();
+	const authentication = new AuthenticateViewModel(new Requests());
 	const {request, data: id} = useAPI(authentication.login);
 	useEffect(() => {
 		request().catch(() => Alert.alert("Can't connect to server :("));

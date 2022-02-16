@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {IDContext} from 'waiters_app/src/contexts';
+import Requests from 'waiters_app/src/networking/Requests';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 
 import OrdersListView from '../Views/OrdersList';
@@ -13,7 +14,7 @@ export default function OrdersList(_: OrdersProps) {
 	if (!id) {
 		return <></>;
 	}
-	const ordersViewModel = new OrdersViewModel(id);
+	const ordersViewModel = new OrdersViewModel(id, new Requests());
 	const selectOrder = (orderId: string) => {
 		setSelectedOrder(selectedOrder === orderId ? undefined : orderId);
 	};
