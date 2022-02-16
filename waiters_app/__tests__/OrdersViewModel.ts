@@ -30,7 +30,7 @@ const mockGuestLocation = {
 const mockGetWaiterOrders = jest
 	.fn()
 	.mockImplementation(() => mockMakePromise(mockListOfOrders));
-jest.mock('../src/networking/requests', () => {
+jest.mock('../src/networking/Requests', () => {
 	return jest.fn().mockImplementation(() => {
 		return {
 			getWaiterOrders: mockGetWaiterOrders,
