@@ -1,7 +1,7 @@
 import {
 	flushPromises,
 	makePromise as mockMakePromise,
-} from 'waiters_app/__tests__/PromiseUtils';
+} from 'waiters_app/PromiseUtils';
 import Order from 'waiters_app/src/Models/Order';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 
