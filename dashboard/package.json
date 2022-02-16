@@ -5,7 +5,6 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"test": "echo \"Tests passed\"",
 		"eject": "react-scripts eject"
 	},
 	"dependencies": {
@@ -18,10 +17,13 @@
 		"@testing-library/react": "^12.1.2",
 		"@testing-library/user-event": "^13.5.0",
 		"axios": "^0.24.0",
+		"mobx": "^6.3.13",
+		"mobx-react": "^7.2.1",
 		"prop-types": "^15.8.1",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-scripts": "5.0.0",
+		"socket.io": "^4.4.1",
 		"web-vitals": "^2.1.2"
 	},
 	"eslintConfig": {
