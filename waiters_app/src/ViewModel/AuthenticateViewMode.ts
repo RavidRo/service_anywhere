@@ -1,4 +1,4 @@
-import Requests from '../networking/requests';
+import Requests from '../networking/Requests';
 
 export default class AuthenticateViewModel {
 	private requests: Requests;

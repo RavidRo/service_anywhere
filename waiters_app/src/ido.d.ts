@@ -1,8 +1,11 @@
 export type OrderStatus = 'unassigned' | 'inprogress' | 'completed';
 export type OrderIdo = {
 	id: OrderID;
-	items: string[];
+	guestID: string;
+	items: Record<string, int>;
 	status: OrderStatus;
+	creationTime: Date;
+	terminationTime: Date;
 };
 export type Location = {
 	x: number;
@@ -13,4 +16,10 @@ export type Corners = {
 	topLeftGPS: GPS;
 	bottomRightGPS: GPS;
 	bottomLeftGPS: GPS;
+};
+export type ItemIdo = {
+	id: string;
+	name: string;
+	price: double;
+	preparationTime: double;
 };
