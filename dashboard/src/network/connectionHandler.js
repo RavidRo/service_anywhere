@@ -3,22 +3,20 @@ import Singleton from '../Singleton';
 import Notification from './notifications';
 import config from './config.json';
 
-
 const host = config.host;
 const port = config.port;
 
 const _host_port = `${host}:${port}`;
 const base_route = `${host}`;
 
+export default class ConnectionHandler extends Singleton {
+	notifications = new Notification();
 
-export default class ConnectionHandler extends Singleton{
-    notifications = new Notification();
+	constructor() {
+		super();
+	}
 
-    constructor(){
-        super()
-    }
-
-    connect(onSuccess) {
+	connect(onSuccess) {
 		const socket = io(base_route);
 
 		socket.on('connect', () => {
@@ -57,6 +55,5 @@ export default class ConnectionHandler extends Singleton{
 				this.notifications.eventToCallback[event](params);
 			});
 		}
-	} 
-
+	}
 }

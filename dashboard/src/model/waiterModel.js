@@ -1,22 +1,22 @@
 import {makeAutoObservable} from 'mobx';
-import { CaughtException } from 'mobx/dist/internal';
+import {CaughtException} from 'mobx/dist/internal';
 
 export default class DashboardModel {
-    _waiters = []
+	_waiters = [];
 
-    constructor(){
-        makeAutoObservable(this);
-    }
+	constructor() {
+		makeAutoObservable(this);
+	}
 
-    set waiters(waiters) {
-        this._waiters = waiters
-    }
+	set waiters(waiters) {
+		this._waiters = waiters;
+	}
 
-    get waiters() {
-        return this._waiters
-    }
-    
-    assignOrderToWaiter(order, waiterId){
-        console.log("not implemented");
-    }
+	get waiters() {
+		return this._waiters;
+	}
+
+	assignOrderToWaiter(order, waiterId) {
+		console.log('not implemented');
+	}
 }

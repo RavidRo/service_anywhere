@@ -4,7 +4,6 @@ import AppBarView from '../view/AppBarView';
 import OrderViewController from './OrderViewController';
 import propTypes from 'prop-types';
 
-
 function OrdersViewController(props) {
 	const {ordersViewModel, waitersViewModel} = props;
 
