@@ -4,13 +4,16 @@ import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandlers'
 import {useAPI} from 'waiters_app/src/hooks/useApi';
 import Requests from 'waiters_app/src/networking/Requests';
 import AuthenticateViewModel from 'waiters_app/src/ViewModel/AuthenticateViewModel';
+import {ItemsViewModel} from 'waiters_app/src/ViewModel/ItemsViewModel';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import ConnectView from '../Views/ConnectView';
 
 type LoginControllerProps = {};
 
-const authentication = new AuthenticateViewModel(new Requests());
-const orders = new OrdersViewModel(new Requests());
+const requests = new Requests();
+const authentication = new AuthenticateViewModel(requests);
+const orders = new OrdersViewModel(requests);
+const items = new ItemsViewModel(requests);
 const connection = new ConnectionHandler();
 
 export default function ConnectController(_props: LoginControllerProps) {
@@ -20,6 +23,7 @@ export default function ConnectController(_props: LoginControllerProps) {
 		request()
 			.then(id => {
 				orders.synchronizeOrders(id);
+				items.syncItems();
 			})
 			.catch(() => Alert.alert("Can't connect to server :("));
 		connection.connect();
