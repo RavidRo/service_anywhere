@@ -32,5 +32,6 @@ jobs:
               with:
                   commit_message: Apply formatting changes
                   branch: ${{ github.head_ref }}
+                  skip_dirty_check: false
             - run: npm run lint
             - run: npm run test

@@ -18,7 +18,7 @@ let io = require("socket.io")(http);
 // use it before all route definitions
 app.use(cors({origin: '*'}));
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
 	res.send('Hello World!');
 });
 
@@ -64,7 +64,7 @@ app.get('/hasOrderArrived', (req, res) => {
 });
 
 //Dashboard
-app.get('/getOrders', (req, res) => {
+app.get('/getOrders', (_req, res) => {
 	res.send(dashboard.getOrders());
 });
 
@@ -83,7 +83,7 @@ app.post('/assignWaiter', (req, res) => {
 	);
 });
 
-app.get('/getWaiters', (req, res) => {
+app.get('/getWaiters', (_req, res) => {
 	res.send(dashboard.getWaiters());
 });
 
@@ -124,7 +124,7 @@ app.post('/orderArrived', (req, res) => {
 	);
 });
 
-app.post('/connectWaiter', (req, res) => {
+app.post('/connectWaiter', (_req, res) => {
 	res.send(waiter.connectWaiter());
 });
 
