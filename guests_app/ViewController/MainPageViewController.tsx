@@ -25,7 +25,7 @@ export const MainPageViewController = () => {
 		}
 	}
 
-	function SendOrderToServer(items: Map<String, Number>) {
+	function SendOrderToServer(items: Map<string, Number>) {
 		requestPermissions()
 			.then(() => {
 				const orderViewModel = new OrderViewModel();
