@@ -11,13 +11,14 @@ import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
 import {observer} from 'mobx-react-lite';
 import {Location} from 'waiters_app/src/ido';
+import Requests from '../../networking/Requests';
 
 type MapMarkerControllerProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
 const myLocationViewModel = new MyLocationViewModel();
-const ordersViewModel = new OrdersViewModel();
+const ordersViewModel = new OrdersViewModel(new Requests());
 
 function createGuestMarker(): PointMarker | undefined {
 	const myLocation = myLocationViewModel.location;

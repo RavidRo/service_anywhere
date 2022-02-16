@@ -8,13 +8,19 @@ import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 const mockListOfOrders: OrderIdo[] = [
 	{
 		id: '1',
-		items: ['a', 'b'],
+		items: {a: 2, b: 3},
 		status: 'inprogress',
+		guestID: '2',
+		creationTime: new Date(),
+		terminationTime: new Date(),
 	},
 	{
 		id: '2',
-		items: ['a', 'b'],
-		status: 'inprogress',
+		items: {a: 2, b: 3},
+		status: 'completed',
+		guestID: '2',
+		creationTime: new Date(),
+		terminationTime: new Date(),
 	},
 ];
 const mockGuestLocation = {
@@ -38,16 +44,22 @@ jest.mock('../src/networking/requests', () => {
 
 const order1 = new Order({
 	id: '1',
-	items: ['a', 'b'],
+	items: {a: 2, b: 3},
 	status: 'inprogress',
+	guestID: '2',
+	creationTime: new Date(),
+	terminationTime: new Date(),
 });
 order1.location = mockGuestLocation;
 const mockOrders = [
 	order1,
 	new Order({
 		id: '2',
-		items: ['a', 'b'],
+		items: {a: 2, b: 3},
 		status: 'completed',
+		guestID: '2',
+		creationTime: new Date(),
+		terminationTime: new Date(),
 	}),
 ];
 const mockSetOrders = jest.fn();
@@ -62,7 +74,7 @@ jest.mock('../src/Models/OrderModel', () => {
 	});
 });
 
-import Requests from '../src/networking/requests';
+import Requests from '../src/networking/Requests';
 import OrderModel from '../src/Models/OrderModel';
 import {Location, OrderIdo} from 'waiters_app/src/ido';
 

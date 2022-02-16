@@ -2,14 +2,15 @@ import React, {useEffect} from 'react';
 import {Alert} from 'react-native';
 import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandlers';
 import {useAPI} from 'waiters_app/src/hooks/useApi';
+import Requests from 'waiters_app/src/networking/Requests';
 import AuthenticateViewModel from 'waiters_app/src/ViewModel/AuthenticateViewModel';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
 import ConnectView from '../Views/ConnectView';
 
 type LoginControllerProps = {};
 
-const authentication = new AuthenticateViewModel();
-const orders = new OrdersViewModel();
+const authentication = new AuthenticateViewModel(new Requests());
+const orders = new OrdersViewModel(new Requests());
 const connection = new ConnectionHandler();
 
 export default function ConnectController(_props: LoginControllerProps) {
