@@ -1,4 +1,5 @@
-import Location from '../data/Location';
+import {Corners, Location} from '../ido';
+import {GPS} from '../map';
 import GeolocationAdapter from './GeolocationAdapter';
 
 import {ILocationService} from './ILocationService';

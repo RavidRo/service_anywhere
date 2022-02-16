@@ -1,35 +1,35 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+import {Marker} from 'waiters_app/src/map';
 
-import {Marker} from './Marker';
+const SIZE = 40;
 
-const SIZE = 15;
-
-const WaiterMarker: Marker = ({scale}) => {
+const PointMarker: Marker = ({scale, name}) => {
 	const styles = StyleSheet.create({
 		point: {
-			width: SIZE * scale,
-			height: SIZE * scale,
-			borderRadius: (SIZE * scale) / 2,
-			backgroundColor: 'blue',
 			position: 'absolute',
 
+			width: SIZE * scale,
+			height: SIZE * scale,
+
+			borderRadius: (SIZE * scale) / 2,
+			backgroundColor: 'red',
 			borderColor: 'black',
 			borderWidth: 2,
 		},
 		text: {
+			width: 50,
 			position: 'absolute',
-			bottom: 0,
-			left: 0,
+			bottom: SIZE * scale,
 		},
 	});
 
 	return (
 		<>
-			<Text style={styles.text}>Me!</Text>
+			<Text style={styles.text}>{name}</Text>
 			<View style={styles.point} />
 		</>
 	);
 };
 
-export default WaiterMarker;
+export default PointMarker;

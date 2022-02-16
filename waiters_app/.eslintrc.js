@@ -1,5 +1,5 @@
 module.exports = {
-	extends: ['@react-native-community', '../.eslintrc.js'],
+	extends: ['@react-native-community', '../.eslintrc.js', 'prettier'],
 	rules: {
 		'no-shadow': 'off',
 		'no-unused-vars': 'off',
@@ -11,5 +11,8 @@ module.exports = {
 				caughtErrorsIgnorePattern: '^_',
 			},
 		],
+	},
+	globals: {
+		jest: 'readonly',
 	},
 };

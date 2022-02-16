@@ -1,24 +1,22 @@
-import React, {useContext, useState} from 'react';
+import {observer} from 'mobx-react-lite';
+import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import Order from 'waiters_app/src/Models/Order';
 
-import {OrdersContext} from '../contexts';
+type OrdersViewProps = {
+	orders: Order[];
+	selectOrder: (string: string) => void;
+	selectedOrderId: string | undefined;
+};
 
-type OrdersProps = {};
-
-export default function OrdersList(_: OrdersProps) {
-	const [openOrder, setOpenOrder] = useState<string | undefined>('TommerID');
-	const orders = useContext(OrdersContext);
+const OrdersListView = observer((props: OrdersViewProps) => {
 	return (
 		<>
-			{Object.values(orders).map(([order, _], index) => {
+			{props.orders.map((order, index) => {
 				return (
 					<TouchableOpacity
 						key={order.id}
-						onPress={() => {
-							setOpenOrder(
-								openOrder === order.id ? undefined : order.id
-							);
-						}}>
+						onPress={() => props.selectOrder(order.id)}>
 						<View
 							style={[
 								styles.orderContainer,
@@ -27,7 +25,7 @@ export default function OrdersList(_: OrdersProps) {
 									: styles.background2,
 							]}>
 							<Text>{order.id}</Text>
-							{openOrder === order.id && (
+							{props.selectedOrderId === order.id && (
 								<Text>{order.items}</Text>
 							)}
 						</View>
@@ -36,7 +34,8 @@ export default function OrdersList(_: OrdersProps) {
 			})}
 		</>
 	);
-}
+});
+export default OrdersListView;
 
 const styles = StyleSheet.create({
 	background1: {

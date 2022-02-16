@@ -1,21 +1,25 @@
-type OrderStatus = 'unassigned' | 'inprogress' | 'completed';
-type OrderIdo = {
+export type OrderStatus = 'unassigned' | 'inprogress' | 'completed';
+export type OrderIdo = {
 	id: OrderID;
-	items: string[];
+	guestID: string;
+	items: Record<string, int>;
 	status: OrderStatus;
+	creationTime: Date;
+	terminationTime: Date;
 };
-type Location = {
+export type Location = {
 	x: number;
 	y: number;
 };
-type Corners = {
+export type Corners = {
 	topRightGPS: GPS;
 	topLeftGPS: GPS;
 	bottomRightGPS: GPS;
 	bottomLeftGPS: GPS;
 };
-
-type GPS = {
-	longitude: number;
-	latitude: number;
+export type ItemIdo = {
+	id: string;
+	name: string;
+	price: double;
+	preparationTime: double;
 };

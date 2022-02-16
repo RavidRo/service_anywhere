@@ -1,6 +1,6 @@
 import RequestsHandler from './RequestsHandler';
-import {Order as OrderApi, Location as LocationApi} from '../data/api';
-import Singleton from '../Singelton';
+import Singleton from '../Singleton';
+import {ItemIdo, Location, OrderIdo} from '../ido';
 
 export default class Requests extends Singleton {
 	private handler: RequestsHandler;
@@ -9,9 +9,9 @@ export default class Requests extends Singleton {
 		this.handler = new RequestsHandler();
 	}
 
-	getGuestLocation(orderID: string): Promise<LocationApi> {
+	getGuestLocation(orderID: string): Promise<Location> {
 		return this.handler
-			.get<LocationApi>('getGuestLocation', {orderID})
+			.get<Location>('getGuestLocation', {orderID})
 			.then(location => {
 				if (location?.x === undefined || location?.y === undefined) {
 					return Promise.reject(
@@ -22,8 +22,8 @@ export default class Requests extends Singleton {
 			});
 	}
 
-	getWaiterOrders(waiterID: string): Promise<OrderApi[]> {
-		return this.handler.get<OrderApi[]>('getWaiterOrders', {waiterID});
+	getWaiterOrders(waiterID: string): Promise<OrderIdo[]> {
+		return this.handler.get<OrderIdo[]>('getWaiterOrders', {waiterID});
 	}
 
 	orderArrived(orderID: string): Promise<void> {
@@ -32,5 +32,9 @@ export default class Requests extends Singleton {
 
 	login(): Promise<string> {
 		return this.handler.post<string>('connectWaiter');
+	}
+
+	getItems(): Promise<ItemIdo[]> {
+		return this.handler.get<ItemIdo[]>('getItems');
 	}
 }

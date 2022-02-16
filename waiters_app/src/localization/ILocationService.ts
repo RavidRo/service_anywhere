@@ -1,14 +1,14 @@
-import Location from '../data/Location';
+import {Location} from '../ido';
 
 export interface ILocationService {
 	getLocation(
-		successCallback: (_location: Location) => void,
-		errorCallback: (_error: string) => void
+		successCallback: (location: Location) => void,
+		errorCallback: (error: string) => void
 	): void;
 
 	watchLocation(
-		successCallback: (_location: Location) => void,
-		errorCallback: (_error: string) => void
+		successCallback: (location: Location) => void,
+		errorCallback: (error: string) => void
 	): void;
 
 	stopWatching(): void;

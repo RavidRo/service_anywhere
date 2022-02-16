@@ -1,4 +1,5 @@
-import Location from '../data/Location';
+import {Corners} from '../ido';
+import {GPS} from '../map';
 
 export default class LocationMap {
 	private corners: Corners;
@@ -37,6 +38,6 @@ export default class LocationMap {
 				location
 			) / this.height;
 
-		return new Location(localX, localY);
+		return {x: localX, y: localY};
 	}
 }
