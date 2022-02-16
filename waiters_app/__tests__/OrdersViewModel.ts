@@ -95,18 +95,18 @@ afterEach(() => {
 
 describe('Constructor', () => {
 	test('The class can be created successfully', async () => {
-		const orders = new OrdersViewModel('0');
+		const orders = new OrdersViewModel('0', new Requests());
 		expect(orders).toBeTruthy();
 	});
 
 	test('Looked for orders in the server', async () => {
-		const _ordersViewModel = new OrdersViewModel('0');
+		const _ordersViewModel = new OrdersViewModel('0', new Requests());
 		expect(mockGetWaiterOrders).toHaveBeenCalled();
 	});
 
 	test('Initializing orders to the orders in the server', async () => {
 		expect.assertions(2);
-		const _ordersViewModel = new OrdersViewModel('0');
+		const _ordersViewModel = new OrdersViewModel('0', new Requests());
 		await flushPromises();
 		expect(mockSetOrders).toHaveBeenCalledTimes(1);
 		expect(mockSetOrders.mock.calls[0][0]).toHaveLength(
@@ -117,7 +117,7 @@ describe('Constructor', () => {
 
 test('Getting only the available orders', async () => {
 	expect.assertions(1);
-	const ordersViewModel = new OrdersViewModel('0');
+	const ordersViewModel = new OrdersViewModel('0', new Requests());
 	await flushPromises();
 	expect(ordersViewModel.availableOrders).toEqual([order1]);
 });
