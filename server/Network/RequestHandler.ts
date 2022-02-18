@@ -131,23 +131,12 @@ app.post('/connectWaiter', (_req, res) => {
 io.on("connection", function(socket: socketio.Socket) {
 	console.log("a user connected");
 	sockets.push(socket);
-	socket.on("message", (message: any) => {
-		switch(message["kind"]){
-			case "updateGuestLocation": {
-				guest.updateLocationGuest(message["location"], socket.handshake.auth["token"])
-				break;
-			}
-			case "updateWaiterLocation": {
-				waiter.updateLocationWaiter(socket.handshake.auth["token"], message["map"], message["location"]);
-				break;
-			}
-			default: {
-				socket.emit("message", {"kind": "error",
-					"content": "This kind of massage is not supported"})
-				break;
-			}
-		}
-	  });
+	socket.on("updateGuestLocation", (message: any) => {
+		guest.updateLocationGuest(message["location"], socket.handshake.auth["token"])
+	});
+	socket.on("updateWaiterLocation", (message: any) => {
+		waiter.updateLocationWaiter(socket.handshake.auth["token"], message["map"], message["location"]);
+	});
   });
 
 http.listen(PORT, () => {
