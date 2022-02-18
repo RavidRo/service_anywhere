@@ -1,4 +1,4 @@
-import { stringify } from 'querystring';
+import {stringify} from 'querystring';
 import {Location, OrderID, WaiterID} from '../api';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
@@ -23,11 +23,15 @@ function connectWaiter(): string {
 	return WaiterOrder.connectWaiter();
 }
 
-function updateLocationWaiter(waiterId: string, mapId: string, location: Location): string {
+function updateLocationWaiter(
+	waiterId: string,
+	mapId: string,
+	location: Location
+): string {
 	waiterId;
 	mapId;
 	location;
-	return "";
+	return '';
 	//todo: this
 }
 
@@ -36,5 +40,5 @@ export default {
 	getGuestLocation,
 	orderArrived,
 	connectWaiter,
-	updateLocationWaiter
+	updateLocationWaiter,
 };
