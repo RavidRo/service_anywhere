@@ -130,13 +130,20 @@ app.post('/connectWaiter', (_req, res) => {
 io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
 	sockets.push(socket);
-	socket.on("updateGuestLocation", (message: any) => {
-		guest.updateLocationGuest(message["location"], socket.handshake.auth["token"])
+	socket.on('updateGuestLocation', (message: any) => {
+		guest.updateLocationGuest(
+			message['location'],
+			socket.handshake.auth['token']
+		);
 	});
-	socket.on("updateWaiterLocation", (message: any) => {
-		waiter.updateLocationWaiter(socket.handshake.auth["token"], message["map"], message["location"]);
+	socket.on('updateWaiterLocation', (message: any) => {
+		waiter.updateLocationWaiter(
+			socket.handshake.auth['token'],
+			message['map'],
+			message['location']
+		);
 	});
-  });
+});
 
 http.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}`);
