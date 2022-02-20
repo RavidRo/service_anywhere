@@ -1,13 +1,18 @@
+import Requests from 'guests_app/src/Networking/requests';
 import React from 'react';
 import {useState} from 'react';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import {MainPage} from '../View/MainPageView';
 import OrderViewModel from '../ViewModel/OrderViewModel';
+import {observer} from 'mobx-react-lite';
 
-export const MainPageViewController = () => {
-	const [waitingForOrder, setWaitingForOrder] = useState(false);
-	const order_items = ['bamba', 'Beer'];
-	const [orderID, setOrderID] = useState('');
+
+export const MainPageViewController = observer(() => {
+	const orderViewModel = new OrderViewModel(new Requests());
+
+//	const [waitingForOrder, setWaitingForOrder] = useState(false);
+//	const order_items = ['bamba', 'Beer'];
+//	const [orderID, setOrderID] = useState('');
 
 	async function requestPermissions() {
 		// if (Platform.OS === 'ios') {
@@ -28,13 +33,14 @@ export const MainPageViewController = () => {
 	function SendOrderToServer(items: Map<string, Number>) {
 		requestPermissions()
 			.then(() => {
-				const orderViewModel = new OrderViewModel();
 				orderViewModel
 					.createOrder(items)
-					.then(order_id => {
-						console.log('order created with order id: ' + order_id);
-						setWaitingForOrder(true);
-						setOrderID(order_id);
+					.then(createdOrder => {
+						console.log('order created with order id: ' + createdOrder.id);
+
+						// setWaitingForOrder(true);
+						// setOrderID(order_id);
+
 						//  waitForOrder(order_id)
 					})
 					.catch(err => Alert.alert(err));
@@ -53,17 +59,15 @@ export const MainPageViewController = () => {
 
 	// just for testing
 	function GotOrder() {
-		setWaitingForOrder(false);
+//		setWaitingForOrder(false);
 		Alert.alert('Order Arrived');
 	}
 
 	const Props = {
 		SendOrderToServer: SendOrderToServer,
 		GotOrder: GotOrder,
-		waitingForOrder: waitingForOrder,
-		orderID: orderID,
-		order_items: order_items,
+		order: orderViewModel.getOrder()
 	};
 
 	return <MainPage {...Props} />;
-};
+});
