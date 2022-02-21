@@ -1,17 +1,18 @@
 import {makeAutoObservable} from 'mobx';
-import {CaughtException} from 'mobx/dist/internal';
 
 export default class DashboardModel {
-	_orders = [];
+	_orders = [{items: ['a', 'b'], status: '0', id: '1'}];
 
 	constructor() {
 		makeAutoObservable(this);
 	}
-	setOrders(orders) {
+	set orders(orders) {
 		this._orders = orders;
 	}
 
-	getOrders() {
+	get orders() {
+		console.log(`getting orders model`);
+		console.log(this._orders);
 		return this._orders;
 	}
 }

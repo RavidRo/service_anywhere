@@ -1,5 +1,4 @@
 import {makeAutoObservable} from 'mobx';
-import {CaughtException} from 'mobx/dist/internal';
 
 export default class DashboardModel {
 	_waiters = [];

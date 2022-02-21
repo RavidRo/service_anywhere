@@ -5,11 +5,11 @@ export default class WaiterDialogViewModel {
 		this.waitersModel = waitersModel;
 	}
 
-	getWaiters() {
+	get waiters() {
 		return this.waitersModel.waiters;
 	}
 
-	setWaiters(waiters) {
+	set waiters(waiters) {
 		this.waitersModel.waiters = waiters;
 	}
 

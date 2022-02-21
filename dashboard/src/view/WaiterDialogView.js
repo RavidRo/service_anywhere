@@ -9,9 +9,9 @@ import {observer} from 'mobx-react';
 
 const dialogTitle = 'Choose Waiter';
 
-export default function WaiterDialogView(props) {
+function WaiterDialogView(props) {
 	const {waiters, handleClose, handleListItemClick, open} = props;
-	return observer(
+	return (
 		<Dialog onClose={handleClose} open={open}>
 			<DialogTitle>{dialogTitle}</DialogTitle>
 			<List sx={{pt: 0}}>
@@ -28,9 +28,11 @@ export default function WaiterDialogView(props) {
 	);
 }
 
+export default observer(WaiterDialogView);
+
 WaiterDialogView.propTypes = {
 	waiters: PropTypes.array,
 	handleClose: PropTypes.func,
 	handleListItemClick: PropTypes.func,
-	open: PropTypes.func,
+	open: PropTypes.bool,
 };

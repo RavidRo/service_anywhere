@@ -25,7 +25,7 @@ export default function WaiterDialogViewController(props) {
 
 	return (
 		<WaiterDialogView
-			waiters={waitersViewModel.getWaiters()}
+			waiters={waitersViewModel.waiters}
 			handleClose={handleClose}
 			handleListItemClick={handleListItemClick}
 			open={open}
@@ -35,6 +35,6 @@ export default function WaiterDialogViewController(props) {
 
 WaiterDialogViewController.propTypes = {
 	onClose: propTypes.func,
-	open: propTypes.func,
+	open: propTypes.bool,
 	waitersViewModel: propTypes.object,
 };

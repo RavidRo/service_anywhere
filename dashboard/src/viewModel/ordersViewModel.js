@@ -1,14 +1,13 @@
 export default class OrdersViewModel {
-	orders = [];
 	constructor(ordersModel) {
 		this.ordersModel = ordersModel;
-		this.orders = ordersModel.orders;
 	}
-	getOrders() {
-		return this.ordersModel.getOrders();
+	get orders() {
+		console.log('get orders view model');
+		return this.ordersModel.orders;
 	}
 
-	setOrders(orders) {
-		this.ordersModel.setOrders();
+	set orders(orders) {
+		this.ordersModel.setOrders(orders);
 	}
 }

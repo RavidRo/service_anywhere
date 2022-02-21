@@ -22,9 +22,10 @@ const _useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function OrderView(props) {
+function OrderView(props) {
 	const {assignedWaiter, order, handleClickOpen} = props;
-	return observer(
+	console.log(order);
+	return (
 		<Card sx={{minWidth: 275}} variant='outlined'>
 			<CardContent>
 				<div
@@ -72,6 +73,7 @@ export default function OrderView(props) {
 	);
 }
 
+export default observer(OrderView);
 OrderView.propTypes = {
 	assignedWaiter: PropTypes.string,
 	order: PropTypes.object,

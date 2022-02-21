@@ -21,7 +21,7 @@ function OrdersViewController(props) {
 	return (
 		<div>
 			<AppBarView />
-			{ordersViewModel.getOrders().map((order, index) => (
+			{ordersViewModel.orders.map((order, index) => (
 				<OrderViewController
 					order={order}
 					key={index}
