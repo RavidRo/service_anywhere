@@ -42,4 +42,16 @@ export class WaiterOrder {
 		}
 		return []; //makeFail('this waiter does not exist or has no orders')
 	}
+
+	static updateWaiterLocation(
+		waiterId: string,
+		mapId: string,
+		location: Location
+	): string {
+		waiterId;
+		mapId;
+		location;
+		return '';
+		//todo: this
+	}
 }
