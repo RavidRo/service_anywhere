@@ -7,6 +7,7 @@ import Divider from '@material-ui/core/Divider';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import React from 'react';
 import PropTypes from 'prop-types';
+import {observer} from 'mobx-react';
 
 const _useStyles = makeStyles(theme => ({
 	root: {
@@ -23,7 +24,7 @@ const _useStyles = makeStyles(theme => ({
 
 export default function OrderView(props) {
 	const {assignedWaiter, order, handleClickOpen} = props;
-	return (
+	return observer(
 		<Card sx={{minWidth: 275}} variant='outlined'>
 			<CardContent>
 				<div

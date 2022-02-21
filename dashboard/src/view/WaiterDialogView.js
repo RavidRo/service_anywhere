@@ -5,12 +5,13 @@ import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import PropTypes from 'prop-types';
+import {observer} from 'mobx-react';
 
 const dialogTitle = 'Choose Waiter';
 
 export default function WaiterDialogView(props) {
 	const {waiters, handleClose, handleListItemClick, open} = props;
-	return (
+	return observer(
 		<Dialog onClose={handleClose} open={open}>
 			<DialogTitle>{dialogTitle}</DialogTitle>
 			<List sx={{pt: 0}}>

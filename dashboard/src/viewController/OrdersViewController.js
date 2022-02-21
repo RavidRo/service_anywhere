@@ -7,21 +7,21 @@ import propTypes from 'prop-types';
 function OrdersViewController(props) {
 	const {ordersViewModel, waitersViewModel} = props;
 
-	const [orders, setOrders] = React.useState([]);
-	React.useEffect(() => {
-		let mounted = true;
-		ordersViewModel.getOrders().then(orders => {
-			if (mounted) {
-				setOrders(orders);
-			}
-		});
-		return () => (mounted = false);
-	}, []);
+	// const [orders, setOrders] = React.useState([]);
+	// React.useEffect(() => {
+	// 	let mounted = true;
+	// 	ordersViewModel.getOrders().then(orders => {
+	// 		if (mounted) {
+	// 			setOrders(orders);
+	// 		}
+	// 	});
+	// 	return () => (mounted = false);
+	// }, []);
 
 	return (
 		<div>
 			<AppBarView />
-			{orders.map((order, index) => (
+			{ordersViewModel.getOrders().map((order, index) => (
 				<OrderViewController
 					order={order}
 					key={index}
