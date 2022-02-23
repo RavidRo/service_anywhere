@@ -3,6 +3,8 @@ import {
 	makePromise as mockMakePromise,
 } from 'waiters_app/PromiseUtils';
 import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
+import {OrderIdo} from 'waiters_app/src/ido';
+import Order from 'waiters_app/src/Models/Order';
 
 const mockListOfOrders: OrderIdo[] = [
 	{
@@ -32,11 +34,9 @@ const mockGuestLocation2 = {
 	y: 34,
 };
 
-const mockGetWaiterOrders = jest
-	.fn()
-	.mockImplementation(() => mockMakePromise(mockListOfOrders));
+const mockGetWaiterOrders = jest.fn(() => mockMakePromise(mockListOfOrders));
 
-jest.mock('../src/networking/Requests', () => {
+jest.mock('waiters_app/src/networking/Requests', () => {
 	return jest.fn().mockImplementation(() => {
 		return {
 			getWaiterOrders: mockGetWaiterOrders,
@@ -46,20 +46,11 @@ jest.mock('../src/networking/Requests', () => {
 	});
 });
 
-import Requests from '../src/networking/Requests';
-import {OrderIdo} from 'waiters_app/src/ido';
-import Order from 'waiters_app/src/Models/Order';
+import Requests from 'waiters_app/src/networking/Requests';
 
 beforeEach(() => {
 	(Requests as unknown as jest.Mock).mockClear();
 	mockGetWaiterOrders.mockClear();
-
-	jest.useFakeTimers('legacy');
-});
-
-afterEach(() => {
-	jest.clearAllTimers();
-	jest.useRealTimers();
 });
 
 describe('Constructor', () => {
