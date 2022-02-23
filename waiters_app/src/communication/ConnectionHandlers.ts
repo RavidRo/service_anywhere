@@ -5,32 +5,35 @@ import Notifications from './Notifications';
 
 const serverURL = 'server-url:3000';
 export default class ConnectionHandler extends Singleton {
-	private socket?: Socket;
+	private socket: Socket;
 	private notifications: Notifications = new Notifications();
 
 	constructor() {
 		super();
+		this.socket = io(serverURL, {autoConnect: false});
 	}
 
-	public connect(onSuccess?: () => void): void {
-		const socket = io(serverURL);
-		socket.on('connect', () => {
+	public connect(token: string, onSuccess?: () => void): void {
+		this.socket.auth = {token};
+		this.socket.connect();
+
+		this.socket.on('connect', () => {
 			// Connected successfully to the server
 			onSuccess?.();
 		});
-		socket.on('disconnect', reason => {
+		this.socket.on('disconnect', reason => {
 			if (reason === 'io server disconnect') {
 				// the disconnection was initiated by the server, you need to reconnect manually
-				socket.connect();
+				this.socket.connect();
 			} else {
 				// else the socket will automatically try to reconnect
 				// Too see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
 			}
 		});
 
-		this.socket = socket;
+		this.socket = this.socket;
 
-		this.registerEvents(socket);
+		this.registerEvents(this.socket);
 	}
 
 	private registerEvents(socket: Socket<DefaultEventsMap, DefaultEventsMap>) {

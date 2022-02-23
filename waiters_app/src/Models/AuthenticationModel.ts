@@ -1,17 +1,17 @@
 import {makeAutoObservable} from 'mobx';
 
 export default class AuthenticationModel {
-	private _id: string | undefined;
+	private _token: string | undefined;
 
 	constructor() {
 		makeAutoObservable(this);
 	}
 
-	get id(): string | undefined {
-		return this._id;
+	get token(): string | undefined {
+		return this._token;
 	}
 
-	set id(newID: string | undefined) {
-		this._id = newID;
+	set token(newID: string | undefined) {
+		this._token = newID;
 	}
 }

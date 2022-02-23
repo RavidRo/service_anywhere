@@ -12,13 +12,13 @@ export default class AuthenticateViewModel extends Singleton {
 	}
 
 	login(): Promise<string> {
-		return this.requests.login().then(id => {
-			this.model.id = id;
-			return id;
+		return this.requests.login().then(token => {
+			this.model.token = token;
+			return token;
 		});
 	}
 
-	get id(): string | undefined {
-		return this.model.id;
+	get token(): string | undefined {
+		return this.model.token;
 	}
 }

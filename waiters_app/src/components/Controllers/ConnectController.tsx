@@ -1,4 +1,5 @@
-import React, {useContext, useEffect} from 'react';
+import {observer} from 'mobx-react-lite';
+import React, {useContext, useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandlers';
 import {
@@ -14,30 +15,35 @@ type LoginControllerProps = {};
 
 const connection = new ConnectionHandler();
 
-export default function ConnectController(_props: LoginControllerProps) {
+const ConnectController = observer((_props: LoginControllerProps) => {
 	const authentication = useContext(AuthenticationContext);
 	const orders = useContext(OrdersContext);
 	const items = useContext(itemsContext);
 
-	const id = authentication.id;
-	const {request} = useAPI(authentication.login);
-	useEffect(() => {
-		request()
-			.then(id => {
-				const promises = [
-					orders.synchronizeOrders(id),
-					items.syncItems(),
-				];
-				// TODO: Add reconnect button and then
-				Promise.all(promises).catch(() =>
-					Alert.alert("Can't get data from server :(")
-				);
-			})
-			.catch(() => Alert.alert("Can't connect to server :("));
-		connection.connect();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const [connected, setConnected] = useState(false);
 
-	useEffect(() => {}, []);
-	return <ConnectView connected={id !== undefined} />;
-}
+	const token = authentication.token;
+
+	useEffect(() => {
+		if (token) {
+			const promises = [
+				orders.synchronizeOrders(token),
+				items.syncItems(),
+				new Promise<void>(resolve =>
+					connection.connect(token, () => resolve())
+				),
+			];
+			// TODO: Add reconnect button
+			Promise.all(promises)
+				.then(() => setConnected(true))
+				.catch(() => Alert.alert("Can't connect to server"));
+		} else {
+			authentication
+				.login()
+				.catch(() => Alert.alert("Can't login to server"));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [token]);
+	return <ConnectView connected={connected} />;
+});
+export default ConnectController;
