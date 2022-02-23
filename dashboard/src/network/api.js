@@ -85,3 +85,44 @@ export function getWaitersByOrder(orderId) {
 			console.log(`failed to get waiter by order due to ${err}`)
 		);
 }
+
+export function changeOrderStatus(orderId, newStatus) {
+	const url = `${base_route}changeOrderStatus`; // not implemented in server yet, make sure it fits when implemented
+	return axios({
+		method: 'POST',
+		url: url,
+		params: {
+			orderID: orderId,
+			newStatus: newStatus,
+		},
+	})
+		.then(res => {
+			if (res.status) {
+				return res.status < 400;
+			} else {
+				console.log('Error in get change order status');
+			}
+		})
+		.catch(err =>
+			console.log(`failed to change order status due to ${err}`)
+		);
+}
+
+export function cancelOrder(orderId) {
+	const url = `${base_route}cancelOrder`; // not implemented in server yet, make sure it fits when implemented
+	return axios({
+		method: 'POST',
+		url: url,
+		params: {
+			orderID: orderId,
+		},
+	})
+		.then(res => {
+			if (res.status) {
+				return res.status < 400;
+			} else {
+				console.log('Error in get cancel order');
+			}
+		})
+		.catch(err => console.log(`failed to cancel order due to ${err}`));
+}
