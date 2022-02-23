@@ -5,10 +5,11 @@ import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import PropTypes from 'prop-types';
+import {observer} from 'mobx-react';
 
 const dialogTitle = 'Choose Waiter';
 
-export default function WaiterDialogView(props) {
+function WaiterDialogView(props) {
 	const {waiters, handleClose, handleListItemClick, open} = props;
 	return (
 		<Dialog onClose={handleClose} open={open}>
@@ -27,9 +28,11 @@ export default function WaiterDialogView(props) {
 	);
 }
 
+export default observer(WaiterDialogView);
+
 WaiterDialogView.propTypes = {
 	waiters: PropTypes.array,
 	handleClose: PropTypes.func,
 	handleListItemClick: PropTypes.func,
-	open: PropTypes.func,
+	open: PropTypes.bool,
 };

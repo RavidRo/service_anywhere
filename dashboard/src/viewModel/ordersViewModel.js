@@ -1,7 +1,13 @@
-import {getOrders} from '../network/api';
-
 export default class OrdersViewModel {
-	getOrders() {
-		return getOrders();
+	constructor(ordersModel) {
+		this.ordersModel = ordersModel;
+	}
+	get orders() {
+		console.log('get orders view model');
+		return this.ordersModel.orders;
+	}
+
+	set orders(orders) {
+		this.ordersModel.setOrders(orders);
 	}
 }
