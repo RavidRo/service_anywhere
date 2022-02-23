@@ -65,14 +65,6 @@ describe('getLocation', () => {
 			() => {}
 		);
 	});
-	it('Get location translate the location successfully', async () => {
-		expect.assertions(1);
-		const geolocation = new Geolocation(corners);
-		geolocation.getLocation(
-			location => expect(location).toBeTruthy(),
-			() => {}
-		);
-	});
 
 	it('Get location translate the location successfully', async () => {
 		expect.assertions(2);
@@ -128,15 +120,7 @@ describe('getLocation', () => {
 });
 
 describe('watchLocation', () => {
-	it('Get location calls the on success callback', async () => {
-		expect.assertions(1);
-		const geolocation = new Geolocation(corners);
-		geolocation.watchLocation(
-			location => expect(location).toBeTruthy(),
-			() => {}
-		);
-	});
-	it('Get location translate the location successfully', async () => {
+	it('Watch location calls the on success callback', async () => {
 		expect.assertions(1);
 		const geolocation = new Geolocation(corners);
 		geolocation.watchLocation(
@@ -145,7 +129,7 @@ describe('watchLocation', () => {
 		);
 	});
 
-	it('Get location translate the location successfully', async () => {
+	it('Watch location translate the location successfully', async () => {
 		expect.assertions(2);
 		const geolocation = new Geolocation(corners);
 		geolocation.watchLocation(
