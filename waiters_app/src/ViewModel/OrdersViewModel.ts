@@ -1,36 +1,54 @@
 import {Location, OrderStatus} from '../ido';
+import GuestsModel, {Guest} from '../Models/GuestsModel';
 import Order from '../Models/Order';
-import OrderModel from '../Models/OrderModel';
+import OrdersModel from '../Models/OrdersModel';
 import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
 
 export default class OrdersViewModel extends Singleton {
 	private requests: Requests;
-	private ordersModel: OrderModel;
+	private ordersModel: OrdersModel;
+	private guestsModel: GuestsModel;
 
 	constructor(requests: Requests) {
 		super();
 		this.requests = requests;
-		this.ordersModel = new OrderModel();
+		this.ordersModel = new OrdersModel();
+		this.guestsModel = new GuestsModel();
 	}
 
 	public synchronizeOrders(id: string): Promise<void> {
 		return this.requests.getWaiterOrders(id).then(newOrders => {
 			const orders = newOrders.map(order => new Order(order));
-			this.ordersModel.setOrders(orders);
+			this.ordersModel.orders = orders;
+			this.guestsModel.guests = orders.map(
+				order => new Guest(order.guestID)
+			);
 		});
 	}
 
 	get orders(): Order[] {
 		return this.ordersModel.orders;
 	}
+	get guests(): Guest[] {
+		return this.guestsModel.guests;
+	}
 
-	get availableOrders(): Order[] {
-		return this.orders.filter(order => order.location);
+	get availableOrders(): {order: Order; location: Location}[] {
+		const guests = this.guestsModel.guests;
+		return this.orders
+			.map(order => {
+				const guest = guests.find(guest => guest.id === order.guestID);
+				return {order, location: guest?.location};
+			})
+			.filter(orderLocation => orderLocation.location) as {
+			order: Order;
+			location: Location;
+		}[];
 	}
 
 	public updateGuestLocation(guestID: string, guestLocation: Location): void {
-		this.ordersModel.updateGuestLocation(guestID, guestLocation);
+		this.guestsModel.updateGuestLocation(guestID, guestLocation);
 	}
 
 	public updateOrderStatus(orderID: string, status: OrderStatus): void {

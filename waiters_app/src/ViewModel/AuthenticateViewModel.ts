@@ -1,4 +1,4 @@
-import AuthenticationModel from '../Models/Authentication';
+import AuthenticationModel from '../Models/AuthenticationModel';
 import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
 

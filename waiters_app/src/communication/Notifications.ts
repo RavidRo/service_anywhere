@@ -1,8 +1,9 @@
+import Requests from '../networking/Requests';
 import {isLocation, isOrderStatus, isString} from '../typeGuards';
 import OrdersViewModel from '../ViewModel/OrdersViewModel';
 
 export default class Notifications {
-	private orders = new OrdersViewModel();
+	private orders = new OrdersViewModel(new Requests());
 	public eventToCallback: Record<string, (params: any[]) => void> = {
 		updateGuestLocation: this.updateGuestLocation,
 		updateOrderStatus: this.updateOrderStatus,

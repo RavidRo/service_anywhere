@@ -8,7 +8,7 @@ import WaiterMarker from '../Views/markers/WaiterMarker';
 import GuestMarker from '../Views/markers/ClientMarker';
 
 import MapLayoutController from './MapLayoutController';
-import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
+import {PointMarker} from 'waiters_app/src/map';
 import {MyLocationContext, OrdersContext} from 'waiters_app/src/contexts';
 
 type MapMarkerControllerProps = {
@@ -28,17 +28,15 @@ const MapMarkersController = observer(({style}: MapMarkerControllerProps) => {
 	const ordersViewModel = useContext(OrdersContext);
 
 	//Guests Markers
-	const availableOrders = ordersViewModel.availableOrders;
-	const availableOrdersPoints = availableOrders.map(order => ({
-		name: order.id,
-		location: order.location as Location,
-	}));
-
-	const orderToMarker = (order: PointOfInterest): PointMarker => ({
-		point: order,
-		marker: GuestMarker,
-	});
-	const guestsMarkers = availableOrdersPoints.map(orderToMarker);
+	const guestsMarkers = ordersViewModel.availableOrders.map(
+		({order, location}) => ({
+			point: {
+				name: order.id,
+				location,
+			},
+			marker: GuestMarker,
+		})
+	);
 
 	//Waiter Marker
 	const myLocationViewModel = useContext(MyLocationContext);
