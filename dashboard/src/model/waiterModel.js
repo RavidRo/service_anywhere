@@ -14,8 +14,4 @@ export default class DashboardModel {
 	get waiters() {
 		return this._waiters;
 	}
-
-	assignOrderToWaiter(order, waiterId) {
-		console.log('not implemented');
-	}
 }

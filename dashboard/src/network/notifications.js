@@ -10,10 +10,14 @@ export default class Notificiations {
 	};
 
 	updateOrders(params) {
-		console.log('not implemented yet');
+		if (params[0]) {
+			this.ordersViewModel.orders = params[0];
+		}
 	}
 
 	updateWaiters(params) {
-		console.log('not implemented yet');
+		if (params[0]) {
+			this.waitersViewModel.waiters = params[0];
+		}
 	}
 }

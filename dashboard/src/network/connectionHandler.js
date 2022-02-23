@@ -35,7 +35,7 @@ export default class ConnectionHandler extends Singleton {
 				socket.connect();
 			} else {
 				// else the socket will automatically try to reconnect
-				// Too see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
+				// To see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
 				console.warn(
 					'The socket connection to the server has been disconnected, trying to reconnect...',
 					reason
@@ -49,10 +49,10 @@ export default class ConnectionHandler extends Singleton {
 	}
 
 	registerEvents(socket) {
-		for (const event in this.notifications.eventToCallback) {
+		for (const event in this.notifications.eventCallbacks) {
 			socket.on(event, params => {
 				console.info(`Notification ${event}:`, params);
-				this.notifications.eventToCallback[event](params);
+				this.notifications.eventCallbacks[event](params);
 			});
 		}
 	}
