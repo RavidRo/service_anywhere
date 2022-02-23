@@ -4,16 +4,6 @@ import propTypes from 'prop-types';
 
 export default function WaiterDialogViewController(props) {
 	const {onClose, open, waitersViewModel} = props;
-	// const [waiters, setWaiters] = React.useState([]);
-	// React.useEffect(() => {
-	// 	let mounted = true;
-	// 	waitersViewModel.getWaiters().then(waiters => {
-	// 		if (mounted) {
-	// 			setWaiters(waiters);
-	// 		}
-	// 	});
-	// 	return () => (mounted = false);
-	// }, []);
 
 	const handleClose = () => {
 		onClose('');
