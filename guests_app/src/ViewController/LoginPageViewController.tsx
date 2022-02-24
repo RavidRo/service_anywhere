@@ -5,8 +5,8 @@ import {LoginPage} from '../View/LoginPageView';
 
 
 export const LoginPageViewController = () => {
-
-    const authenticateViewModel = new AuthenticateViewModel(new Requests());
+	const requests= new Requests();
+    const authenticateViewModel = new AuthenticateViewModel(requests);
 	// need to change page to Main page when login succeed
 	// passing the token recevied from server 
 

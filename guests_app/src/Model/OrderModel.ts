@@ -1,32 +1,66 @@
-import {makeAutoObservable} from 'mobx';
-import {Order, OrderID, OrderStatus} from '../types';
+//import {makeAutoObservable} from 'mobx';
+import Singleton from '../Singeltone';
+import Location, {Order, OrderID, OrderStatus, Waiter} from '../types';
 
-export class OrderModel {
+export class OrderModel extends Singleton{
 	
 	private static instance: OrderModel;
 	private _order: Order | null;
+	private waiters: Waiter[];
 	
-	private constructor() {
+	public constructor() {
+		super();
 		this._order = null;
+		this.waiters = [];
 	//	makeAutoObservable(this);
 	}
-
-	public static getInstance(): OrderModel {
-		if (!OrderModel.instance) {
-			OrderModel.instance = new OrderModel();
-		}
-
-		return OrderModel.instance;
+	removeOrder(){
+		this._order = null;
+		this.waiters = [];
 	}
 
-	updateOrderStatus(status: OrderStatus) {
+	updateOrderStatus(orderID: OrderID, status: OrderStatus) {
 		if(this._order != null)
-			this._order.status = status;
+			if(this.order?.id == orderID)
+			{
+				this._order.status = status;
+
+			}
 	}
 
 	getOrderId(){
 		return this._order != null? this._order.id : ''
 	}
+
+	updateWaiterLocation(waiterId: string, waiterLocation: Location)
+	{
+		let found = false;
+		if(this.order != null)
+		{
+			for(let waiter of this.waiters)
+			{
+				if(waiter.id == waiterId)
+				{
+					found = true;
+					waiter.location = waiterLocation;
+					break;
+				}
+			}
+			if(!found)
+				this.waiters.push({id: waiterId, location: waiterLocation})
+		}
+	}
+
+	getWaitersLocations() 
+	{
+		let locations = [];
+		for(let waiter of this.waiters)
+		{
+			locations.push(waiter.location);
+		}
+		return locations;
+	}
+
 	get order() {
 		return this._order;
 	}
@@ -34,4 +68,5 @@ export class OrderModel {
 	set order(order: Order | null) {
 		this._order = order;
 	}
+	
 }

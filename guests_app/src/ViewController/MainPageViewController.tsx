@@ -3,12 +3,18 @@ import React from 'react';
 import {useState} from 'react';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import {MainPage} from '../View/MainPageView';
+import { ItemsViewModel } from '../ViewModel/ItemViewModel';
 import OrderViewModel from '../ViewModel/OrderViewModel';
-import {observer} from 'mobx-react-lite';
+//import {observer} from 'mobx-react-lite';
 
 
-export const MainPageViewController = observer(() => {
-	const orderViewModel = new OrderViewModel(new Requests());
+export const MainPageViewController =() => {
+	/**
+	 @todo: initialize all View Models at start
+	**/
+	const requests = new Requests();
+	const orderViewModel = new OrderViewModel(requests);
+	const itemViewModel = new ItemsViewModel(requests);
 
 //	const [waitingForOrder, setWaitingForOrder] = useState(false);
 //	const order_items = ['bamba', 'Beer'];
@@ -70,4 +76,4 @@ export const MainPageViewController = observer(() => {
 	};
 
 	return <MainPage {...Props} />;
-});
+};
