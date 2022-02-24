@@ -1,7 +1,7 @@
-import { ItemModel } from "../Model/ItemModel";
-import Requests from "../Networking/requests";
-import Singleton from "../Singeltone";
-import { Item } from "../types";
+import {ItemModel} from '../Model/ItemModel';
+import Requests from '../Networking/requests';
+import Singleton from '../Singeltone';
+import {Item} from '../types';
 
 export class ItemsViewModel {
 	private itemsModel;
@@ -26,8 +26,7 @@ export class ItemsViewModel {
 		});
 	}
 
-	getItems(){
+	getItems() {
 		return this.itemsModel.items;
 	}
-	
 }

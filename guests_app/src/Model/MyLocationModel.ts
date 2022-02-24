@@ -2,15 +2,13 @@
 import Singleton from '../Singeltone';
 import Location from '../types';
 
-
-export class MyLocationModel extends Singleton{
-	
+export class MyLocationModel extends Singleton {
 	private static instance: MyLocationModel;
 	private _location: Location | null;
 
 	private constructor() {
 		super();
-//		makeAutoObservable(this);
+		//		makeAutoObservable(this);
 	}
 
 	public static getInstance(): MyLocationModel {
@@ -20,15 +18,11 @@ export class MyLocationModel extends Singleton{
 		return MyLocationModel.instance;
 	}
 
-    get location () {
+	get location() {
 		return this._location;
 	}
 
 	set items(location: Location) {
 		this._location = location;
 	}
-
-	
-
-	
 }

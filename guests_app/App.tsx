@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { MainPageViewController } from './src/ViewController/MainPageViewController';
+import {MainPageViewController} from './src/ViewController/MainPageViewController';
 
 const App = () => {
 	return <MainPageViewController />;

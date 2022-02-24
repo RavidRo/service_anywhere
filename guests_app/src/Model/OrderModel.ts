@@ -2,60 +2,51 @@
 import Singleton from '../Singeltone';
 import Location, {Order, OrderID, OrderStatus, Waiter} from '../types';
 
-export class OrderModel extends Singleton{
-	
+export class OrderModel extends Singleton {
 	private static instance: OrderModel;
 	private _order: Order | null;
 	private waiters: Waiter[];
-	
+
 	public constructor() {
 		super();
 		this._order = null;
 		this.waiters = [];
-	//	makeAutoObservable(this);
+		//	makeAutoObservable(this);
 	}
-	removeOrder(){
+	removeOrder() {
 		this._order = null;
 		this.waiters = [];
 	}
 
 	updateOrderStatus(orderID: OrderID, status: OrderStatus) {
-		if(this._order != null)
-			if(this.order?.id == orderID)
-			{
+		if (this._order != null)
+			if (this.order?.id == orderID) {
 				this._order.status = status;
-
 			}
 	}
 
-	getOrderId(){
-		return this._order != null? this._order.id : ''
+	getOrderId() {
+		return this._order != null ? this._order.id : '';
 	}
 
-	updateWaiterLocation(waiterId: string, waiterLocation: Location)
-	{
+	updateWaiterLocation(waiterId: string, waiterLocation: Location) {
 		let found = false;
-		if(this.order != null)
-		{
-			for(let waiter of this.waiters)
-			{
-				if(waiter.id == waiterId)
-				{
+		if (this.order != null) {
+			for (let waiter of this.waiters) {
+				if (waiter.id == waiterId) {
 					found = true;
 					waiter.location = waiterLocation;
 					break;
 				}
 			}
-			if(!found)
-				this.waiters.push({id: waiterId, location: waiterLocation})
+			if (!found)
+				this.waiters.push({id: waiterId, location: waiterLocation});
 		}
 	}
 
-	getWaitersLocations() 
-	{
+	getWaitersLocations() {
 		let locations = [];
-		for(let waiter of this.waiters)
-		{
+		for (let waiter of this.waiters) {
 			locations.push(waiter.location);
 		}
 		return locations;
@@ -68,5 +59,4 @@ export class OrderModel extends Singleton{
 	set order(order: Order | null) {
 		this._order = order;
 	}
-	
 }

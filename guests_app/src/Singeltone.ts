@@ -1,4 +1,3 @@
-
 export default class Singleton {
 	protected static instances: {[className: string]: Singleton} = {};
 

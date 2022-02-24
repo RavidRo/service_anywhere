@@ -44,7 +44,7 @@ export type OrderStatus = 'recieved' | 'inprogress' | 'on the way' | 'arrived';
 export type Order = {
 	id: OrderID;
 	items: Map<String, Number>;
-	status: OrderStatus
+	status: OrderStatus;
 };
 
 export type Item = {
@@ -56,4 +56,4 @@ export type Item = {
 export type Waiter = {
 	id: string;
 	location: Location;
-}
+};

@@ -1,5 +1,5 @@
-import Location from "../types";
-import ConnectionHandler from "./ConnectionHandler";
+import Location from '../types';
+import ConnectionHandler from './ConnectionHandler';
 
 export default class Communicate {
 	private connectionHandler: ConnectionHandler;

@@ -1,4 +1,4 @@
-import { OrderIDO } from '../ido';
+import {OrderIDO} from '../ido';
 import Location, {Item, Order, OrderID} from '../types';
 
 // const service = new Gps();
@@ -80,7 +80,11 @@ export default class Requests {
 			order_id,
 		});
 	}
-	submitReview(orderId: String,  details: String, rating: Number): Promise<void> {
+	submitReview(
+		orderId: String,
+		details: String,
+		rating: Number
+	): Promise<void> {
 		return this.handler.post<void>('submitReview', this.token, {
 			orderId,
 			details,
@@ -90,18 +94,17 @@ export default class Requests {
 }
 
 // need to decide how does Map object will be defined
-	/*	getMaps() : Promise<Map[]>
+/*	getMaps() : Promise<Map[]>
 	{
 		return this.handler.get<Map[]>('getMaps',this.token,{})
 	} */
 
 // updateLocationGuest(location: Location, orderID: OrderID): Promise<void> {
-	// 	return this.handler.post<void>('updateLocationGuest', this.token, {
-	// 		location: {x: location.x, y: location.y},
-	// 		orderID,
-	// 	});
-	// }
-
+// 	return this.handler.post<void>('updateLocationGuest', this.token, {
+// 		location: {x: location.x, y: location.y},
+// 		orderID,
+// 	});
+// }
 
 // export function hasOrderArrived(orderID: String) {
 // 	const url = `${server_adress}/hasOrderArrived`;

@@ -3,12 +3,11 @@ import React from 'react';
 import {useState} from 'react';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import {MainPage} from '../View/MainPageView';
-import { ItemsViewModel } from '../ViewModel/ItemViewModel';
+import {ItemsViewModel} from '../ViewModel/ItemViewModel';
 import OrderViewModel from '../ViewModel/OrderViewModel';
 //import {observer} from 'mobx-react-lite';
 
-
-export const MainPageViewController =() => {
+export const MainPageViewController = () => {
 	/**
 	 @todo: initialize all View Models at start
 	**/
@@ -16,9 +15,9 @@ export const MainPageViewController =() => {
 	const orderViewModel = new OrderViewModel(requests);
 	const itemViewModel = new ItemsViewModel(requests);
 
-//	const [waitingForOrder, setWaitingForOrder] = useState(false);
-//	const order_items = ['bamba', 'Beer'];
-//	const [orderID, setOrderID] = useState('');
+	//	const [waitingForOrder, setWaitingForOrder] = useState(false);
+	//	const order_items = ['bamba', 'Beer'];
+	//	const [orderID, setOrderID] = useState('');
 
 	async function requestPermissions() {
 		// if (Platform.OS === 'ios') {
@@ -42,7 +41,9 @@ export const MainPageViewController =() => {
 				orderViewModel
 					.createOrder(items)
 					.then(createdOrder => {
-						console.log('order created with order id: ' + createdOrder.id);
+						console.log(
+							'order created with order id: ' + createdOrder.id
+						);
 
 						// setWaitingForOrder(true);
 						// setOrderID(order_id);
@@ -65,14 +66,14 @@ export const MainPageViewController =() => {
 
 	// just for testing
 	function GotOrder() {
-//		setWaitingForOrder(false);
+		//		setWaitingForOrder(false);
 		Alert.alert('Order Arrived');
 	}
 
 	const Props = {
 		SendOrderToServer: SendOrderToServer,
 		GotOrder: GotOrder,
-		order: orderViewModel.getOrder()
+		order: orderViewModel.getOrder(),
 	};
 
 	return <MainPage {...Props} />;
