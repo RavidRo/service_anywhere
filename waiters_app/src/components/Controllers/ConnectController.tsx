@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react-lite';
 import React, {useContext, useEffect, useState} from 'react';
 import {Alert} from 'react-native';
-import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandlers';
+import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandler';
 import {
 	AuthenticationContext,
 	itemsContext,

@@ -1,14 +1,12 @@
 import {ItemIdo} from '../ido';
 import ItemModel from '../Models/ItemModel';
 import Requests from '../networking/Requests';
-import Singleton from '../Singleton';
 
-export class ItemsViewModel extends Singleton {
+export class ItemsViewModel {
 	private itemsModel: ItemModel;
 	private requests: Requests;
 
 	constructor(requests: Requests) {
-		super();
 		this.itemsModel = new ItemModel();
 		this.requests = requests;
 	}

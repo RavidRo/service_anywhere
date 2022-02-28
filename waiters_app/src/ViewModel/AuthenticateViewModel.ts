@@ -1,13 +1,12 @@
 import AuthenticationModel from '../Models/AuthenticationModel';
 import Requests from '../networking/Requests';
-import Singleton from '../Singleton';
 
-export default class AuthenticateViewModel extends Singleton {
+export default class AuthenticateViewModel {
 	private requests: Requests;
 	private model: AuthenticationModel;
 
 	constructor(requests: Requests) {
-		super();
+		this.model = AuthenticationModel.getInstance();
 		this.requests = requests;
 	}
 

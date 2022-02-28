@@ -1,15 +1,9 @@
-import Singleton from '../Singleton';
-
 type MapDetails = {
 	id: string;
 	name: string;
 	imageURL: string;
 };
-export default class MapsViewModel extends Singleton {
-	constructor() {
-		super();
-	}
-
+export default class MapsViewModel {
 	getMapDetails(): MapDetails {
 		return {
 			id: '',

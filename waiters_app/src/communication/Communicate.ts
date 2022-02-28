@@ -1,9 +1,11 @@
 import {Location} from '../ido';
-import ConnectionHandler from './ConnectionHandlers';
+import Singleton from '../Singleton';
+import ConnectionHandler from './ConnectionHandler';
 
-export default class Communicate {
+export default class Communicate extends Singleton {
 	private connectionHandler: ConnectionHandler;
 	constructor() {
+		super();
 		this.connectionHandler = new ConnectionHandler();
 	}
 
