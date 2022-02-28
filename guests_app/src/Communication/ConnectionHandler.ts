@@ -10,7 +10,7 @@ export default class ConnectionHandler extends Singleton {
 		super();
 	}
 
-//	public connect(onSuccess?: () => void): void {}
+	//	public connect(onSuccess?: () => void): void {}
 
-//	public send(event: string, ...params: any[]): void {}
+	//	public send(event: string, ...params: any[]): void {}
 }
