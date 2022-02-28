@@ -1,4 +1,4 @@
-import { ResponseMsg } from 'server/Response';
+import {ResponseMsg} from 'server/Response';
 import {Api, Arrived, Location, OrderID} from '../api';
 import {Order} from '../Logic/Order';
 
