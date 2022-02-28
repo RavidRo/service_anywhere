@@ -1,6 +1,5 @@
 import Requests from 'guests_app/src/Networking/requests';
 import React from 'react';
-import {useState} from 'react';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import {MainPage} from '../View/MainPageView';
 import {ItemsViewModel} from '../ViewModel/ItemViewModel';

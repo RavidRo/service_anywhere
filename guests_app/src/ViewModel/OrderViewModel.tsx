@@ -1,6 +1,5 @@
 import Requests from 'guests_app/src/Networking/requests';
 import Location, {Order, OrderID, OrderStatus} from 'guests_app/src/types';
-import {Alert} from 'react-native';
 import {OrderModel} from '../Model/OrderModel';
 
 export default class OrderViewModel {
@@ -17,7 +16,9 @@ export default class OrderViewModel {
 		this.requests.getMyOrders().then(orders => {
 			if (orders.length > 0) {
 				this.order_model.order = orders[0];
-			} else this.removeOrder();
+			} else {
+				this.removeOrder();
+			}
 		});
 	}
 
@@ -57,7 +58,7 @@ export default class OrderViewModel {
 	submitReview(deatils: String, rating: Number): Promise<void> {
 		const order = this.getOrder();
 		if (order != null) {
-			if (order.status == 'arrived') {
+			if (order.status === 'arrived') {
 				return this.requests.submitReview(order.id, deatils, rating);
 			}
 			return new Promise((_resolve, reject) =>

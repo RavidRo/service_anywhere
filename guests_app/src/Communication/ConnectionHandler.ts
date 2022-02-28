@@ -1,7 +1,7 @@
 import Singleton from '../Singeltone';
 import Notifications from './Notification';
 
-const serverURL = 'server-url:3000';
+const _serverURL = 'server-url:3000';
 export default class ConnectionHandler extends Singleton {
 	//	private socket?: Socket;
 	private notifications: Notifications = new Notifications();
@@ -12,5 +12,5 @@ export default class ConnectionHandler extends Singleton {
 
 	//	public connect(onSuccess?: () => void): void {}
 
-	//	public send(event: string, ...params: any[]): void {}
+	public send(_event: string, ..._params: any[]): void {}
 }

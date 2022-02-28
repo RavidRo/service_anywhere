@@ -15,7 +15,7 @@ export const LoginPageViewController = () => {
 	const Props = {
 		setPhoneNumber: setPhoneNumber,
 		setPassword: setPassword,
-		Login: authenticateViewModel.login,
+		Login: () => authenticateViewModel.login(phoneNumber, password),
 	};
 
 	return <LoginPage {...Props} />;
