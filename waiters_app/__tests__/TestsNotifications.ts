@@ -22,7 +22,7 @@ beforeEach(() => {
 	(OrderViewModel as unknown as jest.Mock).mockClear();
 	mockUpdateOrderStatus.mockClear();
 	mockUpdateGuestLocation.mockClear();
-	jest.spyOn(console, 'error').mockImplementation(jest.fn());
+	jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 });
 
 describe('updateGuestLocation', () => {
