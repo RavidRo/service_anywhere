@@ -1,30 +1,54 @@
-import React, {useEffect} from 'react';
+import {observer} from 'mobx-react-lite';
+import React, {useContext, useState} from 'react';
 import {Alert} from 'react-native';
-import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandlers';
-import {useAPI} from 'waiters_app/src/hooks/useApi';
-import AuthenticateViewModel from 'waiters_app/src/ViewModel/AuthenticateViewModel';
-import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
+import {ConnectionContext} from 'waiters_app/src/contexts';
+
 import ConnectView from '../Views/ConnectView';
 
 type LoginControllerProps = {};
 
-const authentication = new AuthenticateViewModel();
-const orders = new OrdersViewModel();
-const connection = new ConnectionHandler();
+const ConnectController = observer((_props: LoginControllerProps) => {
+	const connection = useContext(ConnectionContext);
 
-export default function ConnectController(_props: LoginControllerProps) {
-	const id = authentication.id;
-	const {request} = useAPI(authentication.login);
-	useEffect(() => {
-		request()
-			.then(id => {
-				orders.synchronizeOrders(id);
-			})
-			.catch(() => Alert.alert("Can't connect to server :("));
-		connection.connect();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const token = connection.token;
+	const isLoggedIn = token !== undefined;
 
-	useEffect(() => {}, []);
-	return <ConnectView connected={id !== undefined} />;
-}
+	const [isConnected, setIsConnected] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [password, setPassword] = useState('');
+
+	const establishConnection = () => {
+		setIsLoading(true);
+		connection
+			.connect()
+			.then(() => setIsConnected(true))
+			.catch(() => Alert.alert("Can't establish connection to server"))
+			.finally(() => setIsLoading(false));
+	};
+
+	const logIn = () => {
+		setIsLoading(true);
+		return connection
+			.login()
+			.catch(() => Alert.alert("Can't login to server"))
+			.finally(() => setIsLoading(false));
+	};
+
+	const onSubmit = () => {
+		logIn().then(establishConnection);
+	};
+
+	return (
+		<ConnectView
+			loggedIn={isLoggedIn}
+			isLoading={isLoading}
+			isConnected={isConnected}
+			password={password}
+			onPasswordChange={setPassword}
+			onSubmit={onSubmit}
+			establishConnection={establishConnection}
+			isReconnecting={connection.isReconnecting}
+		/>
+	);
+});
+export default ConnectController;

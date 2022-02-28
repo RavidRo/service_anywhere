@@ -1,4 +1,4 @@
-import {Location, OrderIdo} from './ido';
+import {ItemIdo, Location, OrderIdo} from './ido';
 
 type Arrived = boolean;
 type OrderID = string;
@@ -21,4 +21,5 @@ type Api = {
 	getGuestLocation: (orderID: OrderID) => Location;
 	orderArrived: (orderID: OrderID) => void;
 	login: () => WaiterID;
+	getItems: () => ItemIdo[];
 };

@@ -1,4 +1,3 @@
-import Singleton from '../Singleton';
 import configuration from '../../configuration.json';
 
 type MapDetails = {
@@ -6,11 +5,7 @@ type MapDetails = {
 	name: string;
 	imageURL: string;
 };
-export default class MapsViewModel extends Singleton {
-	constructor() {
-		super();
-	}
-
+export default class MapViewModel {
 	getMapDetails(): MapDetails {
 		return {
 			id: '',

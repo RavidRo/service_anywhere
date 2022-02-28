@@ -1,4 +1,3 @@
-// import Singleton from '../Singleton';
 import {makeAutoObservable} from 'mobx';
 import {Location} from '../ido';
 

@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
-import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
+import React, {useContext, useState} from 'react';
+import {OrdersContext} from 'waiters_app/src/contexts';
 
 import OrdersListView from '../Views/OrdersList';
 
 type OrdersProps = {};
 
-const ordersViewModel = new OrdersViewModel();
-
 export default function OrdersList(_: OrdersProps) {
+	const ordersViewModel = useContext(OrdersContext);
 	const [selectedOrder, setSelectedOrder] = useState<string | undefined>();
 
 	const selectOrder = (orderId: string) => {

@@ -2,7 +2,6 @@ import {Corners, Location} from '../ido';
 import Geolocation from '../localization/Geolocation';
 import {ILocationService} from '../localization/ILocationService';
 import MyLocationModel from '../Models/MyLocationModel';
-import Singleton from '../Singleton';
 import configuration from '../../configuration.json';
 
 const corners: Corners = {
@@ -11,13 +10,11 @@ const corners: Corners = {
 	topRightGPS: configuration.corners['bottom-right-gps'],
 	topLeftGPS: configuration.corners['bottom-left-gps'],
 };
-export default class MyLocationViewModel extends Singleton {
+export default class MyLocationViewModel {
 	private locationService: ILocationService;
 	private locationModel: MyLocationModel;
 
 	constructor() {
-		super();
-
 		this.locationModel = new MyLocationModel();
 		this.locationService = new Geolocation(corners);
 		this.locationService.watchLocation(

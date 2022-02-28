@@ -1,6 +1,6 @@
 import RequestsHandler from './RequestsHandler';
 import Singleton from '../Singleton';
-import {Location, OrderIdo} from '../ido';
+import {ItemIdo, Location, OrderIdo} from '../ido';
 
 export default class Requests extends Singleton {
 	private handler: RequestsHandler;
@@ -22,8 +22,8 @@ export default class Requests extends Singleton {
 			});
 	}
 
-	getWaiterOrders(waiterID: string): Promise<OrderIdo[]> {
-		return this.handler.get<OrderIdo[]>('getWaiterOrders', {waiterID});
+	getWaiterOrders(): Promise<OrderIdo[]> {
+		return this.handler.get<OrderIdo[]>('getWaiterOrders');
 	}
 
 	orderArrived(orderID: string): Promise<void> {
@@ -32,5 +32,9 @@ export default class Requests extends Singleton {
 
 	login(): Promise<string> {
 		return this.handler.post<string>('connectWaiter');
+	}
+
+	getItems(): Promise<ItemIdo[]> {
+		return this.handler.get<ItemIdo[]>('getItems');
 	}
 }

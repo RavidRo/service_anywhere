@@ -1,18 +1,17 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Image, LayoutChangeEvent, StyleProp, ViewStyle} from 'react-native';
 
-import MapsViewModel from '../../ViewModel/MapsViewModel';
 import MapView from '../Views/MapView';
 import {PointMarker} from 'waiters_app/src/map';
+import {MapsContext} from 'waiters_app/src/contexts';
 
 type MapLayoutProps = {
 	style?: StyleProp<ViewStyle>;
 	markers: PointMarker[];
 };
 
-const mapViewModel = new MapsViewModel();
-
 export default function MapLayoutController({style, markers}: MapLayoutProps) {
+	const mapViewModel = useContext(MapsContext);
 	const imageURL = mapViewModel.getMapDetails().imageURL;
 
 	const [imageWidth, setImageWidth] = useState<number | undefined>();

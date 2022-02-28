@@ -12,6 +12,8 @@ export function isString(someString: any): someString is string {
 }
 
 export function isOrderStatus(status: any): status is OrderStatus {
-	const orders = ['unassigned', 'inprogress', 'completed'];
-	return orders.find(status) !== undefined;
+	const result = ['unassigned', 'inprogress', 'completed'].find(
+		availableStatus => availableStatus === status
+	);
+	return result !== undefined;
 }

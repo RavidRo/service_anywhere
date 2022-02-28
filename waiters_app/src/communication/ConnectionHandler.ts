@@ -1,33 +1,41 @@
 import {DefaultEventsMap} from '@socket.io/component-emitter';
 import {io, Socket} from 'socket.io-client';
+import ConnectionModel from '../Models/ConnectionModel';
 import Singleton from '../Singleton';
 import Notifications from './Notifications';
 import configuration from '../../configuration.json';
 
 export default class ConnectionHandler extends Singleton {
-	private socket?: Socket;
+	private socket: Socket;
+	private connectionModel: ConnectionModel;
 	private notifications: Notifications = new Notifications();
 
 	constructor() {
 		super();
+		this.connectionModel = ConnectionModel.getInstance();
+		this.socket = io(configuration['server-url'], {autoConnect: false});
 	}
 
-	public connect(onSuccess?: () => void): void {
-		const socket = io(configuration['server-url']);
-		socket.on('connect', () => {
+	public connect(token: string, onSuccess?: () => void): void {
+		this.socket.auth = {token};
+		this.socket.connect();
+
+		this.socket.on('connect', () => {
 			// Connected successfully to the server
+			this.connectionModel.reconnectingToServer = false;
 			onSuccess?.();
 			console.info(
 				'A socket connection has been created successfully with the server'
 			);
 		});
-		socket.on('disconnect', reason => {
+		this.socket.on('disconnect', reason => {
+			this.connectionModel.reconnectingToServer = true;
 			if (reason === 'io server disconnect') {
 				// the disconnection was initiated by the server, you need to reconnect manually
 				console.warn(
 					'The socket connection to the server has been disconnected by the server, trying to reconnect...'
 				);
-				socket.connect();
+				this.socket.connect();
 			} else {
 				// else the socket will automatically try to reconnect
 				// Too see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
@@ -38,9 +46,9 @@ export default class ConnectionHandler extends Singleton {
 			}
 		});
 
-		this.socket = socket;
+		this.socket = this.socket;
 
-		this.registerEvents(socket);
+		this.registerEvents(this.socket);
 	}
 
 	private registerEvents(socket: Socket<DefaultEventsMap, DefaultEventsMap>) {

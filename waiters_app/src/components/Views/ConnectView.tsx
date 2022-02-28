@@ -1,19 +1,67 @@
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Button, StyleSheet, Text, TextInput} from 'react-native';
 import MapScreenController from '../Controllers/MapScreenController';
 
 type LoginViewProps = {
-	connected: boolean;
+	isConnected: boolean;
+	loggedIn: boolean;
+	isLoading: boolean;
+	password: string;
+	onPasswordChange: (newPassword: string) => void;
+	onSubmit: () => void;
+	establishConnection: () => void;
+
+	isReconnecting: boolean;
 };
 
 export default function LoginView(props: LoginViewProps) {
-	return props.connected ? (
-		<MapScreenController />
-	) : (
-		<Text>Connecting to server...</Text>
+	if (props.isConnected) {
+		return (
+			<>
+				{props.isReconnecting && (
+					<Text>Connection lost, trying to reconnect...</Text>
+				)}
+				<MapScreenController />
+			</>
+		);
+	}
+	if (props.loggedIn) {
+		return (
+			<>
+				<Button
+					title='Retry'
+					onPress={props.establishConnection}
+					disabled={props.isLoading}
+				/>
+				{props.isLoading && <Text>Establishing connection...</Text>}
+			</>
+		);
+	}
+
+	return (
+		<>
+			<TextInput
+				style={styles.input}
+				onChangeText={props.onPasswordChange}
+				value={props.password}
+				placeholder='Your Password'
+				secureTextEntry
+			/>
+			<Button
+				title='Log in'
+				onPress={props.onSubmit}
+				disabled={props.isLoading}
+			/>
+			{props.isLoading && <Text>Logging in...</Text>}
+		</>
 	);
 }
 
-const _styles = StyleSheet.create({
-	container: {},
+const styles = StyleSheet.create({
+	input: {
+		height: 40,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+	},
 });
