@@ -1,4 +1,5 @@
-import Location, {Item, Order, OrderID} from '../types';
+import {OrderIDO} from '../ido';
+import {Item, OrderID} from '../types';
 
 // const service = new Gps();
 // const corners = {
@@ -55,14 +56,9 @@ export default class Requests {
 	setToken(token: string) {
 		this.token = token;
 	}
-	updateLocationGuest(location: Location, orderID: OrderID): Promise<void> {
-		return this.handler.post<void>('updateLocationGuest', this.token, {
-			location: {x: location.x, y: location.y},
-			orderID,
-		});
-	}
-	login(phone_number: String, password: String): Promise<boolean> {
-		return this.handler.post<boolean>('guestLogin', this.token, {
+
+	login(phone_number: String, password: String): Promise<string> {
+		return this.handler.post<string>('guestLogin', '', {
 			phone_number,
 			password,
 		});
@@ -70,13 +66,9 @@ export default class Requests {
 	getItems(): Promise<Item[]> {
 		return this.handler.get<Item[]>('getItems', this.token, {});
 	}
-	// need to decide how does Map object will be defined
-	/*	getMaps() : Promise<Map[]>
-	{
-		return this.handler.get<Map[]>('getMaps',this.token,{})
-	} */
-	getMyOrders(): Promise<Order[]> {
-		return this.handler.get<Order[]>('getGuestOrders', this.token, {});
+
+	getMyOrders(): Promise<OrderIDO[]> {
+		return this.handler.get<OrderIDO[]>('getGuestOrders', this.token, {});
 	}
 	createOrder(order_items: Map<string, Number>): Promise<OrderID> {
 		return this.handler.post<OrderID>('createOrder', this.token, {
@@ -88,13 +80,31 @@ export default class Requests {
 			order_id,
 		});
 	}
-	submitReview(details: String, rating: Number): Promise<void> {
+	submitReview(
+		orderId: String,
+		details: String,
+		rating: Number
+	): Promise<void> {
 		return this.handler.post<void>('submitReview', this.token, {
+			orderId,
 			details,
 			rating,
 		});
 	}
 }
+
+// need to decide how does Map object will be defined
+/*	getMaps() : Promise<Map[]>
+	{
+		return this.handler.get<Map[]>('getMaps',this.token,{})
+	} */
+
+// updateLocationGuest(location: Location, orderID: OrderID): Promise<void> {
+// 	return this.handler.post<void>('updateLocationGuest', this.token, {
+// 		location: {x: location.x, y: location.y},
+// 		orderID,
+// 	});
+// }
 
 // export function hasOrderArrived(orderID: String) {
 // 	const url = `${server_adress}/hasOrderArrived`;
