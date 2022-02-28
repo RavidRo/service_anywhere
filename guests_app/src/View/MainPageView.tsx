@@ -28,8 +28,7 @@ export const MainPage = (props: any) => {
 			{props.order != null ? (
 				<View>
 					<Text>
-						Order in progress...\n
-						order id = {props.order.order_id}
+						Order in progress...\n order id = {props.order.order_id}
 					</Text>
 					<ActivityIndicator size='large' color='#00ff00' />
 				</View>

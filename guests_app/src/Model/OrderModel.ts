@@ -28,13 +28,11 @@ export class OrderModel extends Singleton {
 	}
 
 	updateWaiterLocation(waiterId: string, waiterLocation: Location) {
-
-		const waiter = this.waiters.find((waiter) => waiter.id == waiterId);
-		if(waiter) {
-		    waiter.location = waiterLocation;
-		}
-		else {
-		    this.waiters.push({id: waiterId, location: waiterLocation});
+		const waiter = this.waiters.find(waiter => waiter.id == waiterId);
+		if (waiter) {
+			waiter.location = waiterLocation;
+		} else {
+			this.waiters.push({id: waiterId, location: waiterLocation});
 		}
 	}
 
