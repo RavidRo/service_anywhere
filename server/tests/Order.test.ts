@@ -22,7 +22,7 @@ test('giveFeedback should return true', () => {
 	expect(
 		order.Order.delegate(firstOrder, (o: Order) => {
 			return o.giveFeedback('good', 5);
-		})
+		}).isSuccess()
 	).toBe(true);
 });
 
@@ -30,10 +30,10 @@ test('updateLocationGuest and getGuestLocation should have corresponding locatio
 	var location: Location = {x: 1, y: 1};
 	expect(
 		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.updateLocationGuest(location);
-		})
+			return o.updateLocationGuest(location)
+		}).isSuccess()
 	).toBe(true);
-	expect(order.Order.getGuestLocation(firstOrder)).toEqual(location);
+	expect(order.Order.getGuestLocation(firstOrder).getData()).toEqual(location);
 });
 
 test('order arrival test', () => {
@@ -42,7 +42,19 @@ test('order arrival test', () => {
 	});
 	expect(
 		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.hasOrderArrived();
-		})
+			return o.hasOrderArrived()
+		}).isSuccess()
 	).toBe(true);
 });
+
+test('delegate with a nonexistant orderId should fail', () => {
+	expect(order.Order.delegate('', (o: Order) => {
+			return o.hasOrderArrived()
+		}).isSuccess()
+	).toBe(false)
+})
+
+test('getGuestLocation with a nonexistant orderId should fail', () => {
+	expect(order.Order.getGuestLocation('').isSuccess()
+	).toBe(false)
+})

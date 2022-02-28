@@ -1,5 +1,8 @@
 import AuthenticatorChecker from '../../Data/AuthenticatorChecker'
+import {makeFail, makeGood, ResponseMsg} from '../../Response'
+
 var jwt = require('jsonwebtoken');
+const failStatusCode = 400; //todo: change
 
 function generateKey(): string {
     const length = 10;
@@ -22,32 +25,32 @@ function loginPass(password: string): string{   //returns token
     return jwt.sign(AuthenticatorChecker.checkPass(password), key, { expiresIn: '1h'});
 }
 
-function authenticate(token: string): string{   //returns Id
+function authenticate(token: string): ResponseMsg<string>{   //returns Id
     try{
         var id = jwt.verify(token, key);
     }
     catch(err){
-        return '' //todo: responses
+        return makeFail('Token can\'t be verified', failStatusCode);
     }
     if (AuthenticatorChecker.validateId(id)) {
-        return id;
+        return makeGood(id);
     }
     else{
-        return '' //todo: response
+        return makeFail('The token entered does not match any ID.', failStatusCode);
     }
 }
 
-function authenticateAdmin(token: string): string{  //returns Id
+function authenticateAdmin(token: string): ResponseMsg<string>{  //returns Id
     try{
         var id = jwt.verify(token, key);
     }
     catch(err){
-        return '' //todo: responses
+        return makeFail('Token can\'t be verified', failStatusCode);
     }
     if (AuthenticatorChecker.validateAdmin(id)) {
-        return id;
+        return makeGood(id);
     }
     else{
-        return '' //todo: response
+        return makeFail('The token entered does not match any admin ID.', failStatusCode);
     }
 }
