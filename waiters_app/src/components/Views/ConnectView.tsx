@@ -15,23 +15,30 @@ type LoginViewProps = {
 };
 
 export default function LoginView(props: LoginViewProps) {
-	return props.isConnected ? (
-		<>
-			{props.isReconnecting && (
-				<Text>Connection lost, trying to reconnect...</Text>
-			)}
-			<MapScreenController />
-		</>
-	) : props.loggedIn ? (
-		<>
-			<Button
-				title='Retry'
-				onPress={props.establishConnection}
-				disabled={props.isLoading}
-			/>
-			{props.isLoading && <Text>Establishing connection...</Text>}
-		</>
-	) : (
+	if (props.isConnected) {
+		return (
+			<>
+				{props.isReconnecting && (
+					<Text>Connection lost, trying to reconnect...</Text>
+				)}
+				<MapScreenController />
+			</>
+		);
+	}
+	if (props.loggedIn) {
+		return (
+			<>
+				<Button
+					title='Retry'
+					onPress={props.establishConnection}
+					disabled={props.isLoading}
+				/>
+				{props.isLoading && <Text>Establishing connection...</Text>}
+			</>
+		);
+	}
+
+	return (
 		<>
 			<TextInput
 				style={styles.input}

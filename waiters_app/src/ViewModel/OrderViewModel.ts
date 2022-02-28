@@ -5,7 +5,7 @@ import OrdersModel from '../Models/OrdersModel';
 import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
 
-export default class OrdersViewModel extends Singleton {
+export default class OrderViewModel extends Singleton {
 	private requests: Requests;
 	private ordersModel: OrdersModel;
 	private guestsModel: GuestsModel;

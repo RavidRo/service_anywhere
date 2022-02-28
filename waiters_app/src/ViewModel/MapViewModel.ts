@@ -3,7 +3,7 @@ type MapDetails = {
 	name: string;
 	imageURL: string;
 };
-export default class MapsViewModel {
+export default class MapViewModel {
 	getMapDetails(): MapDetails {
 		return {
 			id: '',

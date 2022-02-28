@@ -2,7 +2,7 @@ import {
 	flushPromises,
 	makePromise as mockMakePromise,
 } from 'waiters_app/PromiseUtils';
-import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
+import OrderViewModel from 'waiters_app/src/ViewModel/OrderViewModel';
 import {OrderIdo} from 'waiters_app/src/ido';
 import Order from 'waiters_app/src/Models/Order';
 
@@ -55,20 +55,20 @@ beforeEach(() => {
 
 describe('Constructor', () => {
 	test('The class can be created successfully', async () => {
-		const ordersViewModel = new OrdersViewModel(new Requests());
+		const ordersViewModel = new OrderViewModel(new Requests());
 		expect(ordersViewModel).toBeTruthy();
 	});
 
 	test('Looked for orders in the server', async () => {
-		const ordersViewModel = new OrdersViewModel(new Requests());
-		ordersViewModel.synchronizeOrders('id');
+		const ordersViewModel = new OrderViewModel(new Requests());
+		ordersViewModel.synchronizeOrders();
 		await flushPromises();
 		expect(mockGetWaiterOrders).toHaveBeenCalled();
 	});
 
 	test('Initializing orders to the orders in the server', async () => {
-		const ordersViewModel = new OrdersViewModel(new Requests());
-		ordersViewModel.synchronizeOrders('id');
+		const ordersViewModel = new OrderViewModel(new Requests());
+		ordersViewModel.synchronizeOrders();
 		await flushPromises();
 		expect(ordersViewModel.orders).toEqual(
 			mockListOfOrders.map(ido => new Order(ido))
@@ -76,8 +76,8 @@ describe('Constructor', () => {
 	});
 
 	test('The orders are starting with no location', async () => {
-		const ordersViewModel = new OrdersViewModel(new Requests());
-		ordersViewModel.synchronizeOrders('id');
+		const ordersViewModel = new OrderViewModel(new Requests());
+		ordersViewModel.synchronizeOrders();
 		await flushPromises();
 		expect(ordersViewModel.availableOrders).toEqual([]);
 	});
@@ -85,8 +85,8 @@ describe('Constructor', () => {
 
 describe('UpdateLocation', () => {
 	test('Getting orders with available locations', async () => {
-		const ordersViewModel = new OrdersViewModel(new Requests());
-		ordersViewModel.synchronizeOrders('id');
+		const ordersViewModel = new OrderViewModel(new Requests());
+		ordersViewModel.synchronizeOrders();
 		await flushPromises();
 		ordersViewModel.updateGuestLocation(
 			mockListOfOrders[0].guestID,
@@ -100,8 +100,8 @@ describe('UpdateLocation', () => {
 		]);
 	});
 	test('Getting the most updated location', async () => {
-		const ordersViewModel = new OrdersViewModel(new Requests());
-		ordersViewModel.synchronizeOrders('id');
+		const ordersViewModel = new OrderViewModel(new Requests());
+		ordersViewModel.synchronizeOrders();
 		await flushPromises();
 		ordersViewModel.updateGuestLocation(
 			mockListOfOrders[0].guestID,

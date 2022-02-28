@@ -1,11 +1,7 @@
 import {observer} from 'mobx-react-lite';
 import React, {useContext, useState} from 'react';
 import {Alert} from 'react-native';
-import {
-	ConnectionContext,
-	itemsContext,
-	OrdersContext,
-} from 'waiters_app/src/contexts';
+import {ConnectionContext} from 'waiters_app/src/contexts';
 
 import ConnectView from '../Views/ConnectView';
 
@@ -13,8 +9,6 @@ type LoginControllerProps = {};
 
 const ConnectController = observer((_props: LoginControllerProps) => {
 	const connection = useContext(ConnectionContext);
-	const orders = useContext(OrdersContext);
-	const items = useContext(itemsContext);
 
 	const token = connection.token;
 	const isLoggedIn = token !== undefined;
@@ -24,31 +18,24 @@ const ConnectController = observer((_props: LoginControllerProps) => {
 	const [password, setPassword] = useState('');
 
 	const establishConnection = () => {
-		const promises = [
-			orders.synchronizeOrders(),
-			items.syncItems(),
-			new Promise<void>(resolve => connection.connect(() => resolve())),
-		];
 		setIsLoading(true);
-		Promise.all(promises)
-			.then(() => {
-				setIsConnected(true);
-			})
-			.catch(() => {
-				Alert.alert("Can't establish connection to server");
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		connection
+			.connect()
+			.then(() => setIsConnected(true))
+			.catch(() => Alert.alert("Can't establish connection to server"))
+			.finally(() => setIsLoading(false));
+	};
+
+	const logIn = () => {
+		setIsLoading(true);
+		return connection
+			.login()
+			.catch(() => Alert.alert("Can't login to server"))
+			.finally(() => setIsLoading(false));
 	};
 
 	const onSubmit = () => {
-		setIsLoading(true);
-		connection
-			.login()
-			.catch(() => Alert.alert("Can't login to server"))
-			.finally(() => setIsLoading(false))
-			.then(establishConnection);
+		logIn().then(establishConnection);
 	};
 
 	return (
