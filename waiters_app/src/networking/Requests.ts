@@ -22,8 +22,8 @@ export default class Requests extends Singleton {
 			});
 	}
 
-	getWaiterOrders(waiterID: string): Promise<OrderIdo[]> {
-		return this.handler.get<OrderIdo[]>('getWaiterOrders', {waiterID});
+	getWaiterOrders(): Promise<OrderIdo[]> {
+		return this.handler.get<OrderIdo[]>('getWaiterOrders');
 	}
 
 	orderArrived(orderID: string): Promise<void> {

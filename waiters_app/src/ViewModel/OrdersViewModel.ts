@@ -17,8 +17,8 @@ export default class OrdersViewModel extends Singleton {
 		this.guestsModel = new GuestsModel();
 	}
 
-	public synchronizeOrders(id: string): Promise<void> {
-		return this.requests.getWaiterOrders(id).then(newOrders => {
+	public synchronizeOrders(): Promise<void> {
+		return this.requests.getWaiterOrders().then(newOrders => {
 			const orders = newOrders.map(order => new Order(order));
 			this.ordersModel.orders = orders;
 			this.guestsModel.guests = orders.map(

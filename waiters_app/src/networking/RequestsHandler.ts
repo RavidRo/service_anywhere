@@ -1,12 +1,12 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
-import AuthenticationModel from '../Models/AuthenticationModel';
+import ConnectionModel from '../Models/ConnectionModel';
 
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
-	private authenticate: AuthenticationModel;
+	private connection: ConnectionModel;
 
 	constructor() {
-		this.authenticate = AuthenticationModel.getInstance();
+		this.connection = ConnectionModel.getInstance();
 		this.axiosInstance = axios.create({
 			baseURL: 'https://service-everywhere.herokuapp.com/',
 		});
@@ -20,8 +20,8 @@ class RequestsHandler {
 		console.debug(`Request ${endPoint}`, params);
 		const config: AxiosRequestConfig = {
 			headers: {
-				...(this.authenticate.token && {
-					Authorization: this.authenticate.token,
+				...(this.connection.token && {
+					Authorization: this.connection.token,
 				}),
 			},
 		};
