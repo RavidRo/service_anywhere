@@ -1,8 +1,8 @@
 import {makeAutoObservable} from 'mobx';
-import {Location} from '../ido';
+import {OrderStatus} from '../ido';
 import Order from './Order';
 
-export default class OrderModel {
+export default class OrdersModel {
 	private _orders: Map<string, Order>; //<ID, Object>
 	constructor() {
 		this._orders = new Map();
@@ -13,17 +13,17 @@ export default class OrderModel {
 		return Array.from(this._orders.values());
 	}
 
-	setOrders(newOrders: Order[]) {
+	set orders(newOrders: Order[]) {
 		this._orders.clear();
 		newOrders.forEach(order => {
 			this._orders.set(order.id, order);
 		});
 	}
 
-	setLocation(orderID: string, location: Location) {
+	updateOrderStatus(orderID: string, status: OrderStatus): void {
 		const order = this._orders.get(orderID);
 		if (order) {
-			order.location = location;
+			order.orderStatus = status;
 		}
 	}
 }

@@ -1,7 +1,6 @@
-import {Item, Order, OrderID} from 'guests_app/src/types';
+import {Order} from 'guests_app/src/types';
 import {flushPromises, makePromise as mockMakePromise} from '../PromiseUtils';
 import Requests from 'guests_app/src/Networking/requests';
-import {OrderModel} from 'guests_app/src/Model/OrderModel';
 import OrderViewModel from 'guests_app/src/ViewModel/OrderViewModel';
 import {OrderIDO} from 'guests_app/src/ido';
 
@@ -63,7 +62,7 @@ describe('constructor tests', () => {
 
 	it('Looked for orders in the server', async () => {
 		const requests = new Requests();
-		const orderViewModel = new OrderViewModel(requests);
+		const _orderViewModel = new OrderViewModel(requests);
 		expect(requests.getMyOrders).toHaveBeenCalled();
 	});
 
@@ -73,7 +72,7 @@ describe('constructor tests', () => {
 		await flushPromises();
 		expect(
 			orderViewModel.getOrder() != null &&
-				orderViewModel.getOrder()?.id == order1.id
+				orderViewModel.getOrder()?.id === order1.id
 		).toBeTruthy();
 	});
 });
@@ -96,7 +95,7 @@ describe('create order tests', () => {
 		await flushPromises();
 		const resOrder = await orderViewModel.createOrder(items1);
 		expect(
-			resOrder != null && (await resOrder).id == createdOrder.id
+			resOrder != null && (await resOrder).id === createdOrder.id
 		).toBeTruthy();
 	});
 
@@ -156,7 +155,7 @@ describe('update order status tests', () => {
 		const orderViewModel = new OrderViewModel(requests);
 		await flushPromises();
 		orderViewModel.updateOrderStatus(orderAtServer[0].id, 'inprogress');
-		expect(orderViewModel.getOrder()?.status == 'inprogress').toBeTruthy();
+		expect(orderViewModel.getOrder()?.status === 'inprogress').toBeTruthy();
 	});
 	it('update status is ignored when order doesnt exists', async () => {
 		mockGetMyOrders.mockImplementation(() => mockMakePromise([]));

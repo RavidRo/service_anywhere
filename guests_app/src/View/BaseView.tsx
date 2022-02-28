@@ -1,6 +1,4 @@
 import React from 'react';
-import {TextInput, Button, SafeAreaView} from 'react-native';
-import {useState} from 'react';
 import {MainPageViewController} from '../ViewController/MainPageViewController';
 import {LoginPageViewController} from '../ViewController/LoginPageViewController';
 

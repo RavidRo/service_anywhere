@@ -30,8 +30,8 @@ describe('Constructor', () => {
 		const itemViewModel = new ItemsViewModel(requests);
 		await itemViewModel.syncItems();
 		expect(
-			itemViewModel.getItems() != null &&
-				itemViewModel.getItems().length == 2
+			itemViewModel.getItems() !== null &&
+				itemViewModel.getItems().length === 2
 		).toBeTruthy();
 	});
 });

@@ -1,8 +1,13 @@
 import React from 'react';
 import {TextInput, Button, SafeAreaView} from 'react-native';
-import {useState} from 'react';
 
-export const LoginPage = (props: any) => {
+type LoginPageType = {
+	setPhoneNumber: (newPhone: string) => void;
+	setPassword: (newPassword: string) => void;
+	Login: () => void;
+};
+
+export const LoginPage = (props: LoginPageType) => {
 	return (
 		<SafeAreaView>
 			<TextInput

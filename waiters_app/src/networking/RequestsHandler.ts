@@ -1,9 +1,12 @@
-import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import ConnectionModel from '../Models/ConnectionModel';
 
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
+	private connection: ConnectionModel;
 
 	constructor() {
+		this.connection = ConnectionModel.getInstance();
 		this.axiosInstance = axios.create({
 			baseURL: 'https://service-everywhere.herokuapp.com/',
 		});
@@ -15,9 +18,16 @@ class RequestsHandler {
 		GET = true
 	) {
 		console.debug(`Request ${endPoint}`, params);
+		const config: AxiosRequestConfig = {
+			headers: {
+				...(this.connection.token && {
+					Authorization: this.connection.token,
+				}),
+			},
+		};
 
 		const request = GET ? this.axiosInstance.get : this.axiosInstance.post;
-		return request(`${endPoint}`, GET ? {params} : params)
+		return request(`${endPoint}`, GET ? {params} : params, config)
 			.then(response => this.handleResponse<T>(response))
 			.catch(e => {
 				console.debug(e);
@@ -36,11 +46,11 @@ class RequestsHandler {
 		}
 	}
 
-	post<T>(endPoint: string, params = {}) {
+	public post<T>(endPoint: string, params = {}) {
 		return this.request<T>(endPoint, params, false);
 	}
 
-	get<T>(endPoint: string, params = {}) {
+	public get<T>(endPoint: string, params = {}) {
 		return this.request<T>(endPoint, params);
 	}
 }

@@ -1,5 +1,5 @@
 import {OrderIDO} from '../ido';
-import Location, {Item, Order, OrderID} from '../types';
+import {Item, OrderID} from '../types';
 
 // const service = new Gps();
 // const corners = {

@@ -18,7 +18,7 @@ export class OrderModel extends Singleton {
 	}
 
 	updateOrderStatus(orderID: OrderID, status: OrderStatus) {
-		if (this._order != null && this.order?.id == orderID) {
+		if (this._order != null && this.order?.id === orderID) {
 			this._order.status = status;
 		}
 	}
@@ -28,7 +28,7 @@ export class OrderModel extends Singleton {
 	}
 
 	updateWaiterLocation(waiterId: string, waiterLocation: Location) {
-		const waiter = this.waiters.find(waiter => waiter.id == waiterId);
+		const waiter = this.waiters.find(waiter => waiter.id === waiterId);
 		if (waiter) {
 			waiter.location = waiterLocation;
 		} else {

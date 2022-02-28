@@ -3,7 +3,7 @@ import ItemModel from '../Models/ItemModel';
 import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
 
-export class ItemsViewModel extends Singleton {
+export class ItemViewModel extends Singleton {
 	private itemsModel: ItemModel;
 	private requests: Requests;
 

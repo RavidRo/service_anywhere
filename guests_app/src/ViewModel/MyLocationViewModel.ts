@@ -1,6 +1,6 @@
 import Communicate from '../Communication/Communicate';
 import {MyLocationModel} from '../Model/MyLocationModel';
-import Location, {LocationService} from '../types';
+import {LocationService} from '../types';
 
 export class MyLocationViewModel {
 	private locationModel;
