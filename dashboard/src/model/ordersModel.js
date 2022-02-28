@@ -11,7 +11,6 @@ export default class DashboardModel {
 	}
 
 	get orders() {
-		console.log(`getting orders model`);
 		console.log(this._orders);
 		return this._orders;
 	}

@@ -7,7 +7,6 @@ import {
 	itemsContext,
 	OrdersContext,
 } from 'waiters_app/src/contexts';
-import {useAPI} from 'waiters_app/src/hooks/useApi';
 
 import ConnectView from '../Views/ConnectView';
 
