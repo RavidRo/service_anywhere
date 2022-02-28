@@ -29,7 +29,10 @@ describe('Constructor', () => {
 		const requests = new Requests();
 		const itemViewModel = new ItemsViewModel(requests);
 		await itemViewModel.syncItems();
-		expect(itemViewModel.getItems() != null && itemViewModel.getItems().length == 2).toBeTruthy();
+		expect(
+			itemViewModel.getItems() != null &&
+				itemViewModel.getItems().length == 2
+		).toBeTruthy();
 	});
 });
 

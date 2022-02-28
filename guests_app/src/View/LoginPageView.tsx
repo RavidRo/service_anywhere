@@ -3,7 +3,6 @@ import {TextInput, Button, SafeAreaView} from 'react-native';
 import {useState} from 'react';
 
 export const LoginPage = (props: any) => {
-
 	return (
 		<SafeAreaView>
 			<TextInput
@@ -13,7 +12,7 @@ export const LoginPage = (props: any) => {
 				secureTextEntry={true}
 				onChangeText={password => props.setPassword(password)}
 			/>
-			<Button title='Login' onPress={() => props.Login()}/>
+			<Button title='Login' onPress={() => props.Login()} />
 		</SafeAreaView>
 	);
 };

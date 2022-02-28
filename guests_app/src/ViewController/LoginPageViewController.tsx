@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Requests from '../Networking/requests';
 import AuthenticateViewModel from '../ViewModel/AuthenticateViewModel';
 import {LoginPage} from '../View/LoginPageView';
