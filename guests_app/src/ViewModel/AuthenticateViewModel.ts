@@ -8,6 +8,6 @@ export default class AuthenticateViewModel {
 	}
 
 	login(phone_number: String, password: String) {
-		return this.requests.login(phone_number, password);
+		return this.requests.login(phone_number, password).then((token: string) => this.requests.setToken(token));
 	}
 }

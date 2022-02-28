@@ -14,6 +14,7 @@ export const MainPageViewController = () => {
 	const requests = new Requests();
 	const orderViewModel = new OrderViewModel(requests);
 	const itemViewModel = new ItemsViewModel(requests);
+	itemViewModel.syncItems();
 
 	//	const [waitingForOrder, setWaitingForOrder] = useState(false);
 	//	const order_items = ['bamba', 'Beer'];

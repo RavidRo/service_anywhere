@@ -25,16 +25,11 @@ describe('Constructor', () => {
 		expect(itemViewModel).toBeTruthy();
 	});
 
-	test('Looked for orders in the server', async () => {
+	test('Initializing items', async () => {
 		const requests = new Requests();
 		const itemViewModel = new ItemsViewModel(requests);
-		expect(requests.getItems).toHaveBeenCalled();
-	});
-
-	test('Initializing order to the order in the server', async () => {
-		const requests = new Requests();
-		const itemViewModel = new ItemsViewModel(requests);
-		expect(itemViewModel.getItems() != null);
+		await itemViewModel.syncItems();
+		expect(itemViewModel.getItems() != null && itemViewModel.getItems().length == 2).toBeTruthy();
 	});
 });
 

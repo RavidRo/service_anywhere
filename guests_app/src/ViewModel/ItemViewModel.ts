@@ -1,6 +1,5 @@
 import {ItemModel} from '../Model/ItemModel';
 import Requests from '../Networking/requests';
-import Singleton from '../Singeltone';
 import {Item} from '../types';
 
 export class ItemsViewModel {
@@ -10,7 +9,6 @@ export class ItemsViewModel {
 	constructor(requests: Requests) {
 		this.requests = requests;
 		this.itemsModel = new ItemModel();
-		this.syncItems();
 	}
 
 	get items(): Item[] {

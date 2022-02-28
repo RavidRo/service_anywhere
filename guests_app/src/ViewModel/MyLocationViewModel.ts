@@ -3,9 +3,13 @@ import {MyLocationModel} from '../Model/MyLocationModel';
 import Location, {LocationService} from '../types';
 
 export class MyLocationViewModel {
-	private locationModel = MyLocationModel.getInstance();
+	private locationModel;
 	private communicate: Communicate;
 	private locationService: LocationService;
+
+	constructor() {
+		this.locationModel = new MyLocationModel();
+	}
 
 	getLocation() {
 		return this.locationModel.location;

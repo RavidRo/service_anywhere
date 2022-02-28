@@ -4,7 +4,6 @@ import Requests from 'guests_app/src/Networking/requests';
 import {OrderModel} from 'guests_app/src/Model/OrderModel';
 import OrderViewModel from 'guests_app/src/ViewModel/OrderViewModel';
 import {OrderIDO} from 'guests_app/src/ido';
-import {mocked} from 'ts-jest/utils';
 
 let items1 = new Map<string, number>();
 items1.set('Item1_ID', 1);

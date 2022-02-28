@@ -3,7 +3,6 @@ import Singleton from '../Singeltone';
 import {Item} from '../types';
 
 export class ItemModel extends Singleton {
-	private static instance: ItemModel;
 	private _items: Item[];
 
 	public constructor() {
