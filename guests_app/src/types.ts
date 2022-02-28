@@ -40,14 +40,20 @@ export interface LocationService {
 }
 
 export type OrderID = string;
+export type OrderStatus = 'recieved' | 'inprogress' | 'on the way' | 'arrived';
 export type Order = {
 	id: OrderID;
 	items: Map<String, Number>;
-	status: 'recieved' | 'unassigned' | 'inprogress' | 'completed';
+	status: OrderStatus;
 };
 
 export type Item = {
 	id: string;
 	name: string;
 	prepare_time: Number;
+};
+
+export type Waiter = {
+	id: string;
+	location: Location;
 };
