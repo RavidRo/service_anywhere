@@ -1,3 +1,5 @@
+import configuration from '../../configuration.json';
+
 type MapDetails = {
 	id: string;
 	name: string;
@@ -8,8 +10,7 @@ export default class MapViewModel {
 		return {
 			id: '',
 			name: '',
-			imageURL:
-				'https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png',
+			imageURL: configuration['map-image-url'],
 		};
 	}
 }

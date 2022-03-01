@@ -2,12 +2,13 @@ import {Corners, Location} from '../ido';
 import Geolocation from '../localization/Geolocation';
 import {ILocationService} from '../localization/ILocationService';
 import MyLocationModel from '../Models/MyLocationModel';
+import configuration from '../../configuration.json';
 
 const corners: Corners = {
-	bottomRightGPS: {longitude: 34.802516, latitude: 31.261649},
-	bottomLeftGPS: {longitude: 34.800838, latitude: 31.261649},
-	topRightGPS: {longitude: 34.802516, latitude: 31.26355},
-	topLeftGPS: {longitude: 34.800838, latitude: 31.26355},
+	bottomRightGPS: configuration.corners['bottom-right-gps'],
+	bottomLeftGPS: configuration.corners['bottom-left-gps'],
+	topRightGPS: configuration.corners['bottom-right-gps'],
+	topLeftGPS: configuration.corners['bottom-left-gps'],
 };
 export default class MyLocationViewModel {
 	private locationService: ILocationService;
@@ -21,7 +22,7 @@ export default class MyLocationViewModel {
 				this.locationModel.location = location;
 			},
 			error => {
-				console.error('Could not get your location: ', error);
+				console.warn('Could not get the user location', error);
 			}
 		);
 	}
