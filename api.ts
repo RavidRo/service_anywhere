@@ -55,7 +55,10 @@ interface GuestAPI {
 }
 // guests Notifications from server:
 interface GuestNotificationHandler {
-	waiterLocationUpdate: (waiterID: WaiterID, waiterLocation: Location) => void;
+	waiterLocationUpdate: (
+		waiterID: WaiterID,
+		waiterLocation: Location
+	) => void;
 	orderStatusChange: (orderId: String, status: OrderStatus) => void;
 }
 
@@ -69,7 +72,7 @@ interface WaiterAPI {
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
 }
 interface WaiterCommunication {
-    updateWaiterLocation: (waiterLocation: Location) => void;
+	updateWaiterLocation: (waiterLocation: Location) => void;
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestID: string, guestLocation: Location): void;
