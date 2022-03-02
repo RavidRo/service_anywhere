@@ -65,13 +65,15 @@ interface WaiterAPI {
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<[OrderIDO]>;
 	//  getGuestDetails: (id: String) => Promise<GuestIDO>; // GuestIDO?
-	orderCompleted: (orderId: OrderID) => Promise<void>;
+	orderDelivered: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
-	updateWaiterLocation: (waiterLocation: Location) => void;
+}
+interface WaiterCommunication {
+    updateWaiterLocation: (waiterLocation: Location) => void;
 }
 interface WaiterNotificationHandler {
-	guestLocationUpdate(guestLocation1: Location): void;
-	orderStatusChange(orderId: OrderID, status: OrderStatus): void;
+	updateGuestLocation(guestID: string, guestLocation: Location): void;
+	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
 }
 
 interface DashboardAPI {
