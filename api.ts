@@ -55,7 +55,7 @@ interface GuestAPI {
 }
 // guests Notifications from server:
 interface GuestNotificationHandler {
-	waiterLocationUpdate: (waiterLocation: Location) => void;
+	waiterLocationUpdate: (waiterID: WaiterID, waiterLocation: Location) => void;
 	orderStatusChange: (orderId: String, status: OrderStatus) => void;
 }
 
