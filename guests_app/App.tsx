@@ -9,10 +9,10 @@
  */
 
 import React from 'react';
-import {MainPageViewController} from './src/ViewController/MainPageViewController';
+import ConnectController from './src/ViewController/ConnectController';
 
 const App = () => {
-	return <MainPageViewController />;
+	return <ConnectController />;
 };
 
 export default App;

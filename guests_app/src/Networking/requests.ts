@@ -57,7 +57,7 @@ export default class Requests {
 		this.token = token;
 	}
 
-	login(phone_number: String, password: String): Promise<string> {
+	login(phone_number: string, password: string): Promise<string> {
 		return this.handler.post<string>('guestLogin', '', {
 			phone_number,
 			password,

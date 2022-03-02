@@ -2,7 +2,7 @@ import {ItemModel} from '../Model/ItemModel';
 import Requests from '../Networking/requests';
 import {Item} from '../types';
 
-export class ItemsViewModel {
+export default class ItemsViewModel {
 	private itemsModel;
 	private requests: Requests;
 

@@ -6,35 +6,36 @@ import {
 	Text,
 	View,
 } from 'react-native';
+import { OrderID, OrderStatus } from '../types';
 
-export const MainPage = (props: any) => {
-	return (
-		<SafeAreaView>
-			<Button
-				title='Order'
-				onPress={() => {
-					props.SendOrderToServer(props.order_items);
-				}}
-			/>
+type MainPageViewProps = {
+	SendOrderToServer: () => void;
+	hasActiveOrder: boolean;
+	orderStatus: string;
+	orderID: OrderID;
+};
 
-			{/*just for testing */}
-			<Button
-				title='Got My Order'
-				onPress={() => {
-					props.GotOrder();
-				}}
-			/>
+export const MainPage = (props: MainPageViewProps) => {
 
-			{props.order != null ? (
-				<View>
+	if (props.hasActiveOrder) {
+		return (
+			<View>
 					<Text>
-						Order in progress...\n order id = {props.order.order_id}
+						Order in progress...\n order id = {props.orderID}
+					</Text>
+					<Text>
+						Order status: {props.orderStatus}
 					</Text>
 					<ActivityIndicator size='large' color='#00ff00' />
-				</View>
-			) : (
-				<></>
-			)}
-		</SafeAreaView>
+			</View>
+		);
+	}
+	return (
+		<Button
+				title='Order'
+				onPress={() => {
+					props.SendOrderToServer();
+				}}
+		/>
 	);
 };
