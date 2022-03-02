@@ -1,15 +1,15 @@
 import React from 'react';
 import {Button, StyleSheet, Text, TextInput} from 'react-native';
-import { MainPageViewController } from '../ViewController/MainPageViewController';
+import {MainPageViewController} from '../ViewController/MainPageViewController';
 
 type LoginViewProps = {
 	isConnected: boolean;
 	loggedIn: boolean;
 	isLoading: boolean;
 	password: string;
-    phone_number: string;
+	phone_number: string;
 	onPasswordChange: (newPassword: string) => void;
-    onPhoneNumberChange: (newPhoneNumber: string) => void;
+	onPhoneNumberChange: (newPhoneNumber: string) => void;
 	onSubmit: () => void;
 	establishConnection: () => void;
 
@@ -42,7 +42,7 @@ export default function LoginView(props: LoginViewProps) {
 
 	return (
 		<>
-        	<TextInput
+			<TextInput
 				style={styles.input}
 				onChangeText={props.onPhoneNumberChange}
 				value={props.phone_number}

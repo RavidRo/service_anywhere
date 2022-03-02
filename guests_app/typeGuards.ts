@@ -1,4 +1,4 @@
-import Location, { OrderStatus } from "./src/types";
+import Location, {OrderStatus} from './src/types';
 
 export function isLocation(location: any): location is Location {
 	return (

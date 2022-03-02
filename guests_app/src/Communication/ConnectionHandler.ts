@@ -1,8 +1,8 @@
 import {DefaultEventsMap} from '@socket.io/component-emitter';
 import {io, Socket} from 'socket.io-client';
-import ConnectionModel from "../Model/ConnectionModel";
-import Singleton from "../Singeltone";
-import Notifications from "./Notification";
+import ConnectionModel from '../Model/ConnectionModel';
+import Singleton from '../Singeltone';
+import Notifications from './Notification';
 import configuration from '../../configuration.json';
 
 export default class ConnectionHandler extends Singleton {

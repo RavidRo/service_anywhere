@@ -1,10 +1,8 @@
 import {observer} from 'mobx-react-lite';
 import React, {useContext, useState} from 'react';
 import {Alert} from 'react-native';
-import { ConnectionContext } from '../contexts';
+import {ConnectionContext} from '../contexts';
 import ConnectView from '../View/ConnectView';
-
-
 
 type LoginControllerProps = {};
 
@@ -31,7 +29,7 @@ const ConnectController = observer((_props: LoginControllerProps) => {
 	const logIn = () => {
 		setIsLoading(true);
 		return connection
-			.login(phone_number,password)
+			.login(phone_number, password)
 			.catch(() => Alert.alert("Can't login to server"))
 			.finally(() => setIsLoading(false));
 	};

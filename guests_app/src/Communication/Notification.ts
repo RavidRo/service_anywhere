@@ -1,4 +1,4 @@
-import { isLocation, isOrderStatus, isString } from 'guests_app/typeGuards';
+import {isLocation, isOrderStatus, isString} from 'guests_app/typeGuards';
 import Requests from '../Networking/requests';
 import OrderViewModel from '../ViewModel/OrderViewModel';
 
@@ -8,18 +8,17 @@ export default class Notifications {
 		waiterLocationUpdate: params => this.waiterLocationUpdate(params),
 		orderStatusChange: params => this.orderStatusChange(params),
 	};
-	
+
 	constructor() {
 		this.orders = new OrderViewModel(new Requests());
 	}
-
 
 	private waiterLocationUpdate(params: unknown[]): void {
 		if (params.length >= 2) {
 			if (isString(params[0]) && isLocation(params[1])) {
 				const waiterID = params[0];
 				const waiterLocation = params[1];
-				this.orders.updateWaiterLocation(waiterID,waiterLocation)
+				this.orders.updateWaiterLocation(waiterID, waiterLocation);
 				return;
 			}
 		}
@@ -33,7 +32,7 @@ export default class Notifications {
 			if (isString(params[0]) && isOrderStatus(params[1])) {
 				const orderID = params[0];
 				const orderStatus = params[1];
-				this.orders.updateOrderStatus(orderID,orderStatus)
+				this.orders.updateOrderStatus(orderID, orderStatus);
 				return;
 			}
 		}
@@ -41,5 +40,4 @@ export default class Notifications {
 			`In the event, "waiterLocationUpdate", parameters ${params} are not in the right format`
 		);
 	}
-
 }

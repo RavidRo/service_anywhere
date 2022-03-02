@@ -1,4 +1,3 @@
-
 import Notifications from 'guests_app/src/Communication/Notification';
 import OrderViewModel from 'guests_app/src/ViewModel/OrderViewModel';
 
@@ -9,7 +8,7 @@ jest.mock('guests_app/src/ViewModel/OrderViewModel', () => {
 	return jest.fn().mockImplementation(() => {
 		return {
 			updateWaiterLocation: mockUpdateWaiterLocation,
-			updateOrderStatus: mockUpdateOrderStatus
+			updateOrderStatus: mockUpdateOrderStatus,
 		};
 	});
 });
@@ -55,7 +54,10 @@ describe('updateWaiterLocation', () => {
 
 	it('Sending something else then string as guest id', () => {
 		const notifications = new Notifications();
-		notifications.eventToCallback.waiterLocationUpdate([2, {x: 15, y: -26}]);
+		notifications.eventToCallback.waiterLocationUpdate([
+			2,
+			{x: 15, y: -26},
+		]);
 		notifications.eventToCallback.waiterLocationUpdate([
 			{s: 'Ravid was here'},
 			{x: 15, y: -26},
