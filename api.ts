@@ -63,7 +63,7 @@ interface WaiterAPI {
 	login: (password: String) => Promise<void>;
 	getItems: () => Promise<[ItemIDO]>; //ItemIDO ?
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
-	getOrders: () => Promise<[OrderIDO]>;
+	getWaiterOrders: () => Promise<[OrderIDO]>;
 	//  getGuestDetails: (id: String) => Promise<GuestIDO>; // GuestIDO?
 	orderCompleted: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
