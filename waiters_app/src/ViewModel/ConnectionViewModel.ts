@@ -20,6 +20,7 @@ export default class ConnectionViewModel {
 	}
 
 	login(): Promise<string> {
+		console.log(this.requests);
 		return this.requests.login().then(token => {
 			this.model.token = token;
 			return token;

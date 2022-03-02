@@ -9,25 +9,8 @@ export default class Requests extends Singleton {
 		this.handler = new RequestsHandler();
 	}
 
-	getGuestLocation(orderID: string): Promise<Location> {
-		return this.handler
-			.get<Location>('getGuestLocation', {orderID})
-			.then(location => {
-				if (location?.x === undefined || location?.y === undefined) {
-					return Promise.reject(
-						'The received location is not in the right format'
-					);
-				}
-				return location;
-			});
-	}
-
 	getWaiterOrders(): Promise<OrderIdo[]> {
 		return this.handler.get<OrderIdo[]>('getWaiterOrders');
-	}
-
-	orderArrived(orderID: string): Promise<void> {
-		return this.handler.post<void>('orderArrived', {orderID});
 	}
 
 	login(): Promise<string> {

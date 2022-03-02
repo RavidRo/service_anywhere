@@ -5,9 +5,9 @@ import {ConnectionContext} from 'waiters_app/src/contexts';
 
 import ConnectView from '../Views/ConnectView';
 
-type LoginControllerProps = {};
+type ConnectControllerProps = {};
 
-const ConnectController = observer((_props: LoginControllerProps) => {
+const ConnectController = observer((_props: ConnectControllerProps) => {
 	const connection = useContext(ConnectionContext);
 
 	const token = connection.token;
