@@ -1,7 +1,7 @@
 export type OrderStatus =
-	| 'recieved'
+	| 'received'
 	| 'in preparation'
-	| 'ready to delvier'
+	| 'ready to deliver'
 	| 'assigned'
 	| 'on the way'
 	| 'delivered'
@@ -42,13 +42,13 @@ interface GuestAPI {
 	getItems: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
-	getMyOrders: () => Promise<OrderIDO[]>;
+	getGuestOrder: () => Promise<OrderIDO>;
 	createOrder(order_items: Map<string, number>): Promise<OrderID>;
 
 	submitReview(
 		orderId: String,
 		details: String,
-		mrating: Number
+		rating: Number
 	): Promise<void>;
 	cancelOrder: (order_id: OrderID) => Promise<Boolean>;
 	updateGuestLocation: (guestlocation: Location) => void;
@@ -64,11 +64,11 @@ interface GuestNotificationHandler {
 
 interface WaiterAPI {
 	login: (password: String) => Promise<void>;
-	getItems: () => Promise<[ItemIDO]>; //ItemIDO ?
+	getItems: () => Promise<ItemIDO[]>; //ItemIDO ?
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
-	getWaiterOrders: () => Promise<[OrderIDO]>;
+	getWaiterOrders: () => Promise<OrderIDO[]>;
 	//  getGuestDetails: (id: String) => Promise<GuestIDO>; // GuestIDO?
-	orderDelivered: (orderId: OrderID) => Promise<void>;
+	orderArrived: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
 }
 interface WaiterCommunication {
@@ -82,10 +82,10 @@ interface WaiterNotificationHandler {
 interface DashboardAPI {
 	// Dashboard
 	login: (password: String) => Promise<void>;
-	assignToWaiter: (orderIds: OrderID[], waiterID: WaiterID) => Promise<void>;
+	assignWaiter: (orderIds: OrderID[], waiterID: WaiterID) => Promise<void>;
 	getOrders: () => Promise<OrderIDO[]>;
 	getWaiters: () => Promise<WaiterIDO[]>;
-	getWaiterByOrder: (orderID: OrderID) => WaiterID;
+	getWaitersByOrder: (orderID: OrderID) => WaiterID;
 	cancelOrder: (orderID: OrderID) => Promise<void>;
 	changeOrderStatus: (orderID: String, newStatus: String) => Promise<void>;
 }
