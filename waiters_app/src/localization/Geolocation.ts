@@ -8,6 +8,7 @@ import LocationMap from './Map';
 export default class Geolocation implements ILocationService {
 	private geolocationAdapter: GeolocationAdapter;
 	private map: LocationMap;
+
 	constructor(corners: Corners) {
 		this.map = new LocationMap(corners);
 		this.geolocationAdapter = new GeolocationAdapter();
@@ -24,6 +25,7 @@ export default class Geolocation implements ILocationService {
 		successCallback: (location: Location) => void,
 		errorCallback: (error: string) => void
 	) {
+		console.log(this.geolocationAdapter.watchLocation);
 		this.geolocationAdapter.watchLocation(
 			this.translateFunction(successCallback),
 			errorCallback

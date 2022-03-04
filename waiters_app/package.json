@@ -7,7 +7,7 @@
 		"ios": "react-native run-ios",
 		"start": "react-native start",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-		"test": "jest",
+		"test": "jest --verbose true",
 		"test:debug": "jest --watchAll --detectOpenHandles"
 	},
 	"dependencies": {

@@ -2,6 +2,7 @@ import ConnectionHandler from '../communication/ConnectionHandler';
 import ConnectionModel from '../Models/ConnectionModel';
 import Requests from '../networking/Requests';
 import {ItemViewModel} from './ItemViewModel';
+import MyLocationViewModel from './MyLocationViewModel';
 import OrderViewModel from './OrderViewModel';
 
 export default class ConnectionViewModel {
@@ -10,6 +11,7 @@ export default class ConnectionViewModel {
 	private connection: ConnectionHandler;
 	private orders: OrderViewModel;
 	private items: ItemViewModel;
+	private myLocation: MyLocationViewModel;
 
 	constructor(requests: Requests) {
 		this.model = ConnectionModel.getInstance();
@@ -17,10 +19,10 @@ export default class ConnectionViewModel {
 		this.connection = new ConnectionHandler();
 		this.orders = new OrderViewModel(requests);
 		this.items = new ItemViewModel(requests);
+		this.myLocation = new MyLocationViewModel();
 	}
 
 	login(): Promise<string> {
-		console.log(this.requests);
 		return this.requests.login().then(token => {
 			this.model.token = token;
 			return token;
@@ -50,6 +52,8 @@ export default class ConnectionViewModel {
 			}),
 		];
 
-		return Promise.all(promises);
+		return Promise.all(promises).then(() => {
+			this.myLocation.startTrackingLocation();
+		});
 	}
 }
