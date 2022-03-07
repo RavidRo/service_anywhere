@@ -38,7 +38,7 @@ type Token = string;
 
 interface GuestAPI {
 	// Guest
-	loginGuest(phoneNumber: string, password: string): Promise<string>;
+	loginGuest(phoneNumber: string): Promise<string>;
 	getItemsGuest: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
