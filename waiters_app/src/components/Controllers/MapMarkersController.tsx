@@ -1,26 +1,21 @@
 import React, {useContext} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 
+import {observer} from 'mobx-react-lite';
+import {Location} from 'waiters_app/src/ido';
+
 import WaiterMarker from '../Views/markers/WaiterMarker';
 import GuestMarker from '../Views/markers/ClientMarker';
 
-import {IDContext} from '../../contexts';
-import MyLocationViewModel from '../../ViewModel/MyLocationViewModel';
-
 import MapLayoutController from './MapLayoutController';
-import OrdersViewModel from 'waiters_app/src/ViewModel/OrdersViewModel';
-import {PointMarker, PointOfInterest} from 'waiters_app/src/map';
-import {observer} from 'mobx-react-lite';
-import {Location} from 'waiters_app/src/ido';
-import Requests from 'waiters_app/src/networking/Requests';
+import {PointMarker} from 'waiters_app/src/map';
+import {MyLocationContext, OrdersContext} from 'waiters_app/src/contexts';
 
 type MapMarkerControllerProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
-function createGuestMarker(): PointMarker | undefined {
-	const myLocationViewModel = new MyLocationViewModel();
-	const myLocation = myLocationViewModel.location;
+function createGuestMarker(myLocation?: Location): PointMarker | undefined {
 	if (!myLocation) {
 		return undefined;
 	}
@@ -30,28 +25,22 @@ function createGuestMarker(): PointMarker | undefined {
 }
 
 const MapMarkersController = observer(({style}: MapMarkerControllerProps) => {
-	const id = useContext(IDContext);
-	if (!id) {
-		console.error('id is not initialized in the Map component');
-		return <></>;
-	}
+	const ordersViewModel = useContext(OrdersContext);
 
 	//Guests Markers
-	const ordersViewModel = new OrdersViewModel(id, new Requests());
-	const availableOrders = ordersViewModel.availableOrders;
-	const availableOrdersPoints = availableOrders.map(order => ({
-		name: order.id,
-		location: order.location as Location,
-	}));
-
-	const orderToMarker = (order: PointOfInterest): PointMarker => ({
-		point: order,
-		marker: GuestMarker,
-	});
-	const guestsMarkers = availableOrdersPoints.map(orderToMarker);
+	const guestsMarkers = ordersViewModel.availableOrders.map(
+		({order, location}) => ({
+			point: {
+				name: order.id,
+				location,
+			},
+			marker: GuestMarker,
+		})
+	);
 
 	//Waiter Marker
-	const waiterMarker = createGuestMarker();
+	const myLocationViewModel = useContext(MyLocationContext);
+	const waiterMarker = createGuestMarker(myLocationViewModel.location);
 
 	const allMarkers = guestsMarkers.concat(waiterMarker ? [waiterMarker] : []);
 

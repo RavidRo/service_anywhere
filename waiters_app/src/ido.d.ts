@@ -1,3 +1,5 @@
+import {GPS} from './map';
+
 export type OrderStatus = 'unassigned' | 'inprogress' | 'completed';
 export type OrderIdo = {
 	id: OrderID;

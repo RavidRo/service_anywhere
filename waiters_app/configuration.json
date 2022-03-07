@@ -1,0 +1,10 @@
+{
+	"server-url": "https://service-everywhere.herokuapp.com/",
+	"corners": {
+		"bottom-right-gps": {"longitude": 34.802516, "latitude": 31.261649},
+		"bottom-left-gps": {"longitude": 34.800838, "latitude": 31.261649},
+		"top-right-gps": {"longitude": 34.802516, "latitude": 31.26355},
+		"top-left-gps": {"longitude": 34.800838, "latitude": 31.26355}
+	},
+	"map-image-url": "https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png"
+}
