@@ -98,23 +98,32 @@ app.post('/updateGuestLocation', (req, res) => {
 });
 
 //Dashboard
-app.get('/getOrders', (_req, res) => {
-	res.send(dashboard.getOrders());
+app.get('/loginAdmin', (req, res) => {
+	checkInputs(
+		['password'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(dashboard.loginAdmin(req.body['password']))
+	);
 });
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
-		['orderID', 'waiterID'],
+		['orderIds', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
 		() =>
 			res.send(
 				dashboard.assignWaiter(
-					req.body['orderID'],
-					req.body['waiterID']
+					req.body['orderIds'],
+					req.body['waiterId']
 				)
 			)
 	);
+});
+
+app.get('/getOrders', (_req, res) => {
+	res.send(dashboard.getOrders());
 });
 
 app.get('/getWaiters', (_req, res) => {
@@ -123,10 +132,39 @@ app.get('/getWaiters', (_req, res) => {
 
 app.get('/getWaitersByOrder', (req, res) => {
 	checkInputs(
-		['orderID'],
+		['orderId'],
 		req.query,
 		(msg: string) => res.send(msg),
-		() => res.send(dashboard.getWaiterByOrder(String(req.query['orderID'])))
+		() => res.send(dashboard.getWaiterByOrder(String(req.query['orderId'])))
+	);
+});
+
+app.post('/cancelOrderAdmin', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() =>
+			res.send(
+				dashboard.cancelOrderAdmin(
+					req.body['orderId']
+				)
+			)
+	);
+});
+
+app.post('/changeOrderStatus', (req, res) => {
+	checkInputs(
+		['orderId', 'newStatus'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() =>
+			res.send(
+				dashboard.changeOrderStatus(
+					req.body['orderId'],
+					req.body['newStatus']
+				)
+			)
 	);
 });
 
