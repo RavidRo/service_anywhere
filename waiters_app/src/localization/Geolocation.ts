@@ -25,7 +25,7 @@ export default class Geolocation implements ILocationService {
 		successCallback: (location: Location) => void,
 		errorCallback: (error: string) => void
 	) {
-		console.log(this.geolocationAdapter.watchLocation);
+		// console.log(this.geolocationAdapter.watchLocation);
 		this.geolocationAdapter.watchLocation(
 			this.translateFunction(successCallback),
 			errorCallback

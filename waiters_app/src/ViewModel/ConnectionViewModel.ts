@@ -41,11 +41,11 @@ export default class ConnectionViewModel {
 		const promises = [
 			this.orders.synchronizeOrders(),
 			this.items.syncItems(),
-			new Promise<void>(resolve => {
+			new Promise<void>((resolve, reject) => {
 				if (this.token) {
 					this.connection.connect(this.token, () => resolve());
 				} else {
-					console.error(
+					reject(
 						'Tried to connect but an authorization token could not be found'
 					);
 				}
