@@ -42,14 +42,14 @@ export const MainPageViewController = () => {
 						console.log(
 							'order created with order id: ' + createdOrder.id
 						);
-						startWaitingForOrder(createdOrder.id);
+						startWaitingForOrder();
 					})
 					.catch(err => Alert.alert(err));
 			})
 			.catch(() => Alert.alert('Please Approve using location'));
 	}
 
-	function startWaitingForOrder(orderID: OrderID) {
+	function startWaitingForOrder() {
 		locationViewModel.startTracking();
 	}
 	/*  function waitForOrder(_orderID: String){
