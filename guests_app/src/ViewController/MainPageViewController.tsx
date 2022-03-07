@@ -11,7 +11,10 @@ export const MainPageViewController = () => {
 //	const itemViewModel = useContext(itemsContext);
 	const locationViewModel = useContext(MyLocationContext);
 
+<<<<<<< HEAD
 	// will be changed later to items from itemViewModel 
+=======
+>>>>>>> e84db9790e0fee11bf0c4523e53a3e1abd2fb2be
 	let items = new Map<string, number>([
 		['Item1ID', 1],
 		['Item2ID', 1],
@@ -50,7 +53,6 @@ export const MainPageViewController = () => {
 	}
 
 	function startWaitingForOrder(orderID: OrderID) {
-	
 		locationViewModel.startTracking();
 	}
 	/*  function waitForOrder(_orderID: String){
