@@ -8,10 +8,10 @@ import {MainPage} from '../View/MainPageView';
 
 export const MainPageViewController = () => {
 	const orderViewModel = useContext(OrdersContext);
-//	const itemViewModel = useContext(itemsContext);
+	//	const itemViewModel = useContext(itemsContext);
 	const locationViewModel = useContext(MyLocationContext);
 
-	// will be changed later to items from itemViewModel 
+	// will be changed later to items from itemViewModel
 	let items = new Map<string, number>([
 		['Item1ID', 1],
 		['Item2ID', 1],
