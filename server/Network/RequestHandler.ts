@@ -17,7 +17,7 @@ let io = require('socket.io')(http);
 // use it before all route definitions
 app.use(cors({origin: '*'}));
 
-app.get('/', (_req, res) => {
+app.get('/', (_req, res) => {	//todo: maybe something else
 	res.send('Hello World!');
 });
 
@@ -44,21 +44,56 @@ function checkInputs(
 }
 
 //Guest
-app.post('/createOrder', (req, res) => {
+app.get('/login', (req, res) => {
 	checkInputs(
-		['items'],
+		['phone_number'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.createOrder(req.body['items']))
+		() => res.send(guest.login(req.body['phone_number']))
 	);
 });
 
-app.get('/hasOrderArrived', (req, res) => {	//todo: delete this
+app.get('/getItems', (req, res) => {
+	res.send(guest.getItems());
+});
+
+app.get('/getGuestOrder', (req, res) => {
+	res.send(guest.getGuestOrder(req.headers.authorization))	//todo: authenticator pre function
+});
+
+app.post('/createOrder', (req, res) => {
 	checkInputs(
-		['orderID'],
-		req.query,
+		['order_items'],
+		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.hasOrderArrived(String(req.query['orderID'])))
+		() => res.send(guest.createOrder(req.body['order_items']))
+	);
+});
+
+app.post('/submitReview', (req, res) => {
+	checkInputs(
+		['orderId', 'details', 'rating'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(guest.submitReview(req.body['orderId'], req.body['details'], req.body['rating']))
+	);
+});
+
+app.post('/cancelOrder', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(guest.cancelOrder(req.body['orderId']))
+	);
+});
+
+app.post('/updateGuestLocation', (req, res) => {
+	checkInputs(
+		['guest_location'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(guest.updateLocationGuest(req.body['guest_location']))
 	);
 });
 
