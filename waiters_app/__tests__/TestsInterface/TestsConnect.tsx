@@ -1,6 +1,7 @@
 import {
 	makeFail,
 	makePromise as mockMakePromise,
+	timeout,
 } from 'waiters_app/PromiseUtils';
 import React from 'react';
 
@@ -51,6 +52,8 @@ function mockDefaultImplementation() {
 	mockedRequests.orders.mockImplementation(() => mockMakePromise([]));
 }
 
+jest.setTimeout(10000);
+
 beforeEach(() => {
 	(GeolocationAdapter as unknown as jest.Mock).mockClear();
 	(ConnectionHandler as unknown as jest.Mock).mockClear();
@@ -93,7 +96,6 @@ test('Shows a loading indicator before results are fetched', async () => {
 });
 
 test('Shows home page after connecting successfully', async () => {
-	jest.setTimeout(10000);
 	const {getByTestId, queryByTestId} = render(<ConnectController />);
 
 	const button = getByTestId('submit');
