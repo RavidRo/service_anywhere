@@ -8,9 +8,9 @@ import ConnectView from '../Views/ConnectView';
 type ConnectControllerProps = {};
 
 const ConnectController = observer((_props: ConnectControllerProps) => {
-	const connection = useContext(ConnectionContext);
+	const connectionViewModel = useContext(ConnectionContext);
 
-	const token = connection.token;
+	const token = connectionViewModel.connection.token;
 	const isLoggedIn = token !== undefined;
 
 	const [isConnected, setIsConnected] = useState(false);
@@ -19,7 +19,7 @@ const ConnectController = observer((_props: ConnectControllerProps) => {
 
 	const establishConnection = () => {
 		setIsLoading(true);
-		connection
+		connectionViewModel
 			.connect()
 			.then(() => setIsConnected(true))
 			.catch(() => Alert.alert("Can't establish connection to server"))
@@ -28,7 +28,7 @@ const ConnectController = observer((_props: ConnectControllerProps) => {
 
 	const logIn = () => {
 		setIsLoading(true);
-		return connection
+		return connectionViewModel
 			.login()
 			.catch(() => Alert.alert("Can't login to server"))
 			.finally(() => setIsLoading(false));
@@ -47,7 +47,7 @@ const ConnectController = observer((_props: ConnectControllerProps) => {
 			onPasswordChange={setPassword}
 			onSubmit={onSubmit}
 			establishConnection={establishConnection}
-			isReconnecting={connection.isReconnecting}
+			isReconnecting={connectionViewModel.connection.isReconnecting}
 		/>
 	);
 });

@@ -16,20 +16,36 @@ export default class ConnectionHandler extends Singleton {
 		this.socket = io(configuration['server-url'], {autoConnect: false});
 	}
 
-	public connect(token: string, onSuccess?: () => void): void {
+	public connect(
+		token: string,
+		onSuccess?: () => void,
+		onError?: () => void
+	): void {
 		this.socket.auth = {token};
 		this.socket.connect();
 
+		let returnedResult = false;
+
 		this.socket.on('connect', () => {
 			// Connected successfully to the server
-			this.connectionModel.reconnectingToServer = false;
-			onSuccess?.();
+			if (!returnedResult) {
+				this.connectionModel.isReconnecting = false;
+				onSuccess?.();
+			}
+			returnedResult = true;
 			console.info(
 				'A socket connection has been created successfully with the server'
 			);
 		});
+		this.socket.on('connect_error', error => {
+			if (!returnedResult) {
+				onError?.();
+				returnedResult = true;
+			}
+			console.error('Could not connect to server', error.message);
+		});
 		this.socket.on('disconnect', reason => {
-			this.connectionModel.reconnectingToServer = true;
+			this.connectionModel.isReconnecting = true;
 			if (reason === 'io server disconnect') {
 				// the disconnection was initiated by the server, you need to reconnect manually
 				console.warn(

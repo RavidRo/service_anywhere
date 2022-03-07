@@ -1,4 +1,27 @@
-import {makePromise as mockMakePromise} from 'waiters_app/PromiseUtils';
+import {
+	makeFail,
+	makePromise as mockMakePromise,
+} from 'waiters_app/PromiseUtils';
+import React from 'react';
+
+import {fireEvent, render, waitFor} from '@testing-library/react-native';
+
+// https://stackoverflow.com/questions/59587799/how-to-resolve-animated-usenativedriver-is-not-supported-because-the-native
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+
+jest.mock('waiters_app/src/communication/ConnectionHandler', () => {
+	return jest.fn().mockImplementation(() => {
+		return {
+			connect: jest
+				.fn()
+				.mockImplementation((_token, onSuccess, _onError) => {
+					setTimeout(() => {
+						onSuccess();
+					}, 500);
+				}),
+		};
+	});
+});
 
 jest.mock('waiters_app/src/localization/GeolocationAdapter', () =>
 	jest.fn().mockImplementation(() => {
@@ -9,49 +32,73 @@ jest.mock('waiters_app/src/localization/GeolocationAdapter', () =>
 		};
 	})
 );
-jest.mock('waiters_app/src/networking/Requests', () =>
-	jest.fn().mockImplementation(() => {
-		return {
-			getWaiterOrders: () => mockMakePromise([]),
-			getItems: () => mockMakePromise([]),
-			login: jest.fn().mockImplementation(() => mockMakePromise('token')),
-		};
-	})
-);
 
 import GeolocationAdapter from 'waiters_app/src/localization/GeolocationAdapter';
 import Requests from 'waiters_app/src/networking/Requests';
-
-import React from 'react';
-import {Button, TextInput} from 'react-native';
-import TestRenderer, {act} from 'react-test-renderer';
+import ConnectionHandler from 'waiters_app/src/communication/ConnectionHandler';
 
 import ConnectController from 'waiters_app/src/components/Controllers/ConnectController';
+import ConnectionModel from 'waiters_app/src/Models/ConnectionModel';
+
+const mockedRequests = {
+	login: jest.spyOn(Requests.prototype, 'login'),
+	items: jest.spyOn(Requests.prototype, 'getItems'),
+	orders: jest.spyOn(Requests.prototype, 'getWaiterOrders'),
+};
+function mockDefaultImplementation() {
+	mockedRequests.login.mockImplementation(() => mockMakePromise('token'));
+	mockedRequests.items.mockImplementation(() => mockMakePromise([]));
+	mockedRequests.orders.mockImplementation(() => mockMakePromise([]));
+}
 
 beforeEach(() => {
-	(Requests as unknown as jest.Mock).mockClear();
 	(GeolocationAdapter as unknown as jest.Mock).mockClear();
-	// const requests = new Requests();
-	// (requests.login as unknown as jest.Mock).mockImplementation(() => 'token');
+	(ConnectionHandler as unknown as jest.Mock).mockClear();
+
+	ConnectionModel.getInstance().isReconnecting = false;
+	ConnectionModel.getInstance().token = undefined;
+
+	mockDefaultImplementation();
 });
 
-describe('Page loads', () => {
-	it('Loads an input and a submit button', () => {
-		const testRenderer = TestRenderer.create(<ConnectController />);
-		expect(testRenderer.root.findByType(TextInput)).toBeTruthy();
-		expect(testRenderer.root.findByType(Button)).toBeTruthy();
+test('Loads an input and a submit button', async () => {
+	const {getByTestId, queryByTestId} = render(<ConnectController />);
+
+	expect(getByTestId('passwordInput')).toBeTruthy();
+	expect(getByTestId('submit')).toBeTruthy();
+	expect(queryByTestId('loading')).toBeFalsy();
+});
+
+test('Wrong password', async () => {
+	mockedRequests.login.mockImplementation(() => makeFail());
+
+	const {getByTestId, queryByTestId} = render(<ConnectController />);
+	const button = getByTestId('submit');
+	fireEvent.press(button);
+
+	await waitFor(async () => {
+		expect(queryByTestId('passwordInput')).toBeTruthy();
+		expect(queryByTestId('submit')).toBeTruthy();
+		expect(queryByTestId('loading')).toBeFalsy();
 	});
+});
 
-	// it("Wrong password", () => {
+test('Shows a loading indicator before results are fetched', async () => {
+	const {getByTestId, queryByTestId} = render(<ConnectController />);
 
-	// });
+	const button = getByTestId('submit');
+	fireEvent.press(button);
 
-	it('Wrong password', async () => {
-		const testRenderer = TestRenderer.create(<ConnectController />);
-		const button = testRenderer.root.findByType(Button);
-		await act(async () => {
-			button.props.onPress();
-		});
-		expect(testRenderer?.root.findByType(TextInput)).toBeTruthy();
+	await waitFor(() => expect(queryByTestId('loading')).toBeTruthy());
+});
+
+test('Shows a connecting indicator before results are fetched', async () => {
+	const {getByTestId, queryByTestId} = render(<ConnectController />);
+
+	const button = getByTestId('submit');
+	fireEvent.press(button);
+
+	await waitFor(async () => {
+		expect(queryByTestId('homeScreen')).toBeTruthy();
 	});
 });

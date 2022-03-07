@@ -28,12 +28,16 @@ export default function LoginView(props: LoginViewProps) {
 	if (props.loggedIn) {
 		return (
 			<>
-				<Button
-					title='Retry'
-					onPress={props.establishConnection}
-					disabled={props.isLoading}
-				/>
-				{props.isLoading && <Text>Establishing connection...</Text>}
+				{props.isLoading ? (
+					<Text testID='connecting'>Establishing connection...</Text>
+				) : (
+					<Button
+						title='Retry'
+						onPress={props.establishConnection}
+						disabled={props.isLoading}
+						testID='retry'
+					/>
+				)}
 			</>
 		);
 	}
@@ -46,13 +50,15 @@ export default function LoginView(props: LoginViewProps) {
 				value={props.password}
 				placeholder='Your Password'
 				secureTextEntry
+				testID='passwordInput'
 			/>
 			<Button
 				title='Log in'
 				onPress={props.onSubmit}
 				disabled={props.isLoading}
+				testID='submit'
 			/>
-			{props.isLoading && <Text>Logging in...</Text>}
+			{props.isLoading && <Text testID='loading'>Logging in...</Text>}
 		</>
 	);
 }
