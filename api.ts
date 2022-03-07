@@ -52,7 +52,7 @@ interface GuestAPI {
 	cancelOrder: (orderId: OrderID) => Promise<Boolean>;
 }
 
-interface guestCommunication{
+interface guestCommunication {
 	updateGuestLocation: (guestLocation: Location) => void;
 }
 
