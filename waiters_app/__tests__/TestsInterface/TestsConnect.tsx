@@ -92,7 +92,8 @@ test('Shows a loading indicator before results are fetched', async () => {
 	await waitFor(() => expect(queryByTestId('loading')).toBeTruthy());
 });
 
-test('Shows a connecting indicator before results are fetched', async () => {
+test('Shows home page after connecting successfully', async () => {
+	jest.setTimeout(10000);
 	const {getByTestId, queryByTestId} = render(<ConnectController />);
 
 	const button = getByTestId('submit');
