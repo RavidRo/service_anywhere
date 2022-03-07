@@ -43,13 +43,13 @@ interface GuestAPI {
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
 	getGuestOrder: () => Promise<OrderIDO>;
-	createOrderGuest(orderItems: Map<string, number>): Promise<OrderID>;
+	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
 		orderId: String,
 		details: String,
 		rating: Number
 	): Promise<void>;
-	cancelOrder: (orderId: OrderID) => Promise<Boolean>;
+	cancelOrderGuest: (orderId: OrderID) => Promise<Boolean>;
 }
 
 interface guestCommunication {
