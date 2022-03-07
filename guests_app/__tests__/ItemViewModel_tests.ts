@@ -1,7 +1,7 @@
 import {Item} from 'guests_app/src/types';
 import {makePromise as mockMakePromise} from '../PromiseUtils';
 import Requests from 'guests_app/src/Networking/requests';
-import {ItemsViewModel} from 'guests_app/src/ViewModel/ItemViewModel';
+import ItemViewModel from 'guests_app/src/ViewModel/ItemViewModel';
 
 const items: Item[] = [
 	{id: '1', name: 'Beer', prepare_time: 1},
@@ -21,13 +21,13 @@ afterAll(() => {
 describe('Constructor', () => {
 	test('The class can be created successfully', async () => {
 		const requests = new Requests();
-		const itemViewModel = new ItemsViewModel(requests);
+		const itemViewModel = new ItemViewModel(requests);
 		expect(itemViewModel).toBeTruthy();
 	});
 
 	test('Initializing items', async () => {
 		const requests = new Requests();
-		const itemViewModel = new ItemsViewModel(requests);
+		const itemViewModel = new ItemViewModel(requests);
 		await itemViewModel.syncItems();
 		expect(
 			itemViewModel.getItems() !== null &&
