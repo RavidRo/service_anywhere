@@ -23,9 +23,6 @@ export class OrderModel extends Singleton {
 		}
 	}
 
-	getOrderId() {
-		return this._order != null ? this._order.id : '';
-	}
 
 	updateWaiterLocation(waiterId: string, waiterLocation: Location) {
 		const waiter = this.waiters.find(waiter => waiter.id === waiterId);
@@ -38,6 +35,15 @@ export class OrderModel extends Singleton {
 
 	getWaitersLocations() {
 		return this.waiters.map(waiter => waiter.location);
+	}
+	getOrderId() {
+		return this._order != null ? this._order.id : '';
+	}
+	getOrderStatus(): string {
+		return this._order != null ? this._order.status : '';
+	}
+	hasActiveOrder(): boolean {
+		return this._order != null;
 	}
 
 	get order() {

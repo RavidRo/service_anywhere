@@ -6,9 +6,7 @@ type LoginViewProps = {
 	isConnected: boolean;
 	loggedIn: boolean;
 	isLoading: boolean;
-	password: string;
 	phone_number: string;
-	onPasswordChange: (newPassword: string) => void;
 	onPhoneNumberChange: (newPhoneNumber: string) => void;
 	onSubmit: () => void;
 	establishConnection: () => void;
@@ -47,13 +45,6 @@ export default function LoginView(props: LoginViewProps) {
 				onChangeText={props.onPhoneNumberChange}
 				value={props.phone_number}
 				placeholder='Your Phone Number'
-				secureTextEntry
-			/>
-			<TextInput
-				style={styles.input}
-				onChangeText={props.onPasswordChange}
-				value={props.password}
-				placeholder='Your Password'
 				secureTextEntry
 			/>
 			<Button

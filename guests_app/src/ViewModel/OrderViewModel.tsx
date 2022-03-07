@@ -55,7 +55,7 @@ export default class OrderViewModel {
 		);
 	}
 
-	submitReview(deatils: String, rating: Number): Promise<void> {
+	submitReview(deatils: string, rating: Number): Promise<void> {
 		const order = this.getOrder();
 		if (order != null) {
 			if (order.status === 'arrived') {
@@ -81,9 +81,18 @@ export default class OrderViewModel {
 	getWaitersLocations(): Location[] {
 		return this.order_model.getWaitersLocations();
 	}
-
+	
 	getOrder() {
 		return this.order_model.order;
+	}
+	hasActiveOrder(): boolean{
+		return this.order_model.hasActiveOrder();
+	}
+	getOrderStatus(): string{
+		return this.order_model.getOrderStatus();
+	}
+	getOrderId(): OrderID{
+		return this.order_model.getOrderId();
 	}
 	private removeOrder() {
 		this.order_model.removeOrder();

@@ -13,9 +13,7 @@ export const MainPageViewController = () => {
 	const itemViewModel = useContext(itemsContext);
 	const locationViewModel = useContext(MyLocationContext);
 
-	const [orderID, setOrderID] = useState('');
-	const [orderStatus, setOrderStatus] = useState('');
-	const [hasActiveOrder, sethasActiveOrder] = useState(false);
+
 	let items = new Map<string, number>([
 		['Item1ID', 1],
 		['Item2ID', 1],
@@ -54,9 +52,7 @@ export const MainPageViewController = () => {
 	}
 
 	function startWaitingForOrder(orderID: OrderID) {
-		sethasActiveOrder(true);
-		setOrderID(orderID);
-		setOrderStatus('recieved');
+	
 		locationViewModel.startTracking();
 	}
 	/*  function waitForOrder(_orderID: String){
@@ -69,10 +65,10 @@ export const MainPageViewController = () => {
     } */
 
 	const Props = {
-		SendOrderToServer: SendOrderToServer,
-		hasActiveOrder: hasActiveOrder,
-		orderID: orderID,
-		orderStatus: orderStatus,
+		SendOrderToServer: () => SendOrderToServer,
+		hasActiveOrder: orderViewModel.hasActiveOrder(),
+		orderID: orderViewModel.getOrderId(),
+		orderStatus: orderViewModel.getOrderStatus(),
 	};
 
 	return <MainPage {...Props} />;

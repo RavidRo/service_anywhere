@@ -7,15 +7,17 @@ import {
 	View,
 } from 'react-native';
 import {OrderID, OrderStatus} from '../types';
+import {observer} from 'mobx-react-lite';
 
 type MainPageViewProps = {
 	SendOrderToServer: () => void;
 	hasActiveOrder: boolean;
-	orderStatus: string;
 	orderID: OrderID;
+	orderStatus: string;
 };
+//const OrdersListView = observer((props: OrdersViewProps) => {
 
-export const MainPage = (props: MainPageViewProps) => {
+export const MainPage = observer((props: MainPageViewProps) => {
 	if (props.hasActiveOrder) {
 		return (
 			<View>
@@ -33,4 +35,4 @@ export const MainPage = (props: MainPageViewProps) => {
 			}}
 		/>
 	);
-};
+});

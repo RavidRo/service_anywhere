@@ -57,10 +57,9 @@ export default class Requests {
 		this.token = token;
 	}
 
-	login(phone_number: string, password: string): Promise<string> {
+	login(phone_number: string): Promise<string> {
 		return this.handler.post<string>('guestLogin', '', {
 			phone_number,
-			password,
 		});
 	}
 	getItems(): Promise<Item[]> {
@@ -81,8 +80,8 @@ export default class Requests {
 		});
 	}
 	submitReview(
-		orderId: String,
-		details: String,
+		orderId: string,
+		details: string,
 		rating: Number
 	): Promise<void> {
 		return this.handler.post<void>('submitReview', this.token, {

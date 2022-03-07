@@ -19,8 +19,8 @@ export default class ConnectionViewModel {
 		this.items = new ItemViewModel(requests);
 	}
 
-	login(phone_number: string, password: string): Promise<string> {
-		return this.requests.login(phone_number, password).then(token => {
+	login(phone_number: string): Promise<string> {
+		return this.requests.login(phone_number).then(token => {
 			this.requests.setToken(token);
 			this.model.token = token;
 			return token;
@@ -39,11 +39,11 @@ export default class ConnectionViewModel {
 		const promises = [
 			this.orders.getOrderFromServer(),
 			this.items.syncItems(),
-			new Promise<void>(resolve => {
+			new Promise<void>((resolve, reject) => {
 				if (this.token) {
 					this.connection.connect(this.token, () => resolve());
 				} else {
-					console.error(
+					reject(
 						'Tried to connect but an authorization token could not be found'
 					);
 				}
