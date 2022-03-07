@@ -38,33 +38,36 @@ type Token = string;
 
 interface GuestAPI {
 	// Guest
-	login(phone_number: string, password: string): Promise<string>;
-	getItems: () => Promise<ItemIDO[]>;
+	loginGuest(phoneNumber: string): Promise<string>;
+	getItemsGuest: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
 	getGuestOrder: () => Promise<OrderIDO>;
-	createOrder(order_items: Map<string, number>): Promise<OrderID>;
-
+	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
 		orderId: String,
 		details: String,
 		rating: Number
 	): Promise<void>;
-	cancelOrder: (order_id: OrderID) => Promise<Boolean>;
-	updateGuestLocation: (guestlocation: Location) => void;
+	cancelOrderGuest: (orderId: OrderID) => Promise<Boolean>;
 }
+
+interface guestCommunication {
+	updateGuestLocation: (guestLocation: Location) => void;
+}
+
 // guests Notifications from server:
 interface GuestNotificationHandler {
 	waiterLocationUpdate: (
-		waiterID: WaiterID,
+		waiterId: WaiterID,
 		waiterLocation: Location
 	) => void;
 	orderStatusChange: (orderId: String, status: OrderStatus) => void;
 }
 
 interface WaiterAPI {
-	login: (password: String) => Promise<void>;
-	getItems: () => Promise<ItemIDO[]>; //ItemIDO ?
+	loginWaiter: (password: String) => Promise<void>;
+	getItemsWaiter: () => Promise<ItemIDO[]>; //ItemIDO ?
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	//  getGuestDetails: (id: String) => Promise<GuestIDO>; // GuestIDO?
@@ -75,19 +78,19 @@ interface WaiterCommunication {
 	updateWaiterLocation: (waiterLocation: Location) => void;
 }
 interface WaiterNotificationHandler {
-	updateGuestLocation(guestID: string, guestLocation: Location): void;
+	updateGuestLocation(guestId: string, guestLocation: Location): void;
 	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
 }
 
 interface DashboardAPI {
 	// Dashboard
-	login: (password: String) => Promise<void>;
-	assignWaiter: (orderIds: OrderID[], waiterID: WaiterID) => Promise<void>;
+	loginAdmin: (password: String) => Promise<void>;
+	assignWaiter: (orderIds: OrderID[], waiterId: WaiterID) => Promise<void>;
 	getOrders: () => Promise<OrderIDO[]>;
 	getWaiters: () => Promise<WaiterIDO[]>;
-	getWaitersByOrder: (orderID: OrderID) => WaiterID;
-	cancelOrder: (orderID: OrderID) => Promise<void>;
-	changeOrderStatus: (orderID: String, newStatus: String) => Promise<void>;
+	getWaitersByOrder: (orderId: OrderID) => WaiterID;
+	cancelOrderAdmin: (orderId: OrderID) => Promise<void>;
+	changeOrderStatus: (orderId: String, newStatus: String) => Promise<void>;
 }
 
 interface ServerNotifications {}
