@@ -1,4 +1,4 @@
-import { ResponseMsg } from 'server/Response';
+import {ResponseMsg} from 'server/Response';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
@@ -21,13 +21,13 @@ test('connect waiter should create unique waiter Ids', () => {
 
 test('get waiter by order with our order should return nothing', () => {
 	const waiters: ResponseMsg<string[]> = WaiterOrder.getWaiterByOrder(order);
-	expect(waiters.isSuccess())
+	expect(waiters.isSuccess());
 	expect(waiters.getData().length).toBe(0);
 });
 
 test('get waiter order with our waiter should return nothing', () => {
 	const orders: ResponseMsg<string[]> = WaiterOrder.getWaiterOrder(waiter);
-	expect(orders.isSuccess())
+	expect(orders.isSuccess());
 	expect(orders.getData().length).toBe(0);
 });
 
@@ -37,15 +37,17 @@ describe('assign a waiter to an order', () => {
 	});
 
 	test('get waiter by order with our order should return our waiter', () => {
-		const waiters: ResponseMsg<string[]> = WaiterOrder.getWaiterByOrder(order);
-		expect(waiters.isSuccess())
+		const waiters: ResponseMsg<string[]> =
+			WaiterOrder.getWaiterByOrder(order);
+		expect(waiters.isSuccess());
 		expect(waiters.getData().length).toBe(1);
 		expect(waiters.getData()[0]).toEqual(waiter);
 	});
 
 	test('get waiter order with our waiter should return our order', () => {
-		const orders: ResponseMsg<string[]> = WaiterOrder.getWaiterOrder(waiter);
-		expect(orders.isSuccess())
+		const orders: ResponseMsg<string[]> =
+			WaiterOrder.getWaiterOrder(waiter);
+		expect(orders.isSuccess());
 		expect(orders.getData().length).toBe(1);
 		expect(orders.getData()[0]).toEqual(order);
 	});

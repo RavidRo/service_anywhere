@@ -1,8 +1,7 @@
 import {Status} from './Status';
 import {v4 as uuidv4} from 'uuid';
 import {OrderID, Location} from '../api';
-import {makeFail, makeGood, ResponseMsg} from '../Response'
-
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 class Review {
 	content: string;
@@ -28,16 +27,16 @@ export class Order {
 		return order.id;
 	}
 
-	static delegate<T,U>(
+	static delegate<T, U>(
 		orderId: OrderID,
-		func: (order: Order) => ResponseMsg<T,U>
-	): ResponseMsg<T,U> {
+		func: (order: Order) => ResponseMsg<T, U>
+	): ResponseMsg<T, U> {
 		for (const element of Order.orderList) {
 			if (element.id === orderId) {
 				return func(element);
 			}
 		}
-		return makeFail("No such order.", 0);	//todo: status code
+		return makeFail('No such order.', 0); //todo: status code
 	}
 
 	static getGuestLocation(orderID: OrderID): ResponseMsg<Location> {
@@ -47,7 +46,7 @@ export class Order {
 				return makeGood(element.guestLocation);
 			}
 		}
-		return makeFail("No such order.", 0);	//todo: status code
+		return makeFail('No such order.', 0); //todo: status code
 	}
 
 	constructor(items: string[]) {
@@ -68,7 +67,7 @@ export class Order {
 	}
 
 	hasOrderArrived(): ResponseMsg<boolean> {
-		return makeGood(this.status === Status.DELIVERED)
+		return makeGood(this.status === Status.DELIVERED);
 	}
 
 	orderArrived(): void {

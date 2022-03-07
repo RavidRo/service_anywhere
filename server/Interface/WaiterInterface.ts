@@ -1,13 +1,12 @@
 import {stringify} from 'querystring';
-import { makeGood, ResponseMsg } from 'server/Response';
+import {makeGood, ResponseMsg} from 'server/Response';
 import {Location, OrderID, WaiterID} from '../api';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
-
 function getWaiterOrder(waiterID: WaiterID): ResponseMsg<Order[]> {
 	return WaiterOrder.getWaiterOrder(waiterID).then((data: string[]) => {
-		return Order.orderList.filter(order => data.includes(order.id))
+		return Order.orderList.filter(order => data.includes(order.id));
 	});
 }
 

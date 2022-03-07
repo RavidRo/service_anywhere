@@ -31,10 +31,10 @@ class ArrParsable<V, U> implements Parsable<V[], U[]> {
 		this._data = data;
 	}
 	parse(): U[] {
-		return this._data.map((curr) => curr.parse());
+		return this._data.map(curr => curr.parse());
 	}
 	getData(): V[] {
-		return this._data.map((curr) => curr.getData());
+		return this._data.map(curr => curr.getData());
 	}
 }
 
@@ -128,15 +128,19 @@ class ResponseFail implements ResponseMsg<unknown> {
 	}
 }
 
-function makeGoodArr<T, U>(data: T[] | Parsable<T, U>[]): ResponseMsg<T[]> | ResponseMsg<T[], U[]> {
+function makeGoodArr<T, U>(
+	data: T[] | Parsable<T, U>[]
+): ResponseMsg<T[]> | ResponseMsg<T[], U[]> {
 	if (isParsableArr(data)) {
 		return new ResponseSuccess(new ArrParsable<T, U>(data));
 	}
 	return new ResponseSuccess(
-		new ArrParsable<T, T>(data.map((curr) => new PrimitiveParsable(curr)))
+		new ArrParsable<T, T>(data.map(curr => new PrimitiveParsable(curr)))
 	);
 }
-function makeGoodData<T, U>(data: T | Parsable<T, U>): ResponseMsg<T> | ResponseMsg<T, U> {
+function makeGoodData<T, U>(
+	data: T | Parsable<T, U>
+): ResponseMsg<T> | ResponseMsg<T, U> {
 	if (isParsable(data)) {
 		return new ResponseSuccess(data);
 	}
@@ -165,6 +169,9 @@ export function makeGood<T, U>(
 	return makeGoodData(data);
 }
 
-export const makeFail = <T, U>(error: string, statusCode?: number): ResponseMsg<T, U> => {
+export const makeFail = <T, U>(
+	error: string,
+	statusCode?: number
+): ResponseMsg<T, U> => {
 	return new ResponseFail(error, statusCode);
 };

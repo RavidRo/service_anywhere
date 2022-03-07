@@ -1,10 +1,9 @@
 import {v4 as uuidv4} from 'uuid';
 import {OrderID, WaiterID} from '../api';
-import {makeFail, makeGood, ResponseMsg} from '../Response'
-
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 export class WaiterOrder {
-	static waiterList: string[] = ['imashelTommer', 'abashelTommer'];	//todo: remove those
+	static waiterList: string[] = ['imashelTommer', 'abashelTommer']; //todo: remove those
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
 
@@ -40,9 +39,9 @@ export class WaiterOrder {
 	static getWaiterOrder(waiterId: WaiterID): ResponseMsg<string[]> {
 		let orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
-			return makeGood(orders)
+			return makeGood(orders);
 		}
-		return makeGood([])
+		return makeGood([]);
 	}
 
 	static updateWaiterLocation(
