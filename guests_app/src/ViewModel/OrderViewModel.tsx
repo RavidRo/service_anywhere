@@ -81,17 +81,17 @@ export default class OrderViewModel {
 	getWaitersLocations(): Location[] {
 		return this.order_model.getWaitersLocations();
 	}
-	
+
 	getOrder() {
 		return this.order_model.order;
 	}
-	hasActiveOrder(): boolean{
+	hasActiveOrder(): boolean {
 		return this.order_model.hasActiveOrder();
 	}
-	getOrderStatus(): string{
+	getOrderStatus(): string {
 		return this.order_model.getOrderStatus();
 	}
-	getOrderId(): OrderID{
+	getOrderId(): OrderID {
 		return this.order_model.getOrderId();
 	}
 	private removeOrder() {

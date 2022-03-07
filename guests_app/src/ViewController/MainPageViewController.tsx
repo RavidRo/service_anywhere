@@ -13,7 +13,6 @@ export const MainPageViewController = () => {
 	const itemViewModel = useContext(itemsContext);
 	const locationViewModel = useContext(MyLocationContext);
 
-
 	let items = new Map<string, number>([
 		['Item1ID', 1],
 		['Item2ID', 1],
@@ -52,7 +51,6 @@ export const MainPageViewController = () => {
 	}
 
 	function startWaitingForOrder(orderID: OrderID) {
-	
 		locationViewModel.startTracking();
 	}
 	/*  function waitForOrder(_orderID: String){

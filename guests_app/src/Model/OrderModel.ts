@@ -23,7 +23,6 @@ export class OrderModel extends Singleton {
 		}
 	}
 
-
 	updateWaiterLocation(waiterId: string, waiterLocation: Location) {
 		const waiter = this.waiters.find(waiter => waiter.id === waiterId);
 		if (waiter) {
