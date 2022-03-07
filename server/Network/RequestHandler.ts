@@ -44,12 +44,12 @@ function checkInputs(
 }
 
 //Guest
-app.get('/login', (req, res) => {
+app.get('/loginGuest', (req, res) => {
 	checkInputs(
-		['phone_number'],
+		['phoneNumber'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.login(req.body['phone_number']))
+		() => res.send(guest.login(req.body['phoneNumber']))
 	);
 });
 
@@ -63,10 +63,10 @@ app.get('/getGuestOrder', (req, res) => {
 
 app.post('/createOrder', (req, res) => {
 	checkInputs(
-		['order_items'],
+		['orderItems'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.createOrder(req.body['order_items']))
+		() => res.send(guest.createOrder(req.body['orderItems']))
 	);
 });
 
@@ -90,10 +90,10 @@ app.post('/cancelOrder', (req, res) => {
 
 app.post('/updateGuestLocation', (req, res) => {
 	checkInputs(
-		['guest_location'],
+		['guestLocation'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.updateLocationGuest(req.body['guest_location']))
+		() => res.send(guest.updateLocationGuest(req.body['guestLocation']))
 	);
 });
 
