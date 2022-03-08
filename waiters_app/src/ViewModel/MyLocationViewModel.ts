@@ -3,6 +3,7 @@ import Geolocation from '../localization/Geolocation';
 import {ILocationService} from '../localization/ILocationService';
 import MyLocationModel from '../Models/MyLocationModel';
 import configuration from '../../configuration.json';
+import Singleton from '../Singleton';
 
 const corners: Corners = {
 	bottomRightGPS: configuration.corners['bottom-right-gps'],
@@ -10,13 +11,16 @@ const corners: Corners = {
 	topRightGPS: configuration.corners['bottom-right-gps'],
 	topLeftGPS: configuration.corners['bottom-left-gps'],
 };
-export default class MyLocationViewModel {
+export default class MyLocationViewModel implements Singleton {
 	private locationService: ILocationService;
 	private locationModel: MyLocationModel;
 
 	constructor() {
 		this.locationModel = new MyLocationModel();
 		this.locationService = new Geolocation(corners);
+	}
+
+	startTrackingLocation() {
 		this.locationService.watchLocation(
 			location => {
 				this.locationModel.location = location;

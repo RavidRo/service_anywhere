@@ -41,12 +41,14 @@ afterEach(() => {
 
 describe('Constructor', () => {
 	it('Starting to check current location', () => {
-		const _myLocation = new MyLocationViewModel();
+		const myLocationViewModel = new MyLocationViewModel();
+		myLocationViewModel.startTrackingLocation();
 		expect(mockWatchLocation).toHaveBeenCalled();
 	});
 
 	it('Starting to update location according to changes', () => {
 		const myLocationViewModel = new MyLocationViewModel();
+		myLocationViewModel.startTrackingLocation();
 		expect(myLocationViewModel.location).toEqual(myLocation);
 	});
 });
