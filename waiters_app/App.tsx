@@ -1,7 +1,7 @@
 import React from 'react';
 
-import LoginController from './src/components/Controllers/LoginController';
+import ConnectController from './src/components/Controllers/ConnectController';
 
 export default function App() {
-	return <LoginController />;
+	return <ConnectController />;
 }

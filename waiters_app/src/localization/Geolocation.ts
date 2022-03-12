@@ -8,8 +8,10 @@ import LocationMap from './Map';
 export default class Geolocation implements ILocationService {
 	private geolocationAdapter: GeolocationAdapter;
 	private map: LocationMap;
+
 	constructor(corners: Corners) {
 		this.map = new LocationMap(corners);
+		this.geolocationAdapter = new GeolocationAdapter();
 	}
 
 	private translateFunction(successCallback: (location: Location) => void) {
