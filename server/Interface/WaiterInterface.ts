@@ -14,7 +14,7 @@ function getGuestLocation(orderID: OrderID): ResponseMsg<Location> {
 	return Order.getGuestLocation(orderID);
 }
 
-function orderArrived(orderID: OrderID): void {
+function orderArrived(phoneNumber: OrderID): void {
 	Order.delegate(orderID, (order: Order) => {
 		order.orderArrived();
 		return makeGood();

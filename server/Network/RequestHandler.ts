@@ -2,6 +2,7 @@ import express from 'express';
 import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
 import waiter from '../Interface/WaiterInterface';
+import items from '../Interface/ItemsInterface';
 import * as socketio from 'socket.io';
 import * as path from 'path';
 
@@ -49,12 +50,12 @@ app.get('/loginGuest', (req, res) => {
 		['phoneNumber'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.login(req.body['phoneNumber']))
+		() => res.send(guest.login(req.body['phoneNumber']))	//todo: get from authenticator
 	);
 });
 
-app.get('/getItems', (req, res) => {
-	res.send(guest.getItems());
+app.get('/getItemsGuest', (req, res) => {
+	res.send(items.getItems());
 });
 
 app.get('/getGuestOrder', (req, res) => {
@@ -79,7 +80,7 @@ app.post('/submitReview', (req, res) => {
 	);
 });
 
-app.post('/cancelOrder', (req, res) => {
+app.post('/cancelOrderGuest', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
@@ -95,6 +96,69 @@ app.post('/updateGuestLocation', (req, res) => {
 		(msg: string) => res.send(msg),
 		() => res.send(guest.updateLocationGuest(req.body['guestLocation']))
 	);
+});	//todo: make socket call
+
+//waiter
+app.get('/loginWaiter', (req, res) => {
+	checkInputs(
+		['password'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(waiter.login(req.body['password']))
+	);
+});
+
+app.get('/getItemsWaiter', (req, res) => {
+	res.send(waiter.getItems());
+});
+
+app.get('/getWaiterOrders', (req, res) => {
+	res.send(guest.getWaiterOrders(req.headers.authorization))
+});
+
+app.get('/getGuestLocation', (req, res) => {	//todo: delete this
+	checkInputs(
+		['orderID'],
+		req.query,
+		(msg: string) => res.send(msg),
+		() => res.send(waiter.getGuestLocation(String(req.query['orderID'])))
+		);
+});	//todo: make socket
+
+app.post('/orderArrived', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(waiter.orderArrived(req.body['orderId']))
+		);
+});
+
+app.post('/orderOnTheWay', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(waiter.orderOnTheWay(req.body['orderId']))
+		);
+});
+
+io.on('connection', function (socket: socketio.Socket) {
+	console.log('a user connected');
+	sockets.push(socket);
+	socket.on('updateGuestLocation', (message: any) => {
+		guest.updateLocationGuest(
+			message['location'],
+			socket.handshake.auth['token']
+		);
+	});
+	socket.on('updateWaiterLocation', (message: any) => {
+		waiter.updateLocationWaiter(
+			socket.handshake.auth['token'],
+			message['map'],
+			message['location']
+		);
+	});
 });
 
 //Dashboard
@@ -166,56 +230,6 @@ app.post('/changeOrderStatus', (req, res) => {
 				)
 			)
 	);
-});
-
-//waiter
-app.get('/getWaiterOrders', (req, res) => {
-	checkInputs(
-		['waiterID'],
-		req.query,
-		(msg: string) => res.send(msg),
-		() => res.send(waiter.getWaiterOrder(String(req.query['waiterID'])))
-	);
-});
-
-app.get('/getGuestLocation', (req, res) => {	//todo: delete this
-	checkInputs(
-		['orderID'],
-		req.query,
-		(msg: string) => res.send(msg),
-		() => res.send(waiter.getGuestLocation(String(req.query['orderID'])))
-	);
-});
-
-app.post('/orderArrived', (req, res) => {
-	checkInputs(
-		['orderID'],
-		req.body,
-		(msg: string) => res.send(msg),
-		() => res.send(waiter.orderArrived(req.body['orderID']))
-	);
-});
-
-app.post('/connectWaiter', (_req, res) => {
-	res.send(waiter.connectWaiter());
-});
-
-io.on('connection', function (socket: socketio.Socket) {
-	console.log('a user connected');
-	sockets.push(socket);
-	socket.on('updateGuestLocation', (message: any) => {
-		guest.updateLocationGuest(
-			message['location'],
-			socket.handshake.auth['token']
-		);
-	});
-	socket.on('updateWaiterLocation', (message: any) => {
-		waiter.updateLocationWaiter(
-			socket.handshake.auth['token'],
-			message['map'],
-			message['location']
-		);
-	});
 });
 
 http.listen(PORT, () => {

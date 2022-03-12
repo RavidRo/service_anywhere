@@ -1,23 +1,20 @@
 import {ResponseMsg} from 'server/Response';
-import {Api, Arrived, Location, OrderID} from '../api';
+import {Location, OrderIDO} from '../../api';
 import {Order} from '../Logic/Order';
 
-function createOrder(items: string[]): OrderID {
+function createOrder(items: string[]): string {
 	return Order.createOrder(items);
 }
 
-function updateLocationGuest(location: Location, orderID: OrderID): void {
-	Order.delegate(orderID, (order: Order) =>
+function updateLocationGuest(location: Location, orderId: string): void {
+	Order.delegate(orderId, (order: Order) =>
 		order.updateLocationGuest(location)
 	);
 }
 
-function hasOrderArrived(orderID: OrderID): ResponseMsg<Arrived> {
-	return Order.delegate(orderID, (order: Order) => order.hasOrderArrived());
-}
+function getGuestOrder(guestId: string): OrderIDO
 
 export default {
 	createOrder,
 	updateLocationGuest,
-	hasOrderArrived,
 };
