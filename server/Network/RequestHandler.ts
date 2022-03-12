@@ -53,7 +53,8 @@ app.post('/createOrder', (req, res) => {
 	);
 });
 
-app.get('/hasOrderArrived', (req, res) => {	//todo: delete this
+app.get('/hasOrderArrived', (req, res) => {
+	//todo: delete this
 	checkInputs(
 		['orderID'],
 		req.query,
@@ -105,7 +106,8 @@ app.get('/getWaiterOrders', (req, res) => {
 	);
 });
 
-app.get('/getGuestLocation', (req, res) => {	//todo: delete this
+app.get('/getGuestLocation', (req, res) => {
+	//todo: delete this
 	checkInputs(
 		['orderID'],
 		req.query,
