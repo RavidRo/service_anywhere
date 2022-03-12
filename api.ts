@@ -29,7 +29,7 @@ export type WaiterIDO = {
 	name: string;
 	avialabe: boolean;
 };
-type Location = {
+export type Location = {
 	x: number;
 	y: number;
 };
