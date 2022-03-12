@@ -5,6 +5,7 @@ import waiter from '../Interface/WaiterInterface';
 import items from '../Interface/ItemsInterface';
 import * as socketio from 'socket.io';
 import * as path from 'path';
+import authenticator from '../Logic/Authentication/Authenticator'
 
 var cors = require('cors');
 const app = express();
@@ -21,6 +22,17 @@ app.use(cors({origin: '*'}));
 app.get('/', (_req, res) => {	//todo: maybe something else
 	res.send('Hello World!');
 });
+
+function authenticate(token: string | undefined,
+	sendErrorMsg: (msg: string) => void,
+	doIfLegal: (id: string) => void) {
+		if(token){
+			authenticator.authenticate(token).then(doIfLegal)
+		}
+		else{
+			sendErrorMsg('Token does not match any id')
+		}
+}
 
 function checkInputs(
 	inputs: string[],
@@ -50,16 +62,19 @@ app.get('/loginGuest', (req, res) => {
 		['phoneNumber'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.login(req.body['phoneNumber']))	//todo: get from authenticator
+		() => res.send(authenticator.loginPhone(req.body['phoneNumber']))
 	);
 });
 
-app.get('/getItemsGuest', (req, res) => {
+app.get('/getItemsGuest', (_req, res) => {
 	res.send(items.getItems());
 });
 
 app.get('/getGuestOrder', (req, res) => {
-	res.send(guest.getGuestOrder(req.headers.authorization))	//todo: authenticator pre function
+	authenticate(req.headers.authorization,
+		(msg: string) => res.send(msg),
+		(id: string) => guest.getGuestOrder(id)
+	)
 });
 
 app.post('/createOrder', (req, res) => {
@@ -89,31 +104,25 @@ app.post('/cancelOrderGuest', (req, res) => {
 	);
 });
 
-app.post('/updateGuestLocation', (req, res) => {
-	checkInputs(
-		['guestLocation'],
-		req.body,
-		(msg: string) => res.send(msg),
-		() => res.send(guest.updateLocationGuest(req.body['guestLocation']))
-	);
-});	//todo: make socket call
-
 //waiter
 app.get('/loginWaiter', (req, res) => {
 	checkInputs(
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(waiter.login(req.body['password']))
+		() => res.send(authenticator.loginPass(req.body['password']))	//todo: authenticator
 	);
 });
 
-app.get('/getItemsWaiter', (req, res) => {
-	res.send(waiter.getItems());
+app.get('/getItemsWaiter', (_req, res) => {
+	res.send(items.getItems());
 });
 
 app.get('/getWaiterOrders', (req, res) => {
-	res.send(guest.getWaiterOrders(req.headers.authorization))
+	authenticate(req.headers.authorization,
+		(msg: string) => res.send(msg),
+		(id: string) => waiter.getWaiterOrders(id)
+	)
 });
 
 app.get('/getGuestLocation', (req, res) => {	//todo: delete this
@@ -167,7 +176,7 @@ app.get('/loginAdmin', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(dashboard.loginAdmin(req.body['password']))
+		() => res.send(authenticator.authenticateAdmin(req.body['password']))
 	);
 });
 

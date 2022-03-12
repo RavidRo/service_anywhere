@@ -67,3 +67,11 @@ function authenticateAdmin(token: string): ResponseMsg<string> {
 		);
 	}
 }
+
+
+export default{
+	loginPhone,
+	loginPass,
+	authenticate,
+	authenticateAdmin
+}
