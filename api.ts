@@ -38,21 +38,21 @@ type Token = string;
 
 interface GuestAPI {
 	// Guest
-	loginGuest(phoneNumber: string, password: string): Promise<string>;
+	loginGuest(phoneNumber: string): Promise<string>;
 	getItemsGuest: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
 	getGuestOrder: () => Promise<OrderIDO>;
-	createOrderGuest(orderItems: Map<string, number>): Promise<OrderID>;
+	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
 		orderId: String,
 		details: String,
 		rating: Number
 	): Promise<void>;
-	cancelOrder: (orderId: OrderID) => Promise<Boolean>;
+	cancelOrderGuest: (orderId: OrderID) => Promise<Boolean>;
 }
 
-interface guestCommunication{
+interface guestCommunication {
 	updateGuestLocation: (guestLocation: Location) => void;
 }
 
