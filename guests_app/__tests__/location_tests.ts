@@ -5,7 +5,7 @@
 import 'react-native';
 
 // Note: test renderer must be required after react-native.
-import Location from '../types';
+import Location from '../src/types';
 
 test('location add', () => {
 	const loc = new Location(1, 1);

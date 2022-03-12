@@ -41,7 +41,6 @@ export class Order {
 	static getGuestLocation(orderID: OrderID): Location {
 		for (const element of Order.orderList) {
 			if (element.id === orderID) {
-				console.log(`get location: ${element.guestLocation}`);
 				return element.guestLocation; //makeGood(element.guestLocation)
 			}
 		}
@@ -61,7 +60,6 @@ export class Order {
 
 	updateLocationGuest(location: Location): boolean {
 		this.guestLocation = location;
-		console.log(`update: ${location}`);
 		return true;
 	}
 

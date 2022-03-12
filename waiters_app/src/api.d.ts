@@ -18,8 +18,6 @@ type Api = {
 
 	// Waiter
 	getWaiterOrders: (waiterID: WaiterID) => OrderIdo[];
-	getGuestLocation: (orderID: OrderID) => Location;
-	orderArrived: (orderID: OrderID) => void;
 	login: () => WaiterID;
 	getItems: () => ItemIdo[];
 };

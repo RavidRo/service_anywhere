@@ -12,7 +12,7 @@ type MapScreenViewProps = {
 export default function MapScreenView(props: MapScreenViewProps): JSX.Element {
 	return (
 		<>
-			<View style={styles.screen}>
+			<View style={styles.screen} testID='homeScreen'>
 				<MapMarkersController style={styles.map} />
 				<View style={styles.openDrawerButton}>
 					<Button title='Order' onPress={props.openBottomSheet} />
