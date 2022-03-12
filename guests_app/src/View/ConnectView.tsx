@@ -1,13 +1,13 @@
 import React from 'react';
 import {Button, StyleSheet, Text, TextInput} from 'react-native';
-import MapScreenController from '../Controllers/MapScreenController';
+import {MainPageViewController} from '../ViewController/MainPageViewController';
 
 type LoginViewProps = {
 	isConnected: boolean;
 	loggedIn: boolean;
 	isLoading: boolean;
-	password: string;
-	onPasswordChange: (newPassword: string) => void;
+	phone_number: string;
+	onPhoneNumberChange: (newPhoneNumber: string) => void;
 	onSubmit: () => void;
 	establishConnection: () => void;
 
@@ -21,23 +21,19 @@ export default function LoginView(props: LoginViewProps) {
 				{props.isReconnecting && (
 					<Text>Connection lost, trying to reconnect...</Text>
 				)}
-				<MapScreenController />
+				<MainPageViewController />
 			</>
 		);
 	}
 	if (props.loggedIn) {
 		return (
 			<>
-				{props.isLoading ? (
-					<Text testID='connecting'>Establishing connection...</Text>
-				) : (
-					<Button
-						title='Retry'
-						onPress={props.establishConnection}
-						disabled={props.isLoading}
-						testID='retry'
-					/>
-				)}
+				<Button
+					title='Retry'
+					onPress={props.establishConnection}
+					disabled={props.isLoading}
+				/>
+				{props.isLoading && <Text>Establishing connection...</Text>}
 			</>
 		);
 	}
@@ -46,19 +42,17 @@ export default function LoginView(props: LoginViewProps) {
 		<>
 			<TextInput
 				style={styles.input}
-				onChangeText={props.onPasswordChange}
-				value={props.password}
-				placeholder='Your Password'
+				onChangeText={props.onPhoneNumberChange}
+				value={props.phone_number}
+				placeholder='Your Phone Number'
 				secureTextEntry
-				testID='passwordInput'
 			/>
 			<Button
 				title='Log in'
 				onPress={props.onSubmit}
 				disabled={props.isLoading}
-				testID='submit'
 			/>
-			{props.isLoading && <Text testID='loading'>Logging in...</Text>}
+			{props.isLoading && <Text>Logging in...</Text>}
 		</>
 	);
 }
