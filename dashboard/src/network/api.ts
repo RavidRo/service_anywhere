@@ -1,3 +1,5 @@
+import {Order, OrderID, WaiterID} from '../Types';
+
 const axios = require('axios');
 const config = require('./config.json');
 
@@ -7,7 +9,7 @@ const port = config.port;
 const _host_port = `${host}:${port}`;
 const base_route = `${host}`;
 
-export function getOrders() {
+export function getOrders(): Order[] {
 	console.log('Getting orders');
 	const url = `${base_route}getOrders`;
 	return axios({
@@ -27,7 +29,7 @@ export function getOrders() {
 		});
 }
 
-export function getWaiters() {
+export function getWaiters(): WaiterID[] {
 	const url = `${base_route}getWaiters`;
 	return axios({
 		method: 'GET',
@@ -43,7 +45,7 @@ export function getWaiters() {
 		.catch(err => alert(`failed to get waiters due to ${err}`));
 }
 
-export function assignWaiter(orderId, waiterId) {
+export function assignWaiter(orderId: OrderID, waiterId: WaiterID): boolean {
 	const url = `${base_route}assignWaiter`;
 	console.log(`${orderId}, ${waiterId}`);
 	return axios({
@@ -65,7 +67,7 @@ export function assignWaiter(orderId, waiterId) {
 		.catch(err => alert(`failed to assign waiter due to ${err}`));
 }
 
-export function getWaitersByOrder(orderId) {
+export function getWaitersByOrder(orderId: OrderID): WaiterID[] {
 	const url = `${base_route}getWaitersByOrder`;
 	return axios({
 		method: 'GET',
@@ -86,7 +88,10 @@ export function getWaitersByOrder(orderId) {
 		);
 }
 
-export function changeOrderStatus(orderId, newStatus) {
+export function changeOrderStatus(
+	orderId: OrderID,
+	newStatus: string
+): boolean {
 	const url = `${base_route}changeOrderStatus`; // not implemented in server yet, make sure it fits when implemented
 	return axios({
 		method: 'POST',
@@ -108,7 +113,7 @@ export function changeOrderStatus(orderId, newStatus) {
 		);
 }
 
-export function cancelOrder(orderId) {
+export function cancelOrder(orderId: OrderID): string {
 	const url = `${base_route}cancelOrder`; // not implemented in server yet, make sure it fits when implemented
 	return axios({
 		method: 'POST',
