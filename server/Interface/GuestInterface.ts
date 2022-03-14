@@ -1,3 +1,4 @@
+import {ResponseMsg} from 'server/Response';
 import {Api, Arrived, Location, OrderID} from '../api';
 import {Order} from '../Logic/Order';
 
@@ -11,7 +12,7 @@ function updateLocationGuest(location: Location, orderID: OrderID): void {
 	);
 }
 
-function hasOrderArrived(orderID: OrderID): Arrived {
+function hasOrderArrived(orderID: OrderID): ResponseMsg<Arrived> {
 	return Order.delegate(orderID, (order: Order) => order.hasOrderArrived());
 }
 
