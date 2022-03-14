@@ -1,21 +1,21 @@
 import {stringify} from 'querystring';
 import {makeGood, ResponseMsg} from 'server/Response';
-import {Location, OrderID, WaiterID} from '../api';
+import {Location} from '../../api';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
-function getWaiterOrder(waiterID: WaiterID): ResponseMsg<Order[]> {
-	return WaiterOrder.getWaiterOrder(waiterID).then((data: string[]) => {
+function getWaiterOrders(waiterId: string): ResponseMsg<Order[]> {
+	return WaiterOrder.getWaiterOrder(waiterId).then((data: string[]) => {
 		return Order.orderList.filter(order => data.includes(order.id));
 	});
 }
 
-function getGuestLocation(orderID: OrderID): ResponseMsg<Location> {
-	return Order.getGuestLocation(orderID);
+function getGuestLocation(orderId: string): ResponseMsg<Location> {
+	return Order.getGuestLocation(orderId);
 }
 
-function orderArrived(orderID: OrderID): void {
-	Order.delegate(orderID, (order: Order) => {
+function orderArrived(orderId: string): void {
+	Order.delegate(orderId, (order: Order) => {
 		order.orderArrived();
 		return makeGood();
 	});
@@ -37,10 +37,16 @@ function updateLocationWaiter(
 	//todo: this
 }
 
+function orderOnTheWay(orderId: string): void {
+	orderId;
+	throw new Error('Method not implemented');
+}
+
 export default {
-	getWaiterOrder,
+	getWaiterOrders,
 	getGuestLocation,
 	orderArrived,
 	connectWaiter,
 	updateLocationWaiter,
+	orderOnTheWay,
 };

@@ -1,19 +1,19 @@
-function checkPass(password: string): string {
+function checkPass(_password: string): string {
 	throw new Error('Method not implemented');
 	return ''; //todo: this
 }
 
-function checkPhone(phoneNumber: string): string {
+function checkPhone(_phoneNumber: string): string {
 	throw new Error('Method not implemented');
 	return ''; //todo: this
 }
 
-function validateId(id: string): boolean {
+function validateId(_id: string): boolean {
 	throw new Error('Method not implemented');
 	return true; //todo: this
 }
 
-function validateAdmin(id: string): boolean {
+function validateAdmin(_id: string): boolean {
 	throw new Error('Method not implemented');
 	return true; //todo: this
 }

@@ -1,6 +1,6 @@
 import {Status} from './Status';
 import {v4 as uuidv4} from 'uuid';
-import {OrderID, Location} from '../api';
+import {Location} from '../../api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 class Review {
@@ -28,7 +28,7 @@ export class Order {
 	}
 
 	static delegate<T, U>(
-		orderId: OrderID,
+		orderId: string,
 		func: (order: Order) => ResponseMsg<T, U>
 	): ResponseMsg<T, U> {
 		for (const element of Order.orderList) {
@@ -39,7 +39,7 @@ export class Order {
 		return makeFail('No such order.', 0); //todo: status code
 	}
 
-	static getGuestLocation(orderID: OrderID): ResponseMsg<Location> {
+	static getGuestLocation(orderID: string): ResponseMsg<Location> {
 		for (const element of Order.orderList) {
 			if (element.id === orderID) {
 				console.log(`get location: ${element.guestLocation}`);

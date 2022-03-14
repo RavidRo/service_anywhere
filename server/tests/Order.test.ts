@@ -1,5 +1,5 @@
 import {Order} from '../Logic/Order';
-import {Location} from '../api';
+import {Location} from '../../api';
 
 const order = require('../Logic/Order');
 

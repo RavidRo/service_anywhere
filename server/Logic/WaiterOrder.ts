@@ -1,5 +1,4 @@
 import {v4 as uuidv4} from 'uuid';
-import {OrderID, WaiterID} from '../api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 export class WaiterOrder {
@@ -13,7 +12,7 @@ export class WaiterOrder {
 		return waiterId;
 	}
 
-	static assignWaiter(orderId: OrderID, waiterId: WaiterID): void {
+	static assignWaiter(orderId: string, waiterId: string): void {
 		let orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
 			orders.push(orderId);
@@ -28,7 +27,7 @@ export class WaiterOrder {
 		}
 	}
 
-	static getWaiterByOrder(orderId: OrderID): ResponseMsg<string[]> {
+	static getWaiterByOrder(orderId: string): ResponseMsg<string[]> {
 		let waiters = this.orderToWaiters.get(orderId);
 		if (waiters) {
 			return makeGood(waiters);
@@ -36,7 +35,7 @@ export class WaiterOrder {
 		return makeGood([]);
 	}
 
-	static getWaiterOrder(waiterId: WaiterID): ResponseMsg<string[]> {
+	static getWaiterOrder(waiterId: string): ResponseMsg<string[]> {
 		let orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
 			return makeGood(orders);
