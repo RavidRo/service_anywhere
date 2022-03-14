@@ -27,7 +27,7 @@ function authenticate(token: string | undefined,
 	sendErrorMsg: (msg: string) => void,
 	doIfLegal: (id: string) => void) {
 		if(token){
-			authenticator.authenticate(token).then(doIfLegal)
+			authenticator.authenticate(token).then(doIfLegal)	//todo: handle fail
 		}
 		else{
 			sendErrorMsg('Token does not match any id')
@@ -73,7 +73,7 @@ app.get('/getItemsGuest', (_req, res) => {
 app.get('/getGuestOrder', (req, res) => {
 	authenticate(req.headers.authorization,
 		(msg: string) => res.send(msg),
-		(id: string) => guest.getGuestOrder(id)
+		(id: string) => res.send(guest.getGuestOrder(id))
 	)
 });
 
@@ -82,7 +82,13 @@ app.post('/createOrder', (req, res) => {
 		['orderItems'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.createOrder(req.body['orderItems']))
+		() => {
+			authenticate(
+				req.headers.authorization,
+				(msg: string) => res.send(msg),
+				(_id: string) => res.send(guest.createOrder(req.body['orderItems']))
+			)
+		}
 	);
 });
 
@@ -121,18 +127,9 @@ app.get('/getItemsWaiter', (_req, res) => {
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(req.headers.authorization,
 		(msg: string) => res.send(msg),
-		(id: string) => waiter.getWaiterOrders(id)
+		(id: string) => res.send(waiter.getWaiterOrders(id))
 	)
 });
-
-app.get('/getGuestLocation', (req, res) => {	//todo: delete this
-	checkInputs(
-		['orderID'],
-		req.query,
-		(msg: string) => res.send(msg),
-		() => res.send(waiter.getGuestLocation(String(req.query['orderID'])))
-		);
-});	//todo: make socket
 
 app.post('/orderArrived', (req, res) => {
 	checkInputs(
