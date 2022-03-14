@@ -2,7 +2,7 @@ import {v4 as uuidv4} from 'uuid';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 export class WaiterOrder {
-	static waiterList: string[] = ['imashelTommer', 'abashelTommer']; //todo: remove those
+	static waiterList: string[] = [];
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
 
