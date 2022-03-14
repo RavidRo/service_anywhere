@@ -22,15 +22,15 @@ function getWaiterByOrder(orderID: string): string[] {
 	return [];
 }
 
-function cancelOrderAdmin(orderId: string): void{
-	orderId
-	throw new Error('Method not implemented')
+function cancelOrderAdmin(orderId: string): void {
+	orderId;
+	throw new Error('Method not implemented');
 }
 
-function changeOrderStatus(orderId: string, newStatus: OrderStatus): void{
-	orderId
-	newStatus
-	throw new Error('Method not implemented')
+function changeOrderStatus(orderId: string, newStatus: OrderStatus): void {
+	orderId;
+	newStatus;
+	throw new Error('Method not implemented');
 }
 
 export default {
@@ -39,5 +39,5 @@ export default {
 	getWaiters,
 	getWaiterByOrder,
 	cancelOrderAdmin,
-	changeOrderStatus
+	changeOrderStatus,
 };

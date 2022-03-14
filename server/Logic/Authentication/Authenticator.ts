@@ -68,10 +68,9 @@ function authenticateAdmin(token: string): ResponseMsg<string> {
 	}
 }
 
-
-export default{
+export default {
 	loginPhone,
 	loginPass,
 	authenticate,
-	authenticateAdmin
-}
+	authenticateAdmin,
+};

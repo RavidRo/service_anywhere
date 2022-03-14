@@ -37,12 +37,10 @@ function updateLocationWaiter(
 	//todo: this
 }
 
-function orderOnTheWay(orderId: string): void{
-	orderId
-	throw new Error('Method not implemented')
+function orderOnTheWay(orderId: string): void {
+	orderId;
+	throw new Error('Method not implemented');
 }
-
-
 
 export default {
 	getWaiterOrders,
@@ -50,5 +48,5 @@ export default {
 	orderArrived,
 	connectWaiter,
 	updateLocationWaiter,
-	orderOnTheWay
+	orderOnTheWay,
 };

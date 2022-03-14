@@ -5,7 +5,7 @@ import waiter from '../Interface/WaiterInterface';
 import items from '../Interface/ItemsInterface';
 import * as socketio from 'socket.io';
 import * as path from 'path';
-import authenticator from '../Logic/Authentication/Authenticator'
+import authenticator from '../Logic/Authentication/Authenticator';
 
 var cors = require('cors');
 const app = express();
@@ -19,19 +19,21 @@ let io = require('socket.io')(http);
 // use it before all route definitions
 app.use(cors({origin: '*'}));
 
-app.get('/', (_req, res) => {	//todo: maybe something else
+app.get('/', (_req, res) => {
+	//todo: maybe something else
 	res.send('Hello World!');
 });
 
-function authenticate(token: string | undefined,
+function authenticate(
+	token: string | undefined,
 	sendErrorMsg: (msg: string) => void,
-	doIfLegal: (id: string) => void) {
-		if(token){
-			authenticator.authenticate(token).then(doIfLegal)	//todo: handle fail
-		}
-		else{
-			sendErrorMsg('Token does not match any id')
-		}
+	doIfLegal: (id: string) => void
+) {
+	if (token) {
+		authenticator.authenticate(token).then(doIfLegal); //todo: handle fail
+	} else {
+		sendErrorMsg('Token does not match any id');
+	}
 }
 
 function checkInputs(
@@ -71,10 +73,11 @@ app.get('/getItemsGuest', (_req, res) => {
 });
 
 app.get('/getGuestOrder', (req, res) => {
-	authenticate(req.headers.authorization,
+	authenticate(
+		req.headers.authorization,
 		(msg: string) => res.send(msg),
 		(id: string) => res.send(guest.getGuestOrder(id))
-	)
+	);
 });
 
 app.post('/createOrder', (req, res) => {
@@ -86,8 +89,9 @@ app.post('/createOrder', (req, res) => {
 			authenticate(
 				req.headers.authorization,
 				(msg: string) => res.send(msg),
-				(_id: string) => res.send(guest.createOrder(req.body['orderItems']))
-			)
+				(_id: string) =>
+					res.send(guest.createOrder(req.body['orderItems']))
+			);
 		}
 	);
 });
@@ -97,7 +101,14 @@ app.post('/submitReview', (req, res) => {
 		['orderId', 'details', 'rating'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.submitReview(req.body['orderId'], req.body['details'], req.body['rating']))
+		() =>
+			res.send(
+				guest.submitReview(
+					req.body['orderId'],
+					req.body['details'],
+					req.body['rating']
+				)
+			)
 	);
 });
 
@@ -116,7 +127,7 @@ app.get('/loginWaiter', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPass(req.body['password']))	//todo: authenticator
+		() => res.send(authenticator.loginPass(req.body['password'])) //todo: authenticator
 	);
 });
 
@@ -125,10 +136,11 @@ app.get('/getItemsWaiter', (_req, res) => {
 });
 
 app.get('/getWaiterOrders', (req, res) => {
-	authenticate(req.headers.authorization,
+	authenticate(
+		req.headers.authorization,
 		(msg: string) => res.send(msg),
 		(id: string) => res.send(waiter.getWaiterOrders(id))
-	)
+	);
 });
 
 app.post('/orderArrived', (req, res) => {
@@ -137,7 +149,7 @@ app.post('/orderArrived', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => res.send(waiter.orderArrived(req.body['orderId']))
-		);
+	);
 });
 
 app.post('/orderOnTheWay', (req, res) => {
@@ -146,7 +158,7 @@ app.post('/orderOnTheWay', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => res.send(waiter.orderOnTheWay(req.body['orderId']))
-		);
+	);
 });
 
 io.on('connection', function (socket: socketio.Socket) {
@@ -214,12 +226,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() =>
-			res.send(
-				dashboard.cancelOrderAdmin(
-					req.body['orderId']
-				)
-			)
+		() => res.send(dashboard.cancelOrderAdmin(req.body['orderId']))
 	);
 });
 
