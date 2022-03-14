@@ -1,9 +1,10 @@
 import {ResponseMsg} from 'server/Response';
 import {Location, OrderIDO} from '../../api';
 import {Order} from '../Logic/Order';
+import {WaiterOrder} from '../Logic/WaiterOrder'
 
-function createOrder(items: string[]): string {
-	return Order.createOrder(items);
+function createOrder(id: string, items: Map<string, Number>): string {
+	return WaiterOrder.createOrder(id, items);
 }
 
 function updateLocationGuest(guestId: string, location: Location): void {

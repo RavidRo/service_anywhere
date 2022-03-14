@@ -54,4 +54,8 @@ export class WaiterOrder {
 		return '';
 		//todo: this
 	}
+
+	static createOrder(guestId: string, items: Map<string,Number>): string{
+		throw new Error('Method not implemented')
+	}
 }

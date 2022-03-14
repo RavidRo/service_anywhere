@@ -89,8 +89,8 @@ app.post('/createOrder', (req, res) => {
 			authenticate(
 				req.headers.authorization,
 				(msg: string) => res.send(msg),
-				(_id: string) =>
-					res.send(guest.createOrder(req.body['orderItems']))
+				(id: string) =>
+					res.send(guest.createOrder(id, req.body['orderItems']))
 			);
 		}
 	);
