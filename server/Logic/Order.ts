@@ -19,7 +19,7 @@ export class Order extends IOrder{
 	id: string;
 	guestId: string;
 	status: Status;
-	items: Map<string, Number>;
+	items: Map<string, number>;
 	creationTime: Date;
 	review: Review;
 	terminationTime: Date;
@@ -28,7 +28,7 @@ export class Order extends IOrder{
 		return this.id
 	}
 
-	static createOrder(items: Map<string,Number>): string {
+	static createOrder(items: Map<string,number>): string {
 		let order = new Order(items);
 		this.orderList.push(order);
 		return order.id;
@@ -56,7 +56,7 @@ export class Order extends IOrder{
 		return makeFail('No such order.', 0); //todo: status code
 	}
 
-	constructor(id: string, items: Map<string, Number>) {
+	constructor(id: string, items: Map<string, number>) {
 		super()
 		this.items = items;
 		this.status = Status.RECEIVED;

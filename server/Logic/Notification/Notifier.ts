@@ -1,6 +1,6 @@
 var subscribers: Map<string,((msg: any) => boolean)[]> = new Map()
 
-function notify(id: string, action: string, params: (string|Number)[]){
+function notify(id: string, action: string, params: (string|number)[]){
     subscribers.get(id)?.forEach(send => {  //todo: confirm this
         send({action: action, params: params})
     });

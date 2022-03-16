@@ -3,7 +3,7 @@ import {Location, OrderIDO} from '../../api';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder'
 
-function createOrder(id: string, items: Map<string, Number>): string {
+function createOrder(id: string, items: Map<string, number>): string {
 	return WaiterOrder.createOrder(id, items);
 }
 
@@ -27,7 +27,7 @@ function getGuestOrder(guestId: string): OrderIDO {
 	};
 }
 
-function submitReview(orderId: string, details: string, rating: Number): void {
+function submitReview(orderId: string, details: string, rating: number): void {
 	orderId;
 	details;
 	rating;

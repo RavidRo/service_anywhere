@@ -60,7 +60,7 @@ export class WaiterOrder {
 		//todo: this
 	}
 
-	static createOrder(guestId: string, items: Map<string,Number>): string{
+	static createOrder(guestId: string, items: Map<string,number>): string{
 		var newOrder = OrderNotifier.createOrder(guestId, items)
 		this.orderList.push(newOrder)
 		return newOrder.getId()

@@ -1,7 +1,7 @@
 import { OrderNotifier } from "./OrderNotifier";
 
 export abstract class IOrder {
-	static createOrder(id: string, items: Map<string, Number>): IOrder{
+	static createOrder(id: string, items: Map<string, number>): IOrder{
 		return OrderNotifier.createOrder(id, items)
 	}
 
