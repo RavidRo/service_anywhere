@@ -1,8 +1,8 @@
 import {v4 as uuidv4} from 'uuid';
-import {OrderID, WaiterID} from '../api';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 export class WaiterOrder {
-	static waiterList: string[] = ['imashelTommer', 'abashelTommer'];
+	static waiterList: string[] = [];
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
 
@@ -12,7 +12,7 @@ export class WaiterOrder {
 		return waiterId;
 	}
 
-	static assignWaiter(orderId: OrderID, waiterId: WaiterID): void {
+	static assignWaiter(orderId: string, waiterId: string): void {
 		let orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
 			orders.push(orderId);
@@ -27,20 +27,20 @@ export class WaiterOrder {
 		}
 	}
 
-	static getWaiterByOrder(orderId: OrderID): string[] {
+	static getWaiterByOrder(orderId: string): ResponseMsg<string[]> {
 		let waiters = this.orderToWaiters.get(orderId);
 		if (waiters) {
-			return waiters; //makeGood(waiters)
+			return makeGood(waiters);
 		}
-		return []; //makeFail('this order does not exists or it has no waiters assigned.')
+		return makeGood([]);
 	}
 
-	static getWaiterOrder(waiterId: WaiterID): string[] {
+	static getWaiterOrder(waiterId: string): ResponseMsg<string[]> {
 		let orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
-			return orders; //makeGood(orders)
+			return makeGood(orders);
 		}
-		return []; //makeFail('this waiter does not exist or has no orders')
+		return makeGood([]);
 	}
 
 	static updateWaiterLocation(

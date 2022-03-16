@@ -2,8 +2,10 @@ import express from 'express';
 import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
 import waiter from '../Interface/WaiterInterface';
+import items from '../Interface/ItemsInterface';
 import * as socketio from 'socket.io';
 import * as path from 'path';
+import authenticator from '../Logic/Authentication/Authenticator';
 
 var cors = require('cors');
 const app = express();
@@ -18,8 +20,21 @@ let io = require('socket.io')(http);
 app.use(cors({origin: '*'}));
 
 app.get('/', (_req, res) => {
+	//todo: maybe something else
 	res.send('Hello World!');
 });
+
+function authenticate(
+	token: string | undefined,
+	sendErrorMsg: (msg: string) => void,
+	doIfLegal: (id: string) => void
+) {
+	if (token) {
+		authenticator.authenticate(token).then(doIfLegal); //todo: handle fail
+	} else {
+		sendErrorMsg('Token does not match any id');
+	}
+}
 
 function checkInputs(
 	inputs: string[],
@@ -44,87 +59,106 @@ function checkInputs(
 }
 
 //Guest
-app.post('/createOrder', (req, res) => {
+app.get('/loginGuest', (req, res) => {
 	checkInputs(
-		['items'],
+		['phoneNumber'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.createOrder(req.body['items']))
+		() => res.send(authenticator.loginPhone(req.body['phoneNumber']))
 	);
 });
 
-app.get('/hasOrderArrived', (req, res) => {
-	checkInputs(
-		['orderID'],
-		req.query,
+app.get('/getItemsGuest', (_req, res) => {
+	res.send(items.getItems());
+});
+
+app.get('/getGuestOrder', (req, res) => {
+	authenticate(
+		req.headers.authorization,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.hasOrderArrived(String(req.query['orderID'])))
+		(id: string) => res.send(guest.getGuestOrder(id))
 	);
 });
 
-//Dashboard
-app.get('/getOrders', (_req, res) => {
-	res.send(dashboard.getOrders());
+app.post('/createOrder', (req, res) => {
+	checkInputs(
+		['orderItems'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => {
+			authenticate(
+				req.headers.authorization,
+				(msg: string) => res.send(msg),
+				(_id: string) =>
+					res.send(guest.createOrder(req.body['orderItems']))
+			);
+		}
+	);
 });
 
-app.post('/assignWaiter', (req, res) => {
+app.post('/submitReview', (req, res) => {
 	checkInputs(
-		['orderID', 'waiterID'],
+		['orderId', 'details', 'rating'],
 		req.body,
 		(msg: string) => res.send(msg),
 		() =>
 			res.send(
-				dashboard.assignWaiter(
-					req.body['orderID'],
-					req.body['waiterID']
+				guest.submitReview(
+					req.body['orderId'],
+					req.body['details'],
+					req.body['rating']
 				)
 			)
 	);
 });
 
-app.get('/getWaiters', (_req, res) => {
-	res.send(dashboard.getWaiters());
-});
-
-app.get('/getWaitersByOrder', (req, res) => {
+app.post('/cancelOrderGuest', (req, res) => {
 	checkInputs(
-		['orderID'],
-		req.query,
+		['orderId'],
+		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(dashboard.getWaiterByOrder(String(req.query['orderID'])))
+		() => res.send(guest.cancelOrder(req.body['orderId']))
 	);
 });
 
 //waiter
-app.get('/getWaiterOrders', (req, res) => {
+app.get('/loginWaiter', (req, res) => {
 	checkInputs(
-		['waiterID'],
-		req.query,
+		['password'],
+		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(waiter.getWaiterOrder(String(req.query['waiterID'])))
+		() => res.send(authenticator.loginPass(req.body['password'])) //todo: authenticator
 	);
 });
 
-app.get('/getGuestLocation', (req, res) => {
-	checkInputs(
-		['orderID'],
-		req.query,
+app.get('/getItemsWaiter', (_req, res) => {
+	res.send(items.getItems());
+});
+
+app.get('/getWaiterOrders', (req, res) => {
+	authenticate(
+		req.headers.authorization,
 		(msg: string) => res.send(msg),
-		() => res.send(waiter.getGuestLocation(String(req.query['orderID'])))
+		(id: string) => res.send(waiter.getWaiterOrders(id))
 	);
 });
 
 app.post('/orderArrived', (req, res) => {
 	checkInputs(
-		['orderID'],
+		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(waiter.orderArrived(req.body['orderID']))
+		() => res.send(waiter.orderArrived(req.body['orderId']))
 	);
 });
 
-app.post('/connectWaiter', (_req, res) => {
-	res.send(waiter.connectWaiter());
+app.post('/orderOnTheWay', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(waiter.orderOnTheWay(req.body['orderId']))
+	);
 });
 
 io.on('connection', function (socket: socketio.Socket) {
@@ -143,6 +177,72 @@ io.on('connection', function (socket: socketio.Socket) {
 			message['location']
 		);
 	});
+});
+
+//Dashboard
+app.get('/loginAdmin', (req, res) => {
+	checkInputs(
+		['password'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(authenticator.authenticateAdmin(req.body['password']))
+	);
+});
+
+app.post('/assignWaiter', (req, res) => {
+	checkInputs(
+		['orderIds', 'waiterId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() =>
+			res.send(
+				dashboard.assignWaiter(
+					req.body['orderIds'],
+					req.body['waiterId']
+				)
+			)
+	);
+});
+
+app.get('/getOrders', (_req, res) => {
+	res.send(dashboard.getOrders());
+});
+
+app.get('/getWaiters', (_req, res) => {
+	res.send(dashboard.getWaiters());
+});
+
+app.get('/getWaitersByOrder', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.query,
+		(msg: string) => res.send(msg),
+		() => res.send(dashboard.getWaiterByOrder(String(req.query['orderId'])))
+	);
+});
+
+app.post('/cancelOrderAdmin', (req, res) => {
+	checkInputs(
+		['orderId'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() => res.send(dashboard.cancelOrderAdmin(req.body['orderId']))
+	);
+});
+
+app.post('/changeOrderStatus', (req, res) => {
+	checkInputs(
+		['orderId', 'newStatus'],
+		req.body,
+		(msg: string) => res.send(msg),
+		() =>
+			res.send(
+				dashboard.changeOrderStatus(
+					req.body['orderId'],
+					req.body['newStatus']
+				)
+			)
+	);
 });
 
 http.listen(PORT, () => {

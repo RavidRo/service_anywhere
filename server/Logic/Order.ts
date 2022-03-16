@@ -1,6 +1,7 @@
 import {Status} from './Status';
 import {v4 as uuidv4} from 'uuid';
-import {OrderID, Location} from '../api';
+import {Location} from '../../api';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 class Review {
 	content: string;
@@ -26,25 +27,26 @@ export class Order {
 		return order.id;
 	}
 
-	static delegate(
-		orderId: OrderID,
-		func: (order: Order) => boolean
-	): boolean {
+	static delegate<T, U>(
+		orderId: string,
+		func: (order: Order) => ResponseMsg<T, U>
+	): ResponseMsg<T, U> {
 		for (const element of Order.orderList) {
 			if (element.id === orderId) {
 				return func(element);
 			}
 		}
-		return false;
+		return makeFail('No such order.', 0); //todo: status code
 	}
 
-	static getGuestLocation(orderID: OrderID): Location {
+	static getGuestLocation(orderID: string): ResponseMsg<Location> {
 		for (const element of Order.orderList) {
 			if (element.id === orderID) {
-				return element.guestLocation; //makeGood(element.guestLocation)
+				console.log(`get location: ${element.guestLocation}`);
+				return makeGood(element.guestLocation);
 			}
 		}
-		return {x: -1, y: -1}; //makeFail("no such order.")
+		return makeFail('No such order.', 0); //todo: status code
 	}
 
 	constructor(items: string[]) {
@@ -53,18 +55,19 @@ export class Order {
 		this.id = uuidv4();
 	}
 
-	giveFeedback(content: string, rating: number): boolean {
+	giveFeedback(content: string, rating: number): ResponseMsg<void> {
 		this.review = new Review(content, rating);
-		return true;
+		return makeGood();
 	}
 
-	updateLocationGuest(location: Location): boolean {
+	updateLocationGuest(location: Location): ResponseMsg<void> {
 		this.guestLocation = location;
-		return true;
+		console.log(`update: ${location}`);
+		return makeGood();
 	}
 
-	hasOrderArrived(): boolean {
-		return this.status === Status.DELIVERED;
+	hasOrderArrived(): ResponseMsg<boolean> {
+		return makeGood(this.status === Status.DELIVERED);
 	}
 
 	orderArrived(): void {
