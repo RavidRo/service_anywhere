@@ -2,6 +2,7 @@ import {Status} from './Status';
 import {v4 as uuidv4} from 'uuid';
 import {Location} from '../../api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
+import { IOrder } from './IOrder';
 
 class Review {
 	content: string;
@@ -13,15 +14,21 @@ class Review {
 	}
 }
 
-export class Order {
+export class Order extends IOrder{
 	static orderList: Order[] = [];
-	status: Status;
 	id: string;
-	items: string[];
+	guestId: string;
+	status: Status;
+	items: Map<string, Number>;
+	creationTime: Date;
 	review: Review;
-	guestLocation: Location;
+	terminationTime: Date;
 
-	static createOrder(items: string[]): string {
+	override getId(): string {
+		return this.id
+	}
+
+	static createOrder(items: Map<string,Number>): string {
 		let order = new Order(items);
 		this.orderList.push(order);
 		return order.id;
@@ -49,10 +56,12 @@ export class Order {
 		return makeFail('No such order.', 0); //todo: status code
 	}
 
-	constructor(items: string[]) {
+	constructor(id: string, items: Map<string, Number>) {
+		super()
 		this.items = items;
 		this.status = Status.RECEIVED;
 		this.id = uuidv4();
+		this.guestId = id
 	}
 
 	giveFeedback(content: string, rating: number): ResponseMsg<void> {

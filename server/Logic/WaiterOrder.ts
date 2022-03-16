@@ -1,8 +1,12 @@
 import {v4 as uuidv4} from 'uuid';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
+import { IOrder } from './IOrder';
+import { OrderNotifier } from './OrderNotifier';
+import { Waiter } from './Waiter';
 
 export class WaiterOrder {
-	static waiterList: string[] = [];
+	static waiterList: Waiter[] = [];
+	static orderList: IOrder[] = [];
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
 
@@ -48,6 +52,7 @@ export class WaiterOrder {
 		mapId: string,
 		location: Location
 	): string {
+		throw new Error('Method not implemended')
 		waiterId;
 		mapId;
 		location;
@@ -56,6 +61,8 @@ export class WaiterOrder {
 	}
 
 	static createOrder(guestId: string, items: Map<string,Number>): string{
-		throw new Error('Method not implemented')
+		var newOrder = OrderNotifier.createOrder(guestId, items)
+		this.orderList.push(newOrder)
+		return newOrder.getId()
 	}
 }
