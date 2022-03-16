@@ -15,4 +15,11 @@ export abstract class IOrder {
 		throw new Error('Method not implemented')
 		//todo: this
 	}
+
+	updateGuestLocation(mapId: string, location: Location): void {
+		mapId;
+		location;
+		throw new Error('Method not implemented')
+		//todo: this
+	}
 }

@@ -10,7 +10,13 @@ export abstract class OrderNotifier extends IOrder{
         var newOrderOrder = new DashboardNotifier()
         newOrderOrder.order = new Order(id, items)
         newOrder.order = newOrderOrder
-        NotificationFacade.newOrder('', {id: id, items: items, guestId: '', status: 'received', creationTime: new Date(), terminationTime: undefined})   //todo: receiverId? guestId
+        NotificationFacade.newOrder('', {
+            id: id,
+            items: items, guestId: '',
+            status: 'received',
+            creationTime: new Date(),
+            terminationTime: undefined
+        })   //todo: receiverId? guestId creationTime
         return newOrder
     }
 
@@ -20,7 +26,10 @@ export abstract class OrderNotifier extends IOrder{
 }
 
 class GuestNotifier extends OrderNotifier{
-    
+    override updateWaiterLocation(mapId: string, location: Location): void {
+        NotificationFacade.updateWaiterLocation()
+        this.order.updateWaiterLocation(mapId, location)
+    }
 }
 
 class DashboardNotifier extends OrderNotifier{
@@ -28,5 +37,8 @@ class DashboardNotifier extends OrderNotifier{
 }
 
 class WaiterNotifier extends OrderNotifier{
-
+    override updateGuestLocation(mapId: string, location: Location): void {
+        NotificationFacade.updateGuestLocation()
+        this.order.updateGuestLocation(mapId, location)
+    }
 }
