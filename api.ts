@@ -14,7 +14,7 @@ export type OrderIDO = {
 	items: Map<string, number>;
 	status: OrderStatus;
 	creationTime: Date;
-	terminationTime: Date;
+	terminationTime: Date|undefined;
 };
 export type ItemIDO = {
 	id: string;
