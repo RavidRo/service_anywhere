@@ -45,9 +45,9 @@ interface GuestAPI {
 	getGuestOrder: () => Promise<OrderIDO>;
 	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
-		orderId: String,
-		details: String,
-		rating: Number
+		orderId: string,
+		details: string,
+		rating: number
 	): Promise<void>;
 	cancelOrderGuest: (orderId: OrderID) => Promise<Boolean>;
 }
@@ -62,15 +62,15 @@ interface GuestNotificationHandler {
 		waiterId: WaiterID,
 		waiterLocation: Location
 	) => void;
-	orderStatusChange: (orderId: String, status: OrderStatus) => void;
+	orderStatusChange: (orderId: string, status: OrderStatus) => void;
 }
 
 interface WaiterAPI {
-	loginWaiter: (password: String) => Promise<void>;
+	loginWaiter: (password: string) => Promise<void>;
 	getItemsWaiter: () => Promise<ItemIDO[]>; //ItemIDO ?
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
-	//  getGuestDetails: (id: String) => Promise<GuestIDO>; // GuestIDO?
+	//  getGuestDetails: (id: string) => Promise<GuestIDO>; // GuestIDO?
 	orderArrived: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
 }
@@ -84,13 +84,13 @@ interface WaiterNotificationHandler {
 
 interface DashboardAPI {
 	// Dashboard
-	loginAdmin: (password: String) => Promise<void>;
+	loginAdmin: (password: string) => Promise<void>;
 	assignWaiter: (orderIds: OrderID[], waiterId: WaiterID) => Promise<void>;
 	getOrders: () => Promise<OrderIDO[]>;
 	getWaiters: () => Promise<WaiterIDO[]>;
 	getWaitersByOrder: (orderId: OrderID) => WaiterID;
 	cancelOrderAdmin: (orderId: OrderID) => Promise<void>;
-	changeOrderStatus: (orderId: String, newStatus: String) => Promise<void>;
+	changeOrderStatus: (orderId: string, newStatus: string) => Promise<void>;
 }
 
 interface ServerNotifications {}
