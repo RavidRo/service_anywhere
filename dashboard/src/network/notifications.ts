@@ -1,4 +1,9 @@
+import OrdersViewModel from '../viewModel/ordersViewModel';
+import WaiterDialogViewModel from '../viewModel/waitersViewModel';
+
 export default class Notificiations {
+	private ordersViewModel: OrdersViewModel;
+	private waitersViewModel: WaiterDialogViewModel;
 	constructor(ordersViewModel, waitersViewModel) {
 		this.ordersViewModel = ordersViewModel;
 		this.waitersViewModel = waitersViewModel;

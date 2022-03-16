@@ -6,12 +6,13 @@ import OrdersViewModel from './viewModel/ordersViewModel';
 import WaitersViewModel from './viewModel/waitersViewModel';
 import waitersModel from './model/waiterModel';
 import ordersModel from './model/ordersModel';
+import ConnectionHandler from './network/connectionHandler';
 
 const waiterModel = new waitersModel();
 const orderModel = new ordersModel();
 const ordersViewModel = new OrdersViewModel(orderModel);
 const waitersViewModel = new WaitersViewModel(waiterModel);
-
+const connectionHandler = new ConnectionHandler(orderModel, waiterModel);
 ReactDOM.render(
 	<React.StrictMode>
 		<OrdersViewController
