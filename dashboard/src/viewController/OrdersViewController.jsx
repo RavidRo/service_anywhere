@@ -1,6 +1,5 @@
 import * as React from 'react';
 import AppBarView from '../view/AppBarView';
-import OrderViewController from './OrderViewController';
 import propTypes from 'prop-types';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -13,6 +12,7 @@ import OrdersView from '../view/OrdersView';
 function OrdersViewController(props) {
 	const {ordersViewModel, waitersViewModel} = props;
 	const apiRef = useGridApiRef();
+	console.log('apiRef');
 	console.log(apiRef);
 	const handleRowEditStart = (params, event) => {
 		event.defaultMuiPrevented = true;
@@ -87,14 +87,12 @@ function OrdersViewController(props) {
 			width: 220,
 			editable: true,
 			cellClassName: 'assignWaiter',
-			getActions: ({id}) => {
-				const orderId = apiRef.current.getRow(id).id;
-				return (
-					<WaiterDialogViewController
-						waitersViewModel={waitersViewModel}
-						orderId={orderId}
-					/>
-				);
+			renderCell: params => {
+				const orderId = params.row.id;
+				<WaiterDialogViewController
+					waitersViewModel={waitersViewModel}
+					orderId={orderId}
+				/>;
 			},
 		},
 		{
@@ -103,7 +101,8 @@ function OrdersViewController(props) {
 			headerName: 'Actions',
 			width: 100,
 			cellClassName: 'actions',
-			getActions: ({id}) => {
+			renderCell: params => {
+				const id = params.row.id;
 				const isInEditMode = apiRef.current.getRowMode(id) === 'edit';
 
 				if (isInEditMode) {
