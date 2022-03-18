@@ -1,8 +1,8 @@
-import {io} from 'socket.io-client';
-import Singleton from '../Singleton';
+import {io, Socket} from 'socket.io-client';
+import Singleton from '../singleton';
 import Notification from './notifications';
-import config from './config.json';
 
+const config = require('./config.json');
 const host = config.host;
 const port = config.port;
 
@@ -10,10 +10,12 @@ const _host_port = `${host}:${port}`;
 const base_route = `${host}`;
 
 export default class ConnectionHandler extends Singleton {
-	notifications = new Notification();
+	private socket?: Socket;
+	private notifications: Notification;
 
-	constructor() {
+	constructor(orderModel, waiterModel) {
 		super();
+		this.notifications = new Notification(orderModel, waiterModel);
 	}
 
 	connect(onSuccess) {
@@ -35,7 +37,7 @@ export default class ConnectionHandler extends Singleton {
 				socket.connect();
 			} else {
 				// else the socket will automatically try to reconnect
-				// To see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
+				// Too see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
 				console.warn(
 					'The socket connection to the server has been disconnected, trying to reconnect...',
 					reason

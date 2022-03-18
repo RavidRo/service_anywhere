@@ -1,6 +1,9 @@
 import {getWaitersByOrder, assignWaiter} from '../network/api';
+import WaiterModel from '../model/waiterModel';
 
 export default class WaiterDialogViewModel {
+	private waitersModel: WaiterModel;
+
 	constructor(waitersModel) {
 		this.waitersModel = waitersModel;
 	}
