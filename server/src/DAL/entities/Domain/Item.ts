@@ -3,15 +3,14 @@ import {
 	PrimaryGeneratedColumn,
 	Column,
 	BaseEntity,
-	JoinColumn,
-	OneToOne,
-	Relation,
+	OneToMany,
 } from 'typeorm';
+import {OrderToItem} from './OrderToItem';
 
 @Entity()
 export class Item extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: string;
 
 	@Column()
 	name: string;
@@ -21,4 +20,7 @@ export class Item extends BaseEntity {
 
 	@Column()
 	preparationTime: number;
+
+	@OneToMany(() => OrderToItem, orderToItems => orderToItems.item)
+	orderToItems: OrderToItem[];
 }

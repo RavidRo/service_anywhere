@@ -23,7 +23,7 @@
 // })
 
 import {AppDataSource} from './data-source';
-import {Guest} from './entities/Guest';
+import {Guest} from './entities/Domain/Guest';
 
 AppDataSource.initialize()
 	.then(async () => {
@@ -31,7 +31,9 @@ AppDataSource.initialize()
 		const user = new Guest();
 		user.name = 'Bob';
 		user.phoneNumber = '0527599544';
-		await AppDataSource.manager.save(user);
+		const guestRepository = AppDataSource.getRepository(Guest);
+		guestRepository.find();
+		await guestRepository.save(user);
 		console.log('Saved a new user with id: ' + user.id);
 
 		console.log('Loading users from the database...');

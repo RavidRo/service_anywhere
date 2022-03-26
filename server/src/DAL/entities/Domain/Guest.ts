@@ -3,19 +3,21 @@ import {
 	PrimaryGeneratedColumn,
 	Column,
 	BaseEntity,
-	JoinColumn,
-	OneToOne,
-	Relation,
+	OneToMany,
 } from 'typeorm';
+import {Order} from './Order';
 
 @Entity()
 export class Guest extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: string;
 
 	@Column()
 	phoneNumber: string;
 
 	@Column()
 	name: string;
+
+	@OneToMany(() => Order, order => order.guest)
+	orders: Order[];
 }
