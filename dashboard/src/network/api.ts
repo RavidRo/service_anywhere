@@ -81,10 +81,12 @@ export function getWaitersByOrder(orderId: OrderID): WaiterID[] {
 				return res.data;
 			} else {
 				console.log('Error in get waiter by order');
+				return '';
 			}
 		})
 		.catch(err =>
-			console.log(`failed to get waiter by order due to ${err}`)
+			{console.log(`failed to get waiter by order due to ${err}`);
+			return '';}
 		);
 }
 
