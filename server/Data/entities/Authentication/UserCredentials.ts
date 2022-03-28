@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from 'typeorm';
 
 @Entity()
-export class GuestCredentials extends BaseEntity {
+export class UserCredentials extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: string;
 

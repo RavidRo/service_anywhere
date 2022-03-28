@@ -1,8 +1,9 @@
 import AuthenticatorChecker from '../../Data/AuthenticatorChecker';
 import {makeFail, makeGood, ResponseMsg} from '../../Response';
+import * as jwt from 'jsonwebtoken';
+const failStatusCode = 401; //todo: change
 
-var jwt = require('jsonwebtoken');
-const failStatusCode = 400; //todo: change
+// https://www.becomebetterprogrammer.com/jwt-authentication-middleware-nodejs-typescript
 
 function generateKey(): string {
 	const length = 10;
@@ -19,58 +20,60 @@ function generateKey(): string {
 }
 
 var key = generateKey();
-
-function loginPhone(phoneNumber: string): string {
-	//returns token
-	return jwt.sign(AuthenticatorChecker.checkPhone(phoneNumber), key, {
-		expiresIn: '1h',
-	});
+interface TokenPayload {
+	permissionLevel: number;
+	userId: string;
 }
 
-function loginPass(password: string): string {
+async function login(
+	password: string,
+	permissionLevel: number
+): Promise<ResponseMsg<string>> {
 	//returns token
-	return jwt.sign(AuthenticatorChecker.checkPass(password), key, {
-		expiresIn: '1h',
-	});
+	const userId: string | undefined = await AuthenticatorChecker.getID(
+		password
+	);
+	if (!userId) {
+		return makeFail('No matched password was found', failStatusCode);
+	}
+	const payLoad: TokenPayload = {
+		userId,
+		permissionLevel,
+	};
+	return makeGood(
+		jwt.sign(payLoad, key, {
+			expiresIn: '1h',
+		})
+	);
 }
 
-function authenticate(token: string): ResponseMsg<string> {
-	//returns Id
+function authenticate(
+	token: string,
+	permissionLevel: number
+): ResponseMsg<string> {
 	try {
-		var id = jwt.verify(token, key);
+		// remove Bearer if using Bearer Authorization mechanism
+		if (!jwt) {
+			return makeFail("Token can't be verified", failStatusCode);
+		}
+		if (token.toLowerCase().startsWith('bearer')) {
+			token = token.slice('bearer'.length).trim();
+		}
+		// https://github.com/auth0/node-jsonwebtoken/issues/634
+		const payLoad: TokenPayload = jwt.verify(token, key) as TokenPayload;
+		if (payLoad.permissionLevel < permissionLevel) {
+			return makeFail(
+				'You dont have access to the requested operation',
+				403
+			);
+		}
+		return makeGood(payLoad.userId);
 	} catch (err) {
 		return makeFail("Token can't be verified", failStatusCode);
-	}
-	if (AuthenticatorChecker.validateId(id)) {
-		return makeGood(id);
-	} else {
-		return makeFail(
-			'The token entered does not match any ID.',
-			failStatusCode
-		);
-	}
-}
-
-function authenticateAdmin(token: string): ResponseMsg<string> {
-	//returns Id
-	try {
-		var id = jwt.verify(token, key);
-	} catch (err) {
-		return makeFail("Token can't be verified", failStatusCode);
-	}
-	if (AuthenticatorChecker.validateAdmin(id)) {
-		return makeGood(id);
-	} else {
-		return makeFail(
-			'The token entered does not match any admin ID.',
-			failStatusCode
-		);
 	}
 }
 
 export default {
-	loginPhone,
-	loginPass,
 	authenticate,
-	authenticateAdmin,
+	login,
 };

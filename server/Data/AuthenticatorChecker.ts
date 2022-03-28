@@ -1,26 +1,13 @@
-function checkPass(_password: string): string {
-	throw new Error('Method not implemented');
-	return ''; //todo: this
-}
+import {AppDataSource} from './data-source';
+import {UserCredentials} from './entities/Authentication/UserCredentials';
 
-function checkPhone(_phoneNumber: string): string {
-	throw new Error('Method not implemented');
-	return ''; //todo: this
-}
-
-function validateId(_id: string): boolean {
-	throw new Error('Method not implemented');
-	return true; //todo: this
-}
-
-function validateAdmin(_id: string): boolean {
-	throw new Error('Method not implemented');
-	return true; //todo: this
+async function getID(password: string): Promise<string | undefined> {
+	const credentials = await AppDataSource.manager.findOneBy(UserCredentials, {
+		password,
+	});
+	return credentials?.id;
 }
 
 export default {
-	checkPass,
-	checkPhone,
-	validateId,
-	validateAdmin,
+	getID,
 };
