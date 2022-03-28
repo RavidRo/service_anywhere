@@ -8,6 +8,10 @@ export class NotificationFacade {
 		this.notifier.notify(receiverID, 'newOrder', {order});
 	}
 
+	public assignedToOrder(receiverID: string, order: OrderIDO) {
+		this.notifier.notify(receiverID, 'assignedToOrder', {order});
+	}
+
 	public updateGuestLocation(
 		receiverID: string,
 		orderID: string,
