@@ -6,14 +6,13 @@ import items from '../Interface/ItemsInterface';
 import * as socketio from 'socket.io';
 import * as path from 'path';
 import authenticator from '../Logic/Authentication/Authenticator';
+import NotificationInterface from 'server/Interface/NotificationInterface';
 
-var cors = require('cors');
+let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-var http = require('http').Server(app);
-var sockets: socketio.Socket[] = [];
-var socketToken = new Map<socketio.Socket, string>();
+let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
 // use it before all route definitions
@@ -163,7 +162,10 @@ app.post('/orderOnTheWay', (req, res) => {
 
 io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
-	sockets.push(socket);
+	authenticate(socket.handshake.auth['token'], 
+		(msg: string) => {socket.emit('Error', msg)},
+		(id: string) => NotificationInterface.addSubscribers(id,
+			((eventName: string, o: object) => socket.emit(eventName, o))))
 	socket.on('updateGuestLocation', (message: any) => {
 		guest.updateLocationGuest(
 			message['location'],

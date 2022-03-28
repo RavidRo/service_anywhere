@@ -10,10 +10,6 @@ function getWaiterOrders(waiterId: string): ResponseMsg<Order[]> {
 	});
 }
 
-function getGuestLocation(orderId: string): ResponseMsg<Location> {
-	return Order.getGuestLocation(orderId);
-}
-
 function orderArrived(orderId: string): void {
 	Order.delegate(orderId, (order: Order) => {
 		order.orderArrived();
@@ -44,7 +40,6 @@ function orderOnTheWay(orderId: string): void {
 
 export default {
 	getWaiterOrders,
-	getGuestLocation,
 	orderArrived,
 	connectWaiter,
 	updateLocationWaiter,

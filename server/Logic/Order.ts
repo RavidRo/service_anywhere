@@ -1,6 +1,5 @@
-import {Status} from './Status';
+import {OrderStatus, Location} from 'api';
 import {v4 as uuidv4} from 'uuid';
-import {Location} from '../../api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 import { IOrder } from './IOrder';
 
@@ -18,7 +17,7 @@ export class Order extends IOrder{
 	static orderList: Order[] = [];
 	id: string;
 	guestId: string;
-	status: Status;
+	status: OrderStatus;
 	items: Map<string, number>;
 	creationTime: Date;
 	review: Review;
@@ -27,11 +26,14 @@ export class Order extends IOrder{
 	override getId(): string {
 		return this.id
 	}
+	override getGuestId(): string {
+		return this.guestId
+	}
 
-	static createOrder(items: Map<string,number>): string {
-		let order = new Order(items);
+	static override createOrder(id: string, items: Map<string,number>): IOrder {
+		let order = new Order(id, items);
 		this.orderList.push(order);
-		return order.id;
+		return order;
 	}
 
 	static delegate<T, U>(
@@ -46,40 +48,28 @@ export class Order extends IOrder{
 		return makeFail('No such order.', 0); //todo: status code
 	}
 
-	static getGuestLocation(orderID: string): ResponseMsg<Location> {
-		for (const element of Order.orderList) {
-			if (element.id === orderID) {
-				console.log(`get location: ${element.guestLocation}`);
-				return makeGood(element.guestLocation);
-			}
-		}
-		return makeFail('No such order.', 0); //todo: status code
-	}
-
 	constructor(id: string, items: Map<string, number>) {
 		super()
 		this.items = items;
-		this.status = Status.RECEIVED;
+		this.status = 'received';
 		this.id = uuidv4();
 		this.guestId = id
 	}
 
-	giveFeedback(content: string, rating: number): ResponseMsg<void> {
-		this.review = new Review(content, rating);
-		return makeGood();
+	override giveFeedback(review: string, score: number): boolean {		//todo: return value, maybe should get guestId
+		this.review = new Review(review, score);
+		return true
 	}
 
-	updateLocationGuest(location: Location): ResponseMsg<void> {
-		this.guestLocation = location;
-		console.log(`update: ${location}`);
-		return makeGood();
-	}
+	override updateGuestLocation(mapId: string, location: globalThis.Location): void {}
+
+	override updateWaiterLocation(mapId: string, location: globalThis.Location): void {}
 
 	hasOrderArrived(): ResponseMsg<boolean> {
-		return makeGood(this.status === Status.DELIVERED);
+		return makeGood(this.status === 'delivered');
 	}
 
 	orderArrived(): void {
-		this.status = Status.DELIVERED;
+		this.status = 'delivered';
 	}
 }

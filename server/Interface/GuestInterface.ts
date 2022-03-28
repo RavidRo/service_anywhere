@@ -3,8 +3,8 @@ import {Location, OrderIDO} from '../../api';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder'
 
-function createOrder(id: string, items: Map<string, number>): string {
-	return WaiterOrder.createOrder(id, items);
+function createOrder(guestId: string, items: Map<string, number>): string {
+	return WaiterOrder.createOrder(guestId, items);
 }
 
 function updateLocationGuest(guestId: string, location: Location): void {
@@ -14,8 +14,8 @@ function updateLocationGuest(guestId: string, location: Location): void {
 }
 
 function getGuestOrder(guestId: string): OrderIDO {
-	var m = new Map();
-	var d = new Date();
+	let m = new Map();
+	let d = new Date();
 	throw new Error('Method not implemented');
 	return {
 		id: '',

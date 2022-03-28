@@ -7,7 +7,7 @@ let order: string;
 
 beforeAll(() => {
 	waiter = WaiterOrder.connectWaiter();
-	order = Order.createOrder(['a', 'b']);
+	order = Order.createOrder(['a', 'b']).getId();
 });
 
 test('connect waiter should return a waiter ID', () => {

@@ -1,9 +1,9 @@
 import {Order} from '../Logic/Order';
-import {Location} from '../../api';
+import {Location} from 'api';
 
 const order = require('../Logic/Order');
 
-var firstOrder: string;
+let firstOrder: string;
 
 beforeAll(() => {
 	firstOrder = order.Order.createOrder(['a', 'b']);
@@ -27,10 +27,10 @@ test('giveFeedback should return true', () => {
 });
 
 test('updateLocationGuest and getGuestLocation should have corresponding locations', () => {
-	var location: Location = {x: 1, y: 1};
+	let location: Location = {x: 1, y: 1};
 	expect(
 		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.updateLocationGuest(location);
+			return o.updateGuestLocation(location);
 		}).isSuccess()
 	).toBe(true);
 	expect(order.Order.getGuestLocation(firstOrder).getData()).toEqual(

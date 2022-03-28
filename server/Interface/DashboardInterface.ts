@@ -11,7 +11,7 @@ function assignWaiter(orderID: string, waiterID: string): void {
 }
 
 function getWaiters(): string[] {
-	return WaiterOrder.waiterList;
+	return WaiterOrder.waiterList.map((waiter) => waiter.id);
 }
 
 function getWaiterByOrder(orderID: string): string[] {

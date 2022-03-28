@@ -11,9 +11,9 @@ export class WaiterOrder {
 	static orderToWaiters: Map<string, string[]> = new Map();
 
 	static connectWaiter(): string {
-		let waiterId = uuidv4();
-		this.waiterList.push(waiterId);
-		return waiterId;
+		let waiter = new Waiter();
+		this.waiterList.push(waiter);
+		return waiter.id;
 	}
 
 	static assignWaiter(orderId: string, waiterId: string): void {
@@ -61,7 +61,7 @@ export class WaiterOrder {
 	}
 
 	static createOrder(guestId: string, items: Map<string,number>): string{
-		var newOrder = OrderNotifier.createOrder(guestId, items)
+		let newOrder = OrderNotifier.createOrder(guestId, items)
 		this.orderList.push(newOrder)
 		return newOrder.getId()
 	}
