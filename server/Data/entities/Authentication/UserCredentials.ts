@@ -7,4 +7,7 @@ export class UserCredentials extends BaseEntity {
 
 	@Column()
 	password: string;
+
+	@Column()
+	permissionLevel: number;
 }

@@ -1,25 +1,15 @@
-import AuthenticatorChecker from '../../Data/AuthenticatorChecker';
+import * as AuthenticatorChecker from '../../Data/AuthenticatorChecker';
 import {makeFail, makeGood, ResponseMsg} from '../../Response';
 import * as jwt from 'jsonwebtoken';
-const failStatusCode = 401; //todo: change
+import * as fs from 'fs';
+import * as path from 'path';
+const unauthorizedStatusCode = 401;
+const forbiddenStatusCode = 403;
+
+const privateKey = fs.readFileSync(path.join(__dirname, './../../public.key'));
+const publicKey = fs.readFileSync(path.join(__dirname, './../../public.key'));
 
 // https://www.becomebetterprogrammer.com/jwt-authentication-middleware-nodejs-typescript
-
-function generateKey(): string {
-	const length = 10;
-	var result = '';
-	var characters =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var charactersLength = characters.length;
-	for (var i = 0; i < length; i++) {
-		result += characters.charAt(
-			Math.floor(Math.random() * charactersLength)
-		);
-	}
-	return result;
-}
-
-var key = generateKey();
 interface TokenPayload {
 	permissionLevel: number;
 	userId: string;
@@ -27,21 +17,25 @@ interface TokenPayload {
 
 async function login(
 	password: string,
-	permissionLevel: number
+	neededPermissionLevel: number
 ): Promise<ResponseMsg<string>> {
-	//returns token
-	const userId: string | undefined = await AuthenticatorChecker.getID(
-		password
-	);
-	if (!userId) {
-		return makeFail('No matched password was found', failStatusCode);
+	const UserCredentials = await AuthenticatorChecker.getDetails(password);
+	if (
+		!UserCredentials ||
+		neededPermissionLevel > UserCredentials.permissionLevel
+	) {
+		return makeFail(
+			'No matched password was found',
+			unauthorizedStatusCode
+		);
 	}
 	const payLoad: TokenPayload = {
-		userId,
-		permissionLevel,
+		userId: UserCredentials.id,
+		permissionLevel: UserCredentials.permissionLevel,
 	};
 	return makeGood(
-		jwt.sign(payLoad, key, {
+		jwt.sign(payLoad, privateKey, {
+			algorithm: 'RS256',
 			expiresIn: '1h',
 		})
 	);
@@ -54,22 +48,24 @@ function authenticate(
 	try {
 		// remove Bearer if using Bearer Authorization mechanism
 		if (!jwt) {
-			return makeFail("Token can't be verified", failStatusCode);
+			return makeFail("Token can't be verified", unauthorizedStatusCode);
 		}
 		if (token.toLowerCase().startsWith('bearer')) {
 			token = token.slice('bearer'.length).trim();
 		}
 		// https://github.com/auth0/node-jsonwebtoken/issues/634
-		const payLoad: TokenPayload = jwt.verify(token, key) as TokenPayload;
+		const payLoad: TokenPayload = jwt.verify(token, publicKey, {
+			algorithms: ['RS256'],
+		}) as TokenPayload;
 		if (payLoad.permissionLevel < permissionLevel) {
 			return makeFail(
 				'You dont have access to the requested operation',
-				403
+				forbiddenStatusCode
 			);
 		}
 		return makeGood(payLoad.userId);
 	} catch (err) {
-		return makeFail("Token can't be verified", failStatusCode);
+		return makeFail("Token can't be verified", unauthorizedStatusCode);
 	}
 }
 
