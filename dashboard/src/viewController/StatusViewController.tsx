@@ -1,7 +1,6 @@
 import {OrderStatus} from "../../../api";
 import * as React from 'react';
 import StatusView from "../view/StatusView";
-import { integerPropType } from "@mui/utils";
 
 enum Status {
 	 'received',

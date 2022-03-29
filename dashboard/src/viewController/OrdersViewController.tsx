@@ -108,6 +108,7 @@ function OrdersViewController(props) {
 			type: 'actions',
 			editable: true,
 			cellClassName: 'assignWaiter',
+<<<<<<< HEAD:dashboard/src/viewController/OrdersViewController.tsx
 			flex: 1,
 			renderCell: (params) => {
 				const orderId = Number.parseInt(params.row.id);
@@ -119,6 +120,65 @@ function OrdersViewController(props) {
 				);
 			},
 		},
+=======
+			renderCell: params => {
+				const orderId = params.row.id;
+				<WaiterDialogViewController
+					waitersViewModel={waitersViewModel}
+					orderId={orderId}
+				/>;
+			},
+		},
+		{
+			field: 'actions',
+			type: 'actions',
+			headerName: 'Actions',
+			width: 100,
+			cellClassName: 'actions',
+			renderCell: params => {
+				const id = params.row.id;
+				const isInEditMode = apiRef.current.getRowMode(id) === 'edit';
+
+				if (isInEditMode) {
+					return [
+						<GridActionsCellItem
+							icon={<SaveIcon />}
+							label='Save'
+							onClick={handleSaveClick(id)}
+							color='primary'
+							key='save'
+						/>,
+						<GridActionsCellItem
+							icon={<CancelIcon />}
+							label='Cancel'
+							className='textPrimary'
+							onClick={handleCancelClick(id)}
+							color='inherit'
+							key='cancel'
+						/>,
+					];
+				}
+
+				return [
+					<GridActionsCellItem
+						icon={<EditIcon />}
+						label='Edit'
+						className='textPrimary'
+						onClick={handleEditClick(id)}
+						color='inherit'
+						key='edit'
+					/>,
+					<GridActionsCellItem
+						icon={<DeleteIcon />}
+						label='Delete'
+						onClick={handleDeleteClick(id)}
+						color='inherit'
+						key='delete'
+					/>,
+				];
+			},
+		},
+>>>>>>> d4079a17f4dd2aa8482686c17d9a6496559fbfaf:dashboard/src/viewController/OrdersViewController.jsx
 	];
 
 	return (
