@@ -23,7 +23,6 @@ function OrdersView(props) {
 	const {
 		orders,
 		columns,
-		apiRef,
 		handleRowEditStart,
 		handleRowEditStop,
 		handleCellFocusOut,
@@ -44,14 +43,11 @@ function OrdersView(props) {
 			<DataGrid
 				rows={toJS(orders)}
 				columns={columns}
-				apiRef={apiRef}
 				editMode='row'
 				onRowEditStart={handleRowEditStart}
 				onRowEditStop={handleRowEditStop}
 				onCellFocusOut={handleCellFocusOut}
-				componentsProps={{
-					toolbar: {apiRef},
-				}}
+				autoPageSize	
 			/>
 		</Box>
 	);

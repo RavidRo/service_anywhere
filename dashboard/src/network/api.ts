@@ -1,4 +1,4 @@
-import {Order, OrderID, WaiterID} from '../Types';
+import {OrderIDO} from '../../../api';
 
 const axios = require('axios');
 const config = require('./config.json');
@@ -9,7 +9,7 @@ const port = config.port;
 const _host_port = `${host}:${port}`;
 const base_route = `${host}`;
 
-export function getOrders(): Order[] {
+export function getOrders(): OrderIDO[] {
 	console.log('Getting orders');
 	const url = `${base_route}getOrders`;
 	return axios({
@@ -29,7 +29,7 @@ export function getOrders(): Order[] {
 		});
 }
 
-export function getWaiters(): WaiterID[] {
+export function getWaiters(): string[] {
 	const url = `${base_route}getWaiters`;
 	return axios({
 		method: 'GET',
@@ -45,7 +45,7 @@ export function getWaiters(): WaiterID[] {
 		.catch(err => alert(`failed to get waiters due to ${err}`));
 }
 
-export function assignWaiter(orderId: OrderID, waiterId: WaiterID): boolean {
+export function assignWaiter(orderId: string, waiterId: string): boolean {
 	const url = `${base_route}assignWaiter`;
 	console.log(`${orderId}, ${waiterId}`);
 	return axios({
@@ -67,7 +67,7 @@ export function assignWaiter(orderId: OrderID, waiterId: WaiterID): boolean {
 		.catch(err => alert(`failed to assign waiter due to ${err}`));
 }
 
-export function getWaitersByOrder(orderId: OrderID): WaiterID[] {
+export function getWaitersByOrder(orderId: string): string[] {
 	const url = `${base_route}getWaitersByOrder`;
 	return axios({
 		method: 'GET',
@@ -91,7 +91,7 @@ export function getWaitersByOrder(orderId: OrderID): WaiterID[] {
 }
 
 export function changeOrderStatus(
-	orderId: OrderID,
+	orderId: string,
 	newStatus: string
 ): boolean {
 	const url = `${base_route}changeOrderStatus`; // not implemented in server yet, make sure it fits when implemented
@@ -115,7 +115,7 @@ export function changeOrderStatus(
 		);
 }
 
-export function cancelOrder(orderId: OrderID): string {
+export function cancelOrder(orderId: string): string {
 	const url = `${base_route}cancelOrder`; // not implemented in server yet, make sure it fits when implemented
 	return axios({
 		method: 'POST',

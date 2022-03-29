@@ -23,7 +23,7 @@ function WaiterDialogView(props) {
 	} = props;
 	return (
 		<div>
-			<Typography variant='h7'>
+			<Typography variant='h6'>
 				{console.log("assigned Waiter")}
 				{console.log(assignedWaiter)}
 				{assignedWaiter.length === 0 ? (

@@ -53,27 +53,26 @@ function OrdersViewController(props) {
 	};
 
 	const columns = [
-		// {
-		// 	field: 'dateCreated',
-		// 	headerName: 'Date Created',
-		// 	type: 'date',
-		// 	width: 180,
-		// 	editable: false,
-		// },
-		// {
-		// 	field: 'dateDelivered',
-		// 	headerName: 'Date delivered',
-		// 	type: 'dateTime',
-		// 	width: 220,
-		// 	editable: false,
-		// },
-		// {
-		// 	field: 'Review',
-		// 	headerName: 'review',
-		// 	width: 220,
-		// 	editable: false,
-		// },
 		{field: 'id', headerName: 'id', editable: false},
+		{
+			field: 'guestId',
+			headerName: 'Guest Id',
+			editable: false,
+		},
+		{
+			field: 'creationTime',
+			headerName: 'Creation Time',
+			type: 'date',
+			editable: false,
+			flex: 1
+		},
+		{
+			field: 'terminationTime',
+			headerName: 'Termination Time',
+			type: 'date',
+			editable: false,
+			flex: 1
+		},
 		{
 			field: 'items',
 			headerName: 'items',
@@ -111,7 +110,7 @@ function OrdersViewController(props) {
 			cellClassName: 'assignWaiter',
 			flex: 1,
 			renderCell: (params) => {
-				const orderId = params.row.orderId;
+				const orderId = Number.parseInt(params.row.id);
 				return (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}

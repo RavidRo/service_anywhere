@@ -1,15 +1,25 @@
-import {Status} from "../Types";
+import {OrderStatus} from "../../../api";
 import * as React from 'react';
 import StatusView from "../view/StatusView";
 import { integerPropType } from "@mui/utils";
+
+enum Status {
+	 'received',
+	 'in preparation',
+	 'ready to deliver',
+	 'assigned',
+	 'on the way',
+	 'delivered',
+	 'canceled'
+}
 
 export default function StatusViewController(props){
     const {orderId, status, orderViewModel} = props;
     const [currentStep, setCurrentStep] = React.useState(status);
 
     console.log(`isInteger ${Number.isInteger(status)} ${Status[status]}`)
-    const backable: number[] = [Status['READY_TO_DELIVER'],Status['ASSIGNED'],Status['ON_THE_WAY']];
-    const nextable: number[] = [Status['RECEIVED'],Status['IN_PREPARATION'],Status['READY_TO_DELIVER'],Status['ASSIGNED'],Status['ON_THE_WAY']];
+    const backable: number[] = [Status['ready to deliver'],Status['assigned'],Status['on the way']];
+    const nextable: number[] = [Status['received'],Status['in preparation'],Status['ready to deliver'],Status['assigned'],Status['on the way']];
 
     const isStepNextable = (step: number) => {
         return step in nextable;

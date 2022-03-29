@@ -5,16 +5,17 @@ import propTypes from 'prop-types';
 export default function WaiterDialogViewController(props) {
 	const {waitersViewModel, orderId} = props;
 	const [open, setOpen] = React.useState(false);
-	const [assignedWaiter, setAssignedWaiter] = React.useState([]);
+	const [assignedWaiter, setAssignedWaiter] = React.useState("");
 
 	React.useEffect(() => {
 		let mounted = true;
+		console.log(orderId)
 		waitersViewModel.getWaitersByOrder(orderId).then(assignedWaiter => {
 			if (mounted) {
 				setAssignedWaiter(assignedWaiter);
 			}
 		});
-		return () => (mounted = false);
+		return () => {(mounted = false)};
 	}, []);
 
 	const handleOpen = () => {

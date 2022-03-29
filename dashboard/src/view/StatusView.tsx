@@ -5,6 +5,7 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
 
 export default function StatusView(props) {
@@ -50,3 +51,15 @@ export default function StatusView(props) {
     </Box>
   );
 }
+
+StatusView.propTypes = {
+	steps: PropTypes.array,
+	isStepNextable: PropTypes.func,
+	isStepBackable: PropTypes.func,
+	isStepCancelable: PropTypes.func,
+	currentStep: PropTypes.number,
+	handleNext: PropTypes.func,
+  handleBack: PropTypes.func,
+  handleCancel: PropTypes.func,
+  
+};
