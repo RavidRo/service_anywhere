@@ -1,5 +1,5 @@
 import { OrderNotifier } from "./OrderNotifier";
-import { OrderStatus } from "api";
+import { OrderStatus, Location, OrderIDO } from "api";
 
 export abstract class IOrder {
 	static createOrder(guestId: string, items: Map<string, number>): IOrder{
@@ -11,6 +11,10 @@ export abstract class IOrder {
 	}
 
 	getGuestId(): string{
+		throw new Error('abstract method')
+	}
+
+	getDetails(): OrderIDO{
 		throw new Error('abstract method')
 	}
 

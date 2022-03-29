@@ -1,11 +1,34 @@
-let subscribers: Map<string,((msg: any) => boolean)[]> = new Map()
+import {Singleton} from "Singelton"
+type emitOperation = (event: string, params: object) => boolean;
 
-function notify(id: string, action: string, params: (string|number)[]){
-    subscribers.get(id)?.forEach(send => {  //todo: confirm this
-        send({action: action, params: params})
-    });
-}
+export class Notifier extends Singleton{
+	private subscribers: Record<string, emitOperation[]>;
 
-function addSubscribers(id: string, send: (msg: any) => boolean): void{
-    subscribers.get(id)?.push(send) ?? subscribers.set(id, [send])  //todo: confirm this
+	constructor(){
+		super()
+	}
+
+	/**
+	 * @param id The subscriberID
+	 * @param event The functions that is called when the subscriber is notified
+	 * @param params The parameters are used when calling action
+	 *
+	 * If id is not a subscriber no notification is sent
+	 */
+	public notify(id: string, event: string, params: object): void {
+		const emits = this.subscribers[id];
+		if (emits) {
+			// Removes subscribers if they did not receive a notifications
+			const newEmits = emits.filter(emit => {
+				const received = emit(event, params);
+				return received;
+			});
+			this.subscribers[id] = newEmits;
+		}
+	}
+
+	public addSubscriber(id: string, emit: emitOperation): void {
+		if (this.subscribers[id] === undefined) this.subscribers[id] = [];
+		this.subscribers[id].push(emit);
+	}
 }

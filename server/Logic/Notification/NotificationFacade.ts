@@ -1,29 +1,51 @@
-import { OrderStatus, OrderIDO } from "api";
+import {Location, OrderIDO, OrderStatus} from 'api';
+import {Notifier} from './Notifier';
 
-function newOrder(receiverId: string, order: OrderIDO){
-    throw new Error('Method not implemented')
-}
+export class NotificationFacade{
+	private notifier: Notifier = new Notifier()
 
-function updateGuestLocation(receiverId: string, orderId: string, mapId: string, location: Location){
-    throw new Error('Method not implemented')
-}
+	public newOrder(receiverID: string, order: OrderIDO) {
+		this.notifier.notify(receiverID, 'newOrder', {order});
+	}
 
-function updateWaiterLocation(receiverId: string, orderId: string, mapId: string, location: Location){
-    throw new Error('Method not implemented')
-}
+	public assignedToOrder(receiverID: string, order: OrderIDO) {
+		this.notifier.notify(receiverID, 'assignedToOrder', {order});
+	}
 
-function changeOrderStatus(receiverId: string, orderId: string, status: OrderStatus){
-    throw new Error('Method not implemented')
-}
+	public updateGuestLocation(
+		receiverID: string,
+		orderID: string,
+		mapID: string,
+		location: Location
+	) {
+		this.notifier.notify(receiverID, 'updateGuestLocation', {
+			orderID,
+			mapID,
+			location,
+		});
+	}
 
-function assignWaiter(){
-    throw new Error('method bad')
-}
+	public updateWaiterLocation(
+		receiverID: string,
+		orderID: string,
+		mapID: string,
+		location: Location
+	) {
+		this.notifier.notify(receiverID, 'updateWaiterLocation', {
+			orderID,
+			mapID,
+			location,
+		});
+	}
 
-export default{
-    newOrder,
-    updateGuestLocation,
-    updateWaiterLocation,
-    changeOrderStatus,
-    assignWaiter
+	public changeOrderStatus(
+		receiverID: string,
+		orderID: string,
+		orderStatus: OrderStatus
+	) {
+		this.notifier.notify(receiverID, 'changeOrderStatus', {
+			orderID,
+			orderStatus,
+		});
+	}
 }

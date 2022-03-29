@@ -164,7 +164,7 @@ io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
 	authenticate(socket.handshake.auth['token'], 
 		(msg: string) => {socket.emit('Error', msg)},
-		(id: string) => NotificationInterface.addSubscribers(id,
+		(id: string) => NotificationInterface.addSubscriber(id,
 			((eventName: string, o: object) => socket.emit(eventName, o))))
 	socket.on('updateGuestLocation', (message: any) => {
 		guest.updateLocationGuest(

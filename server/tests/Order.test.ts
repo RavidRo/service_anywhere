@@ -28,9 +28,10 @@ test('giveFeedback should return true', () => {
 
 test('updateLocationGuest and getGuestLocation should have corresponding locations', () => {
 	let location: Location = {x: 1, y: 1};
+	
 	expect(
 		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.updateGuestLocation(location);
+			return o.updateGuestLocation(0, location);
 		}).isSuccess()
 	).toBe(true);
 	expect(order.Order.getGuestLocation(firstOrder).getData()).toEqual(

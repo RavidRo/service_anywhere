@@ -1,9 +1,9 @@
 import {Notifier} from '../Logic/Notification/Notifier'
 
-function addSubscribers(id: string, send: (eventName: string, o: object) => boolean): void{
-    Notifier.addSubscribers(id, send)
+function addSubscriber(id: string, send: (eventName: string, o: object) => boolean): void{
+    new Notifier().addSubscriber(id, send)
 }
 
 export default{
-    addSubscribers
+    addSubscriber
 }

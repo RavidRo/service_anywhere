@@ -1,4 +1,4 @@
-import {OrderStatus, Location} from 'api';
+import {OrderStatus, Location, OrderIDO} from 'api';
 import {v4 as uuidv4} from 'uuid';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 import { IOrder } from './IOrder';
@@ -61,9 +61,9 @@ export class Order extends IOrder{
 		return true
 	}
 
-	override updateGuestLocation(mapId: string, location: globalThis.Location): void {}
+	override updateGuestLocation(_mapId: string, _location: Location): void {}
 
-	override updateWaiterLocation(mapId: string, location: globalThis.Location): void {}
+	override updateWaiterLocation(_mapId: string, _location: Location): void {}
 
 	hasOrderArrived(): ResponseMsg<boolean> {
 		return makeGood(this.status === 'delivered');
@@ -71,5 +71,16 @@ export class Order extends IOrder{
 
 	orderArrived(): void {
 		this.status = 'delivered';
+	}
+
+	override getDetails(): OrderIDO {
+		return {
+			id: this.id, 
+			guestId: this.guestId,
+			items: this.items,
+			status: this.status,
+			creationTime: this.creationTime,
+			terminationTime: this.terminationTime
+		}
 	}
 }
