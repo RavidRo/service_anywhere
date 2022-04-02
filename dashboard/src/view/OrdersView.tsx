@@ -47,7 +47,8 @@ function OrdersView(props) {
 				onRowEditStart={handleRowEditStart}
 				onRowEditStop={handleRowEditStop}
 				onCellFocusOut={handleCellFocusOut}
-				autoPageSize	
+				rowHeight={100}
+				autoPageSize
 			/>
 		</Box>
 	);

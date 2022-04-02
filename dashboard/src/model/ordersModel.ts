@@ -1,7 +1,10 @@
 import {makeAutoObservable} from 'mobx';
 
 export default class DashboardModel {
-	_orders = [{items: ['a', 'b'], id: '1', status: '0'}];
+	_orders = [
+		{items: ['a', 'b'], id: '1', status: '0'},
+		{items: ['c', 'd'], id: '2', status: '2'},
+	];
 
 	constructor() {
 		makeAutoObservable(this);

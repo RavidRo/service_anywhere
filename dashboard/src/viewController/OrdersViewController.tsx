@@ -1,14 +1,10 @@
 import * as React from 'react';
 import AppBarView from '../view/AppBarView';
 import propTypes from 'prop-types';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
-import {useGridApiRef, GridActionsCellItem} from '@mui/x-data-grid';
 import WaiterDialogViewController from './WaiterDialogViewController';
 import OrdersView from '../view/OrdersView';
 import StatusViewController from './StatusViewController';
+import ExpandCellGrid from '../view/ExpandCellGrid';
 
 function OrdersViewController(props) {
 	const {ordersViewModel, waitersViewModel} = props;
@@ -58,60 +54,66 @@ function OrdersViewController(props) {
 			field: 'guestId',
 			headerName: 'Guest Id',
 			editable: false,
+			flex: 1,
 		},
 		{
 			field: 'creationTime',
 			headerName: 'Creation Time',
 			type: 'date',
 			editable: false,
-			flex: 1
+			flex: 1,
+			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'terminationTime',
 			headerName: 'Termination Time',
 			type: 'date',
 			editable: false,
-			flex: 1
+			flex: 1,
+			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'items',
 			headerName: 'items',
 			editable: false,
-			flex: 1.5,
-			type: "string", 
-			valueFormatter: (params) => {
+			flex: 1,
+			type: 'string',
+			valueFormatter: params => {
 				console.log(params.value);
 				return params.value.join(', ');
-			}
+			},
+			renderCell: ExpandCellGrid,
 		},
 		{
-			field: 'status', 
+			field: 'status',
 			align: 'left',
-			headerName: 'Status', 
-			alignHeaderName:'left',
-			editable: true, 
-			type: "actions",
-			flex: 1.5,
-			renderCell: (params) => {
+			headerName: 'Status',
+			alignHeaderName: 'left',
+			editable: true,
+			type: 'actions',
+			flex: 2,
+			renderCell: params => {
 				const orderId = params.row.orderId;
 				const status = params.row.status;
-				return(<StatusViewController 
-					orderId={orderId} 
-					status={status} 
-					orderViewModel={ordersViewModel}/>);
-			}
+				return (
+					<StatusViewController
+						orderId={orderId}
+						status={Number.parseInt(status)}
+						orderViewModel={ordersViewModel}
+						width={params.colDef.computedWidth}
+					/>
+				);
+			},
 		},
 		{
 			field: 'AssignedWaiter',
 			headerName: 'AssignedWaiter',
-			width: 220,
 			type: 'actions',
 			editable: true,
 			cellClassName: 'assignWaiter',
-<<<<<<< HEAD:dashboard/src/viewController/OrdersViewController.tsx
 			flex: 1,
-			renderCell: (params) => {
-				const orderId = Number.parseInt(params.row.id);
+			renderCell: props => {
+				const orderId = Number.parseInt(props.row.id);
 				return (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
@@ -120,65 +122,6 @@ function OrdersViewController(props) {
 				);
 			},
 		},
-=======
-			renderCell: params => {
-				const orderId = params.row.id;
-				<WaiterDialogViewController
-					waitersViewModel={waitersViewModel}
-					orderId={orderId}
-				/>;
-			},
-		},
-		{
-			field: 'actions',
-			type: 'actions',
-			headerName: 'Actions',
-			width: 100,
-			cellClassName: 'actions',
-			renderCell: params => {
-				const id = params.row.id;
-				const isInEditMode = apiRef.current.getRowMode(id) === 'edit';
-
-				if (isInEditMode) {
-					return [
-						<GridActionsCellItem
-							icon={<SaveIcon />}
-							label='Save'
-							onClick={handleSaveClick(id)}
-							color='primary'
-							key='save'
-						/>,
-						<GridActionsCellItem
-							icon={<CancelIcon />}
-							label='Cancel'
-							className='textPrimary'
-							onClick={handleCancelClick(id)}
-							color='inherit'
-							key='cancel'
-						/>,
-					];
-				}
-
-				return [
-					<GridActionsCellItem
-						icon={<EditIcon />}
-						label='Edit'
-						className='textPrimary'
-						onClick={handleEditClick(id)}
-						color='inherit'
-						key='edit'
-					/>,
-					<GridActionsCellItem
-						icon={<DeleteIcon />}
-						label='Delete'
-						onClick={handleDeleteClick(id)}
-						color='inherit'
-						key='delete'
-					/>,
-				];
-			},
-		},
->>>>>>> d4079a17f4dd2aa8482686c17d9a6496559fbfaf:dashboard/src/viewController/OrdersViewController.jsx
 	];
 
 	return (
@@ -200,4 +143,5 @@ export default OrdersViewController;
 OrdersViewController.propTypes = {
 	ordersViewModel: propTypes.object,
 	waitersViewModel: propTypes.object,
+	row: propTypes.object,
 };
