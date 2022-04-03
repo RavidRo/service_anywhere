@@ -20,32 +20,6 @@ function OrdersViewController(props) {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleEditClick = id => event => {
-		event.stopPropagation();
-		// apiRef.current.setRowMode(id, 'edit');
-	};
-
-	const handleSaveClick = id => async event => {
-		event.stopPropagation();
-		// // Wait for the validation to run
-		// const isValid = await apiRef.current.commitRowChange(id);
-		// if (isValid) {
-		// 	apiRef.current.setRowMode(id, 'view');
-		// 	const row = apiRef.current.getRow(id);
-		// 	apiRef.current.updateRows([{...row, isNew: false}]);
-		// }
-	};
-
-	const handleDeleteClick = id => event => {
-		event.stopPropagation();
-		// apiRef.current.updateRows([{id, _action: 'delete'}]);
-	};
-
-	const handleCancelClick = id => event => {
-		event.stopPropagation();
-		// apiRef.current.setRowMode(id, 'view');
-	};
-
 	const columns = [
 		{field: 'id', headerName: 'id', editable: false},
 		{
@@ -76,8 +50,13 @@ function OrdersViewController(props) {
 			editable: false,
 			flex: 1,
 			type: 'string',
-			valueFormatter: params => {
-				return Object.keys(params.value).join(', ');
+			valueGetter: params => {
+				return Array.from(params.value)
+					.map(
+						(entry: (number | string)[]) =>
+							`${entry[0]} - ${entry[1]}`
+					)
+					.join(' | ');
 			},
 			renderCell: ExpandCellGrid,
 		},
