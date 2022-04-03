@@ -61,16 +61,13 @@ export class Order extends IOrder{
 		return true
 	}
 
-	override updateGuestLocation(_mapId: string, _location: Location): void {}
+	override updateGuestLocation(_mapId: string, _location: Location): ResponseMsg<string> {return makeGood('')}
 
-	override updateWaiterLocation(_mapId: string, _location: Location): void {}
+	override updateWaiterLocation(_mapId: string, _location: Location): ResponseMsg<string> {return makeGood('')}
 
-	hasOrderArrived(): ResponseMsg<boolean> {
-		return makeGood(this.status === 'delivered');
-	}
-
-	orderArrived(): void {
+	orderArrived(): ResponseMsg<string> {
 		this.status = 'delivered';
+		return makeGood('')
 	}
 
 	override getDetails(): OrderIDO {
@@ -82,5 +79,10 @@ export class Order extends IOrder{
 			creationTime: this.creationTime,
 			terminationTime: this.terminationTime
 		}
+	}
+
+	override changeOrderStatus(status: OrderStatus): ResponseMsg<string, string> {
+		this.status = status
+		return makeGood('')
 	}
 }

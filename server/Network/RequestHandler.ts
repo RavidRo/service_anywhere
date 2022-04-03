@@ -168,6 +168,7 @@ io.on('connection', function (socket: socketio.Socket) {
 			((eventName: string, o: object) => socket.emit(eventName, o))))
 	socket.on('updateGuestLocation', (message: any) => {
 		guest.updateLocationGuest(
+			message['mapId'],
 			message['location'],
 			socket.handshake.auth['token']
 		);

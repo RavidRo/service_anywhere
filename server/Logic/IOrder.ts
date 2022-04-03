@@ -1,5 +1,6 @@
 import { OrderNotifier } from "./OrderNotifier";
 import { OrderStatus, Location, OrderIDO } from "api";
+import { ResponseMsg } from "server/Response";
 
 export abstract class IOrder {
 	static createOrder(guestId: string, items: Map<string, number>): IOrder{
@@ -18,19 +19,19 @@ export abstract class IOrder {
 		throw new Error('abstract method')
 	}
 
-	updateWaiterLocation(mapId: string, location: Location): void {
+	updateWaiterLocation(mapId: string, location: Location): ResponseMsg<string> {
 		throw new Error('Method not implemented')
 	}
 
-	updateGuestLocation(mapId: string, location: Location): void {
+	updateGuestLocation(mapId: string, location: Location): ResponseMsg<string> {
 		throw new Error('Method not implemented')
 	}
 
-	assign(waiterId: string): void {
+	assign(waiterId: string): ResponseMsg<string> {
 		throw new Error('Method not implemented')
 	}
 
-	changeOrderStatus(status: OrderStatus){
+	changeOrderStatus(status: OrderStatus): ResponseMsg<string>{
 		throw new Error('abstract method')
 	}
 

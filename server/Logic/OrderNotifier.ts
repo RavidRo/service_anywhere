@@ -3,6 +3,7 @@ import { IOrder } from "./IOrder";
 import {NotificationFacade} from "./Notification/NotificationFacade";
 import { Order } from "./Order";
 import config from "config.json"
+import { ResponseMsg } from "server/Response";
 
 const notificationFacade: NotificationFacade = new NotificationFacade()
 
@@ -38,22 +39,24 @@ export abstract class OrderNotifier extends IOrder{
         return this.order.getGuestId()
     }
 
-    override assign(waiterId: string): void {
+    override assign(waiterId: string): ResponseMsg<string> {
         let newWaiterNotifier = new WaiterNotifier(waiterId)
         newWaiterNotifier.order = this.order
         this.order = newWaiterNotifier
+        notificationFacade.assignedToOrder(waiterId, this.getDetails())
+        return this.changeOrderStatus('assigned')
     }
 
-    override updateGuestLocation(mapId: string, location: Location): void {
-        this.order.updateGuestLocation(mapId, location)
+    override updateGuestLocation(mapId: string, location: Location): ResponseMsg<string> {
+        return this.order.updateGuestLocation(mapId, location)
     }
 
-    override updateWaiterLocation(mapId: string, location: Location): void {
-        this.order.updateWaiterLocation(mapId, location)
+    override updateWaiterLocation(mapId: string, location: Location): ResponseMsg<string> {
+        return this.order.updateWaiterLocation(mapId, location)
     }
 
-    override changeOrderStatus(status: OrderStatus): void {
-        this.order.changeOrderStatus(status)
+    override changeOrderStatus(status: OrderStatus): ResponseMsg<string> {
+        return this.order.changeOrderStatus(status)
     }
 
     override cancelOrderGuest(guestId: string): void {
@@ -74,21 +77,16 @@ export abstract class OrderNotifier extends IOrder{
 }
 
 class GuestNotifier extends OrderNotifier{
-    override updateWaiterLocation(mapId: string, location: Location): void {
+    override updateWaiterLocation(mapId: string, location: Location): ResponseMsg<string> {
         notificationFacade.updateWaiterLocation(this.receiverId, this.getId(), mapId, location)  //todo: receiver ID
-        this.order.updateWaiterLocation(mapId, location)
-    }
-
-    override assign(waiterId: string): void {
-        super.assign(waiterId)
-        notificationFacade.changeOrderStatus(this.receiverId, this.getId(), 'assigned')  //todo: receiver ID
+        return this.order.updateWaiterLocation(mapId, location)
     }
 }
 
 class DashboardNotifier extends OrderNotifier{
-    override changeOrderStatus(status: OrderStatus): void {
+    override changeOrderStatus(status: OrderStatus): ResponseMsg<string> {
         notificationFacade.changeOrderStatus(this.receiverId, this.getId(), status)  //todo: receiver ID
-        this.order.changeOrderStatus(status)
+        return this.order.changeOrderStatus(status)
     }
 
     override cancelOrderGuest(guestId: string): void {
@@ -98,16 +96,8 @@ class DashboardNotifier extends OrderNotifier{
 }
 
 class WaiterNotifier extends OrderNotifier{
-    override updateGuestLocation(mapId: string, location: Location): void {
+    override updateGuestLocation(mapId: string, location: Location): ResponseMsg<string> {
         notificationFacade.updateGuestLocation(this.receiverId, this.getId(), mapId, location)   //todo: receiver ID
-        this.order.updateGuestLocation(mapId, location)
-    }
-
-    override assign(waiterId: string): void {
-        if(waiterId !== this.receiverId){
-            super.assign(waiterId)
-        }
-        notificationFacade.assignedToOrder(waiterId, this.getDetails())
-        this.order.assign(waiterId)
+        return this.order.updateGuestLocation(mapId, location)
     }
 }

@@ -7,10 +7,8 @@ function createOrder(guestId: string, items: Map<string, number>): string {
 	return WaiterOrder.createOrder(guestId, items);
 }
 
-function updateLocationGuest(guestId: string, location: Location): void {
-	location;
-	guestId;
-	throw new Error('Method not implemented');
+function updateLocationGuest(guestId: string, mapId: string, location: Location): void {
+	let res = Order.delegate('', (o: Order) => o.updateGuestLocation(mapId, location))	//todo: get order id
 }
 
 function getGuestOrder(guestId: string): OrderIDO {
