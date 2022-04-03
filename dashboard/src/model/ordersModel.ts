@@ -1,9 +1,30 @@
 import {makeAutoObservable} from 'mobx';
+import {OrderIDO} from '../../../api';
 
 export default class DashboardModel {
-	_orders = [
-		{items: ['a', 'b'], id: '1', status: '0'},
-		{items: ['c', 'd'], id: '2', status: '2'},
+	_orders: OrderIDO[] = [
+		{
+			items: new Map([
+				['a', 1],
+				['b', 2],
+			]),
+			guestId: '0',
+			creationTime: new Date(),
+			terminationTime: new Date(),
+			id: '1',
+			status: 'received',
+		},
+		{
+			items: new Map([
+				['c', 3],
+				['d', 4],
+			]),
+			guestId: '1',
+			creationTime: new Date(),
+			terminationTime: new Date(),
+			id: '2',
+			status: 'ready to deliver',
+		},
 	];
 
 	constructor() {

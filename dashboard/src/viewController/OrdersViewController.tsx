@@ -62,7 +62,7 @@ function OrdersViewController(props) {
 			type: 'date',
 			editable: false,
 			flex: 1,
-			renderCell: ExpandCellGrid,
+			// renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'terminationTime',
@@ -70,7 +70,7 @@ function OrdersViewController(props) {
 			type: 'date',
 			editable: false,
 			flex: 1,
-			renderCell: ExpandCellGrid,
+			// renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'items',
@@ -79,8 +79,7 @@ function OrdersViewController(props) {
 			flex: 1,
 			type: 'string',
 			valueFormatter: params => {
-				console.log(params.value);
-				return params.value.join(', ');
+				return Object.keys(params.value).join(', ');
 			},
 			renderCell: ExpandCellGrid,
 		},
@@ -89,16 +88,15 @@ function OrdersViewController(props) {
 			align: 'left',
 			headerName: 'Status',
 			alignHeaderName: 'left',
-			editable: true,
 			type: 'actions',
-			flex: 2,
+			flex: 1,
 			renderCell: params => {
 				const orderId = params.row.orderId;
 				const status = params.row.status;
 				return (
 					<StatusViewController
 						orderId={orderId}
-						status={Number.parseInt(status)}
+						status={status}
 						orderViewModel={ordersViewModel}
 						width={params.colDef.computedWidth}
 					/>
@@ -109,7 +107,6 @@ function OrdersViewController(props) {
 			field: 'AssignedWaiter',
 			headerName: 'AssignedWaiter',
 			type: 'actions',
-			editable: true,
 			cellClassName: 'assignWaiter',
 			flex: 1,
 			renderCell: props => {

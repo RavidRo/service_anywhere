@@ -1,7 +1,7 @@
 import {OrderStatus} from '../../../api';
 import * as React from 'react';
 import StatusView from '../view/StatusView';
-import {Status} from '../Status';
+import {Status, StatusToNumber} from '../Status';
 import PropTypes from 'prop-types';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import Box from '@mui/material/Box';
@@ -14,12 +14,14 @@ import {CardHeader} from '@mui/material';
 
 export default function StatusViewController(props: {
 	orderId: number;
-	status: number;
+	status: string;
 	orderViewModel: any;
 	width: number;
 }) {
 	const {orderId, status, orderViewModel, width} = props;
-	const [currentStep, setCurrentStep] = React.useState(status);
+	const [currentStep, setCurrentStep] = React.useState(
+		StatusToNumber.get(status) || 0
+	);
 
 	const backable: number[] = [
 		2, // 'ready to deliver'
@@ -143,11 +145,11 @@ export default function StatusViewController(props: {
 						<Avatar
 							sx={{width: 24, height: 24, bgcolor: blue[700]}}>
 							<Typography variant='body1'>
-								{status + 1}
+								{StatusToNumber.get(status)! + 1}
 							</Typography>
 						</Avatar>
 					}
-					title={Status[status]}
+					title={status}
 				/>
 			</Box>
 			{showPopper && (
@@ -183,7 +185,7 @@ export default function StatusViewController(props: {
 
 StatusViewController.propTypes = {
 	orderId: PropTypes.number,
-	status: PropTypes.number,
+	status: PropTypes.string,
 	orderViewModel: PropTypes.object,
 	width: PropTypes.number,
 };
