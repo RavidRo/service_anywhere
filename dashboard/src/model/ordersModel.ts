@@ -35,15 +35,15 @@ export default class DashboardModel {
 	}
 
 	get orders() {
-		console.log(this._orders);
 		return this._orders;
 	}
 
-	cancelOrder(orderId) {
-		alert(`not implemented, orderId: ${orderId}`);
-	}
-
 	changeOrderStatus(orderId, newStatus) {
-		alert(`not implemented, orderId: ${orderId}, newStatus: ${newStatus}`);
+		for (const order of this._orders) {
+			if (order.id == orderId) {
+				console.log('changing order to ' + newStatus);
+				order['status'] = newStatus;
+			}
+		}
 	}
 }

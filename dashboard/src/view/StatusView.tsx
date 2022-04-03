@@ -6,13 +6,15 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
+import {observer} from 'mobx-react';
 
-export default function StatusView(props) {
+function StatusView(props) {
 	const {
 		steps,
 		isStepNextable,
 		isStepBackable,
 		isStepCancelable,
+		isStepFailed,
 		currentStep,
 		handleNext,
 		handleBack,
@@ -23,7 +25,19 @@ export default function StatusView(props) {
 			<Stepper activeStep={currentStep}>
 				{steps.map((label, index) => {
 					const stepProps = {};
-					const labelProps = {};
+					const labelProps: {
+						optional?: React.ReactNode;
+						error?: boolean;
+					} = {};
+					if (isStepFailed(index)) {
+						// labelProps.optional = (
+						// 	<Typography variant='caption' color='error'>
+						// 		Canceled
+						// 	</Typography>
+						// );
+						labelProps.error = true;
+					}
+
 					return (
 						<Step key={label} {...stepProps}>
 							<StepLabel {...labelProps}>{label}</StepLabel>
@@ -55,11 +69,7 @@ export default function StatusView(props) {
 						)}
 
 						{isStepNextable(currentStep) && (
-							<Button onClick={handleNext}>
-								{currentStep === steps.length - 1
-									? 'Finish'
-									: 'Next'}
-							</Button>
+							<Button onClick={handleNext}>{'Next'}</Button>
 						)}
 					</Box>
 				</React.Fragment>
@@ -68,11 +78,14 @@ export default function StatusView(props) {
 	);
 }
 
+export default observer(StatusView);
+
 StatusView.propTypes = {
 	steps: PropTypes.array,
 	isStepNextable: PropTypes.func,
 	isStepBackable: PropTypes.func,
 	isStepCancelable: PropTypes.func,
+	isStepFailed: PropTypes.func,
 	currentStep: PropTypes.number,
 	handleNext: PropTypes.func,
 	handleBack: PropTypes.func,

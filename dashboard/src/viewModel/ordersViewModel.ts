@@ -7,7 +7,6 @@ export default class OrdersViewModel {
 		this.ordersModel = ordersModel;
 	}
 	get orders() {
-		console.log('get orders view model');
 		return this.ordersModel.orders;
 	}
 
@@ -16,14 +15,10 @@ export default class OrdersViewModel {
 	}
 
 	changeOrderStatus(orderId, newStatus) {
-		if (changeOrderStatus(orderId, newStatus)) {
+		if (changeOrderStatus(orderId, newStatus) === true) {
 			this.ordersModel.changeOrderStatus(orderId, newStatus);
+			return true;
 		}
-	}
-
-	cancelOrder(orderId) {
-		if (cancelOrder(orderId)) {
-			this.ordersModel.cancelOrder(orderId);
-		}
+		return false;
 	}
 }

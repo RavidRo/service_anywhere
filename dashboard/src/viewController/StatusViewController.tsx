@@ -9,8 +9,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Avatar from '@mui/material/Avatar';
-import {blue} from '@mui/material/colors';
+import {blue, red} from '@mui/material/colors';
 import {CardHeader} from '@mui/material';
+import WarningIcon from '@mui/icons-material/Warning';
 
 export default function StatusViewController(props: {
 	orderId: number;
@@ -43,13 +44,20 @@ export default function StatusViewController(props: {
 		return step in backable;
 	};
 	const isStepCancelable = (step: number) => {
-		return Status[step] !== 'DELIVERED';
+		return Status[step] !== 'delivered' && Status[step] !== 'canceled';
+	};
+	const isStepFailed = (step: number) => {
+		return (
+			Status[currentStep] === 'canceled' || Status[step] === 'canceled'
+		);
 	};
 	const handleNext = () => {
 		if (!isStepNextable(currentStep)) {
 			throw new Error('This step is not nextable');
 		}
-		if (orderViewModel.changeOrderStatus(orderId, currentStep + 1)) {
+		if (
+			orderViewModel.changeOrderStatus(orderId, Status[currentStep + 1])
+		) {
 			setCurrentStep(currentStep + 1);
 		}
 	};
@@ -58,7 +66,9 @@ export default function StatusViewController(props: {
 		if (!isStepBackable(currentStep)) {
 			throw new Error('This step is not backable');
 		}
-		if (orderViewModel.changeOrderStatus(orderId, currentStep - 1)) {
+		if (
+			orderViewModel.changeOrderStatus(orderId, Status[currentStep - 1])
+		) {
 			setCurrentStep(currentStep - 1);
 		}
 	};
@@ -66,8 +76,8 @@ export default function StatusViewController(props: {
 		if (!isStepCancelable(currentStep)) {
 			throw new Error('This step is not cancelable');
 		}
-		if (orderViewModel.cancelOrder(orderId)) {
-			setCurrentStep(Status['CANCELED']);
+		if (orderViewModel.changeOrderStatus(orderId, 'canceled')) {
+			setCurrentStep(StatusToNumber.get('canceled') || 6);
 		}
 	};
 
@@ -138,16 +148,30 @@ export default function StatusViewController(props: {
 					textOverflow: '/ellipsis',
 					width: width,
 				}}>
-				{console.log(status)}
-
 				<CardHeader
 					avatar={
-						<Avatar
-							sx={{width: 24, height: 24, bgcolor: blue[700]}}>
-							<Typography variant='body1'>
-								{StatusToNumber.get(status)! + 1}
-							</Typography>
-						</Avatar>
+						<>
+							{isStepFailed(currentStep) ? (
+								<WarningIcon
+									sx={{
+										width: 24,
+										height: 24,
+										color: red[700],
+									}}
+								/>
+							) : (
+								<Avatar
+									sx={{
+										width: 24,
+										height: 24,
+										bgcolor: blue[700],
+									}}>
+									<Typography variant='body1'>
+										{StatusToNumber.get(status)! + 1}
+									</Typography>
+								</Avatar>
+							)}
+						</>
 					}
 					title={status}
 				/>
@@ -169,6 +193,7 @@ export default function StatusViewController(props: {
 									isStepNextable={isStepNextable}
 									isStepBackable={isStepBackable}
 									isStepCancelable={isStepCancelable}
+									isStepFailed={isStepFailed}
 									currentStep={currentStep}
 									handleNext={handleNext}
 									handleBack={handleBack}
@@ -184,7 +209,7 @@ export default function StatusViewController(props: {
 }
 
 StatusViewController.propTypes = {
-	orderId: PropTypes.number,
+	orderId: PropTypes.string,
 	status: PropTypes.string,
 	orderViewModel: PropTypes.object,
 	width: PropTypes.number,

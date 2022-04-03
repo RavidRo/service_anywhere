@@ -24,7 +24,6 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 	value: string;
 	width: number;
 }) {
-	console.log('Grid Cell Expand');
 	const {width, value} = props;
 	const wrapper = React.useRef<HTMLDivElement | null>(null);
 	const cellDiv = React.useRef(null);

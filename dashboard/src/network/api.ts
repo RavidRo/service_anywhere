@@ -84,16 +84,13 @@ export function getWaitersByOrder(orderId: string): string[] {
 				return '';
 			}
 		})
-		.catch(err =>
-			{console.log(`failed to get waiter by order due to ${err}`);
-			return '';}
-		);
+		.catch(err => {
+			console.log(`failed to get waiter by order due to ${err}`);
+			return '';
+		});
 }
 
-export function changeOrderStatus(
-	orderId: string,
-	newStatus: string
-): boolean {
+export function changeOrderStatus(orderId: string, newStatus: string): boolean {
 	const url = `${base_route}changeOrderStatus`; // not implemented in server yet, make sure it fits when implemented
 	return axios({
 		method: 'POST',
@@ -105,14 +102,17 @@ export function changeOrderStatus(
 	})
 		.then(res => {
 			if (res.status) {
+				console.log('Returning ' + (res.status < 400));
 				return res.status < 400;
 			} else {
 				console.log('Error in get change order status');
+				return false;
 			}
 		})
-		.catch(err =>
-			console.log(`failed to change order status due to ${err}`)
-		);
+		.catch(err => {
+			console.log(`failed to change order status due to ${err}`);
+			return false;
+		});
 }
 
 export function cancelOrder(orderId: string): string {

@@ -24,8 +24,6 @@ function WaiterDialogView(props) {
 	return (
 		<div>
 			<Typography variant='h6'>
-				{console.log("assigned Waiter")}
-				{console.log(assignedWaiter)}
 				{assignedWaiter.length === 0 ? (
 					<IconButton
 						color='primary'

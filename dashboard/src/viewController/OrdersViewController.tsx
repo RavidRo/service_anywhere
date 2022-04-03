@@ -8,8 +8,6 @@ import ExpandCellGrid from '../view/ExpandCellGrid';
 
 function OrdersViewController(props) {
 	const {ordersViewModel, waitersViewModel} = props;
-	// const apiRef = useGridApiRef();
-	// console.log(apiRef);
 	const handleRowEditStart = (params, event) => {
 		event.defaultMuiPrevented = true;
 	};
@@ -91,7 +89,7 @@ function OrdersViewController(props) {
 			type: 'actions',
 			flex: 1,
 			renderCell: params => {
-				const orderId = params.row.orderId;
+				const orderId = params.row.id;
 				const status = params.row.status;
 				return (
 					<StatusViewController
