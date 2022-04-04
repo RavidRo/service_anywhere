@@ -14,7 +14,6 @@ class Review {
 }
 
 export class Order extends IOrder{
-	static orderList: Order[] = [];
 	id: string;
 	guestId: string;
 	status: OrderStatus;
@@ -32,20 +31,8 @@ export class Order extends IOrder{
 
 	static override createOrder(id: string, items: Map<string,number>): IOrder {
 		let order = new Order(id, items);
-		this.orderList.push(order);
+		IOrder.orderList.push(order);
 		return order;
-	}
-
-	static delegate<T, U>(
-		orderId: string,
-		func: (order: Order) => ResponseMsg<T, U>
-	): ResponseMsg<T, U> {
-		for (const element of Order.orderList) {
-			if (element.id === orderId) {
-				return func(element);
-			}
-		}
-		return makeFail('No such order.', 0); //todo: status code
 	}
 
 	constructor(id: string, items: Map<string, number>) {
@@ -54,6 +41,7 @@ export class Order extends IOrder{
 		this.status = 'received';
 		this.id = uuidv4();
 		this.guestId = id
+		this.creationTime = new Date()
 	}
 
 	override giveFeedback(review: string, score: number): boolean {
@@ -64,8 +52,9 @@ export class Order extends IOrder{
 
 	override updateWaiterLocation(_mapId: string, _location: Location): ResponseMsg<string> {return makeGood('')}
 
-	orderArrived(): ResponseMsg<string> {
+	override orderArrived(): ResponseMsg<string> {
 		this.status = 'delivered';
+		this.terminationTime = new Date()
 		return makeGood('')
 	}
 
@@ -80,8 +69,17 @@ export class Order extends IOrder{
 		}
 	}
 
+	override cancelOrderGuest(): boolean {
+		this.status = 'canceled'
+		this.terminationTime = new Date()
+		return true
+	}
+
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<string, string> {
 		this.status = status
+		if(status === 'canceled' || status === 'delivered'){
+			this.terminationTime = new Date()
+		}
 		return makeGood('')
 	}
 }

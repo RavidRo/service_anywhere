@@ -1,8 +1,22 @@
 import { OrderNotifier } from "./OrderNotifier";
 import { OrderStatus, Location, OrderIDO } from "api";
-import { ResponseMsg } from "server/Response";
+import { makeFail, ResponseMsg } from "server/Response";
 
 export abstract class IOrder {
+	static orderList: IOrder[] = []
+
+	static delegate<T, U>(
+		orderId: string,
+		func: (order: IOrder) => ResponseMsg<T, U>
+	): ResponseMsg<T, U> {
+		for (const element of this.orderList) {
+			if (element.getId() === orderId) {
+				return func(element);
+			}
+		}
+		return makeFail('No such order.', 404);
+	}
+
 	static createOrder(guestId: string, items: Map<string, number>): IOrder{
 		throw new Error('abstract method')
 	}
@@ -35,11 +49,15 @@ export abstract class IOrder {
 		throw new Error('abstract method')
 	}
 
-	cancelOrderGuest(guestId: string){
+	cancelOrderGuest(): boolean{
 		throw new Error('abstract method')
 	}
 
 	cancelOrderManager(): boolean{
+		throw new Error('Method not implemented')
+	}
+
+	orderArrived(): ResponseMsg<string>{
 		throw new Error('Method not implemented')
 	}
 

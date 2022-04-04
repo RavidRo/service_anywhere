@@ -59,8 +59,8 @@ export abstract class OrderNotifier extends IOrder{
         return this.order.changeOrderStatus(status)
     }
 
-    override cancelOrderGuest(guestId: string): void {
-        this.order.cancelOrderGuest(guestId)
+    override cancelOrderGuest(): boolean {
+        return this.order.cancelOrderGuest()
     }
 
     override cancelOrderManager(): boolean {
@@ -73,6 +73,10 @@ export abstract class OrderNotifier extends IOrder{
 
     override getDetails(): OrderIDO {
         return this.order.getDetails()
+    }
+
+    override orderArrived(): ResponseMsg<string> {
+        return this.order.orderArrived()
     }
 }
 
@@ -89,9 +93,9 @@ class DashboardNotifier extends OrderNotifier{
         return this.order.changeOrderStatus(status)
     }
 
-    override cancelOrderGuest(guestId: string): void {
-        this.order.cancelOrderGuest(guestId)    //todo: change to return bool and if fail don't notify
+    override cancelOrderGuest(): boolean {
         notificationFacade.changeOrderStatus(this.receiverId, this.getId(), 'canceled')
+        return this.order.cancelOrderGuest()
     }
 }
 

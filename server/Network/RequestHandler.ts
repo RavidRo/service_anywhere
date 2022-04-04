@@ -40,13 +40,13 @@ function authenticate(
 		sendErrorMsg('Token does not match any id');
 	}
 }
-
+	
 function checkInputs(
 	inputs: string[],
 	reqBody: any,
 	sendErrorMsg: (msg: string) => void,
-	doIfLegal: () => void
-) {
+	doIfLegal: () => void) 
+{
 	let answer = '';
 	let missing = false;
 	for (const input of inputs) {
@@ -63,16 +63,17 @@ function checkInputs(
 	}
 }
 
-//Guest
-app.get('/loginGuest', (req, res) => {
+app.get('/login', (req, res) => {
 	checkInputs(
-		['phoneNumber'],
+		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.login(req.body['phoneNumber'], 1))
+		() => res.send(authenticator.login(req.body['password'], 2))
 	);
 });
-
+		
+//Guest
+		
 app.get('/getItemsGuest', (_req, res) => {
 	res.send(items.getItems());
 });
@@ -129,14 +130,6 @@ app.post('/cancelOrderGuest', (req, res) => {
 });
 
 //waiter
-app.get('/loginWaiter', (req, res) => {
-	checkInputs(
-		['password'],
-		req.body,
-		(msg: string) => res.send(msg),
-		() => res.send(authenticator.login(req.body['password'], 2))
-	);
-});
 
 app.get('/getItemsWaiter', (_req, res) => {
 	res.send(items.getItems());
@@ -172,7 +165,7 @@ app.post('/orderOnTheWay', (req, res) => {
 io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
 	authenticate(socket.handshake.auth['token'],
-		2,	//todo: can be 1
+		0,
 		(msg: string) => {socket.emit('Error', msg)},
 		(id: string) => NotificationInterface.addSubscriber(id,
 			((eventName: string, o: object) => socket.emit(eventName, o))))
@@ -205,14 +198,6 @@ io.on('connection', function (socket: socketio.Socket) {
 });
 
 //Dashboard
-app.get('/loginAdmin', (req, res) => {
-	checkInputs(
-		['password'],
-		req.body,
-		(msg: string) => res.send(msg),
-		() => res.send(authenticator.authenticate(req.body['password'], 3))
-	);
-});
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
