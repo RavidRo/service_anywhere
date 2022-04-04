@@ -1,6 +1,8 @@
 import {io, Socket} from 'socket.io-client';
 import Singleton from '../singleton';
 import Notification from './notifications';
+import ordersModel from '../model/ordersModel';
+import waiterModel from '../model/waiterModel';
 
 const config = require('./config.json');
 const host = config.host;
@@ -13,12 +15,12 @@ export default class ConnectionHandler extends Singleton {
 	private socket?: Socket;
 	private notifications: Notification;
 
-	constructor(orderModel, waiterModel) {
+	constructor(orderModel: ordersModel, waiterModel: waiterModel) {
 		super();
 		this.notifications = new Notification(orderModel, waiterModel);
 	}
 
-	connect(onSuccess) {
+	connect(token: string, onSuccess?: () => void, onError?: () => void): void {
 		const socket = io(base_route);
 
 		socket.on('connect', () => {
@@ -50,9 +52,9 @@ export default class ConnectionHandler extends Singleton {
 		this.registerEvents(socket);
 	}
 
-	registerEvents(socket) {
+	registerEvents(socket: Socket) {
 		for (const event in this.notifications.eventCallbacks) {
-			socket.on(event, params => {
+			socket.on(event, (params: any) => {
 				console.info(`Notification ${event}:`, params);
 				this.notifications.eventCallbacks[event](params);
 			});

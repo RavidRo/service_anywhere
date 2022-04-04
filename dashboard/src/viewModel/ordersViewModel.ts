@@ -15,7 +15,7 @@ export default class OrdersViewModel {
 	}
 
 	changeOrderStatus(orderId, newStatus) {
-		if (changeOrderStatus(orderId, newStatus) === true) {
+		if (changeOrderStatus(orderId, newStatus)) {
 			this.ordersModel.changeOrderStatus(orderId, newStatus);
 			return true;
 		}

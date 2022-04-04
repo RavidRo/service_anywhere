@@ -1,4 +1,6 @@
+import {any} from 'prop-types';
 import {OrderIDO} from '../../../api';
+import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 
 const axios = require('axios');
 const config = require('./config.json');
@@ -16,14 +18,14 @@ export function getOrders(): OrderIDO[] {
 		method: 'GET',
 		url: url,
 	})
-		.then(res => {
+		.then((res: AxiosResponse<any, any>) => {
 			if (res.data) {
 				return res.data;
 			} else {
 				console.log('Error in getting orders');
 			}
 		})
-		.catch(err => {
+		.catch((err: any) => {
 			alert(`failed to get orders due to ${err}`);
 			return [];
 		});
@@ -35,14 +37,14 @@ export function getWaiters(): string[] {
 		method: 'GET',
 		url: url,
 	})
-		.then(res => {
+		.then((res: AxiosResponse<any, any>) => {
 			if (res.data) {
 				return res.data;
 			} else {
 				console.log('Error in getting waiters');
 			}
 		})
-		.catch(err => alert(`failed to get waiters due to ${err}`));
+		.catch((err: any) => alert(`failed to get waiters due to ${err}`));
 }
 
 export function assignWaiter(orderId: string, waiterId: string): boolean {
@@ -56,7 +58,7 @@ export function assignWaiter(orderId: string, waiterId: string): boolean {
 			waiterID: waiterId,
 		},
 	})
-		.then(res => {
+		.then((res: AxiosResponse<any, any>) => {
 			if (res.status) {
 				return res.status < 400;
 			} else {
@@ -64,7 +66,7 @@ export function assignWaiter(orderId: string, waiterId: string): boolean {
 				return false;
 			}
 		})
-		.catch(err => alert(`failed to assign waiter due to ${err}`));
+		.catch((err: any) => alert(`failed to assign waiter due to ${err}`));
 }
 
 export function getWaitersByOrder(orderId: string): string[] {
@@ -76,7 +78,7 @@ export function getWaitersByOrder(orderId: string): string[] {
 			orderID: orderId,
 		},
 	})
-		.then(res => {
+		.then((res: AxiosResponse<any, any>) => {
 			if (res.data) {
 				return res.data;
 			} else {
@@ -84,7 +86,7 @@ export function getWaitersByOrder(orderId: string): string[] {
 				return '';
 			}
 		})
-		.catch(err => {
+		.catch((err: any) => {
 			console.log(`failed to get waiter by order due to ${err}`);
 			return '';
 		});
@@ -100,7 +102,7 @@ export function changeOrderStatus(orderId: string, newStatus: string): boolean {
 			newStatus: newStatus,
 		},
 	})
-		.then(res => {
+		.then((res: AxiosResponse<any, any>) => {
 			if (res.status) {
 				console.log('Returning ' + (res.status < 400));
 				return res.status < 400;
@@ -109,13 +111,13 @@ export function changeOrderStatus(orderId: string, newStatus: string): boolean {
 				return false;
 			}
 		})
-		.catch(err => {
+		.catch((err: any) => {
 			console.log(`failed to change order status due to ${err}`);
 			return false;
 		});
 }
 
-export function cancelOrder(orderId: string): string {
+export function cancelOrder(orderId: string): boolean {
 	const url = `${base_route}cancelOrder`; // not implemented in server yet, make sure it fits when implemented
 	return axios({
 		method: 'POST',
@@ -124,12 +126,16 @@ export function cancelOrder(orderId: string): string {
 			orderID: orderId,
 		},
 	})
-		.then(res => {
+		.then((res: AxiosResponse<any, any>) => {
 			if (res.status) {
 				return res.status < 400;
 			} else {
 				console.log('Error in get cancel order');
+				return false;
 			}
 		})
-		.catch(err => console.log(`failed to cancel order due to ${err}`));
+		.catch((err: any) => {
+			console.log(`failed to cancel order due to ${err}`);
+			return false;
+		});
 }

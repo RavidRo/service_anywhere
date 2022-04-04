@@ -1,5 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-import {OrderIDO} from '../../../api';
+import {OrderIDO, OrderStatus} from '../../../api';
 
 export default class DashboardModel {
 	_orders: OrderIDO[] = [
@@ -38,9 +38,9 @@ export default class DashboardModel {
 		return this._orders;
 	}
 
-	changeOrderStatus(orderId, newStatus) {
+	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
 		for (const order of this._orders) {
-			if (order.id == orderId) {
+			if (order.id === orderId) {
 				console.log('changing order to ' + newStatus);
 				order['status'] = newStatus;
 			}
