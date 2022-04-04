@@ -1,7 +1,7 @@
 import {getWaitersByOrder, assignWaiter} from '../network/api';
 import WaiterModel from '../model/waiterModel';
 
-export default class WaiterDialogViewModel {
+export default class WaiterViewModel {
 	private waitersModel: WaiterModel;
 
 	constructor(waitersModel) {

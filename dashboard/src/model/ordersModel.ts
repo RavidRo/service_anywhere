@@ -1,7 +1,7 @@
 import {makeAutoObservable} from 'mobx';
 import {OrderIDO, OrderStatus} from '../../../api';
 
-export default class DashboardModel {
+export default class ordersModel {
 	_orders: OrderIDO[] = [
 		{
 			items: new Map([

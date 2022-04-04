@@ -1,8 +1,8 @@
 import {io, Socket} from 'socket.io-client';
 import Singleton from '../singleton';
 import Notification from './notifications';
-import ordersModel from '../model/ordersModel';
-import waiterModel from '../model/waiterModel';
+import ordersViewModel from '../viewModel/ordersViewModel';
+import waitersViewModel from '../viewModel/waitersViewModel';
 
 const config = require('./config.json');
 const host = config.host;
@@ -15,12 +15,12 @@ export default class ConnectionHandler extends Singleton {
 	private socket?: Socket;
 	private notifications: Notification;
 
-	constructor(orderModel: ordersModel, waiterModel: waiterModel) {
+	constructor(orderModel: ordersViewModel, waiterModel: waitersViewModel) {
 		super();
 		this.notifications = new Notification(orderModel, waiterModel);
 	}
 
-	connect(token: string, onSuccess?: () => void, onError?: () => void): void {
+	connect(onSuccess?: () => void): void {
 		const socket = io(base_route);
 
 		socket.on('connect', () => {
