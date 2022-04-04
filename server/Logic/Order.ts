@@ -56,9 +56,8 @@ export class Order extends IOrder{
 		this.guestId = id
 	}
 
-	override giveFeedback(review: string, score: number): boolean {		//todo: return value, maybe should get guestId
-		this.review = new Review(review, score);
-		return true
+	override giveFeedback(review: string, score: number): boolean {
+		throw new Error('Method not implemented')
 	}
 
 	override updateGuestLocation(_mapId: string, _location: Location): ResponseMsg<string> {return makeGood('')}

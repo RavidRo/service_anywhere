@@ -8,11 +8,11 @@ function createOrder(guestId: string, items: Map<string, number>): string {
 }
 
 function updateLocationGuest(guestId: string, mapId: string, location: Location): void {
-	let res = Order.delegate('', (o: Order) => o.updateGuestLocation(mapId, location))	//todo: get order id
+	let res = Order.delegate(getGuestOrder(guestId).id, (o: Order) => o.updateGuestLocation(mapId, location))
 }
 
 function getGuestOrder(guestId: string): OrderIDO {
-	let m = new Map();
+	let m = new Map();	//todo: this
 	let d = new Date();
 	throw new Error('Method not implemented');
 	return {

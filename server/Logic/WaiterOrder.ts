@@ -47,19 +47,6 @@ export class WaiterOrder {
 		return makeGood([]);
 	}
 
-	static updateWaiterLocation(
-		waiterId: string,
-		mapId: string,
-		location: Location
-	): string {
-		throw new Error('Method not implemended')
-		waiterId;
-		mapId;
-		location;
-		return '';
-		//todo: this
-	}
-
 	static createOrder(guestId: string, items: Map<string,number>): string{
 		let newOrder = OrderNotifier.createOrder(guestId, items)
 		this.orderList.push(newOrder)

@@ -78,26 +78,26 @@ export abstract class OrderNotifier extends IOrder{
 
 class GuestNotifier extends OrderNotifier{
     override updateWaiterLocation(mapId: string, location: Location): ResponseMsg<string> {
-        notificationFacade.updateWaiterLocation(this.receiverId, this.getId(), mapId, location)  //todo: receiver ID
+        notificationFacade.updateWaiterLocation(this.receiverId, this.getId(), mapId, location)
         return this.order.updateWaiterLocation(mapId, location)
     }
 }
 
 class DashboardNotifier extends OrderNotifier{
     override changeOrderStatus(status: OrderStatus): ResponseMsg<string> {
-        notificationFacade.changeOrderStatus(this.receiverId, this.getId(), status)  //todo: receiver ID
+        notificationFacade.changeOrderStatus(this.receiverId, this.getId(), status)
         return this.order.changeOrderStatus(status)
     }
 
     override cancelOrderGuest(guestId: string): void {
         this.order.cancelOrderGuest(guestId)    //todo: change to return bool and if fail don't notify
-        notificationFacade.changeOrderStatus(this.receiverId, this.getId(), 'canceled')  //todo: receiver ID
+        notificationFacade.changeOrderStatus(this.receiverId, this.getId(), 'canceled')
     }
 }
 
 class WaiterNotifier extends OrderNotifier{
     override updateGuestLocation(mapId: string, location: Location): ResponseMsg<string> {
-        notificationFacade.updateGuestLocation(this.receiverId, this.getId(), mapId, location)   //todo: receiver ID
+        notificationFacade.updateGuestLocation(this.receiverId, this.getId(), mapId, location)
         return this.order.updateGuestLocation(mapId, location)
     }
 }

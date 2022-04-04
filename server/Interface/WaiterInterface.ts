@@ -25,8 +25,8 @@ function updateLocationWaiter(
 	waiterId: string,
 	mapId: string,
 	location: Location
-): string {
-	return Order.delegate('', (o: Order) => o.updateWaiterLocation(mapId, location))	//todo: need to know which order, handle response
+): void {
+	Order.delegate(, (o: Order) => o.updateWaiterLocation(mapId, location)).	//todo: need to know which order
 }
 
 function orderOnTheWay(orderId: string): void {

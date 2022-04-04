@@ -5,7 +5,7 @@ export class Waiter {
 	id: string;
 
     constructor(id?: string) {
-		this.id = id ?? v4();   //todo: confirm this
+		this.id = id ?? v4();
 		this.available = true;
 	}
 }

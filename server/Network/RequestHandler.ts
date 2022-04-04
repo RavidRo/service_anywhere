@@ -19,17 +19,23 @@ let io = require('socket.io')(http);
 app.use(cors({origin: '*'}));
 
 app.get('/', (_req, res) => {
-	//todo: maybe something else
 	res.send('Hello World!');
 });
 
 function authenticate(
 	token: string | undefined,
+	permissionLevel: number,
 	sendErrorMsg: (msg: string) => void,
 	doIfLegal: (id: string) => void
 ) {
 	if (token) {
-		authenticator.authenticate(token).then(doIfLegal); //todo: handle fail
+		let response = authenticator.authenticate(token, permissionLevel)
+		if(response.isSuccess()){
+			response.then(doIfLegal);
+		}
+		else{
+			sendErrorMsg(response.getData())
+		}
 	} else {
 		sendErrorMsg('Token does not match any id');
 	}
@@ -63,7 +69,7 @@ app.get('/loginGuest', (req, res) => {
 		['phoneNumber'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPhone(req.body['phoneNumber']))
+		() => res.send(authenticator.login(req.body['phoneNumber'], 1))
 	);
 });
 
@@ -74,6 +80,7 @@ app.get('/getItemsGuest', (_req, res) => {
 app.get('/getGuestOrder', (req, res) => {
 	authenticate(
 		req.headers.authorization,
+		1,
 		(msg: string) => res.send(msg),
 		(id: string) => res.send(guest.getGuestOrder(id))
 	);
@@ -87,6 +94,7 @@ app.post('/createOrder', (req, res) => {
 		() => {
 			authenticate(
 				req.headers.authorization,
+				1,
 				(msg: string) => res.send(msg),
 				(id: string) =>
 					res.send(guest.createOrder(id, req.body['orderItems']))
@@ -126,7 +134,7 @@ app.get('/loginWaiter', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPass(req.body['password'])) //todo: authenticator
+		() => res.send(authenticator.login(req.body['password'], 2))
 	);
 });
 
@@ -137,6 +145,7 @@ app.get('/getItemsWaiter', (_req, res) => {
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,
+		2,
 		(msg: string) => res.send(msg),
 		(id: string) => res.send(waiter.getWaiterOrders(id))
 	);
@@ -162,23 +171,36 @@ app.post('/orderOnTheWay', (req, res) => {
 
 io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
-	authenticate(socket.handshake.auth['token'], 
+	authenticate(socket.handshake.auth['token'],
+		2,	//todo: can be 1
 		(msg: string) => {socket.emit('Error', msg)},
 		(id: string) => NotificationInterface.addSubscriber(id,
 			((eventName: string, o: object) => socket.emit(eventName, o))))
 	socket.on('updateGuestLocation', (message: any) => {
-		guest.updateLocationGuest(
-			message['mapId'],
-			message['location'],
-			socket.handshake.auth['token']
-		);
+		checkInputs(
+			['mapId', 'location'],
+			message,
+			(msg: string) => socket.emit('Error', msg),
+			() => authenticate(
+				socket.handshake.auth['token'],
+				1,
+				(msg: string) => socket.emit('Error', msg),
+				(id: string) => guest.updateLocationGuest(id, message['mapId'], message['location'])
+			)
+		)
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
-		waiter.updateLocationWaiter(
-			socket.handshake.auth['token'],
-			message['map'],
-			message['location']
-		);
+		checkInputs(
+			['mapId', 'location'],
+			message,
+			(msg: string) => socket.emit('Error', msg),
+			() => authenticate(
+				socket.handshake.auth['token'],
+				2,
+				(msg: string) => socket.emit('Error', msg),
+				(id: string) => waiter.updateLocationWaiter(id, message['mapId'], message['location'])
+			)
+		)
 	});
 });
 
@@ -188,7 +210,7 @@ app.get('/loginAdmin', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.authenticateAdmin(req.body['password']))
+		() => res.send(authenticator.authenticate(req.body['password'], 3))
 	);
 });
 
