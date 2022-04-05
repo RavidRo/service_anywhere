@@ -44,7 +44,7 @@ test('createOrder should create unique order Ids', () => {
 });
 
 test('order arrival test', () => {
-	Order.delegate(firstOrder.getId(), (o: Order) => {
+	Order.delegate(firstOrder.getId(), (o: IOrder) => {
 		return o.orderArrived();
 	});
 	expect(
@@ -54,8 +54,15 @@ test('order arrival test', () => {
 
 test('delegate with a nonexistant orderId should fail', () => {
 	expect(
-		Order.delegate('', (o: Order) => {
+		Order.delegate('', (o: IOrder) => {
 			return o.assign('');
 		}).isSuccess()
 	).toBe(false);
+});
+
+test('cancelOrder should make the status "canceled"', () => {
+	firstOrder.cancelOrderGuest()
+	expect(
+		firstOrder.getDetails().status
+	).toBe('canceled');
 });
