@@ -1,4 +1,4 @@
-import { IOrder } from 'server/Logic/IOrder';
+import {IOrder} from 'server/Logic/IOrder';
 import {OrderStatus} from '../../api';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
@@ -11,7 +11,7 @@ function assignWaiter(orderID: string, waiterID: string): void {
 }
 
 function getWaiters(): string[] {
-	return WaiterOrder.waiterList.map((waiter) => waiter.id);
+	return WaiterOrder.waiterList.map(waiter => waiter.id);
 }
 
 function getWaiterByOrder(orderID: string): string[] {

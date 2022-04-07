@@ -1,8 +1,8 @@
 import {Location, OrderIDO, OrderStatus} from 'api';
 import {Notifier} from './Notifier';
 
-export class NotificationFacade{
-	private notifier: Notifier = new Notifier()
+export class NotificationFacade {
+	private notifier: Notifier = new Notifier();
 
 	public newOrder(receiverID: string, order: OrderIDO) {
 		this.notifier.notify(receiverID, 'newOrder', {order});
