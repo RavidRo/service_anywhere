@@ -1,7 +1,6 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {Alert, PermissionsAndroid, Platform} from 'react-native';
-import {itemsContext, MyLocationContext, OrdersContext} from '../contexts';
-import {OrderID} from '../types';
+import {MyLocationContext, OrdersContext} from '../contexts';
 import {MainPage} from '../View/MainPageView';
 
 //import {observer} from 'mobx-react-lite';

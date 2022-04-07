@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-	ActivityIndicator,
-	Button,
-	SafeAreaView,
-	Text,
-	View,
-} from 'react-native';
-import {OrderID, OrderStatus} from '../types';
+import {ActivityIndicator, Button, Text, View} from 'react-native';
+import {OrderID} from '../types';
 import {observer} from 'mobx-react-lite';
 
 type MainPageViewProps = {
