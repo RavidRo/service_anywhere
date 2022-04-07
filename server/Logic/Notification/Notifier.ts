@@ -1,4 +1,4 @@
-import {Singleton} from "Singelton"
+import {Singleton} from "../../Singelton"
 type emitOperation = (event: string, params: object) => boolean;
 
 export class Notifier extends Singleton{

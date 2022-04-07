@@ -44,7 +44,7 @@ export class Order extends IOrder{
 		this.creationTime = new Date()
 	}
 
-	override giveFeedback(review: string, score: number): boolean {
+	override giveFeedback(_review: string, _score: number): boolean {
 		throw new Error('Method not implemented')
 	}
 

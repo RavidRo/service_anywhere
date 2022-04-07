@@ -1,4 +1,4 @@
-import {ResponseMsg} from 'server/Response';
+import {ResponseMsg} from '../Response';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
@@ -24,13 +24,13 @@ test('connect waiter should create unique waiter Ids', () => {
 test('get waiter by order with our order should return nothing', () => {
 	const waiters: ResponseMsg<string[]> = WaiterOrder.getWaiterByOrder(order);
 	expect(waiters.isSuccess());
-	expect(waiters.getData()).toBe([]);
+	expect(waiters.getData()).toStrictEqual([]);
 });
 
 test('get waiter order with our waiter should return nothing', () => {
 	const orders: ResponseMsg<string[]> = WaiterOrder.getWaiterOrder(waiter);
 	expect(orders.isSuccess());
-	expect(orders.getData()).toBe([]);
+	expect(orders.getData()).toStrictEqual([]);
 });
 
 test("get guest order with our guestId should return our order", () => {

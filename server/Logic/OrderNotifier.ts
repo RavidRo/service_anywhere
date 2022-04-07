@@ -2,8 +2,8 @@ import { OrderStatus, Location, OrderIDO } from "api";
 import { IOrder } from "./IOrder";
 import {NotificationFacade} from "./Notification/NotificationFacade";
 import { Order } from "./Order";
-import config from "config.json"
-import { ResponseMsg } from "server/Response";
+import config from "../config.json"
+import { ResponseMsg } from "../Response";
 
 const notificationFacade: NotificationFacade = new NotificationFacade()
 

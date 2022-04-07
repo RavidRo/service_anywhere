@@ -36,7 +36,7 @@ test('createOrder should return an order with a status of "received"', () => {
 });
 
 test("getId should return the order's id", () => {
-	expect(typeof firstOrder.getId()).toBe(firstOrder.getDetails().id);
+	expect(firstOrder.getId()).toBe(firstOrder.getDetails().id);
 });
 
 test('createOrder should create unique order Ids', () => {

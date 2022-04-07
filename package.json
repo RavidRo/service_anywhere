@@ -27,5 +27,18 @@
 		"guests_app",
 		"waiters_app",
 		"server"
-	]
+	], 
+	"jest": {
+		"roodDir": "./",
+		"roots": [
+		  "<rootDir>"
+		],
+		"modulePaths": [
+		  "<rootDir>"
+		],
+		"moduleDirectories": [
+		  "node_modules",
+		  "<rootDir>"
+		]
+	  }
 }
