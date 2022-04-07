@@ -30,7 +30,7 @@ function authenticate(
 	doIfLegal: (id: string) => void
 ) {
 	if (token) {
-		authenticator.authenticate(token).then(doIfLegal); //todo: handle fail
+		authenticator.authenticate(token, 0).then(doIfLegal); //todo: handle fail
 	} else {
 		sendErrorMsg('Token does not match any id');
 	}
@@ -64,7 +64,7 @@ app.get('/loginGuest', (req, res) => {
 		['phoneNumber'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPhone(req.body['phoneNumber']))
+		() => res.send(authenticator.login(req.body['phoneNumber']))
 	);
 });
 
@@ -127,7 +127,7 @@ app.get('/loginWaiter', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPass(req.body['password'])) //todo: authenticator
+		() => res.send(authenticator.login(req.body['password'])) //todo: authenticator
 	);
 });
 
@@ -185,7 +185,7 @@ app.get('/loginAdmin', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.authenticateAdmin(req.body['password']))
+		() => res.send(authenticator.authenticate(req.body['password'], 0))
 	);
 });
 
