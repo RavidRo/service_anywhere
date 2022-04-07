@@ -29,24 +29,23 @@ function authenticate(
 	doIfLegal: (id: string) => void
 ) {
 	if (token) {
-		let response = authenticator.authenticate(token, permissionLevel)
-		if(response.isSuccess()){
+		let response = authenticator.authenticate(token, permissionLevel);
+		if (response.isSuccess()) {
 			response.then(doIfLegal);
-		}
-		else{
-			sendErrorMsg(response.getData())
+		} else {
+			sendErrorMsg(response.getData());
 		}
 	} else {
 		sendErrorMsg('Token does not match any id');
 	}
 }
-	
+
 function checkInputs(
 	inputs: string[],
 	reqBody: any,
 	sendErrorMsg: (msg: string) => void,
-	doIfLegal: () => void) 
-{
+	doIfLegal: () => void
+) {
 	let answer = '';
 	let missing = false;
 	for (const input of inputs) {
@@ -71,9 +70,9 @@ app.get('/login', (req, res) => {
 		() => res.send(authenticator.login(req.body['password']))
 	);
 });
-		
+
 //Guest
-		
+
 app.get('/getItemsGuest', (_req, res) => {
 	res.send(items.getItems());
 });
@@ -164,36 +163,55 @@ app.post('/orderOnTheWay', (req, res) => {
 
 io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
-	authenticate(socket.handshake.auth['token'],
+	authenticate(
+		socket.handshake.auth['token'],
 		0,
-		(msg: string) => {socket.emit('Error', msg)},
-		(id: string) => NotificationInterface.addSubscriber(id,
-			((eventName: string, o: object) => socket.emit(eventName, o))))
+		(msg: string) => {
+			socket.emit('Error', msg);
+		},
+		(id: string) =>
+			NotificationInterface.addSubscriber(
+				id,
+				(eventName: string, o: object) => socket.emit(eventName, o)
+			)
+	);
 	socket.on('updateGuestLocation', (message: any) => {
 		checkInputs(
 			['mapId', 'location'],
 			message,
 			(msg: string) => socket.emit('Error', msg),
-			() => authenticate(
-				socket.handshake.auth['token'],
-				1,
-				(msg: string) => socket.emit('Error', msg),
-				(id: string) => guest.updateLocationGuest(id, message['mapId'], message['location'])
-			)
-		)
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					1,
+					(msg: string) => socket.emit('Error', msg),
+					(id: string) =>
+						guest.updateLocationGuest(
+							id,
+							message['mapId'],
+							message['location']
+						)
+				)
+		);
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
 		checkInputs(
 			['mapId', 'location'],
 			message,
 			(msg: string) => socket.emit('Error', msg),
-			() => authenticate(
-				socket.handshake.auth['token'],
-				2,
-				(msg: string) => socket.emit('Error', msg),
-				(id: string) => waiter.updateLocationWaiter(id, message['mapId'], message['location'])
-			)
-		)
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					2,
+					(msg: string) => socket.emit('Error', msg),
+					(id: string) =>
+						waiter.updateLocationWaiter(
+							id,
+							message['mapId'],
+							message['location']
+						)
+				)
+		);
 	});
 });
 

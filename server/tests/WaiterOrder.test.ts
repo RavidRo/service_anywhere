@@ -5,10 +5,13 @@ import {WaiterOrder} from '../Logic/WaiterOrder';
 let waiter: string;
 let order: string;
 let guestId: string;
-let orderItems = new Map<string,number>([['bamba', 1], ['beer', 2]]);
+let orderItems = new Map<string, number>([
+	['bamba', 1],
+	['beer', 2],
+]);
 beforeAll(() => {
 	waiter = WaiterOrder.connectWaiter();
-	guestId = 'guestId2'
+	guestId = 'guestId2';
 	order = Order.createOrder(guestId, orderItems).getId();
 });
 
@@ -33,10 +36,10 @@ test('get waiter order with our waiter should return nothing', () => {
 	expect(orders.getData()).toStrictEqual([]);
 });
 
-test("get guest order with our guestId should return our order", () => {
-	expect(WaiterOrder.getGuestOrder(guestId).guestId).toBe(guestId)
-	expect(WaiterOrder.getGuestOrder(guestId).id).toBe(order)
-})
+test('get guest order with our guestId should return our order', () => {
+	expect(WaiterOrder.getGuestOrder(guestId).guestId).toBe(guestId);
+	expect(WaiterOrder.getGuestOrder(guestId).id).toBe(order);
+});
 
 describe('assign a waiter to an order', () => {
 	beforeAll(() => {

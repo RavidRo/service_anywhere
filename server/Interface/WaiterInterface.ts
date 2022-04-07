@@ -1,5 +1,5 @@
 import {stringify} from 'querystring';
-import { IOrder } from 'server/Logic/IOrder';
+import {IOrder} from 'server/Logic/IOrder';
 import {makeGood, ResponseMsg} from 'server/Response';
 import {Location} from '../../api';
 import {WaiterOrder} from '../Logic/WaiterOrder';
@@ -25,7 +25,7 @@ function updateLocationWaiter(
 	mapId: string,
 	location: Location
 ): void {
-	WaiterOrder.updateWaiterLocation(waiterId, mapId, location)
+	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
 function orderOnTheWay(orderId: string): void {

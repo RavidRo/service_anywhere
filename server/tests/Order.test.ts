@@ -1,17 +1,20 @@
 import {Order} from '../Logic/Order';
 import {Location} from 'api';
-import { IOrder } from 'server/Logic/IOrder';
+import {IOrder} from 'server/Logic/IOrder';
 
 let firstOrder: IOrder;
 const guestId = 'guestId';
 let beforeCreation: Date;
-const orderItems = new Map<string,number>([['bamba', 1], ['beer', 2]]);
+const orderItems = new Map<string, number>([
+	['bamba', 1],
+	['beer', 2],
+]);
 let afterCreation: Date;
 
 beforeAll(() => {
-	beforeCreation = new Date()
-	firstOrder = Order.createOrder(guestId, orderItems)
-	afterCreation = new Date()
+	beforeCreation = new Date();
+	firstOrder = Order.createOrder(guestId, orderItems);
+	afterCreation = new Date();
 });
 
 test('createOrder should return an order with matching guest ID', () => {
@@ -27,8 +30,12 @@ test('createOrder should return an order with matching items', () => {
 });
 
 test('createOrder should return an order with a reasonable creation time', () => {
-	expect(firstOrder.getDetails().creationTime.getTime()).toBeGreaterThanOrEqual(beforeCreation.getTime());
-	expect(firstOrder.getDetails().creationTime.getTime()).toBeLessThanOrEqual(afterCreation.getTime());
+	expect(
+		firstOrder.getDetails().creationTime.getTime()
+	).toBeGreaterThanOrEqual(beforeCreation.getTime());
+	expect(firstOrder.getDetails().creationTime.getTime()).toBeLessThanOrEqual(
+		afterCreation.getTime()
+	);
 });
 
 test('createOrder should return an order with a status of "received"', () => {
@@ -40,16 +47,16 @@ test("getId should return the order's id", () => {
 });
 
 test('createOrder should create unique order Ids', () => {
-	expect(Order.createOrder('newGuest', orderItems).getId()).not.toBe(firstOrder.getId());
+	expect(Order.createOrder('newGuest', orderItems).getId()).not.toBe(
+		firstOrder.getId()
+	);
 });
 
 test('order arrival test', () => {
 	Order.delegate(firstOrder.getId(), (o: IOrder) => {
 		return o.orderArrived();
 	});
-	expect(
-		firstOrder.getDetails().status
-	).toBe('delivered')
+	expect(firstOrder.getDetails().status).toBe('delivered');
 });
 
 test('delegate with a nonexistant orderId should fail', () => {
@@ -61,8 +68,6 @@ test('delegate with a nonexistant orderId should fail', () => {
 });
 
 test('cancelOrder should make the status "canceled"', () => {
-	firstOrder.cancelOrderGuest()
-	expect(
-		firstOrder.getDetails().status
-	).toBe('canceled');
+	firstOrder.cancelOrderGuest();
+	expect(firstOrder.getDetails().status).toBe('canceled');
 });

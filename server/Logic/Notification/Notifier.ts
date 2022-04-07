@@ -1,11 +1,11 @@
-import {Singleton} from "../../Singelton"
+import {Singleton} from '../../Singelton';
 type emitOperation = (event: string, params: object) => boolean;
 
-export class Notifier extends Singleton{
+export class Notifier extends Singleton {
 	private subscribers: Record<string, emitOperation[]>;
 
-	constructor(){
-		super()
+	constructor() {
+		super();
 	}
 
 	/**

@@ -1,7 +1,7 @@
 import {OrderStatus, Location, OrderIDO} from 'api';
 import {v4 as uuidv4} from 'uuid';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
-import { IOrder } from './IOrder';
+import {IOrder} from './IOrder';
 
 class Review {
 	content: string;
@@ -13,7 +13,7 @@ class Review {
 	}
 }
 
-export class Order extends IOrder{
+export class Order extends IOrder {
 	id: string;
 	guestId: string;
 	status: OrderStatus;
@@ -23,63 +23,78 @@ export class Order extends IOrder{
 	terminationTime: Date;
 
 	override getId(): string {
-		return this.id
+		return this.id;
 	}
 	override getGuestId(): string {
-		return this.guestId
+		return this.guestId;
 	}
 
-	static override createOrder(id: string, items: Map<string,number>): IOrder {
+	static override createOrder(
+		id: string,
+		items: Map<string, number>
+	): IOrder {
 		let order = new Order(id, items);
 		IOrder.orderList.push(order);
 		return order;
 	}
 
 	constructor(id: string, items: Map<string, number>) {
-		super()
+		super();
 		this.items = items;
 		this.status = 'received';
 		this.id = uuidv4();
-		this.guestId = id
-		this.creationTime = new Date()
+		this.guestId = id;
+		this.creationTime = new Date();
 	}
 
 	override giveFeedback(_review: string, _score: number): boolean {
-		throw new Error('Method not implemented')
+		throw new Error('Method not implemented');
 	}
 
-	override updateGuestLocation(_mapId: string, _location: Location): ResponseMsg<string> {return makeGood('')}
+	override updateGuestLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<string> {
+		return makeGood('');
+	}
 
-	override updateWaiterLocation(_mapId: string, _location: Location): ResponseMsg<string> {return makeGood('')}
+	override updateWaiterLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<string> {
+		return makeGood('');
+	}
 
 	override orderArrived(): ResponseMsg<string> {
 		this.status = 'delivered';
-		this.terminationTime = new Date()
-		return makeGood('')
+		this.terminationTime = new Date();
+		return makeGood('');
 	}
 
 	override getDetails(): OrderIDO {
 		return {
-			id: this.id, 
+			id: this.id,
 			guestId: this.guestId,
 			items: this.items,
 			status: this.status,
 			creationTime: this.creationTime,
-			terminationTime: this.terminationTime
-		}
+			terminationTime: this.terminationTime,
+		};
 	}
 
 	override cancelOrderGuest(): boolean {
-		this.status = 'canceled'
-		this.terminationTime = new Date()
-		return true
+		this.status = 'canceled';
+		this.terminationTime = new Date();
+		return true;
 	}
 
-	override changeOrderStatus(status: OrderStatus): ResponseMsg<string, string> {
-		this.status = status
-		if(status === 'canceled' || status === 'delivered'){
-			this.terminationTime = new Date()
+	override changeOrderStatus(
+		status: OrderStatus
+	): ResponseMsg<string, string> {
+		this.status = status;
+		if (status === 'canceled' || status === 'delivered') {
+			this.terminationTime = new Date();
 		}
-		return makeGood('')
+		return makeGood('');
 	}
 }
