@@ -15,15 +15,9 @@ interface TokenPayload {
 	userId: string;
 }
 
-async function login(
-	password: string,
-	neededPermissionLevel: number
-): Promise<ResponseMsg<string>> {
+async function login(password: string): Promise<ResponseMsg<string>> {
 	const UserCredentials = await AuthenticatorChecker.getDetails(password);
-	if (
-		!UserCredentials ||
-		neededPermissionLevel > UserCredentials.permissionLevel
-	) {
+	if (!UserCredentials) {
 		return makeFail(
 			'No matched password was found',
 			unauthorizedStatusCode
@@ -43,7 +37,7 @@ async function login(
 
 function authenticate(
 	token: string,
-	permissionLevel: number
+	neededPermissionLevel: number
 ): ResponseMsg<string> {
 	try {
 		// remove Bearer if using Bearer Authorization mechanism
@@ -57,7 +51,7 @@ function authenticate(
 		const payLoad: TokenPayload = jwt.verify(token, publicKey, {
 			algorithms: ['RS256'],
 		}) as TokenPayload;
-		if (payLoad.permissionLevel < permissionLevel) {
+		if (payLoad.permissionLevel < neededPermissionLevel) {
 			return makeFail(
 				'You dont have access to the requested operation',
 				forbiddenStatusCode

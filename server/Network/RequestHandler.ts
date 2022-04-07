@@ -68,7 +68,7 @@ app.get('/login', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.login(req.body['password'], 2))
+		() => res.send(authenticator.login(req.body['password']))
 	);
 });
 		
