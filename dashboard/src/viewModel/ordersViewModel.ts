@@ -1,9 +1,10 @@
 import {changeOrderStatus, cancelOrder} from '../network/api';
 import OrderModel from '../model/ordersModel';
+import {OrderStatus} from '../../../api';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
-	constructor(ordersModel) {
+	constructor(ordersModel: OrderModel) {
 		this.ordersModel = ordersModel;
 	}
 	get orders() {
@@ -14,8 +15,8 @@ export default class OrdersViewModel {
 		this.ordersModel.orders = orders;
 	}
 
-	changeOrderStatus(orderId, newStatus) {
-		if (changeOrderStatus(orderId, newStatus)) {
+	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
+		if (changeOrderStatus(orderId, newStatus) === true) {
 			this.ordersModel.changeOrderStatus(orderId, newStatus);
 			return true;
 		}

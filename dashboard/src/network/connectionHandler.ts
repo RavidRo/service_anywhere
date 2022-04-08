@@ -15,9 +15,12 @@ export default class ConnectionHandler extends Singleton {
 	private socket?: Socket;
 	private notifications: Notification;
 
-	constructor(orderModel: ordersViewModel, waiterModel: waitersViewModel) {
+	constructor(
+		orderViewModel: ordersViewModel,
+		waiterViewModel: waitersViewModel
+	) {
 		super();
-		this.notifications = new Notification(orderModel, waiterModel);
+		this.notifications = new Notification(orderViewModel, waiterViewModel);
 	}
 
 	connect(onSuccess?: () => void): void {
@@ -54,9 +57,11 @@ export default class ConnectionHandler extends Singleton {
 
 	registerEvents(socket: Socket) {
 		for (const event in this.notifications.eventCallbacks) {
-			socket.on(event, (params: any) => {
+			socket.on(event, params => {
 				console.info(`Notification ${event}:`, params);
-				this.notifications.eventCallbacks[event](params);
+				this.notifications.eventCallbacks[
+					event as keyof typeof this.notifications.eventCallbacks
+				](params);
 			});
 		}
 	}

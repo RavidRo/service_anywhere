@@ -19,7 +19,7 @@ const _useStyles = makeStyles(theme => ({
 	},
 }));
 
-function OrdersView(props) {
+function OrdersView(props: any) {
 	const {
 		orders,
 		columns,

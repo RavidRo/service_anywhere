@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import {observer} from 'mobx-react';
 
-function StatusView(props) {
+function StatusView(props: any) {
 	const {
 		steps,
 		isStepNextable,
@@ -23,7 +23,7 @@ function StatusView(props) {
 	return (
 		<Box sx={{width: '100%'}}>
 			<Stepper activeStep={currentStep}>
-				{steps.map((label, index) => {
+				{steps.map((label: string, index: number) => {
 					const stepProps = {};
 					const labelProps: {
 						optional?: React.ReactNode;

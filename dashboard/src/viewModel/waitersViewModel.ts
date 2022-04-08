@@ -4,7 +4,7 @@ import WaiterModel from '../model/waiterModel';
 export default class WaiterViewModel {
 	private waitersModel: WaiterModel;
 
-	constructor(waitersModel) {
+	constructor(waitersModel: WaiterModel) {
 		this.waitersModel = waitersModel;
 	}
 
@@ -16,11 +16,11 @@ export default class WaiterViewModel {
 		this.waitersModel.waiters = waiters;
 	}
 
-	assignWaiter(orderId, waiter) {
+	assignWaiter(orderId: string, waiter: string) {
 		return assignWaiter(orderId, waiter);
 	}
 
-	getWaitersByOrder(orderId) {
+	getWaitersByOrder(orderId: string) {
 		return getWaitersByOrder(orderId);
 	}
 }

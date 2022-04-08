@@ -12,7 +12,7 @@ import RoomServiceIcon from '@mui/icons-material/RoomService';
 
 const dialogTitle = 'Choose Waiter';
 
-function WaiterDialogView(props) {
+function WaiterDialogView(props: any) {
 	const {
 		assignedWaiter,
 		waiters,
@@ -40,14 +40,16 @@ function WaiterDialogView(props) {
 			<Dialog onClose={handleClose} open={open}>
 				<DialogTitle>{dialogTitle}</DialogTitle>
 				<List sx={{pt: 0}}>
-					{waiters.map(waiter => (
-						<ListItem
-							button
-							onClick={() => handleListItemClick(waiter)}
-							key={waiter}>
-							<ListItemText primary={waiter} />
-						</ListItem>
-					))}
+					{waiters.map((waiter: string) => {
+						return (
+							<ListItem
+								button
+								onClick={() => handleListItemClick(waiter)}
+								key={waiter}>
+								<ListItemText primary={waiter} />
+							</ListItem>
+						);
+					})}
 				</List>
 			</Dialog>
 		</div>

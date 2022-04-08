@@ -5,18 +5,31 @@ import WaiterDialogViewController from './WaiterDialogViewController';
 import OrdersView from '../view/OrdersView';
 import StatusViewController from './StatusViewController';
 import ExpandCellGrid from '../view/ExpandCellGrid';
+import OrdersViewModel from '../viewModel/ordersViewModel';
+import WaiterViewModel from '../viewModel/waitersViewModel';
+import {
+	GridParamsApi,
+	GridRenderCellParams,
+	GridValueGetterParams,
+	MuiEvent,
+} from '@mui/x-data-grid';
 
-function OrdersViewController(props) {
+interface viewModelProps {
+	ordersViewModel: OrdersViewModel;
+	waitersViewModel: WaiterViewModel;
+}
+
+function OrdersViewController(props: viewModelProps) {
 	const {ordersViewModel, waitersViewModel} = props;
-	const handleRowEditStart = (params, event) => {
+	const handleRowEditStart = (_: any, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleRowEditStop = (params, event) => {
+	const handleRowEditStop = (_: any, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleCellFocusOut = (params, event) => {
+	const handleCellFocusOut = (_: any, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
@@ -50,12 +63,10 @@ function OrdersViewController(props) {
 			editable: false,
 			flex: 1,
 			type: 'string',
-			valueGetter: params => {
+			valueGetter: (params: GridValueGetterParams) => {
+				//(entry: (number | string)[])
 				return Array.from(params.value)
-					.map(
-						(entry: (number | string)[]) =>
-							`${entry[0]} - ${entry[1]}`
-					)
+					.map((entry: any) => `${entry[0]} - ${entry[1]}`)
 					.join(' | ');
 			},
 			renderCell: ExpandCellGrid,
@@ -67,7 +78,7 @@ function OrdersViewController(props) {
 			alignHeaderName: 'left',
 			type: 'actions',
 			flex: 1,
-			renderCell: params => {
+			renderCell: (params: GridRenderCellParams) => {
 				const orderId = params.row.id;
 				const status = params.row.status;
 				return (
@@ -86,7 +97,7 @@ function OrdersViewController(props) {
 			type: 'actions',
 			cellClassName: 'assignWaiter',
 			flex: 1,
-			renderCell: props => {
+			renderCell: (props: GridRenderCellParams) => {
 				const orderId = Number.parseInt(props.row.id);
 				return (
 					<WaiterDialogViewController

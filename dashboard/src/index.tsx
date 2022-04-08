@@ -12,7 +12,10 @@ const waiterModel = new waitersModel();
 const orderModel = new ordersModel();
 const ordersViewModel = new OrdersViewModel(orderModel);
 const waitersViewModel = new WaitersViewModel(waiterModel);
-const connectionHandler = new ConnectionHandler(orderModel, waiterModel);
+const connectionHandler = new ConnectionHandler(
+	ordersViewModel,
+	waitersViewModel
+);
 ReactDOM.render(
 	<React.StrictMode>
 		<OrdersViewController

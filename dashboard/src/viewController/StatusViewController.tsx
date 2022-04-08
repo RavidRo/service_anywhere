@@ -103,7 +103,7 @@ export default function StatusViewController(props: {
 			return undefined;
 		}
 
-		function handleKeyDown(nativeEvent) {
+		function handleKeyDown(nativeEvent: any) {
 			// IE11, Edge (prior to using Bink?) use 'Esc'
 			if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
 				setShowFullCell(false);
