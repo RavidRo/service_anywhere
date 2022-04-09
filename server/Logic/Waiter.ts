@@ -6,6 +6,6 @@ export class Waiter {
 
 	constructor(id?: string) {
 		this.id = id ?? v4();
-		this.available = true;
+		this.available = true;	//todo: use this, add name
 	}
 }
