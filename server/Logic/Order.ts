@@ -87,9 +87,7 @@ export class Order extends IOrder {
 		this.terminationTime = new Date();
 	}
 
-	override changeOrderStatus(
-		status: OrderStatus
-	): ResponseMsg<void> {
+	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
 		this.status = status;
 		if (status === 'canceled' || status === 'delivered') {
 			this.terminationTime = new Date();
@@ -98,6 +96,6 @@ export class Order extends IOrder {
 	}
 
 	assign(_waiterId: string): ResponseMsg<void> {
-		return makeGood()
+		return makeGood();
 	}
 }

@@ -21,29 +21,29 @@ export abstract class IOrder {
 		throw new Error('abstract method');
 	}
 
-	abstract getId(): string
+	abstract getId(): string;
 
-	abstract getGuestId(): string
+	abstract getGuestId(): string;
 
-	abstract getDetails(): OrderIDO
+	abstract getDetails(): OrderIDO;
 
 	abstract updateWaiterLocation(
 		_mapId: string,
 		_location: Location
-	): ResponseMsg<void>
+	): ResponseMsg<void>;
 
 	abstract updateGuestLocation(
 		_mapId: string,
 		_location: Location
-	): ResponseMsg<void>
+	): ResponseMsg<void>;
 
-	abstract assign(_waiterId: string): ResponseMsg<void>
+	abstract assign(_waiterId: string): ResponseMsg<void>;
 
-	abstract changeOrderStatus(_status: OrderStatus): ResponseMsg<void>
+	abstract changeOrderStatus(_status: OrderStatus): ResponseMsg<void>;
 
-	abstract cancelOrder(): void
+	abstract cancelOrder(): void;
 
-	abstract orderArrived(): ResponseMsg<void>
+	abstract orderArrived(): ResponseMsg<void>;
 
-	abstract giveFeedback(_review: string, _score: number): boolean
+	abstract giveFeedback(_review: string, _score: number): boolean;
 }

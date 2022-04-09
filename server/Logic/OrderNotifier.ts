@@ -68,9 +68,13 @@ export class OrderNotifier extends IOrder {
 	}
 
 	override cancelOrder(): void {
-        notificationFacade.changeOrderStatus(this.receiverId, this.getId(), 'canceled')
-        this.order.cancelOrder()
-    }
+		notificationFacade.changeOrderStatus(
+			this.receiverId,
+			this.getId(),
+			'canceled'
+		);
+		this.order.cancelOrder();
+	}
 
 	override giveFeedback(review: string, score: number): boolean {
 		return this.order.giveFeedback(review, score);
