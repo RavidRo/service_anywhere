@@ -21,53 +21,29 @@ export abstract class IOrder {
 		throw new Error('abstract method');
 	}
 
-	getId(): string {
-		throw new Error('abstract method');
-	}
+	abstract getId(): string
 
-	getGuestId(): string {
-		throw new Error('abstract method');
-	}
+	abstract getGuestId(): string
 
-	getDetails(): OrderIDO {
-		throw new Error('abstract method');
-	}
+	abstract getDetails(): OrderIDO
 
-	updateWaiterLocation(
+	abstract updateWaiterLocation(
 		_mapId: string,
 		_location: Location
-	): ResponseMsg<string> {
-		throw new Error('Method not implemented');
-	}
+	): ResponseMsg<void>
 
-	updateGuestLocation(
+	abstract updateGuestLocation(
 		_mapId: string,
 		_location: Location
-	): ResponseMsg<string> {
-		throw new Error('Method not implemented');
-	}
+	): ResponseMsg<void>
 
-	assign(_waiterId: string): ResponseMsg<string> {
-		throw new Error('Method not implemented');
-	}
+	abstract assign(_waiterId: string): ResponseMsg<void>
 
-	changeOrderStatus(_status: OrderStatus): ResponseMsg<string> {
-		throw new Error('abstract method');
-	}
+	abstract changeOrderStatus(_status: OrderStatus): ResponseMsg<void>
 
-	cancelOrderGuest(): boolean {
-		throw new Error('abstract method');
-	}
+	abstract cancelOrder(): void
 
-	cancelOrderManager(): boolean {
-		throw new Error('Method not implemented');
-	}
+	abstract orderArrived(): ResponseMsg<void>
 
-	orderArrived(): ResponseMsg<string> {
-		throw new Error('Method not implemented');
-	}
-
-	giveFeedback(_review: string, _score: number): boolean {
-		throw new Error('Method not implemented');
-	}
+	abstract giveFeedback(_review: string, _score: number): boolean
 }

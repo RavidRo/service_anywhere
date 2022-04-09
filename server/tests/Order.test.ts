@@ -68,6 +68,6 @@ test('delegate with a nonexistant orderId should fail', () => {
 });
 
 test('cancelOrder should make the status "canceled"', () => {
-	firstOrder.cancelOrderGuest();
+	firstOrder.cancelOrder();
 	expect(firstOrder.getDetails().status).toBe('canceled');
 });
