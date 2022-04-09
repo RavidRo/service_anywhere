@@ -157,7 +157,7 @@ app.post('/orderOnTheWay', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(waiter.orderOnTheWay(req.body['orderId']))
+		() => res.send(waiter.orderOnTheWay(req.body['orderId']))	//todo: connect waiter should notify dashboard?
 	);
 });
 
