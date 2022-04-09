@@ -9,14 +9,20 @@
  */
 
 import React from 'react';
-import { DummyPage } from './src/View/DummyView';
+import {DummyPage} from './src/View/DummyView';
 import ConnectController from './src/ViewController/ConnectController';
 
 const App = () => {
 	// return <ConnectController />;
-	return <DummyPage SendOrderToServer={function (): void {
-		throw new Error('Function not implemented.');
-	} } hasActiveOrder={false} orderID={''} orderStatus={''}></DummyPage>
+	return (
+		<DummyPage
+			SendOrderToServer={function (): void {
+				throw new Error('Function not implemented.');
+			}}
+			hasActiveOrder={false}
+			orderID={''}
+			orderStatus={''}></DummyPage>
+	);
 };
 
 export default App;

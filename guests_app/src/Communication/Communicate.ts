@@ -1,7 +1,7 @@
-import { guestCommunication, Location } from '../signatures';
+import {guestCommunication, Location} from '../signatures';
 import ConnectionHandler from './ConnectionHandler';
 
-export default class Communicate implements guestCommunication{
+export default class Communicate implements guestCommunication {
 	private connectionHandler: ConnectionHandler;
 	constructor() {
 		this.connectionHandler = new ConnectionHandler();

@@ -2,7 +2,6 @@
 Copied into project the relevant signatures and types from the shared api.ts file
 */
 
-
 export type OrderStatus =
 	| 'received'
 	| 'in preparation'

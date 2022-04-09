@@ -40,17 +40,17 @@
 // 		err => console.log('get location eror - ' + err)
 // 	);
 // }
-import {GuestAPI, ItemIDO, OrderIDO, OrderID} from './../signatures'
+import {GuestAPI, ItemIDO, OrderIDO, OrderID} from './../signatures';
 import RequestsHandler from './RequestsHandler';
 
-export default class Requests implements GuestAPI{
+export default class Requests implements GuestAPI {
 	private handler: RequestsHandler;
 	private token: string;
 
 	constructor() {
 		this.handler = new RequestsHandler();
 	}
-	
+
 	cancelOrderGuest: (orderId: string) => Promise<Boolean>;
 	setToken(token: string) {
 		this.token = token;
@@ -65,7 +65,7 @@ export default class Requests implements GuestAPI{
 		return this.handler.get<ItemIDO[]>('getItems', this.token, {});
 	}
 
-	getGuestOrder():  Promise<OrderIDO> {
+	getGuestOrder(): Promise<OrderIDO> {
 		return this.handler.get<OrderIDO>('getGuestOrders', this.token, {});
 	}
 	createOrder(order_items: Map<string, Number>): Promise<OrderID> {
