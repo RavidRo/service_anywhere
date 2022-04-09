@@ -1,23 +1,18 @@
 import {stringify} from 'querystring';
+import {IOrder} from 'server/Logic/IOrder';
 import {makeGood, ResponseMsg} from 'server/Response';
 import {Location} from '../../api';
-import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
-function getWaiterOrders(waiterId: string): ResponseMsg<Order[]> {
+function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
 	return WaiterOrder.getWaiterOrder(waiterId).then((data: string[]) => {
-		return Order.orderList.filter(order => data.includes(order.id));
+		return IOrder.orderList.filter(order => data.includes(order.getId()));
 	});
 }
 
-function getGuestLocation(orderId: string): ResponseMsg<Location> {
-	return Order.getGuestLocation(orderId);
-}
-
 function orderArrived(orderId: string): void {
-	Order.delegate(orderId, (order: Order) => {
-		order.orderArrived();
-		return makeGood();
+	IOrder.delegate(orderId, (order: IOrder) => {
+		return order.orderArrived();
 	});
 }
 
@@ -29,12 +24,8 @@ function updateLocationWaiter(
 	waiterId: string,
 	mapId: string,
 	location: Location
-): string {
-	waiterId;
-	mapId;
-	location;
-	return '';
-	//todo: this
+): void {
+	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
 function orderOnTheWay(orderId: string): void {
@@ -44,7 +35,6 @@ function orderOnTheWay(orderId: string): void {
 
 export default {
 	getWaiterOrders,
-	getGuestLocation,
 	orderArrived,
 	connectWaiter,
 	updateLocationWaiter,

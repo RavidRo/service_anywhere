@@ -25,6 +25,19 @@ export class NotificationFacade {
 		});
 	}
 
+	public updateWaiterLocation(
+		receiverID: string,
+		orderID: string,
+		mapID: string,
+		location: Location
+	) {
+		this.notifier.notify(receiverID, 'updateWaiterLocation', {
+			orderID,
+			mapID,
+			location,
+		});
+	}
+
 	public changeOrderStatus(
 		receiverID: string,
 		orderID: string,
