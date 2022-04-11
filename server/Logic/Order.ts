@@ -92,6 +92,9 @@ export class Order extends IOrder {
 		if (status === 'canceled' || status === 'delivered') {
 			this.terminationTime = new Date();
 		}
+		if(status !== 'assigned' && status !== 'on the way'){
+			
+		}
 		return makeGood();
 	}
 

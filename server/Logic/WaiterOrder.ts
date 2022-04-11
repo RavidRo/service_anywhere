@@ -153,4 +153,13 @@ export class WaiterOrder {
 		IOrder.orderList.push(newOrder);
 		return makeGood(newOrder.getId());
 	}
+
+	static unassignWaiters(orderId: string){
+		let waiters = this.orderToWaiters.get(orderId)
+		waiters?.forEach((waiterId) => {
+			this.waiterToOrders.set(waiterId, this.waiterToOrders.get(waiterId)?.filter((order) => order !== orderId))
+		})
+		this.waiterToOrders.get()
+		this.orderToWaiters.delete(orderId)
+	}
 }
