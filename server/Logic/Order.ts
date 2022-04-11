@@ -95,7 +95,22 @@ export class Order extends IOrder {
 		return makeGood();
 	}
 
+	override isActive(): boolean {
+		return !['canceled', 'delivered'].includes(this.status);
+	}
+
+	canAssign(): boolean {
+		return this.status === 'ready to deliver' || this.status === 'assigned';
+	}
+
 	assign(_waiterId: string): ResponseMsg<void> {
+		if (!this.canAssign()) {
+			return makeFail(
+				'Can only assign waiters to orders that are ready to deliver',
+				400
+			);
+		}
+		this.status = 'assigned';
 		return makeGood();
 	}
 }

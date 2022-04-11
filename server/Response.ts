@@ -175,3 +175,11 @@ export const makeFail = <T, U>(
 ): ResponseMsg<T, U> => {
 	return new ResponseFail(error, statusCode);
 };
+
+export const mapResponse = <T, U>(
+	responses: ResponseMsg<T, U>[]
+): ResponseMsg<T[], U[]> => {
+	return responses.reduce((acc, curr) => {
+		return curr.then(data => makeGood([...acc.getData(), data]));
+	}, makeGood<T[]>([]));
+};

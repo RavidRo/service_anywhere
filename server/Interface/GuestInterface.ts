@@ -3,7 +3,10 @@ import {makeGood, ResponseMsg} from 'server/Response';
 import {Location, OrderIDO} from '../../api';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
-function createOrder(guestId: string, items: Map<string, number>): string {
+function createOrder(
+	guestId: string,
+	items: Map<string, number>
+): ResponseMsg<string> {
 	return WaiterOrder.createOrder(guestId, items);
 }
 
@@ -12,12 +15,14 @@ function updateLocationGuest(
 	mapId: string,
 	location: Location
 ): void {
-	IOrder.delegate(getGuestOrder(guestId).id, (o: IOrder) =>
-		o.updateGuestLocation(mapId, location)
-	);
+	getGuestOrder(guestId).then(order => {
+		IOrder.delegate(order.id, (o: IOrder) =>
+			o.updateGuestLocation(mapId, location)
+		);
+	});
 }
 
-function getGuestOrder(guestId: string): OrderIDO {
+function getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
 	return WaiterOrder.getGuestOrder(guestId);
 }
 
@@ -29,12 +34,11 @@ function submitReview(orderId: string, details: string, rating: number): void {
 }
 
 function cancelOrder(orderId: string): Boolean {
-	WaiterOrder.makeAvailable(orderId)
+	WaiterOrder.makeAvailable(orderId);
 	return IOrder.delegate(orderId, o => {
 		o.cancelOrder();
 		return makeGood();
 	}).isSuccess();
-	
 }
 
 export default {

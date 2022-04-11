@@ -1,5 +1,5 @@
 import {IOrder} from 'server/Logic/IOrder';
-import { makeGood, ResponseMsg } from 'server/Response';
+import {makeGood, ResponseMsg} from 'server/Response';
 import {OrderStatus} from '../../api';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
@@ -7,8 +7,8 @@ function getOrders(): IOrder[] {
 	return IOrder.orderList;
 }
 
-function assignWaiter(orderID: string, waiterID: string): ResponseMsg<void> {
-	return WaiterOrder.assignWaiter(orderID, waiterID);
+function assignWaiter(orderIds: string[], waiterID: string): ResponseMsg<void> {
+	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
 function getWaiters(): string[] {
@@ -24,19 +24,18 @@ function getWaiterByOrder(orderID: string): string[] {
 }
 
 function cancelOrderAdmin(orderId: string): void {
-	IOrder.delegate(orderId, (order) => {
-			order.cancelOrder()
-			return makeGood()
-		}
-	)
-	WaiterOrder.makeAvailable(orderId)
+	IOrder.delegate(orderId, order => {
+		order.cancelOrder();
+		return makeGood();
+	});
+	WaiterOrder.makeAvailable(orderId);
 }
 
 function changeOrderStatus(orderId: string, newStatus: OrderStatus): void {
-	IOrder.delegate(orderId, (order) => {
-		order.changeOrderStatus(newStatus)
-		return makeGood()
-	})
+	IOrder.delegate(orderId, order => {
+		order.changeOrderStatus(newStatus);
+		return makeGood();
+	});
 }
 
 export default {

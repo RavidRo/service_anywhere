@@ -1,4 +1,3 @@
-import {OrderNotifier} from './OrderNotifier';
 import {OrderStatus, Location, OrderIDO} from 'api';
 import {makeFail, ResponseMsg} from '../Response';
 
@@ -37,6 +36,8 @@ export abstract class IOrder {
 		_location: Location
 	): ResponseMsg<void>;
 
+	abstract canAssign(): boolean;
+
 	abstract assign(_waiterId: string): ResponseMsg<void>;
 
 	abstract changeOrderStatus(_status: OrderStatus): ResponseMsg<void>;
@@ -46,4 +47,6 @@ export abstract class IOrder {
 	abstract orderArrived(): ResponseMsg<void>;
 
 	abstract giveFeedback(_review: string, _score: number): boolean;
+
+	abstract isActive(): boolean;
 }

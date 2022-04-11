@@ -10,10 +10,7 @@ const createOrder = () => {
 	const guestID = 'random id';
 	const items = new Map([[itemsList[0].id, 5]]);
 
-	const createOrderResponse = GuestInterface.createOrder(
-		guestID,
-		items
-	) as any as ResponseMsg<string>;
+	const createOrderResponse = GuestInterface.createOrder(guestID, items);
 	const orderID = createOrderResponse.getData();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
 
@@ -21,20 +18,19 @@ const createOrder = () => {
 };
 
 test('Assigns a free waiter successfully', () => {
-	// (WaiterInterface.connectWaiter as (id: string) => string)('WaiterID');
 	const waitersIDs = DashboardInterface.getWaiters();
 	const {orderID} = createOrder();
-	const assignResponse = DashboardInterface.assignWaiter(orderID, [
-		waitersIDs[0],
-	]) as any as ResponseMsg<void>;
+	const assignResponse = DashboardInterface.assignWaiter(
+		[orderID],
+		waitersIDs[0]
+	);
 	expect(assignResponse.isSuccess()).toBeTruthy();
 });
 
 test("Order's status is changed when first assigned", () => {
-	// (WaiterInterface.connectWaiter as (id: string) => string)('WaiterID');
 	const waitersIDs = DashboardInterface.getWaiters();
 	const {orderID, guestID} = createOrder();
-	DashboardInterface.assignWaiter(orderID, [waitersIDs[0]]);
+	DashboardInterface.assignWaiter([orderID], waitersIDs[0]);
 	const orderResponse = GuestInterface.getGuestOrder(
 		guestID
 	) as any as ResponseMsg<OrderIDO>;

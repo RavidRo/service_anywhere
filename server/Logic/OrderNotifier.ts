@@ -37,7 +37,7 @@ export class OrderNotifier extends IOrder {
 	}
 
 	override assign(waiterId: string): ResponseMsg<void> {
-		let newWaiterNotifier = new WaiterNotifier(waiterId);
+		const newWaiterNotifier = new WaiterNotifier(waiterId);
 		newWaiterNotifier.order = this.order;
 		this.order = newWaiterNotifier;
 		notificationFacade.assignedToOrder(waiterId, this.getDetails());
@@ -59,12 +59,13 @@ export class OrderNotifier extends IOrder {
 	}
 
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
-		notificationFacade.changeOrderStatus(
-			this.receiverId,
-			this.getId(),
-			status
-		);
-		return this.order.changeOrderStatus(status);
+		return this.order.changeOrderStatus(status).then(() => {
+			notificationFacade.changeOrderStatus(
+				this.receiverId,
+				this.getId(),
+				status
+			);
+		});
 	}
 
 	override cancelOrder(): void {
@@ -87,6 +88,14 @@ export class OrderNotifier extends IOrder {
 	override orderArrived(): ResponseMsg<void> {
 		return this.order.orderArrived();
 	}
+
+	canAssign(): boolean {
+		return this.order.canAssign();
+	}
+
+	override isActive(): boolean {
+		return this.order.isActive();
+	}
 }
 
 class GuestNotifier extends OrderNotifier {
@@ -101,6 +110,16 @@ class GuestNotifier extends OrderNotifier {
 			location
 		);
 		return this.order.updateWaiterLocation(mapId, location);
+	}
+
+	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
+		return super.changeOrderStatus(status).then(() => {
+			notificationFacade.changeOrderStatus(
+				this.receiverId,
+				this.getId(),
+				status
+			);
+		});
 	}
 }
 
