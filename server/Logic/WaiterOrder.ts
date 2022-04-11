@@ -9,6 +9,14 @@ export class WaiterOrder {
 	static waiterList: Waiter[] = [];
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
+	
+	static makeAvailable(orderId: string) {
+		let waiters = this.orderToWaiters.get(orderId)
+		waiters?.forEach((waiterId) =>{
+				this.waiterList.filter((waiter) => waiter.id === waiterId).forEach((w) => w.available = true)
+			}
+		)
+	}
 
 	static updateWaiterLocation(
 		waiterId: string,
@@ -41,12 +49,16 @@ export class WaiterOrder {
 		return waiter.id;
 	}
 
-	static assignWaiter(orderId: string, waiterId: string): void {
+	static assignWaiter(orderId: string, waiterId: string): ResponseMsg<void> {
 		let orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
 			orders.push(orderId);
 		} else {
 			this.waiterToOrders.set(waiterId, [orderId]);
+		}
+		let waiter = this.waiterList.find((value) => value.id === waiterId)
+		if(!waiter?.available){
+			return makeFail('waiter unavailable')
 		}
 		let waiters = this.orderToWaiters.get(orderId);
 		if (waiters) {
@@ -54,6 +66,8 @@ export class WaiterOrder {
 		} else {
 			this.orderToWaiters.set(orderId, [waiterId]);
 		}
+		waiter.available = false
+		return makeGood()
 	}
 
 	static getWaiterByOrder(orderId: string): ResponseMsg<string[]> {

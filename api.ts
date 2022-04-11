@@ -27,7 +27,7 @@ type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
 	name: string;
-	avialabe: boolean;
+	available: boolean;
 };
 export type Location = {
 	x: number;

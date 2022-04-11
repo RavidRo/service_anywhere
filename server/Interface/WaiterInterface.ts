@@ -14,6 +14,7 @@ function orderArrived(orderId: string): void {
 	IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
+	WaiterOrder.makeAvailable(orderId)
 }
 
 function connectWaiter(): string {

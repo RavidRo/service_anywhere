@@ -29,10 +29,12 @@ function submitReview(orderId: string, details: string, rating: number): void {
 }
 
 function cancelOrder(orderId: string): Boolean {
+	WaiterOrder.makeAvailable(orderId)
 	return IOrder.delegate(orderId, o => {
-		o.cancelOrderGuest();
+		o.cancelOrder();
 		return makeGood();
 	}).isSuccess();
+	
 }
 
 export default {

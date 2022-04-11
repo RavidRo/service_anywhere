@@ -222,13 +222,12 @@ app.post('/assignWaiter', (req, res) => {
 		['orderIds', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() =>
-			res.send(
-				dashboard.assignWaiter(
-					req.body['orderIds'],
-					req.body['waiterId']
-				)
-			)
+		() =>{
+			let value = dashboard.assignWaiter(req.body['orderIds'], req.body['waiterId'])
+			if(!value.isSuccess()){
+				res.send(value.getError())
+			}
+		}
 	);
 });
 
