@@ -13,6 +13,6 @@ export class Waiter {
 	}
 
 	getDetails(): WaiterIDO {
-		return {avialabe: this.available, id: this.id, name: this.name};
+		return {available: this.available, id: this.id, name: this.name};
 	}
 }
