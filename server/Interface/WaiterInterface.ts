@@ -30,9 +30,10 @@ function updateLocationWaiter(
 	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
-function orderOnTheWay(orderId: string): void {	//todo: implement this
-	orderId;
-	throw new Error('Method not implemented');
+function orderOnTheWay(orderId: string): void {
+	IOrder.delegate(orderId, order => {
+		return order.changeOrderStatus('on the way')
+	});
 }
 
 export default {
