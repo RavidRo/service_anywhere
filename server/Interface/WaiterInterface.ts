@@ -10,10 +10,12 @@ function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
 }
 
 function orderArrived(orderId: string): void {
-	IOrder.delegate(orderId, (order: IOrder) => {
+	let response = IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
-	WaiterOrder.makeAvailable(orderId)	//todo: if succeeded
+	if(response.isSuccess()){
+		WaiterOrder.makeAvailable(orderId)
+	}
 }
 
 function connectWaiter(): string {
