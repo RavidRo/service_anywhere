@@ -97,7 +97,7 @@ app.post('/createOrder', (req, res) => {
 				1,
 				(msg: string) => res.send(msg),
 				(id: string) =>
-					res.send(guest.createOrder(id, req.body['orderItems']))
+					res.send(guest.createOrder(id, req.body['orderItems']))	//todo: change response type
 			);
 		}
 	);
