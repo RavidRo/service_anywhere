@@ -24,11 +24,13 @@ function getWaiterByOrder(orderID: string): string[] {
 }
 
 function cancelOrderAdmin(orderId: string): void {
-	IOrder.delegate(orderId, order => {
+	let response = IOrder.delegate(orderId, order => {
 		order.cancelOrder();
 		return makeGood();
 	});
-	WaiterOrder.makeAvailable(orderId);	//todo: if succeeded
+	if(response.isSuccess()){
+		WaiterOrder.makeAvailable(orderId);
+	}
 }
 
 function changeOrderStatus(orderId: string, newStatus: OrderStatus): void {	//todo: pass through WaiterOrder so we can unassign waiters if needed
