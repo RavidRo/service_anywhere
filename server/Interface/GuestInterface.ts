@@ -34,11 +34,14 @@ function submitReview(orderId: string, details: string, rating: number): void {
 }
 
 function cancelOrder(orderId: string): boolean {	//todo: should probably not be boolean
-	WaiterOrder.makeAvailable(orderId);	//todo: if succeeded
-	return IOrder.delegate(orderId, o => {
-		o.cancelOrder();
+	let response = IOrder.delegate(orderId, o => {
+		o.cancelOrder();	//todo: if cancelOrder returns a responseMsg, remove the makeGood
 		return makeGood();
-	}).isSuccess();
+	})
+	if(response.isSuccess()){
+		WaiterOrder.makeAvailable(orderId);
+	}
+	return response.isSuccess();
 }
 
 export default {
