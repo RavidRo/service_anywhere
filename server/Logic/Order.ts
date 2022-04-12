@@ -92,6 +92,9 @@ export class Order extends IOrder {
 		if (status === 'canceled' || status === 'delivered') {
 			this.terminationTime = new Date();
 		}
+		if(status !== 'assigned' && status !== 'on the way'){
+			
+		}
 		return makeGood();
 	}
 
@@ -100,7 +103,7 @@ export class Order extends IOrder {
 	}
 
 	canAssign(): boolean {
-		return this.status === 'ready to deliver' || this.status === 'assigned';
+		return this.status in ['ready to deliver', 'assigned', 'on the way']
 	}
 
 	assign(_waiterId: string): ResponseMsg<void> {
