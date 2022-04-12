@@ -7,6 +7,7 @@ import * as socketio from 'socket.io';
 import * as path from 'path';
 import authenticator from '../Logic/Authentication/Authenticator';
 import NotificationInterface from 'server/Interface/NotificationInterface';
+import { responseStatus } from 'server/Interface/ResponseStatus';
 
 let cors = require('cors');
 const app = express();
@@ -38,6 +39,11 @@ function authenticate(
 	} else {
 		sendErrorMsg('Token does not match any id');
 	}
+}
+
+function sendResponse(response: responseStatus, res){	//todo: res type
+	res.status(response.status)
+	res.send(response.response)
 }
 
 function checkInputs(
@@ -223,13 +229,15 @@ app.post('/assignWaiter', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() =>{
-			res.send(dashboard.assignWaiter(req.body['orderIds'], req.body['waiterId']))	//todo: if return type of assignWaiter changes, change accordingly
+			let response = dashboard.assignWaiter(req.body['orderIds'], req.body['waiterId'])
+			sendResponse(response, res)
 		}
 	);
 });
 
 app.get('/getOrders', (_req, res) => {
-	res.send(dashboard.getOrders());
+	let response = dashboard.getOrders()
+	sendResponse(response, res)
 });
 
 app.get('/getWaiters', (_req, res) => {
@@ -241,7 +249,10 @@ app.get('/getWaitersByOrder', (req, res) => {
 		['orderId'],
 		req.query,
 		(msg: string) => res.send(msg),
-		() => res.send(dashboard.getWaiterByOrder(String(req.query['orderId'])))
+		() => {
+			let response = dashboard.getWaiterByOrder(String(req.query['orderId']))
+			sendResponse(response, res)
+		}
 	);
 });
 
@@ -250,7 +261,10 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(dashboard.cancelOrderAdmin(req.body['orderId']))
+		() => {
+			let response = dashboard.cancelOrderAdmin(req.body['orderId'])
+			sendResponse(response, res)
+		}
 	);
 });
 
@@ -259,13 +273,10 @@ app.post('/changeOrderStatus', (req, res) => {
 		['orderId', 'newStatus'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() =>
-			res.send(
-				dashboard.changeOrderStatus(
-					req.body['orderId'],
-					req.body['newStatus']
-				)
-			)
+		() => {
+			let response = dashboard.changeOrderStatus(req.body['orderId'], req.body['newStatus'])
+			sendResponse(response, res)
+		}
 	);
 });
 
