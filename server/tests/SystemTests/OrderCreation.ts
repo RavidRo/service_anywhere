@@ -1,7 +1,5 @@
 import GuestInterface from 'server/Interface/GuestInterface';
 import ItemsInterface from 'server/Interface/ItemsInterface';
-import {ResponseMsg} from 'server/Response';
-import {OrderIDO} from 'api';
 
 test('Creating order with not items returns a failure', () => {
 	const items = ItemsInterface.getItems();
