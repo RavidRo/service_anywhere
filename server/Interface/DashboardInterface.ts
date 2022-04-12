@@ -27,17 +27,26 @@ function getWaiterByOrder(orderID: string): ResponseMsg<string[]> {
 }
 
 function cancelOrderAdmin(orderId: string): ResponseMsg<void> {
-	return IOrder.delegate(orderId, order => {
+	let response = IOrder.delegate(orderId, order => {
 		order.cancelOrder();
 		return makeGood();
 	});
+	if(response.isSuccess()){
+		WaiterOrder.makeAvailable(orderId)
+	}
+	return response
 }
 
 function changeOrderStatus(orderId: string, newStatus: OrderStatus): ResponseMsg<void> {	//todo: pass through WaiterOrder so we can unassign waiters if needed
-	return IOrder.delegate(orderId, order => {
+	let response = IOrder.delegate(orderId, order => {
 		order.changeOrderStatus(newStatus);
 		return makeGood();
 	});
+	const assignableStatuses: OrderStatus[] = ['assigned', 'on the way']
+	if(response.isSuccess() && !(newStatus in assignableStatuses)){
+		WaiterOrder.makeAvailable(orderId)
+	}
+	return response
 }
 
 export default {

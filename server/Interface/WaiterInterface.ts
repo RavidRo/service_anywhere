@@ -10,9 +10,13 @@ function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
 }
 
 function orderArrived(orderId: string): ResponseMsg<void> {
-	return IOrder.delegate(orderId, (order: IOrder) => {
+	let response =  IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
+	if(response.isSuccess()){
+		WaiterOrder.makeAvailable(orderId)
+	}
+	return response
 }
 
 function connectWaiter(): ResponseMsg<string> {

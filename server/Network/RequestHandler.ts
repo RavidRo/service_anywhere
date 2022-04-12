@@ -78,7 +78,14 @@ app.get('/login', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.login(req.body['password']))
+		() => {
+			authenticator.login(req.body['password']).then((response) => {
+				sendResponse(response, res.status, res.send)
+			}).catch((reason) => {
+				res.status(400)	//todo: no magic numbers
+				res.send(reason)
+			})
+		}
 	);
 });
 
@@ -93,7 +100,10 @@ app.get('/getGuestOrder', (req, res) => {
 		req.headers.authorization,
 		1,
 		(msg: string) => res.send(msg),
-		(id: string) => res.send(guest.getGuestOrder(id))
+		(id: string) => {
+			let response = guest.getGuestOrder(id)
+			sendResponse(response, res.status, res.send)
+		}
 	);
 });
 
@@ -107,8 +117,10 @@ app.post('/createOrder', (req, res) => {
 				req.headers.authorization,
 				1,
 				(msg: string) => res.send(msg),
-				(id: string) =>
-					res.send(guest.createOrder(id, req.body['orderItems']))	//todo: change response type
+				(id: string) =>{
+					let response = guest.createOrder(id, req.body['orderItems'])
+					sendResponse(response, res.status, res.send)
+				}
 			);
 		}
 	);
@@ -135,7 +147,10 @@ app.post('/cancelOrderGuest', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(guest.cancelOrder(req.body['orderId']))
+		() => {
+			let response = guest.cancelOrder(req.body['orderId'])
+			sendResponse(response, res.status, res.send)
+		}
 	);
 });
 

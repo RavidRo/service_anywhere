@@ -14,8 +14,8 @@ function updateLocationGuest(
 	guestId: string,
 	mapId: string,
 	location: Location
-): void {
-	getGuestOrder(guestId).then(order => {
+): ResponseMsg<void> {
+	return getGuestOrder(guestId).then(order => {
 		IOrder.delegate(order.id, (o: IOrder) =>
 			o.updateGuestLocation(mapId, location)
 		);
@@ -33,7 +33,7 @@ function submitReview(orderId: string, details: string, rating: number): void {
 	throw new Error('Method not implemented');
 }
 
-function cancelOrder(orderId: string): boolean {	//todo: should probably not be boolean
+function cancelOrder(orderId: string): ResponseMsg<void> {
 	let response = IOrder.delegate(orderId, o => {
 		o.cancelOrder();	//todo: if cancelOrder returns a responseMsg, remove the makeGood
 		return makeGood();
@@ -41,7 +41,7 @@ function cancelOrder(orderId: string): boolean {	//todo: should probably not be 
 	if(response.isSuccess()){
 		WaiterOrder.makeAvailable(orderId);
 	}
-	return response.isSuccess();
+	return response
 }
 
 export default {
