@@ -21,7 +21,7 @@ app.use(cors({origin: '*'}));
 app.get('/', (_req, res) => {
 	res.send('Hello World!');
 });
-
+//todo: check for responseMsg handling and move those if needed
 function authenticate(
 	token: string | undefined,
 	permissionLevel: number,

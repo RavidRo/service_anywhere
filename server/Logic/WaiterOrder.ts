@@ -157,9 +157,11 @@ export class WaiterOrder {
 	static unassignWaiters(orderId: string){
 		let waiters = this.orderToWaiters.get(orderId)
 		waiters?.forEach((waiterId) => {
-			this.waiterToOrders.set(waiterId, this.waiterToOrders.get(waiterId)?.filter((order) => order !== orderId))
+			let waiterOrders = this.waiterToOrders.get(waiterId)
+			if(waiterOrders !== undefined){
+				this.waiterToOrders.set(waiterId, waiterOrders.filter((order) => order !== orderId))
+			}
 		})
-		this.waiterToOrders.get()
 		this.orderToWaiters.delete(orderId)
 	}
 }

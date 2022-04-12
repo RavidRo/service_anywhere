@@ -33,8 +33,8 @@ function submitReview(orderId: string, details: string, rating: number): void {
 	throw new Error('Method not implemented');
 }
 
-function cancelOrder(orderId: string): Boolean {
-	WaiterOrder.makeAvailable(orderId);
+function cancelOrder(orderId: string): boolean {	//todo: should probably not be boolean
+	WaiterOrder.makeAvailable(orderId);	//todo: if succeeded
 	return IOrder.delegate(orderId, o => {
 		o.cancelOrder();
 		return makeGood();

@@ -28,10 +28,10 @@ function cancelOrderAdmin(orderId: string): void {
 		order.cancelOrder();
 		return makeGood();
 	});
-	WaiterOrder.makeAvailable(orderId);
+	WaiterOrder.makeAvailable(orderId);	//todo: if succeeded
 }
 
-function changeOrderStatus(orderId: string, newStatus: OrderStatus): void {
+function changeOrderStatus(orderId: string, newStatus: OrderStatus): void {	//todo: pass through WaiterOrder so we can unassign waiters if needed
 	IOrder.delegate(orderId, order => {
 		order.changeOrderStatus(newStatus);
 		return makeGood();

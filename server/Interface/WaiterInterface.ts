@@ -1,4 +1,3 @@
-import {stringify} from 'querystring';
 import {IOrder} from 'server/Logic/IOrder';
 import {makeGood, ResponseMsg} from 'server/Response';
 import {Location} from '../../api';
@@ -14,7 +13,7 @@ function orderArrived(orderId: string): void {
 	IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
-	WaiterOrder.makeAvailable(orderId)
+	WaiterOrder.makeAvailable(orderId)	//todo: if succeeded
 }
 
 function connectWaiter(): string {
@@ -29,7 +28,7 @@ function updateLocationWaiter(
 	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
-function orderOnTheWay(orderId: string): void {
+function orderOnTheWay(orderId: string): void {	//todo: implement this
 	orderId;
 	throw new Error('Method not implemented');
 }
