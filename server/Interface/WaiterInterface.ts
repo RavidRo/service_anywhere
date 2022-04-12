@@ -9,29 +9,26 @@ function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
 	});
 }
 
-function orderArrived(orderId: string): void {
-	let response = IOrder.delegate(orderId, (order: IOrder) => {
+function orderArrived(orderId: string): ResponseMsg<void> {
+	return IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
-	if(response.isSuccess()){
-		WaiterOrder.makeAvailable(orderId)
-	}
 }
 
-function connectWaiter(): string {
-	return WaiterOrder.connectWaiter();
+function connectWaiter(): ResponseMsg<string> {
+	return makeGood(WaiterOrder.connectWaiter());	//todo: if connect waiter response changes, change accordingly
 }
 
 function updateLocationWaiter(
 	waiterId: string,
 	mapId: string,
 	location: Location
-): void {
-	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
+): ResponseMsg<void> {
+	return makeGood(WaiterOrder.updateWaiterLocation(waiterId, mapId, location));
 }
 
-function orderOnTheWay(orderId: string): void {
-	IOrder.delegate(orderId, order => {
+function orderOnTheWay(orderId: string): ResponseMsg<void> {
+	return IOrder.delegate(orderId, order => {
 		return order.changeOrderStatus('on the way')
 	});
 }
