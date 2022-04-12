@@ -7,8 +7,12 @@ function getOrders(): IOrder[] {
 	return IOrder.orderList;
 }
 
-function assignWaiter(orderIds: string[], waiterID: string): ResponseMsg<void> {
-	return WaiterOrder.assignWaiter(orderIds, waiterID);
+function assignWaiter(orderIds: string[], waiterID: string): string {	//todo: return type should include status code
+	let response = WaiterOrder.assignWaiter(orderIds, waiterID);
+	if(response.isSuccess()){
+		return 'assigned successfully'
+	}
+	return response.getError()
 }
 
 function getWaiters(): string[] {

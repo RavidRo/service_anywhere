@@ -223,10 +223,7 @@ app.post('/assignWaiter', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() =>{
-			let value = dashboard.assignWaiter(req.body['orderIds'], req.body['waiterId'])
-			if(!value.isSuccess()){
-				res.send(value.getError())
-			}
+			res.send(dashboard.assignWaiter(req.body['orderIds'], req.body['waiterId']))	//todo: if return type of assignWaiter changes, change accordingly
 		}
 	);
 });
