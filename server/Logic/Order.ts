@@ -38,7 +38,7 @@ export class Order extends IOrder {
 		return order;
 	}
 
-	constructor(id: string, items: Map<string, number>) {
+	private constructor(id: string, items: Map<string, number>) {
 		super();
 		this.items = items;
 		this.status = 'received';

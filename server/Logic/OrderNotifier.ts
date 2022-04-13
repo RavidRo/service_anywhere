@@ -19,7 +19,7 @@ export abstract class OrderNotifier extends IOrder {
 		guestId: string,
 		items: Map<string, number>
 	): IOrder {
-		const order = new Order(guestId, items);
+		const order = Order.createOrder(guestId, items);
 		const orderGuest = new GuestNotifier(order, guestId);
 		const orderDashboard = new DashboardNotifier(orderGuest);
 
