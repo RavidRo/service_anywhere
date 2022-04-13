@@ -82,9 +82,10 @@ export class Order extends IOrder {
 		};
 	}
 
-	override cancelOrder(): void {
+	override cancelOrder(): ResponseMsg<void> {
 		this.status = 'canceled';
 		this.terminationTime = new Date();
+		return makeGood();
 	}
 
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
@@ -92,7 +93,7 @@ export class Order extends IOrder {
 		if (status === 'canceled' || status === 'delivered') {
 			this.terminationTime = new Date();
 		}
-		if(status !== 'assigned' && status !== 'on the way'){
+		if (status !== 'assigned' && status !== 'on the way') {
 			//todo: call waiterOrder.unassignWaiter() but actually do that in the interfaces because Order does not know WaiterOrder
 		}
 		return makeGood();
@@ -103,7 +104,7 @@ export class Order extends IOrder {
 	}
 
 	canAssign(): boolean {
-		return this.status in ['ready to deliver', 'assigned', 'on the way']
+		return this.status in ['ready to deliver', 'assigned', 'on the way'];
 	}
 
 	assign(_waiterId: string): ResponseMsg<void> {

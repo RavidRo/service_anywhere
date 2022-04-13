@@ -22,7 +22,7 @@ test('Assigns a free waiter successfully', () => {
 	const {orderID} = createOrder();
 	const assignResponse = DashboardInterface.assignWaiter(
 		[orderID],
-		waitersIDs[0]
+		waitersIDs.getData()[0]
 	);
 	expect(assignResponse.isSuccess()).toBeTruthy();
 });
@@ -30,7 +30,7 @@ test('Assigns a free waiter successfully', () => {
 test("Order's status is changed when first assigned", () => {
 	const waitersIDs = DashboardInterface.getWaiters();
 	const {orderID, guestID} = createOrder();
-	DashboardInterface.assignWaiter([orderID], waitersIDs[0]);
+	DashboardInterface.assignWaiter([orderID], waitersIDs.getData()[0]);
 	const orderResponse = GuestInterface.getGuestOrder(
 		guestID
 	) as any as ResponseMsg<OrderIDO>;
@@ -42,11 +42,11 @@ test('Assigning a busy waiter to an order results with a failure', () => {
 	const {orderID: orderID1} = createOrder();
 	const {orderID: orderID2} = createOrder();
 
-	DashboardInterface.assignWaiter([orderID1], waitersIDs[0]);
+	DashboardInterface.assignWaiter([orderID1], waitersIDs.getData()[0]);
 
 	const assignResponse2 = DashboardInterface.assignWaiter(
 		[orderID2],
-		waitersIDs[0]
+		waitersIDs.getData()[0]
 	) as any as ResponseMsg<void>;
 
 	expect(assignResponse2.isSuccess()).toBeFalsy();
@@ -57,15 +57,18 @@ test('Getting the assigned waiters successfully', () => {
 	const {orderID: orderID1} = createOrder();
 	const {orderID: orderID2} = createOrder();
 
-	DashboardInterface.assignWaiter([orderID1, orderID2], waitersIDs[0]);
-	DashboardInterface.assignWaiter([orderID2], waitersIDs[1]);
+	DashboardInterface.assignWaiter(
+		[orderID1, orderID2],
+		waitersIDs.getData()[0]
+	);
+	DashboardInterface.assignWaiter([orderID2], waitersIDs.getData()[1]);
 
 	const assignedResponse = DashboardInterface.getWaiterByOrder(
 		orderID2
 	) as any as ResponseMsg<string[]>;
 	expect(assignedResponse.getData()).toContain([
-		waitersIDs[0],
-		waitersIDs[1],
+		waitersIDs.getData()[0],
+		waitersIDs.getData()[1],
 	]);
 });
 

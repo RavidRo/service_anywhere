@@ -42,7 +42,7 @@ export abstract class IOrder {
 
 	abstract changeOrderStatus(_status: OrderStatus): ResponseMsg<void>;
 
-	abstract cancelOrder(): void;
+	abstract cancelOrder(): ResponseMsg<void>;
 
 	abstract orderArrived(): ResponseMsg<void>;
 
