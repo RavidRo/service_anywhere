@@ -93,9 +93,6 @@ export class Order extends IOrder {
 		if (status === 'canceled' || status === 'delivered') {
 			this.terminationTime = new Date();
 		}
-		if (status !== 'assigned' && status !== 'on the way') {
-			//todo: call waiterOrder.unassignWaiter() but actually do that in the interfaces because Order does not know WaiterOrder
-		}
 		return makeGood();
 	}
 

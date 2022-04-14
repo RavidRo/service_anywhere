@@ -16,6 +16,7 @@ import {AppDataSource} from '../Data/data-source';
 let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const statusOk = 400;
 app.use(express.json());
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
@@ -27,7 +28,6 @@ app.get('/', (_req, res) => {
 	res.send('Hello World!');
 });
 
-//todo: check for responseMsg handling and move those if needed
 function authenticate(
 	token: string | undefined,
 	permissionLevel: number,
@@ -93,7 +93,7 @@ app.get('/login', (req, res) => {
 					sendResponse(response, res.status, res.send);
 				})
 				.catch(reason => {
-					res.status(400); //todo: no magic numbers
+					res.status(statusOk);
 					res.send(reason);
 				});
 		}
@@ -205,7 +205,7 @@ app.post('/orderOnTheWay', (req, res) => {
 		(msg: string) => res.send(msg),
 		() => {
 			let response = waiter.orderOnTheWay(req.body['orderId']);
-			sendResponse(response, res.status, res.send); //todo: connect waiter should notify dashboard?
+			sendResponse(response, res.status, res.send); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
 		}
 	);
 });

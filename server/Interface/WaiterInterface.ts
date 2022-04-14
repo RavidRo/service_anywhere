@@ -22,7 +22,7 @@ function orderArrived(orderId: string): ResponseMsg<void> {
 }
 
 function connectWaiter(): ResponseMsg<string> {
-	return makeGood(WaiterOrder.connectWaiter()); //todo: if connect waiter response changes, change accordingly
+	return WaiterOrder.connectWaiter();
 }
 
 function updateLocationWaiter(

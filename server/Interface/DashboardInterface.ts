@@ -13,7 +13,6 @@ function getOrders(): ResponseMsg<IOrder[]> {
 }
 
 function assignWaiter(orderIds: string[], waiterID: string): ResponseMsg<void> {
-	//todo: return type should include status code
 	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
@@ -44,7 +43,6 @@ function changeOrderStatus(
 	orderId: string,
 	newStatus: OrderStatus
 ): ResponseMsg<void> {
-	//todo: pass through WaiterOrder so we can unassign waiters if needed
 	const response = IOrder.delegate(orderId, order => {
 		return order.changeOrderStatus(newStatus);
 	});

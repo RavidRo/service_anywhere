@@ -37,8 +37,7 @@ function submitReview(orderId: string, details: string, rating: number): void {
 
 function cancelOrder(orderId: string): ResponseMsg<void> {
 	let response = IOrder.delegate(orderId, o => {
-		o.cancelOrder(); //todo: if cancelOrder returns a responseMsg, remove the makeGood
-		return makeGood();
+		return o.cancelOrder();
 	});
 	if (response.isSuccess()) {
 		WaiterOrder.makeAvailable(orderId);
