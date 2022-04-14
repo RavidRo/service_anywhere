@@ -56,9 +56,9 @@ export default class Requests implements GuestAPI {
 		this.token = token;
 	}
 
-	loginGuest(phone_number: string): Promise<string> {
-		return this.handler.post<string>('guestLogin', '', {
-			phone_number,
+	login(password: string): Promise<string> {
+		return this.handler.post<string>('login', '', {
+			password,
 		});
 	}
 	getItemsGuest(): Promise<ItemIDO[]> {

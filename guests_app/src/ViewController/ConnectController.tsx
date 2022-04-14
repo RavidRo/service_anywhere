@@ -14,7 +14,7 @@ const ConnectController = observer((_props: LoginControllerProps) => {
 
 	const [isConnected, setIsConnected] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [phone_number, setPhoneNumber] = useState('');
+	const [password, setPassword] = useState('');
 
 	const establishConnection = () => {
 		setIsLoading(true);
@@ -28,7 +28,7 @@ const ConnectController = observer((_props: LoginControllerProps) => {
 	const logIn = () => {
 		setIsLoading(true);
 		return connection
-			.login(phone_number)
+			.login(password)
 			.catch(() => Alert.alert("Can't login to server"))
 			.finally(() => setIsLoading(false));
 	};
@@ -42,8 +42,8 @@ const ConnectController = observer((_props: LoginControllerProps) => {
 			loggedIn={isLoggedIn}
 			isLoading={isLoading}
 			isConnected={isConnected}
-			phone_number={phone_number}
-			onPhoneNumberChange={setPhoneNumber}
+			password={password}
+			onPasswordChange={setPassword}
 			onSubmit={onSubmit}
 			establishConnection={establishConnection}
 			isReconnecting={connection.isReconnecting}
