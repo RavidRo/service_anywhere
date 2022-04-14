@@ -1,62 +1,73 @@
 import {Order} from '../Logic/Order';
-import {Location} from '../../api';
+import {Location} from 'api';
+import {IOrder} from 'server/Logic/IOrder';
 
-const order = require('../Logic/Order');
-
-var firstOrder: string;
+let firstOrder: IOrder;
+const guestId = 'guestId';
+let beforeCreation: Date;
+const orderItems = new Map<string, number>([
+	['bamba', 1],
+	['beer', 2],
+]);
+let afterCreation: Date;
 
 beforeAll(() => {
-	firstOrder = order.Order.createOrder(['a', 'b']);
+	beforeCreation = new Date();
+	firstOrder = Order.createOrder(guestId, orderItems);
+	afterCreation = new Date();
 });
 
-test('createOrder should return an order ID', () => {
+test('createOrder should return an order with matching guest ID', () => {
 	expect(firstOrder).toBeTruthy();
-	expect(typeof firstOrder).toBe('string');
+	expect(typeof firstOrder.getGuestId()).toBe('string');
+	expect(firstOrder.getGuestId()).toBe(guestId);
+	expect(typeof firstOrder.getDetails().guestId).toBe('string');
+	expect(firstOrder.getDetails().guestId).toBe(guestId);
+});
+
+test('createOrder should return an order with matching items', () => {
+	expect(firstOrder.getDetails().items).toBe(orderItems);
+});
+
+test('createOrder should return an order with a reasonable creation time', () => {
+	expect(
+		firstOrder.getDetails().creationTime.getTime()
+	).toBeGreaterThanOrEqual(beforeCreation.getTime());
+	expect(firstOrder.getDetails().creationTime.getTime()).toBeLessThanOrEqual(
+		afterCreation.getTime()
+	);
+});
+
+test('createOrder should return an order with a status of "received"', () => {
+	expect(firstOrder.getDetails().status).toBe('received');
+});
+
+test("getId should return the order's id", () => {
+	expect(firstOrder.getId()).toBe(firstOrder.getDetails().id);
 });
 
 test('createOrder should create unique order Ids', () => {
-	expect(order.Order.createOrder(['a', 'b'])).not.toBe(firstOrder);
-});
-
-test('giveFeedback should return true', () => {
-	expect(
-		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.giveFeedback('good', 5);
-		}).isSuccess()
-	).toBe(true);
-});
-
-test('updateLocationGuest and getGuestLocation should have corresponding locations', () => {
-	var location: Location = {x: 1, y: 1};
-	expect(
-		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.updateLocationGuest(location);
-		}).isSuccess()
-	).toBe(true);
-	expect(order.Order.getGuestLocation(firstOrder).getData()).toEqual(
-		location
+	expect(Order.createOrder('newGuest', orderItems).getId()).not.toBe(
+		firstOrder.getId()
 	);
 });
 
 test('order arrival test', () => {
-	order.Order.delegate(firstOrder, (o: Order) => {
-		o.orderArrived();
+	Order.delegate(firstOrder.getId(), (o: IOrder) => {
+		return o.orderArrived();
 	});
-	expect(
-		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.hasOrderArrived();
-		}).isSuccess()
-	).toBe(true);
+	expect(firstOrder.getDetails().status).toBe('delivered');
 });
 
 test('delegate with a nonexistant orderId should fail', () => {
 	expect(
-		order.Order.delegate('', (o: Order) => {
-			return o.hasOrderArrived();
+		Order.delegate('', (o: IOrder) => {
+			return o.assign('');
 		}).isSuccess()
 	).toBe(false);
 });
 
-test('getGuestLocation with a nonexistant orderId should fail', () => {
-	expect(order.Order.getGuestLocation('').isSuccess()).toBe(false);
+test('cancelOrder should make the status "canceled"', () => {
+	firstOrder.cancelOrder();
+	expect(firstOrder.getDetails().status).toBe('canceled');
 });

@@ -1,7 +1,12 @@
+import {Singleton} from '../../Singelton';
 type emitOperation = (event: string, params: object) => boolean;
 
-export class Notifier {
+export class Notifier extends Singleton {
 	private subscribers: Record<string, emitOperation[]>;
+
+	constructor() {
+		super();
+	}
 
 	/**
 	 * @param id The subscriberID
@@ -22,7 +27,7 @@ export class Notifier {
 		}
 	}
 
-	public addSubscribers(id: string, emit: emitOperation): void {
+	public addSubscriber(id: string, emit: emitOperation): void {
 		if (this.subscribers[id] === undefined) this.subscribers[id] = [];
 		this.subscribers[id].push(emit);
 	}

@@ -1,7 +1,7 @@
-import {Status} from './Status';
+import {OrderStatus, Location, OrderIDO} from 'api';
 import {v4 as uuidv4} from 'uuid';
-import {Location} from '../../api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
+import {IOrder} from './IOrder';
 
 class Review {
 	content: string;
@@ -13,64 +13,89 @@ class Review {
 	}
 }
 
-export class Order {
-	static orderList: Order[] = [];
-	status: Status;
+export class Order extends IOrder {
 	id: string;
-	items: string[];
+	guestId: string;
+	status: OrderStatus;
+	items: Map<string, number>;
+	creationTime: Date;
 	review: Review;
-	guestLocation: Location;
+	terminationTime: Date;
 
-	static createOrder(items: string[]): string {
-		let order = new Order(items);
-		this.orderList.push(order);
-		return order.id;
+	override getId(): string {
+		return this.id;
+	}
+	override getGuestId(): string {
+		return this.guestId;
 	}
 
-	static delegate<T, U>(
-		orderId: string,
-		func: (order: Order) => ResponseMsg<T, U>
-	): ResponseMsg<T, U> {
-		for (const element of Order.orderList) {
-			if (element.id === orderId) {
-				return func(element);
-			}
-		}
-		return makeFail('No such order.', 0); //todo: status code
+	static override createOrder(
+		id: string,
+		items: Map<string, number>
+	): IOrder {
+		let order = new Order(id, items);
+		IOrder.orderList.push(order);
+		return order;
 	}
 
-	static getGuestLocation(orderID: string): ResponseMsg<Location> {
-		for (const element of Order.orderList) {
-			if (element.id === orderID) {
-				console.log(`get location: ${element.guestLocation}`);
-				return makeGood(element.guestLocation);
-			}
-		}
-		return makeFail('No such order.', 0); //todo: status code
-	}
-
-	constructor(items: string[]) {
+	constructor(id: string, items: Map<string, number>) {
+		super();
 		this.items = items;
-		this.status = Status.RECEIVED;
+		this.status = 'received';
 		this.id = uuidv4();
+		this.guestId = id;
+		this.creationTime = new Date();
 	}
 
-	giveFeedback(content: string, rating: number): ResponseMsg<void> {
-		this.review = new Review(content, rating);
+	override giveFeedback(_review: string, _score: number): boolean {
+		throw new Error('Method not implemented');
+	}
+
+	override updateGuestLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<void> {
 		return makeGood();
 	}
 
-	updateLocationGuest(location: Location): ResponseMsg<void> {
-		this.guestLocation = location;
-		console.log(`update: ${location}`);
+	override updateWaiterLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<void> {
 		return makeGood();
 	}
 
-	hasOrderArrived(): ResponseMsg<boolean> {
-		return makeGood(this.status === Status.DELIVERED);
+	override orderArrived(): ResponseMsg<void> {
+		this.status = 'delivered';
+		this.terminationTime = new Date();
+		return makeGood();
 	}
 
-	orderArrived(): void {
-		this.status = Status.DELIVERED;
+	override getDetails(): OrderIDO {
+		return {
+			id: this.id,
+			guestId: this.guestId,
+			items: this.items,
+			status: this.status,
+			creationTime: this.creationTime,
+			terminationTime: this.terminationTime,
+		};
+	}
+
+	override cancelOrder(): void {
+		this.status = 'canceled';
+		this.terminationTime = new Date();
+	}
+
+	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
+		this.status = status;
+		if (status === 'canceled' || status === 'delivered') {
+			this.terminationTime = new Date();
+		}
+		return makeGood();
+	}
+
+	assign(_waiterId: string): ResponseMsg<void> {
+		return makeGood();
 	}
 }

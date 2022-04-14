@@ -6,31 +6,35 @@ import items from '../Interface/ItemsInterface';
 import * as socketio from 'socket.io';
 import * as path from 'path';
 import authenticator from '../Logic/Authentication/Authenticator';
+import NotificationInterface from 'server/Interface/NotificationInterface';
 
-var cors = require('cors');
+let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-var http = require('http').Server(app);
-var sockets: socketio.Socket[] = [];
-var socketToken = new Map<socketio.Socket, string>();
+let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
 // use it before all route definitions
 app.use(cors({origin: '*'}));
 
 app.get('/', (_req, res) => {
-	//todo: maybe something else
 	res.send('Hello World!');
 });
 
 function authenticate(
 	token: string | undefined,
+	permissionLevel: number,
 	sendErrorMsg: (msg: string) => void,
 	doIfLegal: (id: string) => void
 ) {
 	if (token) {
-		authenticator.authenticate(token).then(doIfLegal); //todo: handle fail
+		let response = authenticator.authenticate(token, permissionLevel);
+		if (response.isSuccess()) {
+			response.then(doIfLegal);
+		} else {
+			sendErrorMsg(response.getData());
+		}
 	} else {
 		sendErrorMsg('Token does not match any id');
 	}
@@ -58,15 +62,23 @@ function checkInputs(
 	}
 }
 
-//Guest
-app.get('/loginGuest', (req, res) => {
+app.get('/login', (req, res) => {
 	checkInputs(
-		['phoneNumber'],
+		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPhone(req.body['phoneNumber']))
+		() =>
+			authenticator
+				.login(req.body['password'])
+				.then(value =>
+					value.isSuccess()
+						? res.send(value.getData())
+						: res.send(value.getError())
+				)
 	);
 });
+
+//Guest
 
 app.get('/getItemsGuest', (_req, res) => {
 	res.send(items.getItems());
@@ -75,6 +87,7 @@ app.get('/getItemsGuest', (_req, res) => {
 app.get('/getGuestOrder', (req, res) => {
 	authenticate(
 		req.headers.authorization,
+		1,
 		(msg: string) => res.send(msg),
 		(id: string) => res.send(guest.getGuestOrder(id))
 	);
@@ -88,9 +101,10 @@ app.post('/createOrder', (req, res) => {
 		() => {
 			authenticate(
 				req.headers.authorization,
+				1,
 				(msg: string) => res.send(msg),
-				(_id: string) =>
-					res.send(guest.createOrder(req.body['orderItems']))
+				(id: string) =>
+					res.send(guest.createOrder(id, req.body['orderItems']))
 			);
 		}
 	);
@@ -122,14 +136,6 @@ app.post('/cancelOrderGuest', (req, res) => {
 });
 
 //waiter
-app.get('/loginWaiter', (req, res) => {
-	checkInputs(
-		['password'],
-		req.body,
-		(msg: string) => res.send(msg),
-		() => res.send(authenticator.loginPass(req.body['password'])) //todo: authenticator
-	);
-});
 
 app.get('/getItemsWaiter', (_req, res) => {
 	res.send(items.getItems());
@@ -138,8 +144,14 @@ app.get('/getItemsWaiter', (_req, res) => {
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,
+		2,
 		(msg: string) => res.send(msg),
-		(id: string) => res.send(waiter.getWaiterOrders(id))
+		(id: string) => {
+			let value = waiter.getWaiterOrders(id);
+			value.isSuccess()
+				? res.send(value.getData())
+				: res.send(value.getError());
+		}
 	);
 });
 
@@ -163,41 +175,69 @@ app.post('/orderOnTheWay', (req, res) => {
 
 io.on('connection', function (socket: socketio.Socket) {
 	console.log('a user connected');
-	sockets.push(socket);
+	authenticate(
+		socket.handshake.auth['token'],
+		0,
+		(msg: string) => {
+			socket.emit('Error', msg);
+		},
+		(id: string) =>
+			NotificationInterface.addSubscriber(
+				id,
+				(eventName: string, o: object) => socket.emit(eventName, o)
+			)
+	);
 	socket.on('updateGuestLocation', (message: any) => {
-		guest.updateLocationGuest(
-			message['location'],
-			socket.handshake.auth['token']
+		checkInputs(
+			['mapId', 'location'],
+			message,
+			(msg: string) => socket.emit('Error', msg),
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					1,
+					(msg: string) => socket.emit('Error', msg),
+					(id: string) =>
+						guest.updateLocationGuest(
+							id,
+							message['mapId'],
+							message['location']
+						)
+				)
 		);
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
-		waiter.updateLocationWaiter(
-			socket.handshake.auth['token'],
-			message['map'],
-			message['location']
+		checkInputs(
+			['mapId', 'location'],
+			message,
+			(msg: string) => socket.emit('Error', msg),
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					2,
+					(msg: string) => socket.emit('Error', msg),
+					(id: string) =>
+						waiter.updateLocationWaiter(
+							id,
+							message['mapId'],
+							message['location']
+						)
+				)
 		);
 	});
 });
 
 //Dashboard
-app.get('/loginAdmin', (req, res) => {
-	checkInputs(
-		['password'],
-		req.body,
-		(msg: string) => res.send(msg),
-		() => res.send(authenticator.authenticateAdmin(req.body['password']))
-	);
-});
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
-		['orderIds', 'waiterId'],
+		['orderId', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
 		() =>
 			res.send(
 				dashboard.assignWaiter(
-					req.body['orderIds'],
+					req.body['orderId'],
 					req.body['waiterId']
 				)
 			)
@@ -205,11 +245,11 @@ app.post('/assignWaiter', (req, res) => {
 });
 
 app.get('/getOrders', (_req, res) => {
-	res.send(dashboard.getOrders());
+	res.send(dashboard.getOrders().map(value => value.getDetails())); //todo: move to interface
 });
 
 app.get('/getWaiters', (_req, res) => {
-	res.send(dashboard.getWaiters());
+	res.send(dashboard.getWaiters()); //todo: return IDO
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
