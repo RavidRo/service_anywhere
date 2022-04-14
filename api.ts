@@ -49,7 +49,7 @@ interface GuestAPI {
 		details: string,
 		rating: number
 	): Promise<void>;
-	cancelOrderGuest: (orderId: OrderID) => Promise<Boolean>;
+	cancelOrderGuest: (orderId: OrderID) => Promise<boolean>;
 }
 
 interface guestCommunication {

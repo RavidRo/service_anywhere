@@ -67,7 +67,14 @@ app.get('/login', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => authenticator.login(req.body['password']).then((value) => value.isSuccess() ? res.send(value.getData()) : res.send(value.getError()))
+		() =>
+			authenticator
+				.login(req.body['password'])
+				.then(value =>
+					value.isSuccess()
+						? res.send(value.getData())
+						: res.send(value.getError())
+				)
 	);
 });
 
@@ -140,8 +147,10 @@ app.get('/getWaiterOrders', (req, res) => {
 		2,
 		(msg: string) => res.send(msg),
 		(id: string) => {
-			let value = waiter.getWaiterOrders(id)
-			value.isSuccess() ? res.send(value.getData()) : res.send(value.getError())
+			let value = waiter.getWaiterOrders(id);
+			value.isSuccess()
+				? res.send(value.getData())
+				: res.send(value.getError());
 		}
 	);
 });
@@ -236,11 +245,11 @@ app.post('/assignWaiter', (req, res) => {
 });
 
 app.get('/getOrders', (_req, res) => {
-	res.send(dashboard.getOrders().map((value) => value.getDetails()));	//todo: move to interface
+	res.send(dashboard.getOrders().map(value => value.getDetails())); //todo: move to interface
 });
 
 app.get('/getWaiters', (_req, res) => {
-	res.send(dashboard.getWaiters());	//todo: return IDO
+	res.send(dashboard.getWaiters()); //todo: return IDO
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
