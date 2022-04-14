@@ -10,7 +10,7 @@ function getOrders(): ResponseMsg<IOrder[]> {
 	return makeGood(IOrder.orderList)
 }
 
-function assignWaiter(orderIds: string[], waiterID: string): ResponseMsg<void> {	//todo: return type should include status code
+function assignWaiter(orderIds: string[], waiterID: string): ResponseMsg<void> {
 	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
@@ -37,7 +37,7 @@ function cancelOrderAdmin(orderId: string): ResponseMsg<void> {
 	return response
 }
 
-function changeOrderStatus(orderId: string, newStatus: OrderStatus): ResponseMsg<void> {	//todo: pass through WaiterOrder so we can unassign waiters if needed
+function changeOrderStatus(orderId: string, newStatus: OrderStatus): ResponseMsg<void> {
 	let response = IOrder.delegate(orderId, order => {
 		order.changeOrderStatus(newStatus);
 		return makeGood();

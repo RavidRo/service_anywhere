@@ -45,10 +45,10 @@ export class WaiterOrder {
 		return makeGood(currentOrder);
 	}
 
-	static connectWaiter(): string {
+	static connectWaiter(): ResponseMsg<string> {
 		let waiter = new Waiter();
 		this.waiterList.push(waiter);
-		return waiter.id;
+		return makeGood(waiter.id);
 	}
 
 	static assignWaiter(
