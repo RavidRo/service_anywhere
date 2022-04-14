@@ -9,13 +9,20 @@ export class WaiterOrder {
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
 
-	static makeAvailable(orderId: string) {		//todo: delete order assignments?, filter returns a new list, does not change the input list
+	static makeAvailable(orderId: string) {
 		let waiters = this.orderToWaiters.get(orderId);
 		waiters?.forEach(waiterId => {
-			this.waiterList
-				.filter(waiter => waiter.id === waiterId)
-				.forEach(w => (w.available = true));
+			let waiterOrders = this.waiterToOrders.get(waiterId)?.filter((value) => value !== orderId)
+			if (waiterOrders !== undefined){
+				this.waiterToOrders.set(waiterId, waiterOrders)
+				if (waiterOrders !== []){
+					this.waiterList
+					.filter(waiter => waiter.id === waiterId)
+					.forEach(w => (w.available = true));
+				}
+			}
 		});
+		this.orderToWaiters.delete(orderId)
 	}
 
 	static updateWaiterLocation(
