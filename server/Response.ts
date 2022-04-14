@@ -43,7 +43,7 @@ export interface ResponseMsg<T, U = T> extends Parsable<T, ResponseMsg<U>> {
 	getError(): string;
 	getStatusCode(): number;
 	getData(): T;
-	then<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V>;
+	ifGood<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V>;
 }
 
 function isResponse<T, U = T>(object: unknown): object is ResponseMsg<T, U> {
@@ -52,7 +52,7 @@ function isResponse<T, U = T>(object: unknown): object is ResponseMsg<T, U> {
 		response?.isSuccess !== undefined &&
 		response?.getError !== undefined &&
 		response?.getData !== undefined &&
-		response?.then !== undefined
+		response?.ifGood !== undefined
 	);
 }
 
@@ -85,7 +85,7 @@ class ResponseSuccess<T, U = T> implements ResponseMsg<T, U> {
 		return response;
 	}
 
-	then<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
+	ifGood<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
 		const returnValue = func(this._data.getData());
 		if (isResponse(returnValue)) {
 			return returnValue;
@@ -123,7 +123,7 @@ class ResponseFail implements ResponseMsg<unknown> {
 		return new ResponseFail(this._error);
 	}
 
-	then<V, T>(_: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
+	ifGood<V, T>(_: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
 		return this;
 	}
 }
@@ -180,6 +180,6 @@ export const mapResponse = <T, U>(
 	responses: ResponseMsg<T, U>[]
 ): ResponseMsg<T[], U[]> => {
 	return responses.reduce((acc, curr) => {
-		return curr.then(data => makeGood([...acc.getData(), data]));
+		return curr.ifGood(data => makeGood([...acc.getData(), data]));
 	}, makeGood<T[]>([]));
 };

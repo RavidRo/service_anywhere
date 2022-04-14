@@ -49,4 +49,9 @@ export abstract class IOrder {
 	abstract giveFeedback(_review: string, _score: number): boolean;
 
 	abstract isActive(): boolean;
+
+	// For testings
+	static test_deleteAllOrders(): void {
+		this.orderList = [];
+	}
 }

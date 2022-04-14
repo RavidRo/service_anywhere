@@ -11,10 +11,11 @@ const createOrder = async () => {
 	const items = new Map([[itemsList[0].id, 5]]);
 
 	const createOrderResponse = GuestInterface.createOrder(guestID, items);
-	const orderID = createOrderResponse.getData();
+	const orderIDResponse = await createOrderResponse;
+	const orderID = orderIDResponse.getData();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
 
-	return {orderID: createOrderResponse.getData(), guestID};
+	return {orderID, guestID};
 };
 
 test('Assigns a free waiter successfully', async () => {

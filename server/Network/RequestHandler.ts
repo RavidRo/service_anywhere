@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {response} from 'express';
 import * as socketio from 'socket.io';
 
 import {ResponseMsg} from '../Response';
@@ -37,7 +37,7 @@ function authenticate(
 	if (token) {
 		let response = authenticator.authenticate(token, permissionLevel);
 		if (response.isSuccess()) {
-			response.then(doIfLegal);
+			response.ifGood(doIfLegal);
 		} else {
 			sendErrorMsg(response.getData());
 		}
@@ -129,11 +129,11 @@ app.post('/createOrder', (req, res) => {
 				1,
 				(msg: string) => res.send(msg),
 				(id: string) => {
-					let response = guest.createOrder(
-						id,
-						req.body['orderItems']
-					);
-					sendResponse(response, res.status, res.send);
+					guest
+						.createOrder(id, req.body['orderItems'])
+						.then(response => {
+							sendResponse(response, res.status, res.send);
+						});
 				}
 			);
 		}

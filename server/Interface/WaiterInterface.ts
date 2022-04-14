@@ -6,7 +6,7 @@ import {IOrder} from '../Logic/IOrder';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
 function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
-	return WaiterOrder.getWaiterOrder(waiterId).then((data: string[]) => {
+	return WaiterOrder.getWaiterOrder(waiterId).ifGood((data: string[]) => {
 		return IOrder.orderList.filter(order => data.includes(order.getId()));
 	});
 }

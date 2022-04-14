@@ -11,7 +11,7 @@ let orderItems = new Map<string, number>([
 	['beer', 2],
 ]);
 beforeAll(() => {
-	waiter = WaiterOrder.connectWaiter();
+	waiter = WaiterOrder.connectWaiter().getData();
 	guestId = 'guestId2';
 	order = Order.createOrder(guestId, orderItems).getId();
 });

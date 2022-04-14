@@ -6,6 +6,7 @@ export class Notifier extends Singleton {
 
 	constructor() {
 		super();
+		this.subscribers = {};
 	}
 
 	/**

@@ -35,7 +35,7 @@ export abstract class OrderNotifier extends IOrder {
 	}
 
 	override assign(waiterId: string): ResponseMsg<void> {
-		return this.changeOrderStatus('assigned').then(() => {
+		return this.changeOrderStatus('assigned').ifGood(() => {
 			const orderWaiter = new WaiterNotifier(this.order, waiterId);
 			this.order = orderWaiter;
 		});
@@ -58,7 +58,7 @@ export abstract class OrderNotifier extends IOrder {
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
 		return this.order
 			.changeOrderStatus(status)
-			.then(() =>
+			.ifGood(() =>
 				this.notificationFacade.changeOrderStatus(
 					this.receiverId,
 					this.getId(),
@@ -70,7 +70,7 @@ export abstract class OrderNotifier extends IOrder {
 	override cancelOrder(): ResponseMsg<void> {
 		return this.order
 			.cancelOrder()
-			.then(() =>
+			.ifGood(() =>
 				this.notificationFacade.changeOrderStatus(
 					this.receiverId,
 					this.getId(),
@@ -114,7 +114,7 @@ class GuestNotifier extends OrderNotifier {
 	): ResponseMsg<void> {
 		return super
 			.updateWaiterLocation(...params)
-			.then(() =>
+			.ifGood(() =>
 				this.notificationFacade.updateWaiterLocation(
 					this.receiverId,
 					this.getId(),
@@ -126,7 +126,7 @@ class GuestNotifier extends OrderNotifier {
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
 		return super
 			.changeOrderStatus(status)
-			.then(() =>
+			.ifGood(() =>
 				this.notificationFacade.changeOrderStatus(
 					this.receiverId,
 					this.getId(),
@@ -153,7 +153,7 @@ class WaiterNotifier extends OrderNotifier {
 	): ResponseMsg<void> {
 		return super
 			.updateGuestLocation(...params)
-			.then(() =>
+			.ifGood(() =>
 				this.notificationFacade.updateGuestLocation(
 					this.receiverId,
 					this.getId(),

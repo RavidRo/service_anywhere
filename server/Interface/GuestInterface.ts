@@ -8,7 +8,7 @@ import {WaiterOrder} from '../Logic/WaiterOrder';
 function createOrder(
 	guestId: string,
 	items: Map<string, number>
-): ResponseMsg<string> {
+): Promise<ResponseMsg<string>> {
 	return WaiterOrder.createOrder(guestId, items);
 }
 
@@ -17,7 +17,7 @@ function updateLocationGuest(
 	mapId: string,
 	location: Location
 ): ResponseMsg<void> {
-	return getGuestOrder(guestId).then(order => {
+	return getGuestOrder(guestId).ifGood(order => {
 		IOrder.delegate(order.id, (o: IOrder) =>
 			o.updateGuestLocation(mapId, location)
 		);

@@ -1,4 +1,5 @@
 import {Location, OrderIDO} from 'api';
+import {getItems} from '../Data/ItemStore';
 import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
 import {IOrder} from './IOrder';
 import {OrderNotifier} from './OrderNotifier';
@@ -74,7 +75,7 @@ export class WaiterOrder {
 		const canAssignResponses = orderIds.map(orderId =>
 			IOrder.delegate(orderId, order => makeGood(order.canAssign()))
 		);
-		return mapResponse(canAssignResponses).then(canAssignToOrders => {
+		return mapResponse(canAssignResponses).ifGood(canAssignToOrders => {
 			if (canAssignToOrders.some(can => !can)) {
 				return makeFail(
 					'All orders must be in a ready status to assign waiters to them',
@@ -126,10 +127,10 @@ export class WaiterOrder {
 		return makeGood([]);
 	}
 
-	static createOrder(
+	static async createOrder(
 		guestId: string,
 		items: Map<string, number>
-	): ResponseMsg<string> {
+	): Promise<ResponseMsg<string>> {
 		const entries = Array.from(items.entries());
 		const filteredEntries = entries.filter(
 			([_, quantity]) => quantity !== 0
@@ -146,7 +147,7 @@ export class WaiterOrder {
 				400
 			);
 		}
-		const allItemsIds: string[] = []; //TODO: get all item ids from DB
+		const allItemsIds: string[] = (await getItems()).map(item => item.id);
 		if (itemsIds.some(id => !allItemsIds.includes(id))) {
 			return makeFail('The items you chose does not exists', 400);
 		}
@@ -158,8 +159,18 @@ export class WaiterOrder {
 			);
 		}
 
-		const newOrder = OrderNotifier.createOrder(guestId, items);
+		const newOrder = OrderNotifier.createOrder(
+			guestId,
+			new Map(filteredEntries)
+		);
 		IOrder.orderList.push(newOrder);
 		return makeGood(newOrder.getId());
+	}
+
+	// For testings
+	static test_deleteAll(): void {
+		this.waiterList = [];
+		this.waiterToOrders.clear();
+		this.orderToWaiters.clear();
 	}
 }
