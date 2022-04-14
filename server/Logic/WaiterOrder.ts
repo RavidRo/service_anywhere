@@ -1,4 +1,5 @@
 import {Location, OrderIDO} from 'api';
+import * as WaiterStore from '../Data/WaiterStore';
 import {getItems} from '../Data/ItemStore';
 import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
 import {IOrder} from './IOrder';
@@ -6,20 +7,31 @@ import {OrderNotifier} from './OrderNotifier';
 import {Waiter} from './Waiter';
 
 export class WaiterOrder {
-	static waiterList: Waiter[] = [];
-	static waiterToOrders: Map<string, string[]> = new Map();
-	static orderToWaiters: Map<string, string[]> = new Map();
+	private static instance: WaiterOrder;
+	public static getInstance() {
+		if (!this.instance) {
+			this.instance = new WaiterOrder();
+		}
+		return this.instance;
+	}
 
-	static makeAvailable(orderId: string) {
+	waiterToOrders: Map<string, string[]> = new Map();
+	orderToWaiters: Map<string, string[]> = new Map();
+
+	get waiters(): Promise<Waiter[]> {
+		return WaiterStore.getWaiters();
+	}
+
+	makeAvailable(orderId: string) {
 		let waiters = this.orderToWaiters.get(orderId);
-		waiters?.forEach(waiterId => {
+		waiters?.forEach(async waiterId => {
 			let waiterOrders = this.waiterToOrders
 				.get(waiterId)
 				?.filter(value => value !== orderId);
 			if (waiterOrders !== undefined) {
 				this.waiterToOrders.set(waiterId, waiterOrders);
 				if (waiterOrders !== []) {
-					this.waiterList
+					(await this.waiters)
 						.filter(waiter => waiter.id === waiterId)
 						.forEach(w => (w.available = true));
 				}
@@ -28,11 +40,7 @@ export class WaiterOrder {
 		this.orderToWaiters.delete(orderId);
 	}
 
-	static updateWaiterLocation(
-		waiterId: string,
-		mapId: string,
-		location: Location
-	) {
+	updateWaiterLocation(waiterId: string, mapId: string, location: Location) {
 		let waiterOrders = this.waiterToOrders.get(waiterId);
 		if (waiterOrders) {
 			waiterOrders.forEach(order => {
@@ -43,7 +51,7 @@ export class WaiterOrder {
 		}
 	}
 
-	static getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
+	getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
 		const orders = IOrder.orderList;
 		const activeOrdersOfGuest = orders.filter(
 			order => order.getGuestId() === guestId && order.isActive()
@@ -55,17 +63,19 @@ export class WaiterOrder {
 		return makeGood(currentOrder);
 	}
 
-	static connectWaiter(): ResponseMsg<string> {
-		let waiter = new Waiter();
-		this.waiterList.push(waiter);
-		return makeGood(waiter.id);
-	}
+	// connectWaiter(): ResponseMsg<string> {
+	// 	let waiter = new Waiter();
+	// 	this.waiterList.push(waiter);
+	// 	return makeGood(waiter.id);
+	// }
 
-	static assignWaiter(
+	async assignWaiter(
 		orderIds: string[],
 		waiterId: string
-	): ResponseMsg<void> {
-		let waiter = this.waiterList.find(value => value.id === waiterId);
+	): Promise<ResponseMsg<void>> {
+		const waiter = (await this.waiters).find(
+			value => value.id === waiterId
+		);
 		if (waiter === undefined) {
 			return makeFail('The requested waiter does not exit', 400);
 		}
@@ -111,7 +121,7 @@ export class WaiterOrder {
 		});
 	}
 
-	static getWaiterByOrder(orderId: string): ResponseMsg<string[]> {
+	getWaiterByOrder(orderId: string): ResponseMsg<string[]> {
 		const waiters = this.orderToWaiters.get(orderId);
 		if (waiters) {
 			return makeGood(waiters);
@@ -119,15 +129,15 @@ export class WaiterOrder {
 		return makeGood([]);
 	}
 
-	static getWaiterOrder(waiterId: string): ResponseMsg<string[]> {
-		let orders = this.waiterToOrders.get(waiterId);
+	getWaiterOrder(waiterId: string): ResponseMsg<string[]> {
+		const orders = this.waiterToOrders.get(waiterId);
 		if (orders) {
 			return makeGood(orders);
 		}
 		return makeGood([]);
 	}
 
-	static async createOrder(
+	async createOrder(
 		guestId: string,
 		items: Map<string, number>
 	): Promise<ResponseMsg<string>> {
@@ -164,12 +174,11 @@ export class WaiterOrder {
 			new Map(filteredEntries)
 		);
 		IOrder.orderList.push(newOrder);
-		return makeGood(newOrder.getId());
+		return makeGood(newOrder.getID());
 	}
 
 	// For testings
-	static test_deleteAll(): void {
-		this.waiterList = [];
+	test_deleteAll(): void {
 		this.waiterToOrders.clear();
 		this.orderToWaiters.clear();
 	}

@@ -22,7 +22,7 @@ export class Order extends IOrder {
 	review: Review;
 	terminationTime: Date;
 
-	override getId(): string {
+	override getID(): string {
 		return this.id;
 	}
 	override getGuestId(): string {

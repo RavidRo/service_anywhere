@@ -13,7 +13,7 @@ import {
 import {Guest} from './Guest';
 import {OrderToItem} from './OrderToItem';
 import {Review} from './Review';
-import {Waiter} from './Worker';
+import {Waiter} from './Waiter';
 
 @Entity()
 export class Order extends BaseEntity {

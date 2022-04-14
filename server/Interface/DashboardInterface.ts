@@ -12,20 +12,28 @@ function getOrders(): ResponseMsg<IOrder[]> {
 	return makeGood(IOrder.orderList);
 }
 
-function assignWaiter(orderIds: string[], waiterID: string): ResponseMsg<void> {
-	return WaiterOrder.assignWaiter(orderIds, waiterID);
+function assignWaiter(
+	orderIds: string[],
+	waiterID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.getInstance().assignWaiter(orderIds, waiterID);
 }
 
-function getWaiters(): ResponseMsg<string[]> {
-	return makeGood(WaiterOrder.waiterList.map(waiter => waiter.id));
+async function getWaiters(): Promise<ResponseMsg<string[]>> {
+	return makeGood(
+		(await WaiterOrder.getInstance().waiters).map(waiter => waiter.id)
+	);
 }
 
 function getWaiterByOrder(orderID: string): ResponseMsg<string[]> {
-	let waiters = WaiterOrder.orderToWaiters.get(orderID);
-	if (waiters) {
-		return makeGood(waiters);
+	const orderExists = IOrder.orderList.some(
+		order => order.getID() === orderID
+	);
+	if (!orderExists) {
+		return makeFail('Requested error does not exist', statusNotFound);
 	}
-	return makeFail('No such order or no waiters assigned.', statusNotFound);
+	const waiters = WaiterOrder.getInstance().orderToWaiters.get(orderID);
+	return makeGood(waiters ?? []);
 }
 
 function cancelOrderAdmin(orderId: string): ResponseMsg<void> {
@@ -34,7 +42,7 @@ function cancelOrderAdmin(orderId: string): ResponseMsg<void> {
 		return makeGood();
 	});
 	if (response.isSuccess()) {
-		WaiterOrder.makeAvailable(orderId);
+		WaiterOrder.getInstance().makeAvailable(orderId);
 	}
 	return response;
 }
@@ -48,7 +56,7 @@ function changeOrderStatus(
 	});
 	const assignableStatuses: OrderStatus[] = ['assigned', 'on the way'];
 	if (response.isSuccess() && !assignableStatuses.includes(newStatus)) {
-		WaiterOrder.makeAvailable(orderId);
+		WaiterOrder.getInstance().makeAvailable(orderId);
 	}
 	return response;
 }

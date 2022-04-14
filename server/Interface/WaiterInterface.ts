@@ -6,24 +6,27 @@ import {IOrder} from '../Logic/IOrder';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
 function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
-	return WaiterOrder.getWaiterOrder(waiterId).ifGood((data: string[]) => {
-		return IOrder.orderList.filter(order => data.includes(order.getId()));
-	});
+	return WaiterOrder.getInstance()
+		.getWaiterOrder(waiterId)
+		.ifGood((data: string[]) => {
+			return IOrder.orderList.filter(order =>
+				data.includes(order.getID())
+			);
+		});
 }
 
 function orderArrived(orderId: string): ResponseMsg<void> {
-	let response = IOrder.delegate(orderId, (order: IOrder) => {
+	const response = IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
-	if (response.isSuccess()) {
-		WaiterOrder.makeAvailable(orderId);
-	}
-	return response;
+	return response.ifGood(() => {
+		WaiterOrder.getInstance().makeAvailable(orderId);
+	});
 }
 
-function connectWaiter(): ResponseMsg<string> {
-	return WaiterOrder.connectWaiter();
-}
+// function connectWaiter(): ResponseMsg<string> {
+// 	return WaiterOrder.getInstance().connectWaiter();
+// }
 
 function updateLocationWaiter(
 	waiterId: string,
@@ -31,7 +34,11 @@ function updateLocationWaiter(
 	location: Location
 ): ResponseMsg<void> {
 	return makeGood(
-		WaiterOrder.updateWaiterLocation(waiterId, mapId, location)
+		WaiterOrder.getInstance().updateWaiterLocation(
+			waiterId,
+			mapId,
+			location
+		)
 	);
 }
 
@@ -44,7 +51,7 @@ function orderOnTheWay(orderId: string): ResponseMsg<void> {
 export default {
 	getWaiterOrders,
 	orderArrived,
-	connectWaiter,
+	// connectWaiter,
 	updateLocationWaiter,
 	orderOnTheWay,
 };

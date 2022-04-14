@@ -1,15 +1,14 @@
 import {WaiterIDO} from 'api';
-import {v4} from 'uuid';
 
 export class Waiter {
 	available: boolean;
-	id: string;
-	name: string;
+	readonly id: string;
+	readonly name: string;
 
-	constructor(id?: string) {
-		//todo: get name from db
-		this.id = id ?? v4();
-		this.available = true;
+	constructor(id: string, name: string, available: boolean) {
+		this.id = id;
+		this.available = available;
+		this.name = name;
 	}
 
 	getDetails(): WaiterIDO {

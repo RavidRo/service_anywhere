@@ -26,8 +26,8 @@ export abstract class OrderNotifier extends IOrder {
 		return orderDashboard;
 	}
 
-	override getId(): string {
-		return this.order.getId();
+	override getID(): string {
+		return this.order.getID();
 	}
 
 	override getGuestId(): string {
@@ -61,7 +61,7 @@ export abstract class OrderNotifier extends IOrder {
 			.ifGood(() =>
 				this.notificationFacade.changeOrderStatus(
 					this.receiverId,
-					this.getId(),
+					this.getID(),
 					status
 				)
 			);
@@ -73,7 +73,7 @@ export abstract class OrderNotifier extends IOrder {
 			.ifGood(() =>
 				this.notificationFacade.changeOrderStatus(
 					this.receiverId,
-					this.getId(),
+					this.getID(),
 					'canceled'
 				)
 			);
@@ -117,7 +117,7 @@ class GuestNotifier extends OrderNotifier {
 			.ifGood(() =>
 				this.notificationFacade.updateWaiterLocation(
 					this.receiverId,
-					this.getId(),
+					this.getID(),
 					...params
 				)
 			);
@@ -129,7 +129,7 @@ class GuestNotifier extends OrderNotifier {
 			.ifGood(() =>
 				this.notificationFacade.changeOrderStatus(
 					this.receiverId,
-					this.getId(),
+					this.getID(),
 					status
 				)
 			);
@@ -156,7 +156,7 @@ class WaiterNotifier extends OrderNotifier {
 			.ifGood(() =>
 				this.notificationFacade.updateGuestLocation(
 					this.receiverId,
-					this.getId(),
+					this.getID(),
 					...params
 				)
 			);

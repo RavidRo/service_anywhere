@@ -42,17 +42,17 @@ test('createOrder should return an order with a status of "received"', () => {
 });
 
 test("getId should return the order's id", () => {
-	expect(firstOrder.getId()).toBe(firstOrder.getDetails().id);
+	expect(firstOrder.getID()).toBe(firstOrder.getDetails().id);
 });
 
 test('createOrder should create unique order Ids', () => {
-	expect(Order.createOrder('newGuest', orderItems).getId()).not.toBe(
-		firstOrder.getId()
+	expect(Order.createOrder('newGuest', orderItems).getID()).not.toBe(
+		firstOrder.getID()
 	);
 });
 
 test('order arrival test', () => {
-	Order.delegate(firstOrder.getId(), (o: IOrder) => {
+	Order.delegate(firstOrder.getID(), (o: IOrder) => {
 		return o.orderArrived();
 	});
 	expect(firstOrder.getDetails().status).toBe('delivered');

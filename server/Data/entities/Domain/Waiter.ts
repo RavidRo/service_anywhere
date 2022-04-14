@@ -1,3 +1,4 @@
+import {WaiterIDO} from 'api';
 import {
 	Entity,
 	PrimaryGeneratedColumn,

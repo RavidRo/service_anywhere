@@ -6,7 +6,7 @@ import {Item} from './entities/Domain/Item';
 import {Order} from './entities/Domain/Order';
 import {OrderToItem} from './entities/Domain/OrderToItem';
 import {Review} from './entities/Domain/Review';
-import {Waiter} from './entities/Domain/Worker';
+import {Waiter} from './entities/Domain/Waiter';
 
 export const AppDataSource = new DataSource({
 	type: 'sqlite',

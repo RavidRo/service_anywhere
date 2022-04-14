@@ -9,7 +9,7 @@ export abstract class IOrder {
 		func: (order: IOrder) => ResponseMsg<T, U>
 	): ResponseMsg<T, U> {
 		for (const element of this.orderList) {
-			if (element.getId() === orderId) {
+			if (element.getID() === orderId) {
 				return func(element);
 			}
 		}
@@ -20,7 +20,7 @@ export abstract class IOrder {
 		throw new Error('abstract method');
 	}
 
-	abstract getId(): string;
+	abstract getID(): string;
 
 	abstract getGuestId(): string;
 

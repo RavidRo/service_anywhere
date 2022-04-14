@@ -1,6 +1,6 @@
 import {Location, OrderIDO} from '../../api';
 
-import {makeGood, ResponseMsg} from '../Response';
+import {ResponseMsg} from '../Response';
 
 import {IOrder} from '../Logic/IOrder';
 import {WaiterOrder} from '../Logic/WaiterOrder';
@@ -9,7 +9,7 @@ function createOrder(
 	guestId: string,
 	items: Map<string, number>
 ): Promise<ResponseMsg<string>> {
-	return WaiterOrder.createOrder(guestId, items);
+	return WaiterOrder.getInstance().createOrder(guestId, items);
 }
 
 function updateLocationGuest(
@@ -25,7 +25,7 @@ function updateLocationGuest(
 }
 
 function getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
-	return WaiterOrder.getGuestOrder(guestId);
+	return WaiterOrder.getInstance().getGuestOrder(guestId);
 }
 
 function submitReview(orderId: string, details: string, rating: number): void {
@@ -36,13 +36,12 @@ function submitReview(orderId: string, details: string, rating: number): void {
 }
 
 function cancelOrder(orderId: string): ResponseMsg<void> {
-	let response = IOrder.delegate(orderId, o => {
+	const response = IOrder.delegate(orderId, o => {
 		return o.cancelOrder();
 	});
-	if (response.isSuccess()) {
-		WaiterOrder.makeAvailable(orderId);
-	}
-	return response;
+	return response.ifGood(() => {
+		WaiterOrder.getInstance().makeAvailable(orderId);
+	});
 }
 
 export default {

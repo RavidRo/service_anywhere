@@ -4,7 +4,7 @@ function addSubscriber(
 	id: string,
 	send: (eventName: string, o: object) => boolean
 ): void {
-	new Notifier().addSubscriber(id, send);
+	Notifier.getInstance().addSubscriber(id, send);
 }
 
 export default {

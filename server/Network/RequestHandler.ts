@@ -13,6 +13,7 @@ import authenticator from '../Logic/Authentication/Authenticator';
 
 import {AppDataSource} from '../Data/data-source';
 
+require('dotenv').config();
 let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -271,8 +272,8 @@ app.post('/assignWaiter', (req, res) => {
 		['orderIds', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => {
-			let response = dashboard.assignWaiter(
+		async () => {
+			const response = await dashboard.assignWaiter(
 				req.body['orderIds'],
 				req.body['waiterId']
 			);
@@ -287,8 +288,9 @@ app.get('/getOrders', (_req, res) => {
 });
 
 app.get('/getWaiters', (_req, res) => {
-	let response = dashboard.getWaiters();
-	sendResponse(response, res.status, res.send);
+	dashboard.getWaiters().then(response => {
+		sendResponse(response, res.status, res.send);
+	});
 });
 
 app.get('/getWaitersByOrder', (req, res) => {

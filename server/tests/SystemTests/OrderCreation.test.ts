@@ -1,22 +1,15 @@
 import {IOrder} from '../../Logic/IOrder';
 import {WaiterOrder} from '../../Logic/WaiterOrder';
-import {Item} from '../../Data/entities/Domain/Item';
 import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
-
-jest.mock('../../Data/ItemStore', () => ({
-	getItems: jest.fn().mockImplementation(() => {
-		const item1 = new Item();
-		item1.id = '0';
-		const item2 = new Item();
-		item2.id = '1';
-		return [item1, item2];
-	}),
-}));
+import {test_resetWaiters} from '../../Data/WaiterStore';
+import {test_resetItems} from '../../Data/ItemStore';
 
 beforeEach(() => {
 	IOrder.test_deleteAllOrders();
-	WaiterOrder.test_deleteAll();
+	WaiterOrder.getInstance().test_deleteAll();
+	test_resetWaiters();
+	test_resetItems();
 });
 
 const guestID = 'guestID';

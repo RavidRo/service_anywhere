@@ -53,8 +53,8 @@ test('Forwarding status to assigned without assigning fail', async () => {
 
 test('Assigning a waiter results in failure if order is not ready', async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
-	const changeResponse = DashboardInterface.assignWaiter(
+	const waiterIds = await DashboardInterface.getWaiters();
+	const changeResponse = await DashboardInterface.assignWaiter(
 		[orderID],
 		waiterIds.getData()[0]
 	);
@@ -66,9 +66,9 @@ test('Assigning a waiter results in failure if order is not ready', async () => 
 
 test("Assigning a waiter results in changes the order's status to assigned", async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
 	const orderResponse = GuestInterface.getGuestOrder(guestID);
 
 	expect(orderResponse.getData().status).toBe('assigned');
@@ -76,10 +76,10 @@ test("Assigning a waiter results in changes the order's status to assigned", asy
 
 test("Assigning another waiter to the same order does not change it's status", async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
-	const assignedResponse = DashboardInterface.assignWaiter(
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	const assignedResponse = await DashboardInterface.assignWaiter(
 		[orderID],
 		waiterIds.getData()[1]
 	);
@@ -91,9 +91,9 @@ test("Assigning another waiter to the same order does not change it's status", a
 
 test('Status changes successfully when waiter is on the way with the order', async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
 	const orderOnTheWayResponse = WaiterInterface.orderOnTheWay(orderID);
 	const orderResponse = GuestInterface.getGuestOrder(guestID);
 
@@ -103,13 +103,13 @@ test('Status changes successfully when waiter is on the way with the order', asy
 
 test("Waiters can be assigned to an order when it's on the way", async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
 	WaiterInterface.orderOnTheWay(orderID);
 
-	const assignResponse = DashboardInterface.assignWaiter(
+	const assignResponse = await DashboardInterface.assignWaiter(
 		[orderID],
 		waiterIds.getData()[1]
 	);
@@ -121,11 +121,11 @@ test("Waiters can be assigned to an order when it's on the way", async () => {
 
 test("Arriving order's status is changed", async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
 	WaiterInterface.orderOnTheWay(orderID);
 	WaiterInterface.orderArrived(orderID);
 	const orderResponse = GuestInterface.getGuestOrder(guestID);
@@ -143,11 +143,11 @@ test("Order's status can be changed to 'delivered' with out getting assigned fir
 });
 test("Order's status can be changed to 'on the way' by the dashboard's change status function", async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
 	DashboardInterface.changeOrderStatus(orderID, 'on the way');
 
 	const orderResponse = GuestInterface.getGuestOrder(guestID);
@@ -156,11 +156,11 @@ test("Order's status can be changed to 'on the way' by the dashboard's change st
 });
 test("Order's status can't be changed by waiters to delivered with out changing the status to 'on the way'", async () => {
 	const {orderID, guestID} = await createOrder();
-	const waiterIds = DashboardInterface.getWaiters();
+	const waiterIds = await DashboardInterface.getWaiters();
 
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
-	DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
+	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
 	const arrivedResponse = WaiterInterface.orderArrived(orderID);
 	const orderResponse = GuestInterface.getGuestOrder(guestID);
 
