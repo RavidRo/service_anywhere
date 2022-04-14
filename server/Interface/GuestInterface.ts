@@ -30,7 +30,7 @@ function submitReview(orderId: string, details: string, rating: number): void {
 
 function cancelOrder(orderId: string): Boolean {
 	return IOrder.delegate(orderId, o => {
-		o.cancelOrderGuest();
+		o.cancelOrder();
 		return makeGood();
 	}).isSuccess();
 }

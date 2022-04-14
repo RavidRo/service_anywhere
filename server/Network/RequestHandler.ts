@@ -67,7 +67,14 @@ app.get('/login', (req, res) => {
 		['password'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => res.send(authenticator.login(req.body['password']))
+		() =>
+			authenticator
+				.login(req.body['password'])
+				.then(value =>
+					value.isSuccess()
+						? res.send(value.getData())
+						: res.send(value.getError())
+				)
 	);
 });
 
@@ -139,7 +146,12 @@ app.get('/getWaiterOrders', (req, res) => {
 		req.headers.authorization,
 		2,
 		(msg: string) => res.send(msg),
-		(id: string) => res.send(waiter.getWaiterOrders(id))
+		(id: string) => {
+			let value = waiter.getWaiterOrders(id);
+			value.isSuccess()
+				? res.send(value.getData())
+				: res.send(value.getError());
+		}
 	);
 });
 
@@ -219,13 +231,13 @@ io.on('connection', function (socket: socketio.Socket) {
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
-		['orderIds', 'waiterId'],
+		['orderId', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
 		() =>
 			res.send(
 				dashboard.assignWaiter(
-					req.body['orderIds'],
+					req.body['orderId'],
 					req.body['waiterId']
 				)
 			)
@@ -233,11 +245,11 @@ app.post('/assignWaiter', (req, res) => {
 });
 
 app.get('/getOrders', (_req, res) => {
-	res.send(dashboard.getOrders());
+	res.send(dashboard.getOrders().map(value => value.getDetails())); //todo: move to interface
 });
 
 app.get('/getWaiters', (_req, res) => {
-	res.send(dashboard.getWaiters());
+	res.send(dashboard.getWaiters()); //todo: return IDO
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
