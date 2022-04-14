@@ -14,13 +14,13 @@ class Review {
 }
 
 export class Order extends IOrder {
-	id: string;
-	guestId: string;
-	status: OrderStatus;
-	items: Map<string, number>;
-	creationTime: Date;
-	review: Review;
-	terminationTime: Date;
+	private readonly id: string;
+	private readonly guestId: string;
+	private readonly items: Map<string, number>;
+	private readonly creationTime: Date;
+	private status: OrderStatus;
+	private review: Review;
+	private terminationTime: Date;
 
 	override getID(): string {
 		return this.id;

@@ -1,7 +1,19 @@
-import DashboardInterface from 'server/Interface/DashboardInterface';
-import GuestInterface from 'server/Interface/GuestInterface';
-import ItemsInterface from 'server/Interface/ItemsInterface';
-import WaiterInterface from 'server/Interface/WaiterInterface';
+import {test_resetItems} from '../../Data/ItemStore';
+import {test_resetWaiters} from '../../Data/WaiterStore';
+import {IOrder} from '../../Logic/IOrder';
+import {WaiterOrder} from '../../Logic/WaiterOrder';
+
+import DashboardInterface from '../../Interface/DashboardInterface';
+import GuestInterface from '../../Interface/GuestInterface';
+import ItemsInterface from '../../Interface/ItemsInterface';
+import WaiterInterface from '../../Interface/WaiterInterface';
+
+beforeEach(() => {
+	IOrder.test_deleteAllOrders();
+	WaiterOrder.getInstance().test_deleteAll();
+	test_resetWaiters();
+	test_resetItems();
+});
 
 const createOrder = async () => {
 	const itemsList = await ItemsInterface.getItems();
@@ -200,4 +212,3 @@ test("Waiters can't set status of orders they are not assigned to to 'on the way
 test("Waiters can't set status of orders they are not assigned to to 'delivered'", async () => {
 	expect(false).toBeTruthy();
 });
-test('');
