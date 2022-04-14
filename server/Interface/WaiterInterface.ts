@@ -1,6 +1,8 @@
-import {IOrder} from 'server/Logic/IOrder';
-import {makeGood, ResponseMsg} from 'server/Response';
 import {Location} from '../../api';
+
+import {makeGood, ResponseMsg} from '../Response';
+
+import {IOrder} from '../Logic/IOrder';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
 function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
@@ -10,17 +12,17 @@ function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
 }
 
 function orderArrived(orderId: string): ResponseMsg<void> {
-	let response =  IOrder.delegate(orderId, (order: IOrder) => {
+	let response = IOrder.delegate(orderId, (order: IOrder) => {
 		return order.orderArrived();
 	});
-	if(response.isSuccess()){
-		WaiterOrder.makeAvailable(orderId)
+	if (response.isSuccess()) {
+		WaiterOrder.makeAvailable(orderId);
 	}
-	return response
+	return response;
 }
 
 function connectWaiter(): ResponseMsg<string> {
-	return makeGood(WaiterOrder.connectWaiter());	//todo: if connect waiter response changes, change accordingly
+	return makeGood(WaiterOrder.connectWaiter()); //todo: if connect waiter response changes, change accordingly
 }
 
 function updateLocationWaiter(
@@ -28,12 +30,14 @@ function updateLocationWaiter(
 	mapId: string,
 	location: Location
 ): ResponseMsg<void> {
-	return makeGood(WaiterOrder.updateWaiterLocation(waiterId, mapId, location));
+	return makeGood(
+		WaiterOrder.updateWaiterLocation(waiterId, mapId, location)
+	);
 }
 
 function orderOnTheWay(orderId: string): ResponseMsg<void> {
 	return IOrder.delegate(orderId, order => {
-		return order.changeOrderStatus('on the way')
+		return order.changeOrderStatus('on the way');
 	});
 }
 

@@ -1,13 +1,17 @@
 import express from 'express';
+import * as socketio from 'socket.io';
+
+import {ResponseMsg} from '../Response';
+
 import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
 import waiter from '../Interface/WaiterInterface';
 import items from '../Interface/ItemsInterface';
-import * as socketio from 'socket.io';
-import * as path from 'path';
+import NotificationInterface from '../Interface/NotificationInterface';
+
 import authenticator from '../Logic/Authentication/Authenticator';
-import NotificationInterface from 'server/Interface/NotificationInterface';
-import { ResponseMsg } from 'server/Response';
+
+import {AppDataSource} from '../Data/data-source';
 
 let cors = require('cors');
 const app = express();
@@ -22,6 +26,7 @@ app.use(cors({origin: '*'}));
 app.get('/', (_req, res) => {
 	res.send('Hello World!');
 });
+
 //todo: check for responseMsg handling and move those if needed
 function authenticate(
 	token: string | undefined,
@@ -41,14 +46,17 @@ function authenticate(
 	}
 }
 
-function sendResponse(response: ResponseMsg<any>,
-	setStatus: (st: number) => void, send: (msg: any) => void){
-	setStatus(response.getStatusCode())
-	if(response.isSuccess()){
-		send(response.getData())
-		return
+function sendResponse(
+	response: ResponseMsg<any>,
+	setStatus: (st: number) => void,
+	send: (msg: any) => void
+) {
+	setStatus(response.getStatusCode());
+	if (response.isSuccess()) {
+		send(response.getData());
+		return;
 	}
-	send(response.getError())
+	send(response.getError());
 }
 
 function checkInputs(
@@ -79,12 +87,15 @@ app.get('/login', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			authenticator.login(req.body['password']).then((response) => {
-				sendResponse(response, res.status, res.send)
-			}).catch((reason) => {
-				res.status(400)	//todo: no magic numbers
-				res.send(reason)
-			})
+			authenticator
+				.login(req.body['password'])
+				.then(response => {
+					sendResponse(response, res.status, res.send);
+				})
+				.catch(reason => {
+					res.status(400); //todo: no magic numbers
+					res.send(reason);
+				});
 		}
 	);
 });
@@ -101,8 +112,8 @@ app.get('/getGuestOrder', (req, res) => {
 		1,
 		(msg: string) => res.send(msg),
 		(id: string) => {
-			let response = guest.getGuestOrder(id)
-			sendResponse(response, res.status, res.send)
+			let response = guest.getGuestOrder(id);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
@@ -117,9 +128,12 @@ app.post('/createOrder', (req, res) => {
 				req.headers.authorization,
 				1,
 				(msg: string) => res.send(msg),
-				(id: string) =>{
-					let response = guest.createOrder(id, req.body['orderItems'])
-					sendResponse(response, res.status, res.send)
+				(id: string) => {
+					let response = guest.createOrder(
+						id,
+						req.body['orderItems']
+					);
+					sendResponse(response, res.status, res.send);
 				}
 			);
 		}
@@ -148,8 +162,8 @@ app.post('/cancelOrderGuest', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = guest.cancelOrder(req.body['orderId'])
-			sendResponse(response, res.status, res.send)
+			let response = guest.cancelOrder(req.body['orderId']);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
@@ -166,8 +180,8 @@ app.get('/getWaiterOrders', (req, res) => {
 		2,
 		(msg: string) => res.send(msg),
 		(id: string) => {
-			let response = waiter.getWaiterOrders(id)
-			sendResponse(response, res.status, res.send)
+			let response = waiter.getWaiterOrders(id);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
@@ -178,8 +192,8 @@ app.post('/orderArrived', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = waiter.orderArrived(req.body['orderId'])
-			sendResponse(response, res.status, res.send)
+			let response = waiter.orderArrived(req.body['orderId']);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
@@ -190,8 +204,8 @@ app.post('/orderOnTheWay', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = waiter.orderOnTheWay(req.body['orderId'])
-			sendResponse(response, res.status, res.send)	//todo: connect waiter should notify dashboard?
+			let response = waiter.orderOnTheWay(req.body['orderId']);
+			sendResponse(response, res.status, res.send); //todo: connect waiter should notify dashboard?
 		}
 	);
 });
@@ -257,21 +271,24 @@ app.post('/assignWaiter', (req, res) => {
 		['orderIds', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() =>{
-			let response = dashboard.assignWaiter(req.body['orderIds'], req.body['waiterId'])
-			sendResponse(response, res.status, res.send)
+		() => {
+			let response = dashboard.assignWaiter(
+				req.body['orderIds'],
+				req.body['waiterId']
+			);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
 
 app.get('/getOrders', (_req, res) => {
-	let response = dashboard.getOrders()
-	sendResponse(response, res.status, res.send)
+	let response = dashboard.getOrders();
+	sendResponse(response, res.status, res.send);
 });
 
 app.get('/getWaiters', (_req, res) => {
-	let response = dashboard.getWaiters()
-	sendResponse(response, res.status, res.send)
+	let response = dashboard.getWaiters();
+	sendResponse(response, res.status, res.send);
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
@@ -280,8 +297,10 @@ app.get('/getWaitersByOrder', (req, res) => {
 		req.query,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = dashboard.getWaiterByOrder(String(req.query['orderId']))
-			sendResponse(response, res.status, res.send)
+			let response = dashboard.getWaiterByOrder(
+				String(req.query['orderId'])
+			);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
@@ -292,8 +311,8 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = dashboard.cancelOrderAdmin(req.body['orderId'])
-			sendResponse(response, res.status, res.send)
+			let response = dashboard.cancelOrderAdmin(req.body['orderId']);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
@@ -304,12 +323,17 @@ app.post('/changeOrderStatus', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = dashboard.changeOrderStatus(req.body['orderId'], req.body['newStatus'])
-			sendResponse(response, res.status, res.send)
+			let response = dashboard.changeOrderStatus(
+				req.body['orderId'],
+				req.body['newStatus']
+			);
+			sendResponse(response, res.status, res.send);
 		}
 	);
 });
 
-http.listen(PORT, () => {
-	console.log(`Server is listening on port ${PORT}`);
+AppDataSource.initialize().then(() => {
+	http.listen(PORT, () => {
+		console.log(`Server is listening on port ${PORT}`);
+	});
 });

@@ -104,7 +104,9 @@ export class Order extends IOrder {
 	}
 
 	canAssign(): boolean {
-		return this.status in ['ready to deliver', 'assigned', 'on the way'];
+		return ['ready to deliver', 'assigned', 'on the way'].includes(
+			this.status
+		);
 	}
 
 	assign(_waiterId: string): ResponseMsg<void> {

@@ -1,5 +1,4 @@
 import {Order} from '../Logic/Order';
-import {Location} from 'api';
 import {IOrder} from 'server/Logic/IOrder';
 
 let firstOrder: IOrder;

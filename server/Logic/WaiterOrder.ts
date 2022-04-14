@@ -9,7 +9,8 @@ export class WaiterOrder {
 	static waiterToOrders: Map<string, string[]> = new Map();
 	static orderToWaiters: Map<string, string[]> = new Map();
 
-	static makeAvailable(orderId: string) {		//todo: delete order assignments?, filter returns a new list, does not change the input list
+	static makeAvailable(orderId: string) {
+		//todo: delete order assignments?, filter returns a new list, does not change the input list
 		let waiters = this.orderToWaiters.get(orderId);
 		waiters?.forEach(waiterId => {
 			this.waiterList
@@ -102,7 +103,7 @@ export class WaiterOrder {
 	}
 
 	static getWaiterByOrder(orderId: string): ResponseMsg<string[]> {
-		let waiters = this.orderToWaiters.get(orderId);
+		const waiters = this.orderToWaiters.get(orderId);
 		if (waiters) {
 			return makeGood(waiters);
 		}

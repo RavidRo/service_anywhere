@@ -5,8 +5,8 @@ import ItemsInterface from 'server/Interface/ItemsInterface';
 
 import {ResponseMsg} from 'server/Response';
 
-const createOrder = () => {
-	const itemsList = ItemsInterface.getItems();
+const createOrder = async () => {
+	const itemsList = await ItemsInterface.getItems();
 	const guestID = 'random id';
 	const items = new Map([[itemsList[0].id, 5]]);
 
@@ -17,9 +17,9 @@ const createOrder = () => {
 	return {orderID: createOrderResponse.getData(), guestID};
 };
 
-test('Assigns a free waiter successfully', () => {
+test('Assigns a free waiter successfully', async () => {
 	const waitersIDs = DashboardInterface.getWaiters();
-	const {orderID} = createOrder();
+	const {orderID} = await createOrder();
 	const assignResponse = DashboardInterface.assignWaiter(
 		[orderID],
 		waitersIDs.getData()[0]
@@ -27,9 +27,9 @@ test('Assigns a free waiter successfully', () => {
 	expect(assignResponse.isSuccess()).toBeTruthy();
 });
 
-test("Order's status is changed when first assigned", () => {
+test("Order's status is changed when first assigned", async () => {
 	const waitersIDs = DashboardInterface.getWaiters();
-	const {orderID, guestID} = createOrder();
+	const {orderID, guestID} = await createOrder();
 	DashboardInterface.assignWaiter([orderID], waitersIDs.getData()[0]);
 	const orderResponse = GuestInterface.getGuestOrder(
 		guestID
@@ -37,10 +37,10 @@ test("Order's status is changed when first assigned", () => {
 	expect(orderResponse.getData().status).toBe('assigned');
 });
 
-test('Assigning a busy waiter to an order results with a failure', () => {
+test('Assigning a busy waiter to an order results with a failure', async () => {
 	const waitersIDs = DashboardInterface.getWaiters();
-	const {orderID: orderID1} = createOrder();
-	const {orderID: orderID2} = createOrder();
+	const {orderID: orderID1} = await createOrder();
+	const {orderID: orderID2} = await createOrder();
 
 	DashboardInterface.assignWaiter([orderID1], waitersIDs.getData()[0]);
 
@@ -52,10 +52,10 @@ test('Assigning a busy waiter to an order results with a failure', () => {
 	expect(assignResponse2.isSuccess()).toBeFalsy();
 });
 
-test('Getting the assigned waiters successfully', () => {
+test('Getting the assigned waiters successfully', async () => {
 	const waitersIDs = DashboardInterface.getWaiters();
-	const {orderID: orderID1} = createOrder();
-	const {orderID: orderID2} = createOrder();
+	const {orderID: orderID1} = await createOrder();
+	const {orderID: orderID2} = await createOrder();
 
 	DashboardInterface.assignWaiter(
 		[orderID1, orderID2],

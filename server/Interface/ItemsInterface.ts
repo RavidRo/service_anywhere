@@ -1,8 +1,8 @@
 import {ItemIDO} from '../../api';
+import {getItems as getConsistentItems} from '../Data/ItemStore';
 
-function getItems(): ItemIDO[] {
-	throw new Error('Method not implemented');
-	return [];
+function getItems(): Promise<ItemIDO[]> {
+	return getConsistentItems();
 }
 
 export default {

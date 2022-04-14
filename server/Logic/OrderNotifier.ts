@@ -56,23 +56,27 @@ export abstract class OrderNotifier extends IOrder {
 	}
 
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
-		return this.order.changeOrderStatus(status).then(() => {
-			this.notificationFacade.changeOrderStatus(
-				this.receiverId,
-				this.getId(),
-				status
+		return this.order
+			.changeOrderStatus(status)
+			.then(() =>
+				this.notificationFacade.changeOrderStatus(
+					this.receiverId,
+					this.getId(),
+					status
+				)
 			);
-		});
 	}
 
 	override cancelOrder(): ResponseMsg<void> {
-		return this.order.cancelOrder().then(() => {
-			this.notificationFacade.changeOrderStatus(
-				this.receiverId,
-				this.getId(),
-				'canceled'
+		return this.order
+			.cancelOrder()
+			.then(() =>
+				this.notificationFacade.changeOrderStatus(
+					this.receiverId,
+					this.getId(),
+					'canceled'
+				)
 			);
-		});
 	}
 
 	override giveFeedback(review: string, score: number): boolean {
@@ -108,23 +112,27 @@ class GuestNotifier extends OrderNotifier {
 	override updateWaiterLocation(
 		...params: [mapID: string, location: Location]
 	): ResponseMsg<void> {
-		return super.updateWaiterLocation(...params).then(() => {
-			this.notificationFacade.updateWaiterLocation(
-				this.receiverId,
-				this.getId(),
-				...params
+		return super
+			.updateWaiterLocation(...params)
+			.then(() =>
+				this.notificationFacade.updateWaiterLocation(
+					this.receiverId,
+					this.getId(),
+					...params
+				)
 			);
-		});
 	}
 
 	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
-		return super.changeOrderStatus(status).then(() => {
-			this.notificationFacade.changeOrderStatus(
-				this.receiverId,
-				this.getId(),
-				status
+		return super
+			.changeOrderStatus(status)
+			.then(() =>
+				this.notificationFacade.changeOrderStatus(
+					this.receiverId,
+					this.getId(),
+					status
+				)
 			);
-		});
 	}
 }
 
@@ -143,13 +151,15 @@ class WaiterNotifier extends OrderNotifier {
 	override updateGuestLocation(
 		...params: [mapID: string, location: Location]
 	): ResponseMsg<void> {
-		return super.updateGuestLocation(...params).then(() => {
-			this.notificationFacade.updateGuestLocation(
-				this.receiverId,
-				this.getId(),
-				...params
+		return super
+			.updateGuestLocation(...params)
+			.then(() =>
+				this.notificationFacade.updateGuestLocation(
+					this.receiverId,
+					this.getId(),
+					...params
+				)
 			);
-		});
 	}
 }
 

@@ -1,6 +1,8 @@
-import {IOrder} from 'server/Logic/IOrder';
-import {makeGood, ResponseMsg} from 'server/Response';
 import {Location, OrderIDO} from '../../api';
+
+import {makeGood, ResponseMsg} from '../Response';
+
+import {IOrder} from '../Logic/IOrder';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
 function createOrder(
@@ -35,13 +37,13 @@ function submitReview(orderId: string, details: string, rating: number): void {
 
 function cancelOrder(orderId: string): ResponseMsg<void> {
 	let response = IOrder.delegate(orderId, o => {
-		o.cancelOrder();	//todo: if cancelOrder returns a responseMsg, remove the makeGood
+		o.cancelOrder(); //todo: if cancelOrder returns a responseMsg, remove the makeGood
 		return makeGood();
-	})
-	if(response.isSuccess()){
+	});
+	if (response.isSuccess()) {
 		WaiterOrder.makeAvailable(orderId);
 	}
-	return response
+	return response;
 }
 
 export default {

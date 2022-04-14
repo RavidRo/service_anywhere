@@ -1,6 +1,7 @@
 import {ResponseMsg} from '../Response';
 import {Order} from '../Logic/Order';
 import {WaiterOrder} from '../Logic/WaiterOrder';
+import DashboardInterface from '../Interface/DashboardInterface';
 
 let waiter: string;
 let order: string;
@@ -37,13 +38,14 @@ test('get waiter order with our waiter should return nothing', () => {
 });
 
 test('get guest order with our guestId should return our order', () => {
-	expect(WaiterOrder.getGuestOrder(guestId).guestId).toBe(guestId);
-	expect(WaiterOrder.getGuestOrder(guestId).id).toBe(order);
+	expect(WaiterOrder.getGuestOrder(guestId).getData().guestId).toBe(guestId);
+	expect(WaiterOrder.getGuestOrder(guestId).getData().id).toBe(order);
 });
 
 describe('assign a waiter to an order', () => {
 	beforeAll(() => {
-		WaiterOrder.assignWaiter(order, waiter);
+		DashboardInterface.changeOrderStatus(order, 'ready to deliver');
+		WaiterOrder.assignWaiter([order], waiter);
 	});
 
 	test('get waiter by order with our order should return our waiter', () => {
