@@ -62,7 +62,7 @@ export default class Requests implements GuestAPI {
 		});
 	}
 	getItemsGuest(): Promise<ItemIDO[]> {
-		return this.handler.get<ItemIDO[]>('getItems', this.token, {});
+		return this.handler.get<ItemIDO[]>('getItemsGuest', this.token, {});
 	}
 
 	getGuestOrder(): Promise<OrderIDO> {

@@ -1,20 +1,20 @@
 //import {makeAutoObservable} from 'mobx';
+import { ItemIDO } from '../signatures';
 import Singleton from '../Singeltone';
-import {Item} from '../types';
 
 export class ItemModel extends Singleton {
-	private _items: Item[];
+	private _items: ItemIDO[];
 
 	public constructor() {
 		super();
 		//		makeAutoObservable(this);
 	}
 
-	get items(): Item[] {
+	get items(): ItemIDO[] {
 		return this._items;
 	}
 
-	set items(items: Item[]) {
+	set items(items: ItemIDO[]) {
 		this._items = items;
 	}
 }
