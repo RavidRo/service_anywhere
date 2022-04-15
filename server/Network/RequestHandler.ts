@@ -180,8 +180,8 @@ app.get('/getWaiterOrders', (req, res) => {
 		req.headers.authorization,
 		2,
 		(msg: string) => res.send(msg),
-		(id: string) => {
-			let response = waiter.getWaiterOrders(id);
+		async (id: string) => {
+			const response = await waiter.getWaiterOrders(id);
 			sendResponse(response, res.status, res.send);
 		}
 	);
@@ -298,8 +298,8 @@ app.get('/getWaitersByOrder', (req, res) => {
 		['orderId'],
 		req.query,
 		(msg: string) => res.send(msg),
-		() => {
-			let response = dashboard.getWaiterByOrder(
+		async () => {
+			const response = await dashboard.getWaiterByOrder(
 				String(req.query['orderId'])
 			);
 			sendResponse(response, res.status, res.send);
@@ -313,7 +313,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		req.body,
 		(msg: string) => res.send(msg),
 		() => {
-			let response = dashboard.cancelOrderAdmin(req.body['orderId']);
+			const response = dashboard.cancelOrderAdmin(req.body['orderId']);
 			sendResponse(response, res.status, res.send);
 		}
 	);

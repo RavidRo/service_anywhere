@@ -25,15 +25,16 @@ async function getWaiters(): Promise<ResponseMsg<string[]>> {
 	);
 }
 
-function getWaiterByOrder(orderID: string): ResponseMsg<string[]> {
+async function getWaiterByOrder(
+	orderID: string
+): Promise<ResponseMsg<string[]>> {
 	const orderExists = IOrder.orderList.some(
 		order => order.getID() === orderID
 	);
 	if (!orderExists) {
 		return makeFail('Requested error does not exist', statusNotFound);
 	}
-	const waiters = WaiterOrder.getInstance().orderToWaiters.get(orderID);
-	return makeGood(waiters ?? []);
+	return await WaiterOrder.getInstance().getWaiterByOrder(orderID);
 }
 
 function cancelOrderAdmin(orderId: string): ResponseMsg<void> {

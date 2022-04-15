@@ -3,16 +3,16 @@ import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
 import {IOrder} from '../../Logic/IOrder';
 import {WaiterOrder} from '../../Logic/WaiterOrder';
-import {test_resetWaiters} from '../../Data/WaiterStore';
-import {test_resetItems} from '../../Data/ItemStore';
+// import {test_resetWaiters} from '../../Data/Stores/WaiterStore';
+// import {test_resetItems} from '../../Data/Stores/ItemStore';
 
 const waiterOrder = WaiterOrder.getInstance();
 
 beforeEach(() => {
-	IOrder.test_deleteAllOrders();
-	waiterOrder.test_deleteAll();
-	test_resetWaiters();
-	test_resetItems();
+	// IOrder.test_deleteAllOrders();
+	// waiterOrder.test_deleteAll();
+	// test_resetWaiters();
+	// test_resetItems();
 });
 
 const createOrder = async (unique: string = '') => {
@@ -71,11 +71,15 @@ test('Getting the assigned waiters successfully', async () => {
 	await DashboardInterface.assignWaiter([orderID1, orderID2], waitersIDs[0]);
 	await DashboardInterface.assignWaiter([orderID2], waitersIDs[1]);
 
-	const assignedResponse = DashboardInterface.getWaiterByOrder(orderID2);
+	const assignedResponse = await DashboardInterface.getWaiterByOrder(
+		orderID2
+	);
 	expect(assignedResponse.getData()).toEqual([waitersIDs[0], waitersIDs[1]]);
 });
 
-test('Getting waiters of none existed order results with failure', () => {
-	const assignedResponse = DashboardInterface.getWaiterByOrder('random id');
+test('Getting waiters of none existed order results with failure', async () => {
+	const assignedResponse = await DashboardInterface.getWaiterByOrder(
+		'random id'
+	);
 	expect(assignedResponse.isSuccess()).toBeFalsy();
 });

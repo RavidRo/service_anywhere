@@ -20,4 +20,12 @@ export class Waiter extends BaseEntity {
 	@ManyToMany(() => Order, order => order.waiters)
 	@JoinTable()
 	orders: Order[];
+
+	get available(): boolean {
+		return this.orders.length === 0;
+	}
+
+	getDetails(): WaiterIDO {
+		return {available: this.available, id: this.id, name: this.name};
+	}
 }

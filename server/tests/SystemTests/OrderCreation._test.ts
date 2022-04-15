@@ -2,14 +2,14 @@ import {IOrder} from '../../Logic/IOrder';
 import {WaiterOrder} from '../../Logic/WaiterOrder';
 import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
-import {test_resetWaiters} from '../../Data/WaiterStore';
-import {test_resetItems} from '../../Data/ItemStore';
+// import {test_resetWaiters} from '../../Data/Stores/WaiterStore';
+// import {test_resetItems} from '../../Data/Stores/ItemStore';
 
 beforeEach(() => {
-	IOrder.test_deleteAllOrders();
-	WaiterOrder.getInstance().test_deleteAll();
-	test_resetWaiters();
-	test_resetItems();
+	// IOrder.test_deleteAllOrders();
+	// WaiterOrder.getInstance().test_deleteAll();
+	// test_resetWaiters();
+	// test_resetItems();
 });
 
 const guestID = 'guestID';

@@ -5,14 +5,14 @@ import {makeGood, ResponseMsg} from '../Response';
 import {IOrder} from '../Logic/IOrder';
 import {WaiterOrder} from '../Logic/WaiterOrder';
 
-function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
-	return WaiterOrder.getInstance()
-		.getWaiterOrder(waiterId)
-		.ifGood((data: string[]) => {
-			return IOrder.orderList.filter(order =>
-				data.includes(order.getID())
-			);
-		});
+async function getWaiterOrders(
+	waiterID: string
+): Promise<ResponseMsg<IOrder[]>> {
+	const waiterOrder = WaiterOrder.getInstance();
+	const ordersResponse = await waiterOrder.getOrdersByWaiter(waiterID);
+	return ordersResponse.ifGood((data: string[]) => {
+		return IOrder.orderList.filter(order => data.includes(order.getID()));
+	});
 }
 
 function orderArrived(orderId: string): ResponseMsg<void> {
@@ -32,14 +32,8 @@ function updateLocationWaiter(
 	waiterId: string,
 	mapId: string,
 	location: Location
-): ResponseMsg<void> {
-	return makeGood(
-		WaiterOrder.getInstance().updateWaiterLocation(
-			waiterId,
-			mapId,
-			location
-		)
-	);
+): void {
+	WaiterOrder.getInstance().updateWaiterLocation(waiterId, mapId, location);
 }
 
 function orderOnTheWay(orderId: string): ResponseMsg<void> {

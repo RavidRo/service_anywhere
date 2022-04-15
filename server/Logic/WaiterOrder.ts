@@ -1,10 +1,12 @@
 import {Location, OrderIDO} from 'api';
-import * as WaiterStore from '../Data/WaiterStore';
-import {getItems} from '../Data/ItemStore';
+import * as WaiterStore from '../Data/Stores/WaiterStore';
+import * as OrderStore from '../Data/Stores/OrderStore';
+
+import {getItems} from '../Data/Stores/ItemStore';
 import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
 import {IOrder} from './IOrder';
 import {OrderNotifier} from './OrderNotifier';
-import {Waiter} from './Waiter';
+import {Waiter} from '../Data/entities/Domain/Waiter';
 
 export class WaiterOrder {
 	private static instance: WaiterOrder;
@@ -15,40 +17,30 @@ export class WaiterOrder {
 		return this.instance;
 	}
 
-	waiterToOrders: Map<string, string[]> = new Map();
-	orderToWaiters: Map<string, string[]> = new Map();
+	// waiterToOrders: Map<string, string[]> = new Map();
+	// orderToWaiters: Map<string, string[]> = new Map();
 
 	get waiters(): Promise<Waiter[]> {
 		return WaiterStore.getWaiters();
 	}
 
-	makeAvailable(orderId: string) {
-		let waiters = this.orderToWaiters.get(orderId);
-		waiters?.forEach(async waiterId => {
-			let waiterOrders = this.waiterToOrders
-				.get(waiterId)
-				?.filter(value => value !== orderId);
-			if (waiterOrders !== undefined) {
-				this.waiterToOrders.set(waiterId, waiterOrders);
-				if (waiterOrders !== []) {
-					(await this.waiters)
-						.filter(waiter => waiter.id === waiterId)
-						.forEach(w => (w.available = true));
-				}
-			}
-		});
-		this.orderToWaiters.delete(orderId);
+	makeAvailable(orderID: string): Promise<ResponseMsg<void>> {
+		return OrderStore.removeWaitersFromOrder(orderID);
 	}
 
-	updateWaiterLocation(waiterId: string, mapId: string, location: Location) {
-		let waiterOrders = this.waiterToOrders.get(waiterId);
-		if (waiterOrders) {
-			waiterOrders.forEach(order => {
-				IOrder.delegate(order, o =>
+	async updateWaiterLocation(
+		waiterId: string,
+		mapId: string,
+		location: Location
+	) {
+		const orders = await this.getOrdersByWaiter(waiterId);
+		orders.ifGood(ordersIDs =>
+			ordersIDs.forEach(orderID =>
+				IOrder.delegate(orderID, o =>
 					o.updateWaiterLocation(mapId, location)
-				);
-			});
-		}
+				)
+			)
+		);
 	}
 
 	getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
@@ -70,11 +62,11 @@ export class WaiterOrder {
 	// }
 
 	async assignWaiter(
-		orderIds: string[],
-		waiterId: string
+		orderIDs: string[],
+		waiterID: string
 	): Promise<ResponseMsg<void>> {
 		const waiter = (await this.waiters).find(
-			value => value.id === waiterId
+			value => value.id === waiterID
 		);
 		if (waiter === undefined) {
 			return makeFail('The requested waiter does not exit', 400);
@@ -82,10 +74,12 @@ export class WaiterOrder {
 		if (!waiter.available) {
 			return makeFail('The requested waiter is not available', 400);
 		}
-		const canAssignResponses = orderIds.map(orderId =>
+		const canAssignResponses = orderIDs.map(orderId =>
 			IOrder.delegate(orderId, order => makeGood(order.canAssign()))
 		);
-		return mapResponse(canAssignResponses).ifGood(canAssignToOrders => {
+		const canAssignResponse = mapResponse(canAssignResponses);
+		if (canAssignResponse.isSuccess()) {
+			const canAssignToOrders = canAssignResponse.getData();
 			if (canAssignToOrders.some(can => !can)) {
 				return makeFail(
 					'All orders must be in a ready status to assign waiters to them',
@@ -94,47 +88,22 @@ export class WaiterOrder {
 			}
 
 			// Change the order status
-			orderIds.forEach(orderId =>
-				IOrder.delegate(orderId, order => order.assign(waiterId))
+			orderIDs.forEach(orderId =>
+				IOrder.delegate(orderId, order => order.assign(waiterID))
 			);
 
 			// Saves order <-> waiters assignments
-			const orders = this.waiterToOrders.get(waiterId);
-			if (orders) {
-				orders.push(...orderIds);
-			} else {
-				this.waiterToOrders.set(waiterId, orderIds);
-			}
-
-			orderIds.forEach(orderID => {
-				const waiters = this.orderToWaiters.get(orderID);
-				if (waiters) {
-					waiters.push(waiterId);
-				} else {
-					this.orderToWaiters.set(orderID, [waiterId]);
-				}
-			});
-
-			waiter!.available = false;
-
-			return makeGood();
-		});
+			return await OrderStore.assignWaiter(orderIDs, waiterID);
+		}
+		return makeFail(canAssignResponse.getError());
 	}
 
-	getWaiterByOrder(orderId: string): ResponseMsg<string[]> {
-		const waiters = this.orderToWaiters.get(orderId);
-		if (waiters) {
-			return makeGood(waiters);
-		}
-		return makeGood([]);
+	getWaiterByOrder(orderId: string): Promise<ResponseMsg<string[]>> {
+		return WaiterStore.getWaitersByOrder(orderId);
 	}
 
-	getWaiterOrder(waiterId: string): ResponseMsg<string[]> {
-		const orders = this.waiterToOrders.get(waiterId);
-		if (orders) {
-			return makeGood(orders);
-		}
-		return makeGood([]);
+	getOrdersByWaiter(waiterId: string): Promise<ResponseMsg<string[]>> {
+		return WaiterStore.getOrdersByWaiter(waiterId);
 	}
 
 	async createOrder(
@@ -178,8 +147,8 @@ export class WaiterOrder {
 	}
 
 	// For testings
-	test_deleteAll(): void {
-		this.waiterToOrders.clear();
-		this.orderToWaiters.clear();
-	}
+	// test_deleteAll(): void {
+	// 	this.waiterToOrders.clear();
+	// 	this.orderToWaiters.clear();
+	// }
 }
