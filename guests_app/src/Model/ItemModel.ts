@@ -1,5 +1,5 @@
 //import {makeAutoObservable} from 'mobx';
-import { ItemIDO } from '../signatures';
+import {ItemIDO} from '../signatures';
 import Singleton from '../Singeltone';
 
 export class ItemModel extends Singleton {

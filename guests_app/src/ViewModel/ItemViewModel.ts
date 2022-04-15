@@ -1,6 +1,6 @@
 import {ItemModel} from '../Model/ItemModel';
 import Requests from '../Networking/requests';
-import { ItemIDO } from '../signatures';
+import {ItemIDO} from '../signatures';
 
 export default class ItemsViewModel {
 	private itemsModel;
