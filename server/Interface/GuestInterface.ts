@@ -28,7 +28,7 @@ function getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
 	return WaiterOrder.getInstance().getGuestOrder(guestId);
 }
 
-function submitReview(orderId: string, details: string, rating: number): void {
+function submitReview(orderId: string, details: string, rating: number): ResponseMsg<void> {
 	orderId;
 	details;
 	rating;
