@@ -5,10 +5,10 @@ import {
 	BaseEntity,
 	OneToMany,
 } from 'typeorm';
-import {Order} from './Order';
+import {OrderDAO} from './OrderDAO';
 
 @Entity()
-export class Guest extends BaseEntity {
+export class GuestDAO extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: string;
 
@@ -18,6 +18,6 @@ export class Guest extends BaseEntity {
 	@Column()
 	name: string;
 
-	@OneToMany(() => Order, order => order.guest)
-	orders: Order[];
+	@OneToMany(() => OrderDAO, order => order.guest)
+	orders: OrderDAO[];
 }

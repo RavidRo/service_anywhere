@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 
 import {DataSource} from 'typeorm';
-import {Guest} from './entities/Domain/Guest';
-import {Item} from './entities/Domain/Item';
-import {Order} from './entities/Domain/Order';
-import {OrderToItem} from './entities/Domain/OrderToItem';
-import {Review} from './entities/Domain/Review';
-import {Waiter} from './entities/Domain/Waiter';
+import {GuestDAO} from './entities/Domain/GuestDAO';
+import {ItemDAO} from './entities/Domain/ItemDAO';
+import {OrderDAO} from './entities/Domain/OrderDAO';
+import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
+import {ReviewDAO} from './entities/Domain/ReviewDAO';
+import {WaiterDAO} from './entities/Domain/WaiterDAO';
 
 export const AppDataSource = new DataSource({
 	type: 'sqlite',
@@ -17,7 +17,14 @@ export const AppDataSource = new DataSource({
 	database: 'test.db',
 	synchronize: true,
 	logging: false,
-	entities: [Guest, Item, Order, Review, Waiter, OrderToItem],
+	entities: [
+		GuestDAO,
+		ItemDAO,
+		OrderDAO,
+		ReviewDAO,
+		WaiterDAO,
+		OrderToItemDAO,
+	],
 	migrations: [],
 	subscribers: [],
 	// cli: {},

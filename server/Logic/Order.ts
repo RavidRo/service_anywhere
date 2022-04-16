@@ -1,5 +1,6 @@
 import {OrderStatus, Location, OrderIDO} from 'api';
-import {v4 as uuidv4} from 'uuid';
+import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
+import * as OrderStore from '../Data/Stores/OrderStore';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 import {IOrder} from './IOrder';
 
@@ -13,107 +14,109 @@ class Review {
 	}
 }
 
-export class Order extends IOrder {
-	private readonly id: string;
-	private readonly guestId: string;
-	private readonly items: Map<string, number>;
-	private readonly creationTime: Date;
-	private status: OrderStatus;
-	private review: Review;
-	private terminationTime: Date;
+export class Order implements IOrder {
+	private orderDAO: OrderDAO;
 
-	override getID(): string {
-		return this.id;
-	}
-	override getGuestId(): string {
-		return this.guestId;
+	private constructor(orderDAO: OrderDAO) {
+		this.orderDAO = orderDAO;
 	}
 
-	static override createOrder(
-		id: string,
+	static async createNewOrder(
+		guestID: string,
 		items: Map<string, number>
-	): IOrder {
-		let order = new Order(id, items);
-		IOrder.orderList.push(order);
-		return order;
+	): Promise<ResponseMsg<IOrder>> {
+		const orderResponse = await OrderStore.saveOrder(guestID, items);
+		return orderResponse.ifGood(order => this.createOrder(order));
 	}
 
-	private constructor(id: string, items: Map<string, number>) {
-		super();
-		this.items = items;
-		this.status = 'received';
-		this.id = uuidv4();
-		this.guestId = id;
-		this.creationTime = new Date();
+	static createOrder(orderDAO: OrderDAO): IOrder {
+		return new Order(orderDAO);
 	}
 
-	override giveFeedback(_review: string, _score: number): boolean {
-		throw new Error('Method not implemented');
+	getID(): string {
+		return this.orderDAO.id;
 	}
 
-	override updateGuestLocation(
-		_mapId: string,
-		_location: Location
-	): ResponseMsg<void> {
-		return makeGood();
+	getGuestId(): string {
+		return this.orderDAO.guest.id;
 	}
 
-	override updateWaiterLocation(
-		_mapId: string,
-		_location: Location
-	): ResponseMsg<void> {
-		return makeGood();
-	}
-
-	override orderArrived(): ResponseMsg<void> {
-		this.status = 'delivered';
-		this.terminationTime = new Date();
-		return makeGood();
-	}
-
-	override getDetails(): OrderIDO {
+	getDetails(): OrderIDO {
+		const items: [string, number][] = this.orderDAO.orderToItems.map(
+			orderToItem => [orderToItem.item.id, orderToItem.quantity]
+		);
 		return {
-			id: this.id,
-			guestId: this.guestId,
-			items: this.items,
-			status: this.status,
-			creationTime: this.creationTime,
-			terminationTime: this.terminationTime,
+			id: this.orderDAO.id,
+			guestId: this.orderDAO.guest.id,
+			items: new Map(items),
+			status: this.orderDAO.status,
+			creationTime: new Date(this.orderDAO.creationTime),
+			completionTime: this.orderDAO.completionTime
+				? new Date(this.orderDAO.completionTime)
+				: undefined,
 		};
 	}
 
-	override cancelOrder(): ResponseMsg<void> {
-		this.status = 'canceled';
-		this.terminationTime = new Date();
-		return makeGood();
-	}
-
-	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
-		this.status = status;
-		if (status === 'canceled' || status === 'delivered') {
-			this.terminationTime = new Date();
-		}
-		return makeGood();
-	}
-
-	override isActive(): boolean {
-		return !['canceled', 'delivered'].includes(this.status);
+	isActive(): boolean {
+		return !['canceled', 'delivered'].includes(this.orderDAO.status);
 	}
 
 	canAssign(): boolean {
 		return ['ready to deliver', 'assigned', 'on the way'].includes(
-			this.status
+			this.orderDAO.status
 		);
 	}
 
-	assign(_waiterId: string): ResponseMsg<void> {
+	updateGuestLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<void> {
+		return makeGood();
+	}
+
+	updateWaiterLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<void> {
+		return makeGood();
+	}
+
+	async orderArrived(): Promise<ResponseMsg<void>> {
+		this.orderDAO.status = 'delivered';
+		this.orderDAO.completionTime = Date.now();
+		await this.orderDAO.save();
+		return makeGood();
+	}
+
+	async cancelOrder(): Promise<ResponseMsg<void>> {
+		this.orderDAO.status = 'canceled';
+		this.orderDAO.completionTime = Date.now();
+		await this.orderDAO.save();
+		return makeGood();
+	}
+
+	async changeOrderStatus(status: OrderStatus): Promise<ResponseMsg<void>> {
+		this.orderDAO.status = status;
+		if (status === 'canceled' || status === 'delivered') {
+			this.orderDAO.completionTime = Date.now();
+		}
+		await this.orderDAO.save();
+		return makeGood();
+	}
+
+	async assign(_waiterId: string): Promise<ResponseMsg<void>> {
 		if (!this.canAssign()) {
 			return makeFail(
 				'Can only assign waiters to orders that are ready to deliver',
 				400
 			);
 		}
-		this.status = 'assigned';
+		this.orderDAO.status = 'assigned';
+		await this.orderDAO.save();
 		return makeGood();
+	}
+
+	giveFeedback(_review: string, _score: number): boolean {
+		throw new Error('Method not implemented');
 	}
 }

@@ -112,8 +112,8 @@ app.get('/getGuestOrder', (req, res) => {
 		req.headers.authorization,
 		1,
 		(msg: string) => res.send(msg),
-		(id: string) => {
-			let response = guest.getGuestOrder(id);
+		async (id: string) => {
+			const response = await guest.getGuestOrder(id);
 			sendResponse(response, res.status, res.send);
 		}
 	);
@@ -162,8 +162,8 @@ app.post('/cancelOrderGuest', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => {
-			let response = guest.cancelOrder(req.body['orderId']);
+		async () => {
+			const response = await guest.cancelOrder(req.body['orderId']);
 			sendResponse(response, res.status, res.send);
 		}
 	);
@@ -192,8 +192,8 @@ app.post('/orderArrived', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => {
-			let response = waiter.orderArrived(req.body['orderId']);
+		async () => {
+			const response = await waiter.orderArrived(req.body['orderId']);
 			sendResponse(response, res.status, res.send);
 		}
 	);
@@ -204,8 +204,8 @@ app.post('/orderOnTheWay', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => {
-			let response = waiter.orderOnTheWay(req.body['orderId']);
+		async () => {
+			const response = await waiter.orderOnTheWay(req.body['orderId']);
 			sendResponse(response, res.status, res.send); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
 		}
 	);
@@ -283,8 +283,9 @@ app.post('/assignWaiter', (req, res) => {
 });
 
 app.get('/getOrders', (_req, res) => {
-	let response = dashboard.getOrders();
-	sendResponse(response, res.status, res.send);
+	dashboard.getAllOrders().then(response => {
+		sendResponse(response, res.status, res.send);
+	});
 });
 
 app.get('/getWaiters', (_req, res) => {
@@ -312,8 +313,10 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => {
-			const response = dashboard.cancelOrderAdmin(req.body['orderId']);
+		async () => {
+			const response = await dashboard.cancelOrderAdmin(
+				req.body['orderId']
+			);
 			sendResponse(response, res.status, res.send);
 		}
 	);
@@ -324,8 +327,8 @@ app.post('/changeOrderStatus', (req, res) => {
 		['orderId', 'newStatus'],
 		req.body,
 		(msg: string) => res.send(msg),
-		() => {
-			let response = dashboard.changeOrderStatus(
+		async () => {
+			const response = await dashboard.changeOrderStatus(
 				req.body['orderId'],
 				req.body['newStatus']
 			);

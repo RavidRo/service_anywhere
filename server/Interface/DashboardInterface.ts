@@ -1,69 +1,63 @@
-import {OrderStatus} from '../../api';
+import {OrderIDO, OrderStatus} from '../../api';
 
-import {makeFail, makeGood, ResponseMsg} from '../Response';
+import {makeGood, ResponseMsg} from '../Response';
 
-import {IOrder} from '../Logic/IOrder';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import {onOrder, IOrder, getOrders} from '../Logic/IOrder';
+import WaiterOrder from '../Logic/WaiterOrder';
 
 const statusOk = 200;
 const statusNotFound = 404;
 
-function getOrders(): ResponseMsg<IOrder[]> {
-	return makeGood(IOrder.orderList);
+async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
+	return makeGood((await getOrders()).map(order => order.getDetails()));
 }
 
 function assignWaiter(
 	orderIds: string[],
 	waiterID: string
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.getInstance().assignWaiter(orderIds, waiterID);
+	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
 async function getWaiters(): Promise<ResponseMsg<string[]>> {
 	return makeGood(
-		(await WaiterOrder.getInstance().waiters).map(waiter => waiter.id)
+		(await WaiterOrder.getAllWaiters()).map(waiter => waiter.id)
 	);
 }
 
 async function getWaiterByOrder(
 	orderID: string
 ): Promise<ResponseMsg<string[]>> {
-	const orderExists = IOrder.orderList.some(
-		order => order.getID() === orderID
-	);
-	if (!orderExists) {
-		return makeFail('Requested error does not exist', statusNotFound);
-	}
-	return await WaiterOrder.getInstance().getWaiterByOrder(orderID);
+	return await WaiterOrder.getWaiterByOrder(orderID);
 }
 
-function cancelOrderAdmin(orderId: string): ResponseMsg<void> {
-	let response = IOrder.delegate(orderId, order => {
+async function cancelOrderAdmin(orderId: string): Promise<ResponseMsg<void>> {
+	const response = await onOrder(orderId, order => {
 		order.cancelOrder();
 		return makeGood();
 	});
 	if (response.isSuccess()) {
-		WaiterOrder.getInstance().makeAvailable(orderId);
+		WaiterOrder.makeAvailable(orderId);
 	}
 	return response;
 }
 
-function changeOrderStatus(
-	orderId: string,
+async function changeOrderStatus(
+	orderID: string,
 	newStatus: OrderStatus
-): ResponseMsg<void> {
-	const response = IOrder.delegate(orderId, order => {
+): Promise<ResponseMsg<void>> {
+	const response = await onOrder(orderID, order => {
 		return order.changeOrderStatus(newStatus);
 	});
 	const assignableStatuses: OrderStatus[] = ['assigned', 'on the way'];
 	if (response.isSuccess() && !assignableStatuses.includes(newStatus)) {
-		WaiterOrder.getInstance().makeAvailable(orderId);
+		WaiterOrder.makeAvailable(orderID);
 	}
 	return response;
 }
 
 export default {
-	getOrders,
+	getAllOrders,
 	assignWaiter,
 	getWaiters,
 	getWaiterByOrder,

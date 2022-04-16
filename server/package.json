@@ -7,7 +7,7 @@
 		"tsc": "tsc",
 		"start": "ts-node Network/RequestHandler.ts",
 		"db": "ts-node Data/index.ts",
-		"test": "jest"
+		"test": "jest --runInBand"
 	},
 	"keywords": [],
 	"author": "",

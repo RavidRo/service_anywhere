@@ -5,10 +5,10 @@ import {
 	BaseEntity,
 	OneToMany,
 } from 'typeorm';
-import {OrderToItem} from './OrderToItem';
+import {OrderToItemDAO} from './OrderToItemDAO';
 
 @Entity()
-export class Item extends BaseEntity {
+export class ItemDAO extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: string;
 
@@ -21,6 +21,6 @@ export class Item extends BaseEntity {
 	@Column()
 	preparationTime: number;
 
-	@OneToMany(() => OrderToItem, orderToItems => orderToItems.item)
-	orderToItems: OrderToItem[];
+	@OneToMany(() => OrderToItemDAO, orderToItems => orderToItems.item)
+	orderToItems: OrderToItemDAO[];
 }

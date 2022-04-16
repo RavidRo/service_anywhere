@@ -7,19 +7,19 @@ import {
 	JoinTable,
 	ManyToMany,
 } from 'typeorm';
-import {Order} from './Order';
+import {OrderDAO} from './OrderDAO';
 
 @Entity()
-export class Waiter extends BaseEntity {
+export class WaiterDAO extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: string;
 
 	@Column()
 	name: string;
 
-	@ManyToMany(() => Order, order => order.waiters)
+	@ManyToMany(() => OrderDAO, order => order.waiters)
 	@JoinTable()
-	orders: Order[];
+	orders: OrderDAO[];
 
 	get available(): boolean {
 		return this.orders.length === 0;

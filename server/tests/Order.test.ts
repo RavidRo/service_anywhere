@@ -1,72 +1,94 @@
-import {Order} from '../Logic/Order';
-import {IOrder} from 'server/Logic/IOrder';
+import {onOrder, IOrder} from '../Logic/IOrder';
+import reset_all from '../Data/test_ResetDatabase';
+import {AppDataSource} from '../Data/data-source';
 
-let firstOrder: IOrder;
-const guestId = 'guestId';
-let beforeCreation: Date;
-const orderItems = new Map<string, number>([
-	['bamba', 1],
-	['beer', 2],
-]);
-let afterCreation: Date;
+import DashboardInterface from '../Interface/DashboardInterface';
+import GuestInterface from '../Interface/GuestInterface';
+import ItemsInterface from '../Interface/ItemsInterface';
+import {getGuests} from '../Data/Stores/GuestStore';
+import {makeGood} from '../Response';
 
-beforeAll(() => {
-	beforeCreation = new Date();
-	firstOrder = Order.createOrder(guestId, orderItems);
-	afterCreation = new Date();
+const createOrder = async ({index = 0, advance = true} = {}) => {
+	const guests = await getGuests();
+	const guestID = guests[index].id;
+	const itemsList = await ItemsInterface.getItems();
+	const items = new Map([[itemsList[0].id, 5]]);
+
+	const createOrderResponse = await GuestInterface.createOrder(
+		guestID,
+		items
+	);
+	const orderID = createOrderResponse.getData();
+	if (advance) {
+		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+	}
+
+	return {orderID, guestID, items};
+};
+
+beforeAll(async () => {
+	await AppDataSource.initialize();
 });
 
-test('createOrder should return an order with matching guest ID', () => {
-	expect(firstOrder).toBeTruthy();
-	expect(typeof firstOrder.getGuestId()).toBe('string');
-	expect(firstOrder.getGuestId()).toBe(guestId);
-	expect(typeof firstOrder.getDetails().guestId).toBe('string');
-	expect(firstOrder.getDetails().guestId).toBe(guestId);
+beforeEach(async () => {
+	await reset_all();
 });
 
-test('createOrder should return an order with matching items', () => {
-	expect(firstOrder.getDetails().items).toBe(orderItems);
+test("Creating an order with a none existent guest' id returns a failure", async () => {
+	const itemsList = await ItemsInterface.getItems();
+	const items = new Map([[itemsList[0].id, 5]]);
+
+	const createOrderResponse = await GuestInterface.createOrder(
+		'guestID',
+		items
+	);
+	expect(createOrderResponse.isSuccess()).toBeFalsy();
 });
 
-test('createOrder should return an order with a reasonable creation time', () => {
-	expect(
-		firstOrder.getDetails().creationTime.getTime()
-	).toBeGreaterThanOrEqual(beforeCreation.getTime());
-	expect(firstOrder.getDetails().creationTime.getTime()).toBeLessThanOrEqual(
+test('createOrder should return an order with matching guest ID', async () => {
+	const {guestID} = await createOrder();
+	// const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	// expect(order.guestId).toBe(guestID);
+	expect(true).toBeTruthy();
+});
+
+test('createOrder should return an order with matching items', async () => {
+	const {guestID, items: orderItems} = await createOrder();
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	expect(order.items).toEqual(orderItems);
+});
+
+test('createOrder should return an order with a reasonable creation time', async () => {
+	const beforeCreation = new Date().getTime();
+	const {guestID} = await createOrder();
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	const afterCreation = new Date();
+	expect(order.creationTime.getTime()).toBeGreaterThanOrEqual(beforeCreation);
+	expect(order.creationTime.getTime()).toBeLessThanOrEqual(
 		afterCreation.getTime()
 	);
 });
 
-test('createOrder should return an order with a status of "received"', () => {
-	expect(firstOrder.getDetails().status).toBe('received');
+test('createOrder should return an order with a status of "received"', async () => {
+	const {guestID} = await createOrder({advance: false});
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	expect(order.status).toBe('received');
 });
 
-test("getId should return the order's id", () => {
-	expect(firstOrder.getID()).toBe(firstOrder.getDetails().id);
+test("getId should return the order's id", async () => {
+	const {orderID, guestID} = await createOrder();
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	expect(order.id).toBe(orderID);
 });
 
-test('createOrder should create unique order Ids', () => {
-	expect(Order.createOrder('newGuest', orderItems).getID()).not.toBe(
-		firstOrder.getID()
-	);
+test('createOrder should create unique order Ids', async () => {
+	const {orderID: orderID1} = await createOrder({index: 0});
+	const {orderID: orderID2} = await createOrder({index: 1});
+	expect(orderID1).not.toBe(orderID2);
 });
 
-test('order arrival test', () => {
-	Order.delegate(firstOrder.getID(), (o: IOrder) => {
-		return o.orderArrived();
-	});
-	expect(firstOrder.getDetails().status).toBe('delivered');
-});
-
-test('delegate with a nonexistant orderId should fail', () => {
+test('delegate with a none existent orderId should fail', async () => {
 	expect(
-		Order.delegate('', (o: IOrder) => {
-			return o.assign('');
-		}).isSuccess()
-	).toBe(false);
-});
-
-test('cancelOrder should make the status "canceled"', () => {
-	firstOrder.cancelOrder();
-	expect(firstOrder.getDetails().status).toBe('canceled');
+		(await onOrder('', (_o: IOrder) => makeGood())).isSuccess()
+	).toBeFalsy();
 });

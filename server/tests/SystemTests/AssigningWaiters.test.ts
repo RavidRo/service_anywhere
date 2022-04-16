@@ -1,23 +1,22 @@
+import {getGuests} from '../../Data/Stores/GuestStore';
+import {AppDataSource} from '../../Data/data-source';
+import reset_all from '../../Data/test_ResetDatabase';
 import DashboardInterface from '../../Interface/DashboardInterface';
 import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
-import {IOrder} from '../../Logic/IOrder';
-import {WaiterOrder} from '../../Logic/WaiterOrder';
-// import {test_resetWaiters} from '../../Data/Stores/WaiterStore';
-// import {test_resetItems} from '../../Data/Stores/ItemStore';
 
-const waiterOrder = WaiterOrder.getInstance();
-
-beforeEach(() => {
-	// IOrder.test_deleteAllOrders();
-	// waiterOrder.test_deleteAll();
-	// test_resetWaiters();
-	// test_resetItems();
+beforeAll(async () => {
+	await AppDataSource.initialize();
 });
 
-const createOrder = async (unique: string = '') => {
+beforeEach(async () => {
+	await reset_all();
+});
+
+const createOrder = async ({index = 0, advance = true} = {}) => {
+	const guests = await getGuests();
+	const guestID = guests[index].id;
 	const itemsList = await ItemsInterface.getItems();
-	const guestID = 'random id' + unique;
 	const items = new Map([[itemsList[0].id, 5]]);
 
 	const createOrderResponse = await GuestInterface.createOrder(
@@ -25,9 +24,11 @@ const createOrder = async (unique: string = '') => {
 		items
 	);
 	const orderID = createOrderResponse.getData();
-	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+	if (advance) {
+		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+	}
 
-	return {orderID, guestID};
+	return {orderID, guestID, items};
 };
 
 test('Assigns a free waiter successfully', async () => {
@@ -44,14 +45,14 @@ test("Order's status is changed when first assigned", async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID, guestID} = await createOrder();
 	await DashboardInterface.assignWaiter([orderID], waitersIDs.getData()[0]);
-	const orderResponse = GuestInterface.getGuestOrder(guestID);
+	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 	expect(orderResponse.getData().status).toBe('assigned');
 });
 
 test('Assigning a busy waiter to an order results with a failure', async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
-	const {orderID: orderID1} = await createOrder('1');
-	const {orderID: orderID2} = await createOrder('2');
+	const {orderID: orderID1} = await createOrder({index: 0});
+	const {orderID: orderID2} = await createOrder({index: 1});
 
 	await DashboardInterface.assignWaiter([orderID1], waitersIDs.getData()[0]);
 
@@ -65,8 +66,8 @@ test('Assigning a busy waiter to an order results with a failure', async () => {
 
 test('Getting the assigned waiters successfully', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
-	const {orderID: orderID1} = await createOrder('0');
-	const {orderID: orderID2} = await createOrder('1');
+	const {orderID: orderID1} = await createOrder({index: 0});
+	const {orderID: orderID2} = await createOrder({index: 1});
 
 	await DashboardInterface.assignWaiter([orderID1, orderID2], waitersIDs[0]);
 	await DashboardInterface.assignWaiter([orderID2], waitersIDs[1]);
