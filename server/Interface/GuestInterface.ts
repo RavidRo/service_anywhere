@@ -28,7 +28,7 @@ async function getGuestOrder(guestId: string): Promise<ResponseMsg<OrderIDO>> {
 	return await getGuestActiveOrder(guestId);
 }
 
-function submitReview(orderId: string, details: string, rating: number): void {
+function submitReview(orderId: string, details: string, rating: number): ResponseMsg<void> {
 	orderId;
 	details;
 	rating;
