@@ -1,7 +1,7 @@
 import Requests from 'guests_app/src/Networking/requests';
 import Location, {Order, OrderID} from 'guests_app/src/types';
 import {OrderModel} from '../Model/OrderModel';
-import { OrderStatus } from '../signatures';
+import {OrderStatus} from '../signatures';
 
 export default class OrderViewModel {
 	private order_model;
@@ -14,10 +14,17 @@ export default class OrderViewModel {
 	}
 
 	getOrderFromServer() {
-		this.requests.getGuestOrder()
-		.then(order => 
-				this.order_model.order = {id:order.id, items:order.items, status:order.status})
-		.catch(() => this.removeOrder());
+		this.requests
+			.getGuestOrder()
+			.then(
+				order =>
+					(this.order_model.order = {
+						id: order.id,
+						items: order.items,
+						status: order.status,
+					})
+			)
+			.catch(() => this.removeOrder());
 	}
 
 	createOrder(items: Map<string, Number>): Promise<Order> {

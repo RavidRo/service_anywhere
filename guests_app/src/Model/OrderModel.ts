@@ -1,5 +1,5 @@
 //import {makeAutoObservable} from 'mobx';
-import { OrderStatus } from '../signatures';
+import {OrderStatus} from '../signatures';
 import Singleton from '../Singeltone';
 import Location, {Order, OrderID, Waiter} from '../types';
 

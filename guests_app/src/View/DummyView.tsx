@@ -16,7 +16,7 @@ type MainPageViewProps = {
 	orderStatus: string;
 };
 
-export const DummyPage =(props: MainPageViewProps) => {
+export const DummyPage = (props: MainPageViewProps) => {
 	if (props.hasActiveOrder) {
 		return (
 			<View>
@@ -29,11 +29,11 @@ export const DummyPage =(props: MainPageViewProps) => {
 				<ActivityIndicator size='large' color='#00ff00' />
 
 				<Button
-				title='Cancel Order'
-				onPress={() => {
-					props.cancelOrder();
-				}}
-		/>
+					title='Cancel Order'
+					onPress={() => {
+						props.cancelOrder();
+					}}
+				/>
 			</View>
 		);
 	}

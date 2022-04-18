@@ -8,12 +8,11 @@
  * @format
  */
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {DummyPage} from './src/View/DummyView';
 import ConnectController from './src/ViewController/ConnectController';
 
 const App = () => {
-
 	// return <ConnectController />;
 
 	const [status, setStatus] = useState('');
@@ -21,15 +20,13 @@ const App = () => {
 	const [orderID, setOrderID] = useState('');
 	return (
 		<DummyPage
-			SendOrderToServer={() =>
-				{
-					sethasActiveOrder(true);
-					setStatus('order recieved');
-					setOrderID('123456');
-					console.log("sent order");
-				}
-			}
-			cancelOrder = {() => sethasActiveOrder(false)}
+			SendOrderToServer={() => {
+				sethasActiveOrder(true);
+				setStatus('order recieved');
+				setOrderID('123456');
+				console.log('sent order');
+			}}
+			cancelOrder={() => sethasActiveOrder(false)}
 			hasActiveOrder={hasActiveOrder}
 			orderID={orderID}
 			orderStatus={status}></DummyPage>

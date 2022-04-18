@@ -114,7 +114,9 @@ describe('cancel order tests', () => {
 		mockGetGuestOrder.mockClear();
 		mockCreateOrder.mockClear();
 		mockCancelOrderGuest.mockClear();
-		mockGetGuestOrder.mockImplementation(() => new Promise((resolve,reject)=> reject()));
+		mockGetGuestOrder.mockImplementation(
+			() => new Promise((resolve, reject) => reject())
+		);
 		mockCancelOrderGuest.mockImplementation(() => mockMakePromise(true));
 	});
 
@@ -156,10 +158,14 @@ describe('update order status tests', () => {
 		const orderViewModel = new OrderViewModel(requests);
 		await flushPromises();
 		orderViewModel.updateOrderStatus(orderAtServer.id, 'in preparation');
-		expect(orderViewModel.getOrder()?.status === 'in preparation').toBeTruthy();
+		expect(
+			orderViewModel.getOrder()?.status === 'in preparation'
+		).toBeTruthy();
 	});
 	it('update status is ignored when order doesnt exists', async () => {
-		mockGetGuestOrder.mockImplementation(() => new Promise((resolve,reject)=> reject()));
+		mockGetGuestOrder.mockImplementation(
+			() => new Promise((resolve, reject) => reject())
+		);
 		const requests = new Requests();
 		const orderViewModel = new OrderViewModel(requests);
 		await flushPromises();
@@ -189,7 +195,9 @@ describe('submit review tests', () => {
 		expect(is_success).toBeTruthy();
 	});
 	it('submit review fail when order doesnt exists', async () => {
-		mockGetGuestOrder.mockImplementation(() => new Promise((resolve,reject)=> reject()));
+		mockGetGuestOrder.mockImplementation(
+			() => new Promise((resolve, reject) => reject())
+		);
 		const requests = new Requests();
 		const orderViewModel = new OrderViewModel(requests);
 		await flushPromises();
@@ -218,4 +226,3 @@ describe('submit review tests', () => {
 /**
  @todo: add waiters lcoations tests
 **/
-

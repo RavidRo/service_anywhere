@@ -1,4 +1,4 @@
-import { OrderStatus } from "./signatures";
+import {OrderStatus} from './signatures';
 
 export default class Location {
 	public readonly x: number;
