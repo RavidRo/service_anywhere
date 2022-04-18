@@ -1,6 +1,3 @@
-import {OrderIDO} from '../ido';
-import {Item, OrderID} from '../types';
-
 // const service = new Gps();
 // const corners = {
 // 	topRightGPS: new Location(34.802516, 31.26355),
@@ -43,31 +40,33 @@ import {Item, OrderID} from '../types';
 // 		err => console.log('get location eror - ' + err)
 // 	);
 // }
-
+import {GuestAPI, ItemIDO, OrderIDO, OrderID} from './../signatures';
 import RequestsHandler from './RequestsHandler';
 
-export default class Requests {
+export default class Requests implements GuestAPI {
 	private handler: RequestsHandler;
 	private token: string;
 
 	constructor() {
 		this.handler = new RequestsHandler();
 	}
+
+	cancelOrderGuest: (orderId: string) => Promise<Boolean>;
 	setToken(token: string) {
 		this.token = token;
 	}
 
-	login(phone_number: string): Promise<string> {
-		return this.handler.post<string>('guestLogin', '', {
-			phone_number,
+	login(password: string): Promise<string> {
+		return this.handler.post<string>('login', '', {
+			password,
 		});
 	}
-	getItems(): Promise<Item[]> {
-		return this.handler.get<Item[]>('getItems', this.token, {});
+	getItemsGuest(): Promise<ItemIDO[]> {
+		return this.handler.get<ItemIDO[]>('getItemsGuest', this.token, {});
 	}
 
-	getMyOrders(): Promise<OrderIDO[]> {
-		return this.handler.get<OrderIDO[]>('getGuestOrders', this.token, {});
+	getGuestOrder(): Promise<OrderIDO> {
+		return this.handler.get<OrderIDO>('getGuestOrders', this.token, {});
 	}
 	createOrder(order_items: Map<string, Number>): Promise<OrderID> {
 		return this.handler.post<OrderID>('createOrder', this.token, {
@@ -97,21 +96,3 @@ export default class Requests {
 	{
 		return this.handler.get<Map[]>('getMaps',this.token,{})
 	} */
-
-// updateLocationGuest(location: Location, orderID: OrderID): Promise<void> {
-// 	return this.handler.post<void>('updateLocationGuest', this.token, {
-// 		location: {x: location.x, y: location.y},
-// 		orderID,
-// 	});
-// }
-
-// export function hasOrderArrived(orderID: String) {
-// 	const url = `${server_adress}/hasOrderArrived`;
-// 	return axios({
-// 		method: 'get',
-// 		url: url,
-// 		params: {
-// 			orderID: orderID,
-// 		},
-// 	});
-// }

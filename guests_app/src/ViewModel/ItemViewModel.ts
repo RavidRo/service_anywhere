@@ -1,6 +1,6 @@
 import {ItemModel} from '../Model/ItemModel';
 import Requests from '../Networking/requests';
-import {Item} from '../types';
+import {ItemIDO} from '../signatures';
 
 export default class ItemsViewModel {
 	private itemsModel;
@@ -11,7 +11,7 @@ export default class ItemsViewModel {
 		this.itemsModel = new ItemModel();
 	}
 
-	get items(): Item[] {
+	get items(): ItemIDO[] {
 		return this.itemsModel.items;
 	}
 
@@ -19,7 +19,7 @@ export default class ItemsViewModel {
    @todo: Need to add the process of making the Item[] objects from the server's response data ?
 	**/
 	syncItems(): Promise<void> {
-		return this.requests.getItems().then(items => {
+		return this.requests.getItemsGuest().then(items => {
 			this.itemsModel.items = items;
 		});
 	}
