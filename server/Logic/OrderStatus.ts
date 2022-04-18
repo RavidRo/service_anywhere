@@ -58,7 +58,6 @@ class Received extends OrderStatus {
 	needsAssignedWaiters() {
 		return false;
 	}
-
 	needsChangePrivileges(): boolean {
 		return false;
 	}
