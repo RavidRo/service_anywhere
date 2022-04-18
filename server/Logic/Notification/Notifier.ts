@@ -36,4 +36,8 @@ export class Notifier {
 		if (this.subscribers[id] === undefined) this.subscribers[id] = [];
 		this.subscribers[id].push(emit);
 	}
+
+	public clearSubscribers(): void{
+		this.subscribers = {};
+	}
 }
