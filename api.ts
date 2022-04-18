@@ -80,6 +80,7 @@ interface WaiterCommunication {
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;
 	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
+    assignedToOrder(order: OrderIDO) :void;
 }
 
 interface DashboardAPI {
