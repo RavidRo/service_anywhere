@@ -1,29 +1,17 @@
-import {Location} from '../../api';
+import {Location, OrderIDO} from '../../api';
 
-import {makeGood, ResponseMsg} from '../Response';
+import {ResponseMsg} from '../Response';
 
-import {onOrder, IOrder, getOrders} from '../Logic/IOrder';
 import WaiterOrder from '../Logic/WaiterOrder';
 
-async function getWaiterOrders(
+async function getOrdersByWaiter(
 	waiterID: string
-): Promise<ResponseMsg<IOrder[]>> {
-	const ordersResponse = await WaiterOrder.getOrdersByWaiter(waiterID);
-
-	if (ordersResponse.isSuccess()) {
-		const ordersIDs = ordersResponse.getData();
-		return makeGood(await getOrders(ordersIDs));
-	}
-	return ordersResponse as any as ResponseMsg<IOrder[]>;
+): Promise<ResponseMsg<OrderIDO[]>> {
+	return await WaiterOrder.getOrdersByWaiter(waiterID);
 }
 
 async function orderArrived(orderId: string): Promise<ResponseMsg<void>> {
-	const response = await onOrder(orderId, (order: IOrder) => {
-		return order.orderArrived();
-	});
-	return response.ifGood(() => {
-		WaiterOrder.makeAvailable(orderId);
-	});
+	return WaiterOrder.changeOrderStatus(orderId, 'delivered');
 }
 
 function updateLocationWaiter(
@@ -35,15 +23,12 @@ function updateLocationWaiter(
 }
 
 async function orderOnTheWay(orderId: string): Promise<ResponseMsg<void>> {
-	return await onOrder(orderId, order => {
-		return order.changeOrderStatus('on the way');
-	});
+	return WaiterOrder.changeOrderStatus(orderId, 'on the way');
 }
 
 export default {
-	getWaiterOrders,
+	getWaiterOrders: getOrdersByWaiter,
 	orderArrived,
-	// connectWaiter,
 	updateLocationWaiter,
 	orderOnTheWay,
 };

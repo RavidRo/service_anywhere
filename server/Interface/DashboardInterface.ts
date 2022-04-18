@@ -2,11 +2,8 @@ import {OrderIDO, OrderStatus} from '../../api';
 
 import {makeGood, ResponseMsg} from '../Response';
 
-import {onOrder, IOrder, getOrders} from '../Logic/IOrder';
+import {onOrder, getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
-
-const statusOk = 200;
-const statusNotFound = 404;
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
@@ -31,29 +28,15 @@ async function getWaiterByOrder(
 	return await WaiterOrder.getWaiterByOrder(orderID);
 }
 
-async function cancelOrderAdmin(orderId: string): Promise<ResponseMsg<void>> {
-	const response = await onOrder(orderId, order => {
-		order.cancelOrder();
-		return makeGood();
-	});
-	if (response.isSuccess()) {
-		WaiterOrder.makeAvailable(orderId);
-	}
-	return response;
+async function cancelOrderAdmin(orderID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled');
 }
 
 async function changeOrderStatus(
 	orderID: string,
 	newStatus: OrderStatus
 ): Promise<ResponseMsg<void>> {
-	const response = await onOrder(orderID, order => {
-		return order.changeOrderStatus(newStatus);
-	});
-	const assignableStatuses: OrderStatus[] = ['assigned', 'on the way'];
-	if (response.isSuccess() && !assignableStatuses.includes(newStatus)) {
-		WaiterOrder.makeAvailable(orderID);
-	}
-	return response;
+	return WaiterOrder.changeOrderStatus(orderID, newStatus);
 }
 
 export default {

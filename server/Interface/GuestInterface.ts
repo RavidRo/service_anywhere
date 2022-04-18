@@ -2,7 +2,9 @@ import {Location, OrderIDO} from '../../api';
 
 import {ResponseMsg} from '../Response';
 
-import {onOrder, IOrder, getGuestActiveOrder} from '../Logic/IOrder';
+import {IOrder} from '../Logic/IOrder';
+import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
+
 import WaiterOrder from '../Logic/WaiterOrder';
 
 function createOrder(
@@ -12,15 +14,17 @@ function createOrder(
 	return WaiterOrder.createOrder(guestId, items);
 }
 
-async function updateLocationGuest(
+function updateLocationGuest(
 	guestId: string,
 	mapId: string,
 	location: Location
-): Promise<ResponseMsg<void>> {
-	return (await getGuestOrder(guestId)).ifGood(order => {
-		onOrder(order.id, (o: IOrder) =>
-			o.updateGuestLocation(mapId, location)
-		);
+): void {
+	getGuestOrder(guestId).then(orderResponse => {
+		orderResponse.ifGood(order => {
+			onOrder(order.id, (o: IOrder) =>
+				o.updateGuestLocation(mapId, location)
+			);
+		});
 	});
 }
 
@@ -28,7 +32,11 @@ async function getGuestOrder(guestId: string): Promise<ResponseMsg<OrderIDO>> {
 	return await getGuestActiveOrder(guestId);
 }
 
-function submitReview(orderId: string, details: string, rating: number): ResponseMsg<void> {
+function submitReview(
+	orderId: string,
+	details: string,
+	rating: number
+): ResponseMsg<void> {
 	orderId;
 	details;
 	rating;
@@ -37,9 +45,10 @@ function submitReview(orderId: string, details: string, rating: number): Respons
 
 async function cancelOrder(orderId: string): Promise<ResponseMsg<void>> {
 	const response = await onOrder(orderId, o => {
-		return o.cancelOrder();
+		return o.changeOrderStatus('canceled', false, false);
 	});
 	return response.ifGood(() => {
+		// TODO: check response
 		WaiterOrder.makeAvailable(orderId);
 	});
 }

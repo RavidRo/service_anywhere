@@ -1,4 +1,6 @@
-import {onOrder, IOrder} from '../Logic/IOrder';
+import {IOrder} from '../Logic/IOrder';
+import {onOrder} from '../Logic/Orders';
+
 import reset_all from '../Data/test_ResetDatabase';
 import {AppDataSource} from '../Data/data-source';
 
@@ -27,6 +29,7 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 };
 
 beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	await AppDataSource.initialize();
 });
 

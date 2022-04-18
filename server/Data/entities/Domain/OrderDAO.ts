@@ -1,4 +1,4 @@
-import {OrderStatus} from 'api';
+import {OrderIDO, OrderStatus} from 'api';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -47,4 +47,21 @@ export class OrderDAO extends BaseEntity {
 	@ManyToMany(() => WaiterDAO, waiter => waiter.orders)
 	@JoinTable()
 	waiters: WaiterDAO[];
+
+	getDetails(): OrderIDO {
+		const items: [string, number][] = this.orderToItems.map(orderToItem => [
+			orderToItem.item.id,
+			orderToItem.quantity,
+		]);
+		return {
+			id: this.id,
+			guestId: this.guest.id,
+			items: new Map(items),
+			status: this.status,
+			creationTime: new Date(this.creationTime),
+			completionTime: this.completionTime
+				? new Date(this.completionTime)
+				: undefined,
+		};
+	}
 }

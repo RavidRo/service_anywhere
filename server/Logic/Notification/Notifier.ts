@@ -11,6 +11,8 @@ export class Notifier {
 
 	private subscribers: Record<string, emitOperation[]> = {};
 
+	private constructor() {}
+
 	/**
 	 * @param id The subscriberID
 	 * @param event The functions that is called when the subscriber is notified

@@ -7,6 +7,7 @@ import ItemsInterface from '../../Interface/ItemsInterface';
 import WaiterInterface from '../../Interface/WaiterInterface';
 
 beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	await AppDataSource.initialize();
 });
 
@@ -64,10 +65,10 @@ test('Forwarding status to assigned without assigning fail', async () => {
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(changeResponse.isSuccess()).toBeFalsy();
-	expect(orderResponse.getData().status).toBe('received');
+	expect(orderResponse.getData().status).toBe('ready to deliver');
 });
 
-test('Assigning a waiter results in failure if order is not ready', async () => {
+test('Assigning a waiter succeeded even if order is not ready', async () => {
 	const {orderID, guestID} = await createOrder();
 	const waiterIds = await DashboardInterface.getWaiters();
 	const changeResponse = await DashboardInterface.assignWaiter(
@@ -76,8 +77,8 @@ test('Assigning a waiter results in failure if order is not ready', async () => 
 	);
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
-	expect(changeResponse.isSuccess()).toBeFalsy();
-	expect(orderResponse.getData().status).toBe('received');
+	expect(changeResponse.isSuccess()).toBeTruthy();
+	expect(orderResponse.getData().status).toBe('assigned');
 });
 
 test("Assigning a waiter results in changes the order's status to assigned", async () => {
@@ -144,9 +145,12 @@ test("Arriving order's status is changed to delivered", async () => {
 	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
 	await WaiterInterface.orderOnTheWay(orderID);
 	await WaiterInterface.orderArrived(orderID);
-	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
-	expect(orderResponse.getData().status).toBe('delivered');
+	const orders = (await DashboardInterface.getAllOrders()).getData();
+	const myOrders = orders.filter(order => order.id === orderID);
+
+	expect(myOrders).toHaveLength(1);
+	expect(myOrders[0].status).toBe('delivered');
 });
 
 test("Order's status can be changed to 'delivered' with out getting assigned first", async () => {
@@ -170,19 +174,6 @@ test("Order's status can be changed to 'on the way' by the dashboard's change st
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(orderResponse.getData().status).toBe('on the way');
-});
-test("Order's status can't be changed by waiters to delivered with out changing the status to 'on the way'", async () => {
-	const {orderID, guestID} = await createOrder();
-	const waiterIds = await DashboardInterface.getWaiters();
-
-	await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
-	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
-	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[1]);
-	const arrivedResponse = await WaiterInterface.orderArrived(orderID);
-	const orderResponse = await GuestInterface.getGuestOrder(guestID);
-
-	expect(arrivedResponse.isSuccess()).toBeFalsy();
-	expect(orderResponse.getData().status).toBe('assigned');
 });
 test("Forwarding status to 'on the way' with out assigning results in failure", async () => {
 	const {orderID, guestID} = await createOrder();

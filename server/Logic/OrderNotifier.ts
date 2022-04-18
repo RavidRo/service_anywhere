@@ -1,10 +1,12 @@
 import {OrderStatus, Location, OrderIDO} from 'api';
-import {IOrder} from './IOrder';
-import {NotificationFacade} from './Notification/NotificationFacade';
-import {Order} from './Order';
 import config from '../config.json';
 import {ResponseMsg} from '../Response';
+
 import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
+
+import {IOrder} from './IOrder';
+import {Order} from './Order';
+import {NotificationFacade} from './Notification/NotificationFacade';
 
 export abstract class OrderNotifier implements IOrder {
 	protected notificationFacade: NotificationFacade = new NotificationFacade();
@@ -60,42 +62,42 @@ export abstract class OrderNotifier implements IOrder {
 		return this.order.isActive();
 	}
 
-	updateGuestLocation(mapId: string, location: Location): ResponseMsg<void> {
-		return this.order.updateGuestLocation(mapId, location);
+	updateGuestLocation(mapID: string, location: Location): ResponseMsg<void> {
+		return this.order.updateGuestLocation(mapID, location);
 	}
-	updateWaiterLocation(mapId: string, location: Location): ResponseMsg<void> {
-		return this.order.updateWaiterLocation(mapId, location);
-	}
-
-	async assign(waiterId: string): Promise<ResponseMsg<void>> {
-		return (await this.changeOrderStatus('assigned')).ifGood(() => {
-			const orderWaiter = new WaiterNotifier(this.order, waiterId);
-			this.order = orderWaiter;
-		});
+	updateWaiterLocation(mapID: string, location: Location): ResponseMsg<void> {
+		return this.order.updateWaiterLocation(mapID, location);
 	}
 
-	async changeOrderStatus(status: OrderStatus): Promise<ResponseMsg<void>> {
-		return (await this.order.changeOrderStatus(status)).ifGood(() =>
+	async assign(waiterID: string): Promise<ResponseMsg<void>> {
+		const oldStatus = this.getDetails().status;
+		const newStatus = oldStatus === 'on the way' ? oldStatus : 'assigned';
+		return (await this.changeOrderStatus(newStatus, true, true)).ifGood(
+			() => {
+				const orderWaiter = new WaiterNotifier(this.order, waiterID);
+				this.order = orderWaiter;
+			}
+		);
+	}
+
+	async changeOrderStatus(
+		status: OrderStatus,
+		assigningWaiter: boolean,
+		adminPrivileges: boolean
+	): Promise<ResponseMsg<void>> {
+		return (
+			await this.order.changeOrderStatus(
+				status,
+				assigningWaiter,
+				adminPrivileges
+			)
+		).ifGood(() =>
 			this.notificationFacade.changeOrderStatus(
 				this.receiverId,
 				this.getID(),
 				status
 			)
 		);
-	}
-
-	async cancelOrder(): Promise<ResponseMsg<void>> {
-		return (await this.order.cancelOrder()).ifGood(() =>
-			this.notificationFacade.changeOrderStatus(
-				this.receiverId,
-				this.getID(),
-				'canceled'
-			)
-		);
-	}
-
-	async orderArrived(): Promise<ResponseMsg<void>> {
-		return this.order.orderArrived();
 	}
 
 	giveFeedback(review: string, score: number): boolean {
@@ -124,18 +126,6 @@ class GuestNotifier extends OrderNotifier {
 					...params
 				)
 			);
-	}
-
-	override async changeOrderStatus(
-		status: OrderStatus
-	): Promise<ResponseMsg<void>> {
-		return (await super.changeOrderStatus(status)).ifGood(() =>
-			this.notificationFacade.changeOrderStatus(
-				this.receiverId,
-				this.getID(),
-				status
-			)
-		);
 	}
 }
 

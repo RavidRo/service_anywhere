@@ -1,8 +1,11 @@
-import {OrderStatus, Location, OrderIDO} from 'api';
+import {OrderStatus as OrderStatusName, Location, OrderIDO} from 'api';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
+
 import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
 import * as OrderStore from '../Data/Stores/OrderStore';
-import {makeFail, makeGood, ResponseMsg} from '../Response';
+
 import {IOrder} from './IOrder';
+import {OrderStatus} from './OrderStatus';
 
 class Review {
 	content: string;
@@ -42,29 +45,22 @@ export class Order implements IOrder {
 	}
 
 	getDetails(): OrderIDO {
-		const items: [string, number][] = this.orderDAO.orderToItems.map(
-			orderToItem => [orderToItem.item.id, orderToItem.quantity]
-		);
-		return {
-			id: this.orderDAO.id,
-			guestId: this.orderDAO.guest.id,
-			items: new Map(items),
-			status: this.orderDAO.status,
-			creationTime: new Date(this.orderDAO.creationTime),
-			completionTime: this.orderDAO.completionTime
-				? new Date(this.orderDAO.completionTime)
-				: undefined,
-		};
+		return this.orderDAO.getDetails();
 	}
 
 	isActive(): boolean {
-		return !['canceled', 'delivered'].includes(this.orderDAO.status);
+		return !OrderStatus.makeStatus(this.orderDAO.status).isEndStatus();
 	}
 
 	canAssign(): boolean {
-		return ['ready to deliver', 'assigned', 'on the way'].includes(
-			this.orderDAO.status
-		);
+		const futureNewStatusName =
+			this.orderDAO.status === 'on the way'
+				? this.orderDAO.status
+				: 'assigned';
+		const futureNewStatus = OrderStatus.makeStatus(futureNewStatusName);
+		return OrderStatus.makeStatus(this.orderDAO.status)
+			.to(futureNewStatus, true, true)
+			.isSuccess();
 	}
 
 	updateGuestLocation(
@@ -81,39 +77,33 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	async orderArrived(): Promise<ResponseMsg<void>> {
-		this.orderDAO.status = 'delivered';
-		this.orderDAO.completionTime = Date.now();
-		await this.orderDAO.save();
-		return makeGood();
-	}
+	async changeOrderStatus(
+		newStatusName: OrderStatusName,
+		assigningWaiter: boolean,
+		adminPrivileges: boolean
+	): Promise<ResponseMsg<void>> {
+		const newStatus = OrderStatus.makeStatus(newStatusName);
+		const currentStatus = OrderStatus.makeStatus(this.orderDAO.status);
+		const toResponse = currentStatus.to(
+			newStatus,
+			assigningWaiter,
+			adminPrivileges
+		);
+		if (!toResponse.isSuccess()) {
+			return toResponse;
+		}
 
-	async cancelOrder(): Promise<ResponseMsg<void>> {
-		this.orderDAO.status = 'canceled';
-		this.orderDAO.completionTime = Date.now();
-		await this.orderDAO.save();
-		return makeGood();
-	}
-
-	async changeOrderStatus(status: OrderStatus): Promise<ResponseMsg<void>> {
-		this.orderDAO.status = status;
-		if (status === 'canceled' || status === 'delivered') {
+		this.orderDAO.status = newStatusName;
+		if (newStatus.isEndStatus()) {
 			this.orderDAO.completionTime = Date.now();
 		}
 		await this.orderDAO.save();
+
 		return makeGood();
 	}
 
 	async assign(_waiterId: string): Promise<ResponseMsg<void>> {
-		if (!this.canAssign()) {
-			return makeFail(
-				'Can only assign waiters to orders that are ready to deliver',
-				400
-			);
-		}
-		this.orderDAO.status = 'assigned';
-		await this.orderDAO.save();
-		return makeGood();
+		return this.changeOrderStatus('assigned', true, true);
 	}
 
 	giveFeedback(_review: string, _score: number): boolean {

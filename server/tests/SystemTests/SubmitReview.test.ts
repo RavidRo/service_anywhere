@@ -25,6 +25,7 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 };
 
 beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	await AppDataSource.initialize();
 });
 

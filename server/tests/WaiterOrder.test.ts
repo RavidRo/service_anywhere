@@ -9,6 +9,7 @@ import {getGuests} from '../Data/Stores/GuestStore';
 import GuestInterface from '../Interface/GuestInterface';
 
 beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	await AppDataSource.initialize();
 });
 
@@ -45,9 +46,7 @@ test('get waiter by order with our order should return nothing', async () => {
 
 test('get waiter order with our waiter should return nothing', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
-	const orders: ResponseMsg<string[]> = await WaiterOrder.getOrdersByWaiter(
-		waitersIDs[0]
-	);
+	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0]);
 	expect(orders.isSuccess()).toBeTruthy();
 	expect(orders.getData()).toStrictEqual([]);
 });
@@ -77,10 +76,8 @@ test('get waiter order with our waiter should return our order', async () => {
 
 	await WaiterOrder.assignWaiter([orderID], waitersIDs[0]);
 
-	const orders: ResponseMsg<string[]> = await WaiterOrder.getOrdersByWaiter(
-		waitersIDs[0]
-	);
+	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0]);
 	expect(orders.isSuccess()).toBeTruthy();
 	expect(orders.getData().length).toBe(1);
-	expect(orders.getData()[0]).toEqual(orderID);
+	expect(orders.getData()[0].id).toEqual(orderID);
 });

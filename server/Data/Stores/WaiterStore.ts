@@ -13,7 +13,7 @@ export async function getWaiters(): Promise<WaiterDAO[]> {
 }
 
 export async function getWaitersByOrder(
-	orderId: string
+	orderID: string
 ): Promise<ResponseMsg<string[]>> {
 	const orderRepository = AppDataSource.getRepository(OrderDAO);
 	const order = await orderRepository.findOne({
@@ -21,7 +21,7 @@ export async function getWaitersByOrder(
 			waiters: true,
 		},
 		where: {
-			id: orderId,
+			id: orderID,
 		},
 	});
 	if (order === null) {
@@ -31,19 +31,24 @@ export async function getWaitersByOrder(
 }
 
 export async function getOrdersByWaiter(
-	waiterId: string
-): Promise<ResponseMsg<string[]>> {
+	waiterID: string
+): Promise<ResponseMsg<OrderDAO[]>> {
 	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
 	const waiter = await waiterRepository.findOne({
 		relations: {
-			orders: true,
+			orders: {
+				orderToItems: {
+					item: true,
+				},
+				guest: true,
+			},
 		},
 		where: {
-			id: waiterId,
+			id: waiterID,
 		},
 	});
 	if (waiter === null) {
 		return makeFail('Requested order does not exist');
 	}
-	return makeGood(waiter.orders.map(waiter => waiter.id));
+	return makeGood(waiter.orders);
 }

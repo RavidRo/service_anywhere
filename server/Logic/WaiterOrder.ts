@@ -1,18 +1,19 @@
-import {Location} from 'api';
+import {Location, OrderIDO, OrderStatus} from 'api';
+import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
+
 import * as WaiterStore from '../Data/Stores/WaiterStore';
 import * as OrderStore from '../Data/Stores/OrderStore';
-
 import {getItems} from '../Data/Stores/ItemStore';
-import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
-import {onOrder, getGuestActiveOrder} from './IOrder';
-import {OrderNotifier} from './OrderNotifier';
 import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
+
+import {onOrder, getGuestActiveOrder} from './Orders';
+import {OrderNotifier} from './OrderNotifier';
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
 }
 
-export function makeAvailable(orderID: string): Promise<ResponseMsg<void>> {
+export function unassignWaiters(orderID: string): Promise<ResponseMsg<void>> {
 	return OrderStore.removeWaitersFromOrder(orderID);
 }
 
@@ -22,9 +23,9 @@ export async function updateWaiterLocation(
 	location: Location
 ) {
 	const orders = await getOrdersByWaiter(waiterId);
-	orders.ifGood(ordersIDs =>
-		ordersIDs.forEach(orderID =>
-			onOrder(orderID, o => o.updateWaiterLocation(mapId, location))
+	orders.ifGood(orders =>
+		orders.forEach(order =>
+			onOrder(order.id, o => o.updateWaiterLocation(mapId, location))
 		)
 	);
 }
@@ -72,10 +73,11 @@ export function getWaiterByOrder(
 	return WaiterStore.getWaitersByOrder(orderId);
 }
 
-export function getOrdersByWaiter(
+export async function getOrdersByWaiter(
 	waiterId: string
-): Promise<ResponseMsg<string[]>> {
-	return WaiterStore.getOrdersByWaiter(waiterId);
+): Promise<ResponseMsg<OrderIDO[]>> {
+	const orders = await WaiterStore.getOrdersByWaiter(waiterId);
+	return orders.ifGood(orders => orders.map(order => order.getDetails()));
 }
 
 export async function createOrder(
@@ -112,12 +114,45 @@ export async function createOrder(
 	return newOrderResponse.ifGood(newOrder => newOrder.getID());
 }
 
+export async function changeOrderStatus(
+	orderID: string,
+	newStatus: OrderStatus
+): Promise<ResponseMsg<void>> {
+	const orderDAO = await OrderStore.getOrder(orderID);
+	if (!orderDAO) {
+		return makeFail('Requested order does not exists');
+	}
+
+	const hasAssignedWaiters = orderDAO.waiters.length > 0;
+	const neededWaitersStatuses: OrderStatus[] = ['assigned', 'on the way'];
+	const willUnassignWaiters = !neededWaitersStatuses.includes(newStatus);
+
+	const order = OrderNotifier.createOrder(orderDAO);
+	const changeStatusResponse = await order.changeOrderStatus(
+		newStatus,
+		hasAssignedWaiters && !willUnassignWaiters,
+		true
+	);
+
+	if (changeStatusResponse.isSuccess() && willUnassignWaiters) {
+		const response = await unassignWaiters(orderID);
+		if (response.isSuccess()) {
+			console.error(
+				`Order's status has been changed to ${newStatus} but could not unassign waiters`,
+				response.getError()
+			);
+		}
+	}
+	return changeStatusResponse;
+}
+
 export default {
 	createOrder,
 	assignWaiter,
 	getAllWaiters,
 	getOrdersByWaiter,
 	getWaiterByOrder,
-	makeAvailable,
+	makeAvailable: unassignWaiters,
 	updateWaiterLocation,
+	changeOrderStatus,
 };
