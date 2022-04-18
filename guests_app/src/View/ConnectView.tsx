@@ -3,14 +3,13 @@ import {Button, StyleSheet, Text, TextInput} from 'react-native';
 import {MainPageViewController} from '../ViewController/MainPageViewController';
 
 type LoginViewProps = {
-	isConnected: boolean;
 	loggedIn: boolean;
 	isLoading: boolean;
+	isConnected: boolean;
 	password: string;
 	onPasswordChange: (newPassword: string) => void;
 	onSubmit: () => void;
 	establishConnection: () => void;
-
 	isReconnecting: boolean;
 };
 
