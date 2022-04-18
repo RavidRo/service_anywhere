@@ -98,6 +98,10 @@ export default function StatusViewController(props: {
 		setShowFullCell(false);
 	};
 
+	const sn = StatusToNumber.get(status);
+	const statusNumber: number = sn === undefined ? 0 : sn;
+	const wrapperCurrent = wrapper.current;
+
 	React.useEffect(() => {
 		if (!showFullCell) {
 			return undefined;
@@ -167,7 +171,7 @@ export default function StatusViewController(props: {
 										bgcolor: blue[700],
 									}}>
 									<Typography variant='body1'>
-										{StatusToNumber.get(status)! + 1}
+										{statusNumber + 1}
 									</Typography>
 								</Avatar>
 							)}
@@ -183,7 +187,12 @@ export default function StatusViewController(props: {
 					style={{width: popperWidth, marginLeft: -17}}>
 					<Paper
 						elevation={1}
-						style={{minHeight: wrapper.current!.offsetHeight - 3}}>
+						style={{
+							minHeight:
+								wrapperCurrent === null
+									? 40
+									: wrapperCurrent.offsetHeight - 3,
+						}}>
 						<Typography variant='body2' style={{padding: 8}}>
 							<Box sx={{width: '100%'}}>
 								<StatusView

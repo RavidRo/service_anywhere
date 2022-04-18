@@ -56,12 +56,12 @@ export default class ConnectionHandler extends Singleton {
 	}
 
 	registerEvents(socket: Socket) {
-		for (const event in this.notifications.eventCallbacks) {
+		const eventCallbacks = this.notifications.eventCallbacks;
+
+		for (const event in eventCallbacks) {
 			socket.on(event, params => {
 				console.info(`Notification ${event}:`, params);
-				this.notifications.eventCallbacks[
-					event as keyof typeof this.notifications.eventCallbacks
-				](params);
+				eventCallbacks[event as keyof typeof eventCallbacks](params);
 			});
 		}
 	}

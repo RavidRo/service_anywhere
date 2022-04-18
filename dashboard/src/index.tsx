@@ -7,11 +7,13 @@ import WaitersViewModel from './viewModel/waitersViewModel';
 import waitersModel from './model/waiterModel';
 import ordersModel from './model/ordersModel';
 import ConnectionHandler from './network/connectionHandler';
+import Api from './network/api';
 
 const waiterModel = new waitersModel();
 const orderModel = new ordersModel();
-const ordersViewModel = new OrdersViewModel(orderModel);
-const waitersViewModel = new WaitersViewModel(waiterModel);
+const api: Api = new Api();
+const ordersViewModel = new OrdersViewModel(orderModel, api);
+const waitersViewModel = new WaitersViewModel(waiterModel, api);
 const connectionHandler = new ConnectionHandler(
 	ordersViewModel,
 	waitersViewModel
