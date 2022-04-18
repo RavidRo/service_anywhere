@@ -48,7 +48,7 @@ const mockAssignWaiter = jest.fn((orderId: string, waiterId: string) => {
 });
 const mockGetWaitersByOrder = jest.fn((orderId: string) => mockListOfOrders[0]);
 const mockChangeOrderStatus = jest.fn(
-	(orderId: string, status: string) => true
+	(orderId: string, status: string) => Number.parseInt(orderId) % 2 === 0
 );
 const mockCancelOrder = jest.fn((orderId: string) => true);
 
@@ -83,14 +83,24 @@ describe('Constructor', () => {
 		expect(ordersViewModel).toBeTruthy();
 	});
 
-	test('Change order status in server', async () => {
+	test('Change order status in server expect false', async () => {
 		const ordersViewModel = new OrderViewModel(
 			new ordersModel(),
 			new Api()
 		);
-		ordersViewModel.changeOrderStatus('1', 'in preparation');
+		const ret = ordersViewModel.changeOrderStatus('1', 'in preparation');
 		await flushPromises();
-		expect(mockChangeOrderStatus).toHaveBeenCalled();
+		expect(ret).toEqual(false);
+	});
+
+	test('Change order status in server epect true', async () => {
+		const ordersViewModel = new OrderViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const ret = ordersViewModel.changeOrderStatus('0', 'in preparation');
+		await flushPromises();
+		expect(ret).toEqual(true);
 	});
 
 	test('Set and get orders in model', async () => {
