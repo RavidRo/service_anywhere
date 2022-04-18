@@ -48,7 +48,7 @@ const mockAssignWaiter = jest.fn((orderId: string, waiterId: string) => {
 });
 const mockGetWaitersByOrder = jest.fn((orderId: string) => mockListOfOrders[0]);
 const mockChangeOrderStatus = jest.fn(
-	(orderId: string, status: string) => Number.parseInt(orderId) % 2 === 0
+	(orderId: string, status: string) => false
 );
 const mockCancelOrder = jest.fn((orderId: string) => true);
 
@@ -94,6 +94,7 @@ describe('Constructor', () => {
 	});
 
 	test('Change order status in server epect true', async () => {
+		mockChangeOrderStatus.mockImplementation(() => true);
 		const ordersViewModel = new OrderViewModel(
 			new ordersModel(),
 			new Api()
