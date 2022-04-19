@@ -1,17 +1,18 @@
 import {makeAutoObservable} from 'mobx';
+import {WaiterIDO} from '../../../api';
 
-export default class DashboardModel {
-	_waiters = [];
+export default class waiterModel {
+	_waiters: WaiterIDO[] = [];
 
 	constructor() {
 		makeAutoObservable(this);
 	}
 
-	set waiters(waiters) {
+	set waiters(waiters: WaiterIDO[]) {
 		this._waiters = waiters;
 	}
 
-	get waiters() {
+	get waiters(): WaiterIDO[] {
 		return this._waiters;
 	}
 }

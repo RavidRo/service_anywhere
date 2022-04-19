@@ -1,5 +1,6 @@
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
+import {isOrderArray, isWaiterArray} from '../typeGuard';
 
 export default class Notificiations {
 	private ordersViewModel: OrdersViewModel;
@@ -12,20 +13,29 @@ export default class Notificiations {
 		this.waitersViewModel = waitersViewModel;
 	}
 
-	eventCallbacks = {
-		updateOrders: this.updateOrders,
-		updateWaiters: this.updateWaiters,
-	};
-
-	updateOrders(params: any) {
-		if (params[0]) {
+	updateOrders(params: any[]) {
+		if (isOrderArray(params[0])) {
 			this.ordersViewModel.orders = params[0];
+		} else {
+			console.warn(
+				"Haven't received the correct arguments, the first argument should contain orders"
+			);
 		}
 	}
 
-	updateWaiters(params: any) {
-		if (params[0]) {
+	updateWaiters(params: any[]) {
+		if (isWaiterArray(params[0])) {
 			this.waitersViewModel.waiters = params[0];
+		} else {
+			console.warn(
+				"Haven't received the correct arguments, the first argument should contain the waiters"
+			);
 		}
 	}
+
+	eventCallbacks: Record<string, (params: unknown[]) => void> = {
+		updateOrders: params => this.updateOrders(params),
+		updateWaiters: params => this.updateWaiters(params),
+	};
 }
+// updateOrderStatus: params => this.updateOrderStatus(params),

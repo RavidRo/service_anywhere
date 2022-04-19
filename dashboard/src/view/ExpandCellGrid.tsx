@@ -33,7 +33,9 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 	const [showPopper, setShowPopper] = React.useState(false);
 
 	const handleMouseEnter = () => {
-		const isCurrentlyOverflown = isOverflown(cellValue.current!);
+		const current = cellValue.current;
+		const isCurrentlyOverflown =
+			current === null ? false : isOverflown(current);
 		setShowPopper(isCurrentlyOverflown);
 		setAnchorEl(cellDiv.current);
 		setShowFullCell(true);
@@ -61,6 +63,8 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 			document.removeEventListener('keydown', handleKeyDown);
 		};
 	}, [setShowFullCell, showFullCell]);
+
+	const wrapperCurrent = wrapper.current;
 
 	return (
 		<Box
@@ -101,7 +105,12 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 					style={{width, marginLeft: -17}}>
 					<Paper
 						elevation={1}
-						style={{minHeight: wrapper.current!.offsetHeight - 3}}>
+						style={{
+							minHeight:
+								wrapperCurrent === null
+									? 30
+									: wrapperCurrent.offsetHeight - 3,
+						}}>
 						<Typography variant='body2' style={{padding: 8}}>
 							{value}
 						</Typography>

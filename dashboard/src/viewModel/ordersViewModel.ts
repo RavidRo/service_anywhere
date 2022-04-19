@@ -1,22 +1,25 @@
-import {changeOrderStatus, cancelOrder} from '../network/api';
+import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
-import {OrderStatus} from '../../../api';
+import {OrderIDO, OrderStatus} from '../../../api';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
-	constructor(ordersModel: OrderModel) {
+	private api: Api;
+
+	constructor(ordersModel: OrderModel, api: Api) {
 		this.ordersModel = ordersModel;
+		this.api = api;
 	}
-	get orders() {
+	get orders(): OrderIDO[] {
 		return this.ordersModel.orders;
 	}
 
-	set orders(orders) {
+	set orders(orders: OrderIDO[]) {
 		this.ordersModel.orders = orders;
 	}
 
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
-		if (changeOrderStatus(orderId, newStatus) === true) {
+		if (this.api.changeOrderStatus(orderId, newStatus) === true) {
 			this.ordersModel.changeOrderStatus(orderId, newStatus);
 			return true;
 		}

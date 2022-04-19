@@ -1,26 +1,28 @@
-import {getWaitersByOrder, assignWaiter} from '../network/api';
+import Api from '../network/api';
 import WaiterModel from '../model/waiterModel';
+import {WaiterIDO} from '../../../api';
 
-export default class WaiterViewModel {
+export default class WaitersViewModel {
 	private waitersModel: WaiterModel;
-
-	constructor(waitersModel: WaiterModel) {
+	private api: Api;
+	constructor(waitersModel: WaiterModel, api: Api) {
 		this.waitersModel = waitersModel;
+		this.api = api;
 	}
 
-	get waiters() {
+	get waiters(): WaiterIDO[] {
 		return this.waitersModel.waiters;
 	}
 
-	set waiters(waiters) {
+	set waiters(waiters: WaiterIDO[]) {
 		this.waitersModel.waiters = waiters;
 	}
 
 	assignWaiter(orderId: string, waiter: string) {
-		return assignWaiter(orderId, waiter);
+		return this.api.assignWaiter(orderId, waiter);
 	}
 
 	getWaitersByOrder(orderId: string) {
-		return getWaitersByOrder(orderId);
+		return this.api.getWaitersByOrder(orderId);
 	}
 }
