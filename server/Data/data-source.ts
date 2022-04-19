@@ -38,7 +38,10 @@ function makeProductionSource() {
 		password: process.env['DB_PASSWORD']!,
 		database: process.env['DB_DATABASE']!,
 		entities: entities,
-		ssl: true,
+		synchronize: true,
+		ssl: {
+			rejectUnauthorized: false,
+		},
 	});
 }
 

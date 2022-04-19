@@ -24,10 +24,10 @@ export class OrderDAO extends BaseEntity {
 	@Column({default: 'received'})
 	status: OrderStatus;
 
-	@Column('datetime', {default: () => Date.now()})
+	@Column({default: () => `${Date.now()}`})
 	creationTime: number;
 
-	@Column('datetime', {
+	@Column({
 		nullable: true,
 	})
 	completionTime?: number;
