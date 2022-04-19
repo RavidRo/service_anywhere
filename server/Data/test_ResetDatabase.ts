@@ -79,6 +79,17 @@ const entitiesDefaults: [EntityTarget<unknown>, () => BaseEntity[], string][] =
 // 	}
 // }
 
+export async function load_data() {
+	for (const [_, entitiesGetter, entityName] of entitiesDefaults) {
+		const entities = entitiesGetter();
+		try {
+			await saveAll(entities);
+		} catch (e) {
+			throw new Error(`Failed loading ${entityName}'s table: ${e}`);
+		}
+	}
+}
+
 export default async function reset_all() {
 	for (const [entityTarget, _, entityName] of entitiesDefaults) {
 		try {
@@ -88,12 +99,5 @@ export default async function reset_all() {
 		}
 	}
 
-	for (const [_, entitiesGetter, entityName] of entitiesDefaults) {
-		const entities = entitiesGetter();
-		try {
-			await saveAll(entities);
-		} catch (e) {
-			throw new Error(`Failed loading ${entityName}'s table: ${e}`);
-		}
-	}
+	await load_data();
 }

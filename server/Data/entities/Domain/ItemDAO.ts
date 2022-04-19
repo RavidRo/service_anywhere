@@ -15,7 +15,7 @@ export class ItemDAO extends BaseEntity {
 	@Column()
 	name: string;
 
-	@Column()
+	@Column('real')
 	price: number;
 
 	@Column()

@@ -14,6 +14,7 @@ import NotificationInterface from '../Interface/NotificationInterface';
 import authenticator from '../Logic/Authentication/Authenticator';
 
 import {AppDataSource} from '../Data/data-source';
+import reset_all, {load_data} from 'server/Data/test_ResetDatabase';
 
 let cors = require('cors');
 const app = express();
@@ -339,7 +340,9 @@ app.post('/changeOrderStatus', (req, res) => {
 });
 
 AppDataSource.initialize().then(() => {
-	http.listen(PORT, () => {
-		console.log(`Server is listening on port ${PORT}`);
+	load_data().then(() => {
+		http.listen(PORT, () => {
+			console.log(`Server is listening on port ${PORT}`);
+		});
 	});
 });
