@@ -84,7 +84,7 @@ function checkInputs(
 	}
 }
 
-app.get('/login', (req, res) => {
+app.post('/login', (req, res) => {
 	checkInputs(
 		['password'],
 		req.body,
@@ -340,9 +340,10 @@ app.post('/changeOrderStatus', (req, res) => {
 });
 
 AppDataSource.initialize().then(() => {
-	load_data().then(() => {
-		http.listen(PORT, () => {
-			console.log(`Server is listening on port ${PORT}`);
-		});
+	// load_data().then(() => {
+
+	// });
+	http.listen(PORT, () => {
+		console.log(`Server is listening on port ${PORT}`);
 	});
 });
