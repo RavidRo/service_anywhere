@@ -1,6 +1,7 @@
 //import {makeAutoObservable} from 'mobx';
+import {OrderStatus} from '../signatures';
 import Singleton from '../Singeltone';
-import Location, {Order, OrderID, OrderStatus, Waiter} from '../types';
+import Location, {Order, OrderID, Waiter} from '../types';
 
 export class OrderModel extends Singleton {
 	private _order: Order | null;

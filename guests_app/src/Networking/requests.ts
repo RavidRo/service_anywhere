@@ -51,7 +51,6 @@ export default class Requests implements GuestAPI {
 		this.handler = new RequestsHandler();
 	}
 
-	cancelOrderGuest: (orderId: string) => Promise<Boolean>;
 	setToken(token: string) {
 		this.token = token;
 	}
@@ -66,15 +65,15 @@ export default class Requests implements GuestAPI {
 	}
 
 	getGuestOrder(): Promise<OrderIDO> {
-		return this.handler.get<OrderIDO>('getGuestOrders', this.token, {});
+		return this.handler.get<OrderIDO>('getGuestOrder', this.token, {});
 	}
 	createOrder(order_items: Map<string, Number>): Promise<OrderID> {
 		return this.handler.post<OrderID>('createOrder', this.token, {
 			order_items,
 		});
 	}
-	cancelOrder(order_id: OrderID): Promise<Boolean> {
-		return this.handler.post<Boolean>('cancelOrder', this.token, {
+	cancelOrderGuest(order_id: OrderID): Promise<Boolean> {
+		return this.handler.post<Boolean>('cancelOrderGuest', this.token, {
 			order_id,
 		});
 	}

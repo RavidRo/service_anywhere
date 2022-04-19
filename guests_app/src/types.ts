@@ -1,3 +1,5 @@
+import {OrderStatus} from './signatures';
+
 export default class Location {
 	public readonly x: number;
 	public readonly y: number;
@@ -40,7 +42,6 @@ export interface LocationService {
 }
 
 export type OrderID = string;
-export type OrderStatus = 'recieved' | 'inprogress' | 'on the way' | 'arrived';
 export type Order = {
 	id: OrderID;
 	items: Map<String, Number>;

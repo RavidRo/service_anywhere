@@ -6,18 +6,17 @@ import {
 	Text,
 	View,
 } from 'react-native';
-import {OrderID, OrderStatus} from '../types';
-import {observer} from 'mobx-react-lite';
+import {OrderID} from '../types';
 
 type MainPageViewProps = {
 	SendOrderToServer: () => void;
+	cancelOrder: () => void;
 	hasActiveOrder: boolean;
 	orderID: OrderID;
 	orderStatus: string;
 };
-//const OrdersListView = observer((props: OrdersViewProps) => {
 
-export const DummyPage = observer((props: MainPageViewProps) => {
+export const DummyPage = (props: MainPageViewProps) => {
 	if (props.hasActiveOrder) {
 		return (
 			<View>
@@ -28,6 +27,13 @@ export const DummyPage = observer((props: MainPageViewProps) => {
 					{'Order status: '} {props.orderStatus}
 				</Text>
 				<ActivityIndicator size='large' color='#00ff00' />
+
+				<Button
+					title='Cancel Order'
+					onPress={() => {
+						props.cancelOrder();
+					}}
+				/>
 			</View>
 		);
 	}
@@ -39,4 +45,4 @@ export const DummyPage = observer((props: MainPageViewProps) => {
 			}}
 		/>
 	);
-});
+};

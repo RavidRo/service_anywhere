@@ -1,6 +1,7 @@
 import Requests from 'guests_app/src/Networking/requests';
-import Location, {Order, OrderID, OrderStatus} from 'guests_app/src/types';
+import Location, {Order, OrderID} from 'guests_app/src/types';
 import {OrderModel} from '../Model/OrderModel';
+import {OrderStatus} from '../signatures';
 
 export default class OrderViewModel {
 	private order_model;
@@ -13,13 +14,17 @@ export default class OrderViewModel {
 	}
 
 	getOrderFromServer() {
-		this.requests.getMyOrders().then(orders => {
-			if (orders.length > 0) {
-				this.order_model.order = orders[0];
-			} else {
-				this.removeOrder();
-			}
-		});
+		this.requests
+			.getGuestOrder()
+			.then(
+				order =>
+					(this.order_model.order = {
+						id: order.id,
+						items: order.items,
+						status: order.status,
+					})
+			)
+			.catch(() => this.removeOrder());
 	}
 
 	createOrder(items: Map<string, Number>): Promise<Order> {
@@ -28,7 +33,7 @@ export default class OrderViewModel {
 				const order: Order = {
 					id: order_id,
 					items: items,
-					status: 'recieved',
+					status: 'received',
 				};
 				this.order_model.order = order;
 				return order;
@@ -42,7 +47,7 @@ export default class OrderViewModel {
 	cancelOrder(): Promise<boolean> {
 		const order = this.getOrder();
 		if (order != null) {
-			return this.requests.cancelOrder(order.id).then(res => {
+			return this.requests.cancelOrderGuest(order.id).then(res => {
 				if (res) {
 					this.order_model.order = null;
 					return true;
@@ -58,7 +63,7 @@ export default class OrderViewModel {
 	submitReview(deatils: string, rating: Number): Promise<void> {
 		const order = this.getOrder();
 		if (order != null) {
-			if (order.status === 'arrived') {
+			if (order.status === 'delivered') {
 				return this.requests.submitReview(order.id, deatils, rating);
 			}
 			return new Promise((_resolve, reject) =>
