@@ -10,7 +10,7 @@ import {OrderDAO} from './OrderDAO';
 
 @Entity()
 export class OrderToItemDAO extends BaseEntity {
-	@PrimaryGeneratedColumn()
+	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
 	@Column()

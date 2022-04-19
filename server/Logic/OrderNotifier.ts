@@ -26,6 +26,10 @@ export abstract class OrderNotifier implements IOrder {
 			const orderGuest = new GuestNotifier(order, guestID);
 			const orderDashboard = new DashboardNotifier(orderGuest);
 
+			const notification = new NotificationFacade();
+			notification.newOrder(guestID, order.getDetails());
+			notification.newOrder(config.admin_id, order.getDetails());
+
 			return orderDashboard;
 		});
 	}
@@ -76,6 +80,10 @@ export abstract class OrderNotifier implements IOrder {
 			() => {
 				const orderWaiter = new WaiterNotifier(this.order, waiterID);
 				this.order = orderWaiter;
+				this.notificationFacade.assignedToOrder(
+					waiterID,
+					this.getDetails()
+				);
 			}
 		);
 	}
@@ -111,7 +119,6 @@ class GuestNotifier extends OrderNotifier {
 	constructor(order: IOrder, guestID: string) {
 		super(order);
 		this.receiverId = guestID;
-		this.notificationFacade.newOrder(this.receiverId, this.getDetails());
 	}
 
 	override updateWaiterLocation(
@@ -135,24 +142,18 @@ class WaiterNotifier extends OrderNotifier {
 	constructor(order: IOrder, waiterID: string) {
 		super(order);
 		this.receiverId = waiterID;
-		this.notificationFacade.assignedToOrder(
-			this.receiverId,
-			this.getDetails()
-		);
 	}
 
 	override updateGuestLocation(
 		...params: [mapID: string, location: Location]
 	): ResponseMsg<void> {
-		return super
-			.updateGuestLocation(...params)
-			.ifGood(() =>
-				this.notificationFacade.updateGuestLocation(
-					this.receiverId,
-					this.getID(),
-					...params
-				)
+		return super.updateGuestLocation(...params).ifGood(() => {
+			this.notificationFacade.updateGuestLocation(
+				this.receiverId,
+				this.getID(),
+				...params
 			);
+		});
 	}
 }
 
@@ -162,6 +163,5 @@ class DashboardNotifier extends OrderNotifier {
 	constructor(order: IOrder) {
 		super(order);
 		this.receiverId = config.admin_id;
-		this.notificationFacade.newOrder(this.receiverId, this.getDetails());
 	}
 }

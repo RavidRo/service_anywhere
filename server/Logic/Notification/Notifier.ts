@@ -37,7 +37,7 @@ export class Notifier {
 		this.subscribers[id].push(emit);
 	}
 
-	public clearSubscribers(): void{
+	public clearSubscribers(): void {
 		this.subscribers = {};
 	}
 }

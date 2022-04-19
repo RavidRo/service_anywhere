@@ -11,7 +11,7 @@ import {OrderDAO} from './OrderDAO';
 
 @Entity()
 export class WaiterDAO extends BaseEntity {
-	@PrimaryGeneratedColumn()
+	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
 	@Column()

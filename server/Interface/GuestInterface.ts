@@ -16,20 +16,20 @@ function createOrder(
 
 function updateLocationGuest(
 	guestId: string,
-	mapId: string,
+	mapID: string,
 	location: Location
 ): void {
 	getGuestOrder(guestId).then(orderResponse => {
 		orderResponse.ifGood(order => {
 			onOrder(order.id, (o: IOrder) =>
-				o.updateGuestLocation(mapId, location)
+				o.updateGuestLocation(mapID, location)
 			);
 		});
 	});
 }
 
-async function getGuestOrder(guestId: string): Promise<ResponseMsg<OrderIDO>> {
-	return await getGuestActiveOrder(guestId);
+async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
+	return await getGuestActiveOrder(guestID);
 }
 
 function submitReview(
@@ -43,13 +43,13 @@ function submitReview(
 	throw new Error('Method not implemented');
 }
 
-async function cancelOrder(orderId: string): Promise<ResponseMsg<void>> {
-	const response = await onOrder(orderId, o => {
+async function cancelOrder(orderID: string): Promise<ResponseMsg<void>> {
+	const response = await onOrder(orderID, o => {
 		return o.changeOrderStatus('canceled', false, false);
 	});
 	return response.ifGood(() => {
 		// TODO: check response
-		WaiterOrder.makeAvailable(orderId);
+		WaiterOrder.makeAvailable(orderID);
 	});
 }
 
