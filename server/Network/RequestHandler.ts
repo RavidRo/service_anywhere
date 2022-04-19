@@ -93,7 +93,7 @@ app.post('/login', (req, res) => {
 			authenticator
 				.login(req.body['password'])
 				.then(response => {
-					sendResponse(response, res.status, res.send);
+					sendResponse(response, st => res.status(st), res.send);
 				})
 				.catch(reason => {
 					res.status(statusOk);
@@ -116,7 +116,7 @@ app.get('/getGuestOrder', (req, res) => {
 		(msg: string) => res.send(msg),
 		async (id: string) => {
 			const response = await guest.getGuestOrder(id);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
@@ -135,7 +135,11 @@ app.post('/createOrder', (req, res) => {
 					guest
 						.createOrder(id, req.body['orderItems'])
 						.then(response => {
-							sendResponse(response, res.status, res.send);
+							sendResponse(
+								response,
+								st => res.status(st),
+								res.send
+							);
 						});
 				}
 			);
@@ -166,7 +170,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 		(msg: string) => res.send(msg),
 		async () => {
 			const response = await guest.cancelOrder(req.body['orderId']);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
@@ -184,7 +188,7 @@ app.get('/getWaiterOrders', (req, res) => {
 		(msg: string) => res.send(msg),
 		async (id: string) => {
 			const response = await waiter.getWaiterOrders(id);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
@@ -196,7 +200,7 @@ app.post('/orderArrived', (req, res) => {
 		(msg: string) => res.send(msg),
 		async () => {
 			const response = await waiter.orderArrived(req.body['orderId']);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
@@ -208,7 +212,7 @@ app.post('/orderOnTheWay', (req, res) => {
 		(msg: string) => res.send(msg),
 		async () => {
 			const response = await waiter.orderOnTheWay(req.body['orderId']);
-			sendResponse(response, res.status, res.send); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
+			sendResponse(response, st => res.status(st), res.send); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
 		}
 	);
 });
@@ -279,20 +283,20 @@ app.post('/assignWaiter', (req, res) => {
 				req.body['orderIds'],
 				req.body['waiterId']
 			);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
 
 app.get('/getOrders', (_req, res) => {
 	dashboard.getAllOrders().then(response => {
-		sendResponse(response, res.status, res.send);
+		sendResponse(response, st => res.status(st), res.send);
 	});
 });
 
 app.get('/getWaiters', (_req, res) => {
 	dashboard.getWaiters().then(response => {
-		sendResponse(response, res.status, res.send);
+		sendResponse(response, st => res.status(st), res.send);
 	});
 });
 
@@ -305,7 +309,7 @@ app.get('/getWaitersByOrder', (req, res) => {
 			const response = await dashboard.getWaiterByOrder(
 				String(req.query['orderId'])
 			);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
@@ -319,7 +323,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 			const response = await dashboard.cancelOrderAdmin(
 				req.body['orderId']
 			);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
@@ -334,7 +338,7 @@ app.post('/changeOrderStatus', (req, res) => {
 				req.body['orderId'],
 				req.body['newStatus']
 			);
-			sendResponse(response, res.status, res.send);
+			sendResponse(response, st => res.status(st), res.send);
 		}
 	);
 });
