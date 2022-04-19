@@ -1,5 +1,5 @@
 {
-	"name": "service_everywhere_server",
+	"name": "server",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
