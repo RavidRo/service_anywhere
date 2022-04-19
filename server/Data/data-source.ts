@@ -8,24 +8,49 @@ import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
 import {ReviewDAO} from './entities/Domain/ReviewDAO';
 import {WaiterDAO} from './entities/Domain/WaiterDAO';
 
-export const AppDataSource = new DataSource({
-	type: 'sqlite',
-	// host: 'localhost',
-	// port: 3306,
-	// username: 'test',
-	// password: 'test',
-	database: 'test.db',
-	synchronize: true,
-	logging: false,
-	entities: [
-		GuestDAO,
-		ItemDAO,
-		OrderDAO,
-		ReviewDAO,
-		WaiterDAO,
-		OrderToItemDAO,
-	],
-	migrations: [],
-	subscribers: [],
-	// cli: {},
-});
+const entities = [
+	GuestDAO,
+	ItemDAO,
+	OrderDAO,
+	ReviewDAO,
+	WaiterDAO,
+	OrderToItemDAO,
+];
+
+function makeDevelopmentSource() {
+	return new DataSource({
+		type: 'sqlite',
+		database: 'test.db',
+		synchronize: true,
+		logging: false,
+		entities: entities,
+		migrations: [],
+		subscribers: [],
+	});
+}
+
+function makeProductionSource() {
+	console.log({
+		host: process.env['DB_HOST']!,
+		port: Number.parseInt(process.env['DB_PORT']!),
+		username: process.env['DB_USERNAME']!,
+		password: process.env['DB_PASSWORD']!,
+		database: process.env['DB_DATABASE']!,
+	});
+
+	return new DataSource({
+		type: 'postgres',
+		host: process.env['DB_HOST']!,
+		port: Number.parseInt(process.env['DB_PORT']!),
+		username: process.env['DB_USERNAME']!,
+		password: process.env['DB_PASSWORD']!,
+		database: process.env['DB_DATABASE']!,
+		entities: entities,
+		ssl: true,
+	});
+}
+
+export const AppDataSource =
+	process.env['NODE_ENV'] === 'development'
+		? makeDevelopmentSource()
+		: makeProductionSource();

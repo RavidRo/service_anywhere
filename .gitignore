@@ -64,3 +64,5 @@ buck-out/
 
 *.db
 *.key
+
+.env

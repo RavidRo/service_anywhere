@@ -1,4 +1,6 @@
-import express, {response} from 'express';
+require('dotenv').config();
+
+import express from 'express';
 import * as socketio from 'socket.io';
 
 import {ResponseMsg} from '../Response';
@@ -13,7 +15,6 @@ import authenticator from '../Logic/Authentication/Authenticator';
 
 import {AppDataSource} from '../Data/data-source';
 
-require('dotenv').config();
 let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;

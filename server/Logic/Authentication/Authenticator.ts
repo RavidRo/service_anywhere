@@ -1,13 +1,9 @@
 import * as AuthenticatorChecker from '../../Data/AuthenticatorChecker';
 import {makeFail, makeGood, ResponseMsg} from '../../Response';
 import * as jwt from 'jsonwebtoken';
-import * as fs from 'fs';
-import * as path from 'path';
+
 const unauthorizedStatusCode = 401;
 const forbiddenStatusCode = 403;
-
-const privateKey = fs.readFileSync(path.join(__dirname, './../../public.key'));
-const publicKey = fs.readFileSync(path.join(__dirname, './../../public.key'));
 
 // https://www.becomebetterprogrammer.com/jwt-authentication-middleware-nodejs-typescript
 interface TokenPayload {
@@ -28,8 +24,8 @@ async function login(password: string): Promise<ResponseMsg<string>> {
 		permissionLevel: UserCredentials.permissionLevel,
 	};
 	return makeGood(
-		jwt.sign(payLoad, privateKey, {
-			algorithm: 'RS256',
+		jwt.sign(payLoad, process.env['ACCESS_TOKEN_SECRET']!, {
+			algorithm: 'HS256',
 			expiresIn: '1h',
 		})
 	);
@@ -48,9 +44,13 @@ function authenticate(
 			token = token.slice('bearer'.length).trim();
 		}
 		// https://github.com/auth0/node-jsonwebtoken/issues/634
-		const payLoad: TokenPayload = jwt.verify(token, publicKey, {
-			algorithms: ['RS256'],
-		}) as TokenPayload;
+		const payLoad: TokenPayload = jwt.verify(
+			token,
+			process.env['ACCESS_TOKEN_SECRET']!,
+			{
+				algorithms: ['HS256'],
+			}
+		) as TokenPayload;
 		if (payLoad.permissionLevel < neededPermissionLevel) {
 			return makeFail(
 				'You dont have access to the requested operation',
