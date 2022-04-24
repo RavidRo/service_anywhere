@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 
 function AppBarView() {
+	console.log('Starting the app bar');
 	return (
 		<div className='App'>
 			<Box sx={{flexGrow: 1}}>
@@ -13,7 +14,7 @@ function AppBarView() {
 						<Typography
 							variant='h4'
 							component='div'
-							sx={{flexGrow: 1}}
+							sx={{flexGrow: 1, height: '5vh'}}
 							align='center'>
 							Order Dashboard
 						</Typography>

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import {observer} from 'mobx-react';
 
 function StatusView(props: any) {
+	console.log('creating status view');
 	const {
 		steps,
 		isStepNextable,

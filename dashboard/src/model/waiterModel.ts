@@ -9,10 +9,12 @@ export default class waiterModel {
 	}
 
 	set waiters(waiters: WaiterIDO[]) {
+		console.info('Setting waiters to ', waiters);
 		this._waiters = waiters;
 	}
 
 	get waiters(): WaiterIDO[] {
+		console.info('Getting waiters');
 		return this._waiters;
 	}
 }

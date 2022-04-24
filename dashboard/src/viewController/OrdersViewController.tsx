@@ -13,11 +13,18 @@ import {
 	GridValueGetterParams,
 	MuiEvent,
 } from '@mui/x-data-grid';
+import {makeStyles} from '@mui/styles';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaiterViewModel;
 }
+
+const useStyles = makeStyles({
+	div: {
+		height: '100%',
+	},
+});
 
 function OrdersViewController(props: viewModelProps) {
 	const {ordersViewModel, waitersViewModel} = props;
@@ -108,6 +115,7 @@ function OrdersViewController(props: viewModelProps) {
 			},
 		},
 	];
+	const classes = useStyles();
 
 	return (
 		<div>

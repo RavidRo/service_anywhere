@@ -1,5 +1,5 @@
 import {any} from 'prop-types';
-import {OrderIDO} from '../../../api';
+import {OrderIDO, WaiterIDO} from '../../../api';
 import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import Singleton from '../singleton';
 
@@ -26,18 +26,20 @@ export default class Api extends Singleton {
 		})
 			.then((res: AxiosResponse<any, any>) => {
 				if (res.data) {
+					console.info('received orders', res.data);
 					return res.data;
 				} else {
-					console.log('Error in getting orders');
+					console.warn('Error in getting orders');
+					return [];
 				}
 			})
 			.catch((err: any) => {
-				alert(`failed to get orders due to ${err}`);
+				console.warn(`failed to get orders due to ${err}`);
 				return [];
 			});
 	}
 
-	getWaiters(): string[] {
+	getWaiters(): WaiterIDO[] {
 		const url = `${base_route}getWaiters`;
 		return axios({
 			method: 'GET',
@@ -45,12 +47,17 @@ export default class Api extends Singleton {
 		})
 			.then((res: AxiosResponse<any, any>) => {
 				if (res.data) {
+					console.info('getting waiters from server https', res.data);
 					return res.data;
 				} else {
-					console.log('Error in getting waiters');
+					console.warn('Error in getting waiters');
+					return [];
 				}
 			})
-			.catch((err: any) => alert(`failed to get waiters due to ${err}`));
+			.catch((err: any) => {
+				console.warn(`failed to get waiters due to ${err}`);
+				return [];
+			});
 	}
 
 	assignWaiter(orderId: string, waiterId: string): boolean {
@@ -88,14 +95,15 @@ export default class Api extends Singleton {
 		})
 			.then((res: AxiosResponse<any, any>) => {
 				if (res.data) {
+					console.info('Getting Waiters by orders', orderId);
 					return res.data;
 				} else {
-					console.log('Error in get waiter by order');
+					console.warn('Error in get waiter by order');
 					return '';
 				}
 			})
 			.catch((err: any) => {
-				console.log(`failed to get waiter by order due to ${err}`);
+				console.warn(`failed to get waiter by order due to ${err}`);
 				return '';
 			});
 	}
@@ -115,12 +123,12 @@ export default class Api extends Singleton {
 					console.log('Returning ' + (res.status < 400));
 					return res.status < 400;
 				} else {
-					console.log('Error in get change order status');
+					console.warn('Error in get change order status');
 					return false;
 				}
 			})
 			.catch((err: any) => {
-				console.log(`failed to change order status due to ${err}`);
+				console.warn(`failed to change order status due to ${err}`);
 				return false;
 			});
 	}
@@ -136,14 +144,15 @@ export default class Api extends Singleton {
 		})
 			.then((res: AxiosResponse<any, any>) => {
 				if (res.status) {
+					console.log('Canceled order', res.status < 400);
 					return res.status < 400;
 				} else {
-					console.log('Error in get cancel order');
+					console.warn('Error in get cancel order');
 					return false;
 				}
 			})
 			.catch((err: any) => {
-				console.log(`failed to cancel order due to ${err}`);
+				console.warn(`failed to cancel order due to ${err}`);
 				return false;
 			});
 	}

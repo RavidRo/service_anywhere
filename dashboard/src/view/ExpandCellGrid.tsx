@@ -6,13 +6,6 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import {DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
 
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Avatar from '@mui/material/Avatar';
-import {blue} from '@mui/material/colors';
-import {CardHeader} from '@mui/material';
-
 function isOverflown(element: Element): boolean {
 	return (
 		element.scrollHeight > element.clientHeight ||

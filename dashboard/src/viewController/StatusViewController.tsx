@@ -53,7 +53,7 @@ export default function StatusViewController(props: {
 	};
 	const handleNext = () => {
 		if (!isStepNextable(currentStep)) {
-			throw new Error('This step is not nextable');
+			console.error('This step is not nextable');
 		}
 		if (
 			orderViewModel.changeOrderStatus(orderId, Status[currentStep + 1])
@@ -64,7 +64,7 @@ export default function StatusViewController(props: {
 
 	const handleBack = () => {
 		if (!isStepBackable(currentStep)) {
-			throw new Error('This step is not backable');
+			console.error('This step is not backable');
 		}
 		if (
 			orderViewModel.changeOrderStatus(orderId, Status[currentStep - 1])

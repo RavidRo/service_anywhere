@@ -6,20 +6,14 @@ import {observer} from 'mobx-react';
 import Box from '@mui/material/Box';
 import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
 
-const _useStyles = makeStyles(theme => ({
-	root: {
-		width: 'fit-content',
-		color: theme.palette.text.secondary,
-		'& svg': {
-			margin: theme.spacing(2),
-		},
-		'& hr': {
-			margin: theme.spacing(0, 0.5),
-		},
+const useStyles = makeStyles({
+	dataGrid: {
+		height: '100%',
 	},
-}));
+});
 
 function OrdersView(props: any) {
+	console.log('Starting the orders view');
 	const {
 		orders,
 		columns,
@@ -27,11 +21,12 @@ function OrdersView(props: any) {
 		handleRowEditStop,
 		handleCellFocusOut,
 	} = props;
-
+	const classes = useStyles();
+	console.log(toJS(orders));
 	return (
 		<Box
 			sx={{
-				height: 500,
+				height: '90vh',
 				width: '100%',
 				'& .actions': {
 					color: 'text.secondary',
@@ -41,6 +36,7 @@ function OrdersView(props: any) {
 				},
 			}}>
 			<DataGrid
+				className={classes.dataGrid}
 				rows={toJS(orders)}
 				columns={columns}
 				editMode='row'

@@ -11,7 +11,8 @@ export default class WaitersViewModel {
 	}
 
 	get waiters(): WaiterIDO[] {
-		return this.waitersModel.waiters;
+		// return this.waitersModel.waiters;
+		return this.api.getWaiters();
 	}
 
 	set waiters(waiters: WaiterIDO[]) {

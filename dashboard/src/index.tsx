@@ -18,6 +18,9 @@ const connectionHandler = new ConnectionHandler(
 	ordersViewModel,
 	waitersViewModel
 );
+
+console.log('Starting Log');
+
 ReactDOM.render(
 	<React.StrictMode>
 		<OrdersViewController
