@@ -1,5 +1,6 @@
 import {BaseEntity, EntityTarget} from 'typeorm';
 import {AppDataSource} from './data-source';
+import {UserCredentials} from './entities/Authentication/UserCredentials';
 import {GuestDAO} from './entities/Domain/GuestDAO';
 import {ItemDAO} from './entities/Domain/ItemDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
@@ -88,6 +89,20 @@ export async function load_data() {
 			throw new Error(`Failed loading ${entityName}'s table: ${e}`);
 		}
 	}
+
+	try {
+		const guests = await GuestDAO.find();
+		const waiters = await WaiterDAO.find();
+		for (const user of [...waiters, ...guests]) {
+			const credentialsGuest = new UserCredentials();
+			credentialsGuest.id = user.id;
+			credentialsGuest.password = '123456';
+			credentialsGuest.permissionLevel = 100;
+			await credentialsGuest.save();
+		}
+	} catch (e) {
+		throw new Error(`Failed loading UserCredentials's table: ${e}`);
+	}
 }
 
 export default async function reset_all() {
@@ -97,6 +112,13 @@ export default async function reset_all() {
 		} catch (e) {
 			throw new Error(`Failed clearing ${entityName}'s table: ${e}`);
 		}
+	}
+
+	try {
+		const itemRepository = AppDataSource.getRepository(UserCredentials);
+		await itemRepository.clear();
+	} catch (e) {
+		throw new Error(`Failed clearing UserCredentials's table: ${e}`);
 	}
 
 	await load_data();

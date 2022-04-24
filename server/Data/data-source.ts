@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import {DataSource} from 'typeorm';
+import {UserCredentials} from './entities/Authentication/UserCredentials';
 import {GuestDAO} from './entities/Domain/GuestDAO';
 import {ItemDAO} from './entities/Domain/ItemDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
@@ -15,6 +16,7 @@ const entities = [
 	ReviewDAO,
 	WaiterDAO,
 	OrderToItemDAO,
+	UserCredentials,
 ];
 
 function makeDevelopmentSource() {

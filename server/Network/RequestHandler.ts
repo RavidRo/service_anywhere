@@ -14,7 +14,7 @@ import NotificationInterface from '../Interface/NotificationInterface';
 import authenticator from '../Logic/Authentication/Authenticator';
 
 import {AppDataSource} from '../Data/data-source';
-import reset_all, {load_data} from 'server/Data/test_ResetDatabase';
+import reset_all from '../Data/test_ResetDatabase';
 
 let cors = require('cors');
 const app = express();
@@ -37,6 +37,7 @@ function authenticate(
 	sendErrorMsg: (msg: string) => void,
 	doIfLegal: (id: string) => void
 ) {
+	console.log(token);
 	if (token) {
 		let response = authenticator.authenticate(token, permissionLevel);
 		if (response.isSuccess()) {
@@ -114,6 +115,7 @@ app.get('/getItemsGuest', (_req, res) => {
 });
 
 app.get('/getGuestOrder', (req, res) => {
+	console.log(req.headers);
 	authenticate(
 		req.headers.authorization,
 		1,
@@ -392,10 +394,9 @@ app.post('/changeOrderStatus', (req, res) => {
 });
 
 AppDataSource.initialize().then(() => {
-	// load_data().then(() => {
-
-	// });
-	http.listen(PORT, () => {
-		console.log(`Server is listening on port ${PORT}`);
+	reset_all().then(() => {
+		http.listen(PORT, () => {
+			console.log(`Server is listening on port ${PORT}`);
+		});
 	});
 });
