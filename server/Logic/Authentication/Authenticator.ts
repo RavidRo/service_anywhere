@@ -51,6 +51,7 @@ function authenticate(
 				algorithms: ['HS256'],
 			}
 		) as TokenPayload;
+
 		if (payLoad.permissionLevel < neededPermissionLevel) {
 			return makeFail(
 				'You dont have access to the requested operation',

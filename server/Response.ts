@@ -98,9 +98,7 @@ class ResponseFail implements ResponseMsg<unknown> {
 	private _error: string;
 	private _statusCode: number;
 
-	// https://en.wikipedia.org/wiki/HTTP_403
-	// Forbidden error code
-	private static DEFAULT_ERROR_CODE = 403;
+	private static DEFAULT_ERROR_CODE = 400;
 
 	constructor(error: string, statusCode = ResponseFail.DEFAULT_ERROR_CODE) {
 		this._error = error;

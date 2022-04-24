@@ -37,13 +37,12 @@ function authenticate(
 	sendErrorMsg: (msg: string) => void,
 	doIfLegal: (id: string) => void
 ) {
-	console.log(token);
 	if (token) {
 		let response = authenticator.authenticate(token, permissionLevel);
 		if (response.isSuccess()) {
 			response.ifGood(doIfLegal);
 		} else {
-			sendErrorMsg(response.getData());
+			sendErrorMsg(response.getError());
 		}
 	} else {
 		sendErrorMsg('Token does not match any id');

@@ -106,13 +106,13 @@ export async function load_data() {
 }
 
 export default async function reset_all() {
-	// for (const [entityTarget, _, entityName] of entitiesDefaults) {
-	// 	try {
-	// 		await clearTable(entityTarget);
-	// 	} catch (e) {
-	// 		throw new Error(`Failed clearing ${entityName}'s table: ${e}`);
-	// 	}
-	// }
+	for (const [entityTarget, _, entityName] of entitiesDefaults) {
+		try {
+			await clearTable(entityTarget);
+		} catch (e) {
+			throw new Error(`Failed clearing ${entityName}'s table: ${e}`);
+		}
+	}
 
 	try {
 		const itemRepository = AppDataSource.getRepository(UserCredentials);
