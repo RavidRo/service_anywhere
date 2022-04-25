@@ -9,7 +9,7 @@ import {WaiterDAO} from './entities/Domain/WaiterDAO';
 
 function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
 	const saves = entities.map(item => item.save());
-	return Promise.all(saves).then(() => {}); // I am hiding complexity and return void instead of the saved entities
+	return Promise.all(saves);
 }
 
 function clearTable<T>(entityClass: EntityTarget<T>) {
