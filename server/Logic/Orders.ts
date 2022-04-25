@@ -33,7 +33,7 @@ export async function getGuestActiveOrder(
 	);
 
 	if (activeOrdersOfGuest.length === 0) {
-		return makeFail('Requested guest does not have any active orders');
+		return makeFail('Requested guest does not have any active orders', 404);
 	}
 	const currentOrder = activeOrdersOfGuest[0].getDetails();
 	return makeGood(currentOrder);

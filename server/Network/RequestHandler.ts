@@ -110,7 +110,10 @@ app.post('/login', (req, res) => {
 //Guest
 
 app.get('/getItemsGuest', (_req, res) => {
-	res.send(items.getItems());
+	items.getItems().then((items) => res.send(items)).catch(() => {
+		res.status(500)
+		res.send('Getting items failed, try again later')
+	})
 });
 
 app.get('/getGuestOrder', (req, res) => {

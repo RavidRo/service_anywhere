@@ -1,8 +1,8 @@
 import {ItemIDO} from '../../api';
-import {getItems as getConsistentItems} from '../Data/Stores/ItemStore';
+import {getItems as getPersistentItems} from '../Data/Stores/ItemStore';
 
 function getItems(): Promise<ItemIDO[]> {
-	return getConsistentItems();
+	return getPersistentItems();
 }
 
 export default {
