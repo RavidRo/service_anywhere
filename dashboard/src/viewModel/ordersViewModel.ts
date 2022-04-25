@@ -1,6 +1,7 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
 import {OrderIDO, OrderStatus} from '../../../api';
+import Singleton from '../singleton';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -14,7 +15,10 @@ export default class OrdersViewModel {
 	}
 	get orders(): OrderIDO[] {
 		if (this.firstTime) {
-			this.ordersModel.orders = this.api.getOrders();
+			this.api
+				.getOrders()
+				.then(orders => (this.ordersModel.orders = orders));
+			this.firstTime = false;
 		}
 		return this.ordersModel.orders;
 	}
@@ -24,10 +28,10 @@ export default class OrdersViewModel {
 	}
 
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
-		if (this.api.changeOrderStatus(orderId, newStatus) === true) {
+		this.api.changeOrderStatus(orderId, newStatus).then(() => {
 			this.ordersModel.changeOrderStatus(orderId, newStatus);
 			return true;
-		}
+		});
 		return false;
 	}
 }
