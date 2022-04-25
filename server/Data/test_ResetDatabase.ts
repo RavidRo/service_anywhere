@@ -7,9 +7,9 @@ import {OrderDAO} from './entities/Domain/OrderDAO';
 import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
 import {WaiterDAO} from './entities/Domain/WaiterDAO';
 
-function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
+async function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
 	const saves = entities.map(item => item.save());
-	return Promise.all(saves);
+	await Promise.all(saves);
 }
 
 function clearTable<T>(entityClass: EntityTarget<T>) {
