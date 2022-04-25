@@ -88,7 +88,6 @@ export async function createOrder(
 	const filteredEntries = entries.filter(([_, quantity]) => quantity !== 0);
 	const quantities = filteredEntries.map(([_, quantity]) => quantity);
 	const itemsIds = filteredEntries.map(([id, _]) => id);
-
 	if (filteredEntries.length === 0) {
 		return makeFail('You must choose items to order', 400);
 	}
@@ -106,7 +105,7 @@ export async function createOrder(
 			400
 		);
 	}
-
+	console.debug("order: " + guestId)
 	const newOrderResponse = await OrderNotifier.createNewOrder(
 		guestId,
 		new Map(filteredEntries)

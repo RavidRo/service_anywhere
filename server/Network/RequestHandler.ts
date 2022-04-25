@@ -88,7 +88,10 @@ app.post('/login', (req, res) => {
 	checkInputs(
 		['password'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.status(400)
+			res.send(msg)
+		},
 		() => {
 			authenticator
 				.login(req.body['password'])
@@ -109,7 +112,7 @@ app.post('/login', (req, res) => {
 
 //Guest
 
-app.get('/getItemsGuest', (_req, res) => {
+app.get('/getItems', (_req, res) => {
 	items.getItems().then((items) => res.send(items)).catch(() => {
 		res.status(500)
 		res.send('Getting items failed, try again later')
@@ -117,7 +120,6 @@ app.get('/getItemsGuest', (_req, res) => {
 });
 
 app.get('/getGuestOrder', (req, res) => {
-	console.log(req.headers);
 	authenticate(
 		req.headers.authorization,
 		1,
@@ -145,12 +147,12 @@ app.post('/createOrder', (req, res) => {
 				(msg: string) => res.send(msg),
 				(id: string) => {
 					guest
-						.createOrder(id, req.body['orderItems'])
+						.createOrder(id, new Map(Object.entries(req.body['orderItems'])))
 						.then(response => {
 							sendResponse(
 								response,
 								st => res.status(st),
-								res.send
+								(msg) => res.send(msg)
 							);
 						});
 				}
@@ -192,10 +194,6 @@ app.post('/cancelOrderGuest', (req, res) => {
 });
 
 //waiter
-
-app.get('/getItemsWaiter', (_req, res) => {
-	res.send(items.getItems());
-});
 
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(

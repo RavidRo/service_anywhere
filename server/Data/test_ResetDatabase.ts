@@ -89,15 +89,21 @@ export async function load_data() {
 			throw new Error(`Failed loading ${entityName}'s table: ${e}`);
 		}
 	}
-
 	try {
 		const guests = await GuestDAO.find();
-		const waiters = await WaiterDAO.find();
-		for (const user of [...waiters, ...guests]) {
+		for (const user of [...guests]) {
 			const credentialsGuest = new UserCredentials();
 			credentialsGuest.id = user.id;
-			credentialsGuest.password = '123456';
-			credentialsGuest.permissionLevel = 100;
+			credentialsGuest.password = '1234';
+			credentialsGuest.permissionLevel = 1;
+			await credentialsGuest.save();
+		}
+		const waiters = await WaiterDAO.find();
+		for (const user of [...waiters]) {
+			const credentialsGuest = new UserCredentials();
+			credentialsGuest.id = user.id;
+			credentialsGuest.password = '5678';
+			credentialsGuest.permissionLevel = 2;
 			await credentialsGuest.save();
 		}
 	} catch (e) {
