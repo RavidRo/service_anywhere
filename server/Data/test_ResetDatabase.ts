@@ -6,6 +6,7 @@ import {ItemDAO} from './entities/Domain/ItemDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
 import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
 import {WaiterDAO} from './entities/Domain/WaiterDAO';
+import config from 'server/config.json'
 
 async function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
 	const saves = entities.map(item => item.save());
@@ -100,12 +101,18 @@ export async function load_data() {
 		}
 		const waiters = await WaiterDAO.find();
 		for (const user of [...waiters]) {
-			const credentialsGuest = new UserCredentials();
-			credentialsGuest.id = user.id;
-			credentialsGuest.password = '5678';
-			credentialsGuest.permissionLevel = 2;
-			await credentialsGuest.save();
+			const credentialsWaiter = new UserCredentials();
+			credentialsWaiter.id = user.id;
+			credentialsWaiter.password = '5678';
+			credentialsWaiter.permissionLevel = 2;
+			await credentialsWaiter.save();
 		}
+		const credentialsAdmin = new UserCredentials();
+		credentialsAdmin.id = config.admin_id;
+		credentialsAdmin.password = '9999';
+		credentialsAdmin.permissionLevel = 3;
+		await credentialsAdmin.save();
+
 	} catch (e) {
 		throw new Error(`Failed loading UserCredentials's table: ${e}`);
 	}

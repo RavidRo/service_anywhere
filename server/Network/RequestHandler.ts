@@ -22,11 +22,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const statusFail = 400;
 app.use(express.json());
+app.use(cors({origin: '*'}));
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
 // use it before all route definitions
-app.use(cors({origin: '*'}));
 
 app.get('/', (_req, res) => {
 	res.send('Hello World!');
@@ -94,7 +94,11 @@ app.post('/login', (req, res) => {
 	checkInputs(
 		['password'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) =>
+		{
+			res.send(msg)
+			logger.info("A user tried to log in without a password")
+		},
 		(status) => res.status(status),
 		() => {
 			authenticator
@@ -106,15 +110,16 @@ app.post('/login', (req, res) => {
 						msg => res.send(msg)
 					);
 					if(response.isSuccess()){
-						logger.info('a user logged in, data: ' + response.getData())
+						logger.info("A user connected successfully")
 					}
 					else{
-						logger.info('a user failed to log in, error: ' + response.getError())
+						logger.info("A user failed to connect (wrong password)")
 					}
 				})
 				.catch(reason => {
 					res.status(statusFail);
 					res.send(reason);
+					logger.error("An unknown error occured during user data retreival")
 				});
 		}
 	);
@@ -123,9 +128,11 @@ app.post('/login', (req, res) => {
 //Guest
 
 app.get('/getItems', (_req, res) => {
-	items.getItems().then((items) => res.send(items)).catch(() => {
+	items.getItems().then((items) => res.send(items))
+	.catch(() => {
 		res.status(500)
 		res.send('Getting items failed, try again later')
+		logger.error("An error occured while getting items data")
 	})
 });
 
@@ -133,7 +140,10 @@ app.get('/getGuestOrder', (req, res) => {
 	authenticate(
 		req.headers.authorization,
 		1,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to get a guest's active order but used an unmatched token")
+		},
 		(status) => res.status(status),
 		async (id: string) => {
 			const response = await guest.getGuestOrder(id);
@@ -142,6 +152,9 @@ app.get('/getGuestOrder', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(!response.isSuccess()){
+				logger.info("A guest failed to get their active order. Error: " + response.getError())
+			}
 		}
 	);
 });
@@ -153,13 +166,17 @@ app.post('/createOrder', (req, res) => {
 		(msg: string) => {
 			res.status(statusFail)
 			res.send(msg)
+			logger.info("A guest tried to create an order but didn't enter items")
 		},
 		(status) => res.status(status),
 		() => {
 			authenticate(
 				req.headers.authorization,
 				1,
-				(msg: string) => res.send(msg),
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A guest tried to create an order with an unmatched token")
+				},
 				(status) => res.status(status),
 				(id: string) => {
 					guest
@@ -170,7 +187,15 @@ app.post('/createOrder', (req, res) => {
 								st => res.status(st),
 								(msg) => res.send(msg)
 							);
-						});
+							if(response.isSuccess()){
+								logger.info("A guest created a new order. Order ID: " + response.getData())
+							}
+							else{
+								logger.info("A guest could not create a new order. Error: " + response.getError())
+							}
+						}).catch(e =>
+							logger.error("An error occured while trying to save the new order: " + e)
+						);
 				}
 			);
 		}
@@ -198,7 +223,10 @@ app.post('/cancelOrderGuest', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A guest tried to cancel their order but did not enter order ID")
+		},
 		(status) => res.status(status),
 		async () => {
 			const response = await guest.cancelOrder(req.body['orderId']);
@@ -207,6 +235,12 @@ app.post('/cancelOrderGuest', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(response.isSuccess()){
+				logger.info("A guest canceled their order. Order ID: " + req.body['orderId'])
+			}
+			else{
+				logger.info("A guest failed to cancel their order. Error: " + response.getError())
+			}
 		}
 	);
 });
@@ -217,7 +251,10 @@ app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,
 		2,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to watch a waiter's orders without permission or with an unmatched token")
+		},
 		(status) => res.status(status),
 		async (id: string) => {
 			const response = await waiter.getWaiterOrders(id);
@@ -226,6 +263,9 @@ app.get('/getWaiterOrders', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(!response.isSuccess()){
+				logger.info("A user failed to get a waiter's order. Error: " + response.getError())
+			}
 		}
 	);
 });
@@ -234,7 +274,10 @@ app.post('/orderArrived', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A waiter tried to change order status to 'arrived' and didn't give an order ID")
+		},
 		(status) => res.status(status),
 		async () => {
 			const response = await waiter.orderArrived(req.body['orderId']);
@@ -243,6 +286,12 @@ app.post('/orderArrived', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(response.isSuccess()){
+				logger.info("A waiter changes order status to 'arrived'. Order ID: " + req.body['orderId'])
+			}
+			else{
+				logger.info("A waiter failed to change order status to 'arrived'. Error: " + response.getError())
+			}
 		}
 	);
 });
@@ -251,7 +300,10 @@ app.post('/orderOnTheWay', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A waiter tried to change order status to 'on the way' and didn't give an order ID")
+		},
 		(status) => res.status(status),
 		async () => {
 			const response = await waiter.orderOnTheWay(req.body['orderId']);
@@ -265,12 +317,13 @@ app.post('/orderOnTheWay', (req, res) => {
 });
 
 io.on('connection', function (socket: socketio.Socket) {
-	console.log('a user connected');
+	console.debug('a user connected');
 	authenticate(
 		socket.handshake.auth['token'],
 		0,
 		(msg: string) => {
 			socket.emit('Error', msg);
+			logger.error("Could not connect a user to the websocket")
 		},
 		(_status) => {},
 		(id: string) =>
@@ -283,13 +336,19 @@ io.on('connection', function (socket: socketio.Socket) {
 		checkInputs(
 			['mapId', 'location'],
 			message,
-			(msg: string) => socket.emit('Error', msg),
+			(msg: string) => {
+				socket.emit('Error', msg)
+				logger.info("A user tried to update a guest's location but didn't include the map ID or the location")
+			},
 			(_status) => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
 					1,
-					(msg: string) => socket.emit('Error', msg),
+					(msg: string) => {
+						socket.emit('Error', msg)
+						logger.info("A user tried to update a guest's location but used an unmatched token")
+					},
 					(_status) => {},
 					(id: string) =>
 						guest.updateLocationGuest(
@@ -304,13 +363,18 @@ io.on('connection', function (socket: socketio.Socket) {
 		checkInputs(
 			['mapId', 'location'],
 			message,
-			(msg: string) => socket.emit('Error', msg),
-			(_status) => {},
+			(msg: string) => {
+				socket.emit('Error', msg)
+				logger.info("A user tried to update a waiter's location but didn't include the map ID or the location")
+			},			(_status) => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
 					2,
-					(msg: string) => socket.emit('Error', msg),
+					(msg: string) => {
+						socket.emit('Error', msg)
+						logger.info("A user tried to update a guest's location but used an unmatched token or has no permission")
+					},
 					(_status) => {},
 					(id: string) =>
 						waiter.updateLocationWaiter(
@@ -325,11 +389,14 @@ io.on('connection', function (socket: socketio.Socket) {
 
 //Dashboard
 
-app.post('/assignWaiter', (req, res) => {
+app.post('/assignWaiter', (req, res) => {	//todo: authenticate
 	checkInputs(
 		['orderIds', 'waiterId'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to assign a waiter but didn't include order IDs or waiter ID")
+		},
 		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.assignWaiter(
@@ -341,35 +408,50 @@ app.post('/assignWaiter', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(response.isSuccess()){
+				logger.info("A waiter was assigned successfuly. Waiter ID: " + req.body['waiterId'] + " Order IDs: " + req.body['orderIds'])
+			}
+			else{
+				logger.info("A waiter could not be assigned. Error: " + response.getError())
+			}
 		}
 	);
 });
 
-app.get('/getOrders', (_req, res) => {
+app.get('/getOrders', (_req, res) => {	//todo: authenticate
 	dashboard.getAllOrders().then(response => {
 		sendResponse(
 			response,
 			st => res.status(st),
 			msg => res.send(msg)
 		);
+		if(!response.isSuccess()){
+			logger.info("Admin could not get orders. Error: " + response.getError())
+		}
 	});
 });
 
-app.get('/getWaiters', (_req, res) => {
+app.get('/getWaiters', (_req, res) => {	//todo: authenticate
 	dashboard.getWaiters().then(response => {
 		sendResponse(
 			response,
 			st => res.status(st),
 			msg => res.send(msg)
 		);
+		if(!response.isSuccess()){
+			logger.info("Admin could not get waiters. Error: " + response.getError())
+		}
 	});
 });
 
-app.get('/getWaitersByOrder', (req, res) => {
+app.get('/getWaitersByOrder', (req, res) => {	//todo: authenticate
 	checkInputs(
 		['orderId'],
 		req.query,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to get waiters by order but did not include an order ID")
+		},
 		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.getWaiterByOrder(
@@ -380,15 +462,21 @@ app.get('/getWaitersByOrder', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(!response.isSuccess()){
+				logger.info("Admin could not get waiters by order. Error: " + response.getError())
+			}
 		}
 	);
 });
 
-app.post('/cancelOrderAdmin', (req, res) => {
+app.post('/cancelOrderAdmin', (req, res) => {	//todo: authenticate
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to cancel an order but did not include an order ID")
+		},
 		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.cancelOrderAdmin(
@@ -399,16 +487,21 @@ app.post('/cancelOrderAdmin', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(!response.isSuccess()){
+				logger.info("Admin could not cancel order. Error: " + response.getError())
+			}
 		}
 	);
 });
 
-app.post('/changeOrderStatus', (req, res) => {
+app.post('/changeOrderStatus', (req, res) => {	//todo: authenticate
 	checkInputs(
 		['orderId', 'newStatus'],
 		req.body,
-		(msg: string) => res.send(msg),
-		(status) => res.status(status),
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to change order status but did not include an order ID or a new status")
+		},		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.changeOrderStatus(
 				req.body['orderId'],
@@ -419,6 +512,9 @@ app.post('/changeOrderStatus', (req, res) => {
 				st => res.status(st),
 				msg => res.send(msg)
 			);
+			if(!response.isSuccess()){
+				logger.info("Admin could not cancel order. Error: " + response.getError())
+			}
 		}
 	);
 });
