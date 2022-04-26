@@ -1,12 +1,26 @@
 import {makeAutoObservable} from 'mobx';
 
 export default class ConnectModel {
-	public token: string | undefined;
-	public isReconnecting: boolean;
+	private _token: string | undefined;
+	private _isReconnecting: boolean;
 
 	private constructor() {
-		this.isReconnecting = false;
+		this._isReconnecting = false;
 		makeAutoObservable(this);
+	}
+
+	get isReconnecting(): boolean {
+		return this._isReconnecting;
+	}
+	set isReconnecting(reconnecting: boolean) {
+		this._isReconnecting = reconnecting;
+	}
+
+	get token(): string | undefined {
+		return this._token;
+	}
+	set token(t: string | undefined) {
+		this._token = t;
 	}
 
 	static instance?: ConnectModel;
