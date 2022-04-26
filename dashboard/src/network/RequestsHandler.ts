@@ -28,7 +28,11 @@ class RequestsHandler {
 		};
 
 		const request = GET ? this.axiosInstance.get : this.axiosInstance.post;
-		return request(`${endPoint}`, GET ? {params} : params, config)
+		return request(
+			`${endPoint}`,
+			GET ? {params, ...config} : params,
+			config
+		)
 			.then(response => this.handleResponse<T>(response))
 			.catch(e => {
 				console.warn(e);
