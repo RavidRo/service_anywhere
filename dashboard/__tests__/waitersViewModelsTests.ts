@@ -104,8 +104,17 @@ describe('Constructor', () => {
 	test('get waiters in model', async () => {
 		const model = new waiterModel();
 		const waiterViewModel = new WaitersViewModel(model, new Api());
+		waiterViewModel.waiters = mockListOfWaiters;
 		const waiters = waiterViewModel.waiters;
+		expect(waiters).toEqual(mockListOfWaiters);
+	});
+
+	test('synchronise waiters in model', async () => {
+		const model = new waiterModel();
+		const waiterViewModel = new WaitersViewModel(model, new Api());
+		waiterViewModel.synchroniseWaiters();
 		await flushPromises();
+		const waiters = waiterViewModel.waiters;
 		expect(waiters).toEqual(mockListOfWaiters);
 	});
 });

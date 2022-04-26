@@ -9,6 +9,8 @@ export default class ConnectViewModel {
 	private api: Api;
 	private model: ConnectModel;
 	private connectionHandler: ConnectionHandler;
+	private waitersViewModel: WaitersViewModel;
+	private ordersViewModel: OrdersViewModel;
 
 	constructor(
 		api: Api,
@@ -17,6 +19,9 @@ export default class ConnectViewModel {
 	) {
 		this.api = api;
 		this.model = ConnectModel.getInstance();
+		this.ordersViewModel = orderViewModel;
+		this.waitersViewModel = waiterViewModel;
+
 		this.connectionHandler = new ConnectionHandler(
 			orderViewModel,
 			waiterViewModel
@@ -36,7 +41,10 @@ export default class ConnectViewModel {
 
 	public connect() {
 		return new Promise<void>((resolve, reject) => {
-			if (this.model.token) {
+			if (this.model.token !== undefined) {
+				console.info('Trying to connect with token ', this.model.token);
+				this.waitersViewModel.synchroniseWaiters();
+				this.ordersViewModel.synchroniseOrders();
 				this.connectionHandler.connect(
 					this.model.token,
 					() => resolve(),
