@@ -22,8 +22,9 @@ export default class ConnectionViewModel {
 		this.myLocation = new MyLocationViewModel();
 	}
 
-	login(): Promise<string> {
-		return this.requests.login().then(token => {
+	login(password: string): Promise<string> {
+		return this.requests.login(password).then(token => {
+			console.info('Logged in with token:', token);
 			this.model.token = token;
 			return token;
 		});

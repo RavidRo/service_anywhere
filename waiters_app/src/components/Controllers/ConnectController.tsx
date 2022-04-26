@@ -26,16 +26,20 @@ const ConnectController = observer((_props: ConnectControllerProps) => {
 			.finally(() => setIsLoading(false));
 	};
 
-	const logIn = () => {
+	const logIn = (password: string) => {
 		setIsLoading(true);
 		return connectionViewModel
-			.login()
-			.catch(() => Alert.alert("Can't login to server"))
+			.login(password)
 			.finally(() => setIsLoading(false));
 	};
 
-	const onSubmit = () => {
-		logIn().then(establishConnection);
+	const onSubmit = (password: string) => {
+		logIn(password)
+			.then(establishConnection)
+			.catch(e => {
+				const msg = e?.response?.data ?? "Can't login to server";
+				Alert.alert(msg);
+			});
 	};
 
 	return (
