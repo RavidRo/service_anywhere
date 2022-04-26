@@ -54,9 +54,8 @@ export default function ConnectViewController() {
 	if (isConnected) {
 		return (
 			<>
-				{connectViewModel.connection.isReconnecting && (
-					<h1>Connection lost, trying to reconnect...</h1>
-				)}
+				{connectViewModel.connection.isReconnecting &&
+					alert('Connection lost, trying to reconnect...')}
 				<OrdersViewController
 					ordersViewModel={ordersViewModel}
 					waitersViewModel={waitersViewModel}
@@ -68,9 +67,7 @@ export default function ConnectViewController() {
 		return (
 			<>
 				{isLoading ? (
-					<>
-						<h1>Establishing connection...</h1>
-					</>
+					alert('Establishing connection...')
 				) : (
 					<Button onClick={establishConnection} disabled={isLoading}>
 						Retry
