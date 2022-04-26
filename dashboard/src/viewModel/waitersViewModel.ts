@@ -12,7 +12,10 @@ export default class WaitersViewModel {
 	}
 
 	get waiters(): WaiterIDO[] {
-		// return this.waitersModel.waiters;
+		this.api
+			.getWaiters()
+			.then(waiters => (this.waitersModel.waiters = waiters));
+
 		return this.waitersModel.waiters;
 	}
 
@@ -20,9 +23,6 @@ export default class WaitersViewModel {
 		this.waitersModel.waiters = waiters;
 	}
 
-	async getWaiters(): Promise<WaiterIDO[]> {
-		return await this.api.getWaiters();
-	}
 	assignWaiter(orderId: string, waiter: string) {
 		return this.api.assignWaiter(orderId, waiter);
 	}

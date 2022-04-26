@@ -101,10 +101,11 @@ describe('Constructor', () => {
 		expect(mockGetWaitersByOrder).toHaveBeenCalled();
 	});
 
-	test('Set and get orders in model', async () => {
+	test('get waiters in model', async () => {
 		const model = new waiterModel();
 		const waiterViewModel = new WaitersViewModel(model, new Api());
-		waiterViewModel.waiters = mockListOfWaiters;
-		expect(waiterViewModel.waiters).toEqual(mockListOfWaiters);
+		const waiters = waiterViewModel.waiters;
+		await flushPromises();
+		expect(waiters).toEqual(mockListOfWaiters);
 	});
 });
