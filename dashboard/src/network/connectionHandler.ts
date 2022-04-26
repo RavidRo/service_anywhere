@@ -3,6 +3,8 @@ import Singleton from '../singleton';
 import Notification from './notifications';
 import ordersViewModel from '../viewModel/ordersViewModel';
 import waitersViewModel from '../viewModel/waitersViewModel';
+import ConnectModel from '../model/ConnectModel';
+import {DefaultEventsMap} from 'socket.io/dist/typed-events';
 
 const config = require('./config.json');
 const host = config.host;
@@ -12,8 +14,9 @@ const _host_port = `${host}:${port}`;
 const base_route = `${host}`;
 
 export default class ConnectionHandler extends Singleton {
-	private socket?: Socket;
+	private socket: Socket;
 	private notifications: Notification;
+	private connectionModel: ConnectModel;
 
 	constructor(
 		orderViewModel: ordersViewModel,
@@ -21,25 +24,46 @@ export default class ConnectionHandler extends Singleton {
 	) {
 		super();
 		this.notifications = new Notification(orderViewModel, waiterViewModel);
+		this.socket = io(config['host'], {autoConnect: false});
+		this.connectionModel = ConnectModel.getInstance();
 	}
 
-	connect(onSuccess?: () => void): void {
-		const socket = io(base_route);
+	public connect(
+		token: string,
+		onSuccess?: () => void,
+		onError?: () => void
+	): void {
+		this.socket.auth = {token};
+		this.socket.connect();
 
-		socket.on('connect', () => {
+		let returnedResult = false;
+
+		this.socket.on('connect', () => {
 			// Connected successfully to the server
-			onSuccess?.();
+			if (!returnedResult) {
+				this.connectionModel.isReconnecting = false;
+				onSuccess?.();
+			}
+			returnedResult = true;
 			console.info(
 				'A socket connection has been created successfully with the server'
 			);
 		});
-		socket.on('disconnect', reason => {
+		this.socket.on('connect_error', error => {
+			if (!returnedResult) {
+				onError?.();
+				returnedResult = true;
+			}
+			console.error('Could not connect to server', error.message);
+		});
+		this.socket.on('disconnect', reason => {
+			this.connectionModel.isReconnecting = true;
 			if (reason === 'io server disconnect') {
 				// the disconnection was initiated by the server, you need to reconnect manually
 				console.warn(
 					'The socket connection to the server has been disconnected by the server, trying to reconnect...'
 				);
-				socket.connect();
+				this.socket.connect();
 			} else {
 				// else the socket will automatically try to reconnect
 				// Too see the reasons for a disconnect https://socket.io/docs/v4/client-api/#event-disconnect
@@ -50,18 +74,16 @@ export default class ConnectionHandler extends Singleton {
 			}
 		});
 
-		this.socket = socket;
+		this.socket = this.socket;
 
-		this.registerEvents(socket);
+		this.registerEvents(this.socket);
 	}
 
-	registerEvents(socket: Socket) {
-		const eventCallbacks = this.notifications.eventCallbacks;
-
-		for (const event in eventCallbacks) {
+	private registerEvents(socket: Socket<DefaultEventsMap, DefaultEventsMap>) {
+		for (const event in this.notifications.eventCallbacks) {
 			socket.on(event, params => {
 				console.info(`Notification ${event}:`, params);
-				eventCallbacks[event as keyof typeof eventCallbacks](params);
+				this.notifications.eventCallbacks[event](params);
 			});
 		}
 	}

@@ -1,6 +1,7 @@
 import {WaiterIDO, OrderIDO} from '../../api';
 
 export function isWaiterArray(waiters: any[]): waiters is WaiterIDO[] {
+	console.log('Received ' + waiters);
 	if (!waiters || !Array.isArray(waiters)) {
 		return false;
 	}
@@ -19,6 +20,7 @@ export function isWaiterArray(waiters: any[]): waiters is WaiterIDO[] {
 }
 
 export function isOrderArray(orders: any[]): orders is OrderIDO[] {
+	console.log('Received: ' + orders);
 	if (!orders || !Array.isArray(orders)) {
 		return false;
 	}

@@ -13,6 +13,7 @@ import RoomServiceIcon from '@mui/icons-material/RoomService';
 const dialogTitle = 'Choose Waiter';
 
 function WaiterDialogView(props: any) {
+	console.log('creating waiters view');
 	const {
 		assignedWaiter,
 		waiters,
