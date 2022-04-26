@@ -59,6 +59,6 @@ export async function getWaiter(waiterID: string) {
 			id: waiterID,
 		},
 	});
-	return makeGood(waiter);
+	return waiter;
 }
 

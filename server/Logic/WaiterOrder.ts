@@ -35,7 +35,7 @@ export async function assignWaiter(
 	waiterID: string
 ): Promise<ResponseMsg<void>> {
 	const waiter = await WaiterStore.getWaiter(waiterID)
-	if (waiter === undefined) {
+	if (waiter === null) {
 		return makeFail('The requested waiter does not exit', 400);
 	}
 	if (!waiter.available) {
