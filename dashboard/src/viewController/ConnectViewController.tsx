@@ -40,7 +40,6 @@ export default function ConnectViewController() {
 	const login = (password: string) => {
 		return connectViewModel
 			.login(password)
-			.catch(() => alert("Can't login to server"))
 			.finally(() => setIsLoading(false));
 	};
 
@@ -48,7 +47,9 @@ export default function ConnectViewController() {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		const password: string = data.get('password')?.toString() || '';
-		login(password).then(establishConnection);
+		login(password)
+			.then(establishConnection)
+			.catch(() => alert("Can't login to server"));
 	};
 
 	if (isConnected) {

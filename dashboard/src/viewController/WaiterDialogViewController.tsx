@@ -40,7 +40,7 @@ export default function WaiterDialogViewController(props: any) {
 	return (
 		<WaiterDialogView
 			assignedWaiter={assignedWaiter}
-			waiters={waitersViewModel.getWaiters()}
+			waiters={waitersViewModel.waiters}
 			handleOpen={handleOpen}
 			handleClose={handleClose}
 			handleListItemClick={handleListItemClick}

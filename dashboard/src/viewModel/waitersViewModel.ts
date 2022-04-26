@@ -20,9 +20,14 @@ export default class WaitersViewModel {
 	}
 
 	synchroniseWaiters(): Promise<void> {
-		return this.api.getWaiters().then(waiters => {
-			this.waitersModel.waiters = waiters;
-		});
+		return this.api
+			.getWaiters()
+			.then(waiters => {
+				this.waitersModel.waiters = waiters;
+			})
+			.catch(err =>
+				alert('Could not get waiters please reload, Error:' + err)
+			);
 	}
 	assignWaiter(orderId: string, waiter: string) {
 		return this.api.assignWaiter(orderId, waiter);

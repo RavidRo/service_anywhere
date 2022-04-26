@@ -1,8 +1,6 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
 import {OrderIDO, OrderStatus} from '../../../api';
-import Singleton from '../singleton';
-import {Tune} from '@mui/icons-material';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -21,9 +19,14 @@ export default class OrdersViewModel {
 	}
 
 	synchroniseOrders(): Promise<void> {
-		return this.api.getOrders().then(orders => {
-			this.ordersModel.orders = orders;
-		});
+		return this.api
+			.getOrders()
+			.then(orders => {
+				this.ordersModel.orders = orders;
+			})
+			.catch(err =>
+				alert('Could not get orders please reload, Error: ' + err)
+			);
 	}
 
 	changeOrderStatus(
