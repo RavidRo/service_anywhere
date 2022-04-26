@@ -15,11 +15,12 @@ import authenticator from '../Logic/Authentication/Authenticator';
 
 import {AppDataSource} from '../Data/data-source';
 import reset_all from '../Data/test_ResetDatabase';
+import { logger } from 'server/Logger';
 
 let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const statusOk = 400;
+const statusFail = 400;
 app.use(express.json());
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
@@ -43,11 +44,11 @@ function authenticate(
 		if (response.isSuccess()) {
 			response.ifGood(doIfLegal);
 		} else {
-			setErrorStatus(400)
+			setErrorStatus(statusFail)
 			sendErrorMsg(response.getError());
 		}
 	} else {
-		setErrorStatus(400)
+		setErrorStatus(statusFail)
 		sendErrorMsg('Token does not match any id');
 	}
 }
@@ -82,7 +83,7 @@ function checkInputs(
 	}
 	if (missing) {
 		answer = answer.substring(0, answer.length - 2) + ' not in request.';
-		setErrorStatus(400)
+		setErrorStatus(statusFail)
 		sendErrorMsg(answer);
 	} else {
 		doIfLegal();
@@ -104,9 +105,15 @@ app.post('/login', (req, res) => {
 						st => res.status(st),
 						msg => res.send(msg)
 					);
+					if(response.isSuccess()){
+						logger.info('a user logged in, data: ' + response.getData())
+					}
+					else{
+						logger.info('a user failed to log in, error: ' + response.getError())
+					}
 				})
 				.catch(reason => {
-					res.status(statusOk);
+					res.status(statusFail);
 					res.send(reason);
 				});
 		}
@@ -144,7 +151,7 @@ app.post('/createOrder', (req, res) => {
 		['orderItems'],
 		req.body,
 		(msg: string) => {
-			res.status(400)
+			res.status(statusFail)
 			res.send(msg)
 		},
 		(status) => res.status(status),

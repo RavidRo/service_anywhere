@@ -28,8 +28,5 @@
 		"guests_app",
 		"waiters_app",
 		"server"
-	],
-	"dependencies": {
-		"ts-log": "^2.2.4"
-	}
+	]
 }
