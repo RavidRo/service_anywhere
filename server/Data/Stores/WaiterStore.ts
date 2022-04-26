@@ -48,7 +48,17 @@ export async function getOrdersByWaiter(
 		},
 	});
 	if (waiter === null) {
-		return makeFail('Requested order does not exist');
+		return makeFail('Requested waiter does not exist');
 	}
 	return makeGood(waiter.orders);
 }
+export async function getWaiter(waiterID: string) {
+	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
+	const waiter = await waiterRepository.findOne({
+		where: {
+			id: waiterID,
+		},
+	});
+	return makeGood(waiter);
+}
+
