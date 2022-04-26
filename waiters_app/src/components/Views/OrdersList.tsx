@@ -12,6 +12,14 @@ type OrdersViewProps = {
 const OrdersListView = observer((props: OrdersViewProps) => {
 	return (
 		<>
+			{props.orders.length === 0 && (
+				<View style={styles.noOrders}>
+					<Text style={styles.noOrdersText}>
+						{' '}
+						You are not assigned to any orders
+					</Text>
+				</View>
+			)}
 			{props.orders.map((order, index) => {
 				return (
 					<TouchableOpacity
@@ -47,5 +55,13 @@ const styles = StyleSheet.create({
 	orderContainer: {
 		paddingHorizontal: 20,
 		paddingVertical: 7,
+	},
+	noOrders: {
+		paddingTop: 20,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	noOrdersText: {
+		fontSize: 18,
 	},
 });

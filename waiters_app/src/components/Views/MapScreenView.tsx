@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, StyleSheet, View} from 'react-native';
+import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 import OrdersListController from '../Controllers/OrdersListController';
@@ -14,9 +14,11 @@ export default function MapScreenView(props: MapScreenViewProps): JSX.Element {
 		<>
 			<View style={styles.screen} testID='homeScreen'>
 				<MapMarkersController style={styles.map} />
-				<View style={styles.openDrawerButton}>
-					<Button title='Order' onPress={props.openBottomSheet} />
-				</View>
+				<TouchableOpacity
+					style={styles.openDrawerButton}
+					onPress={props.openBottomSheet}>
+					<Text style={styles.openDrawerButtonText}>Your Orders</Text>
+				</TouchableOpacity>
 				<RBSheet
 					ref={props.refBottomSheet}
 					closeOnDragDown={true}
@@ -28,6 +30,9 @@ export default function MapScreenView(props: MapScreenViewProps): JSX.Element {
 						draggableIcon: {
 							backgroundColor: '#000',
 						},
+						// container: {
+						// 	backgroundColor: 'yellow'
+						// }
 					}}>
 					<OrdersListController />
 				</RBSheet>
@@ -40,15 +45,22 @@ const styles = StyleSheet.create({
 	screen: {
 		display: 'flex',
 		flexDirection: 'column',
-		justifyContent: 'flex-start',
+		justifyContent: 'space-between',
+		flex: 1,
 	},
 	map: {
-		height: '95%',
+		flexGrow: 1,
+		backgroundColor: 'red',
 	},
 	openDrawerButton: {
-		flexGrow: 1,
-		// height: 50,
-		// bottom: 0,
-		// position: 'relative',
+		padding: 10,
+		paddingBottom: 20,
+		backgroundColor: '#55b7e0',
+		textAlign: 'center',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	openDrawerButtonText: {
+		fontSize: 18,
 	},
 });
