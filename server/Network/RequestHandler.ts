@@ -35,6 +35,7 @@ function authenticate(
 	token: string | undefined,
 	permissionLevel: number,
 	sendErrorMsg: (msg: string) => void,
+	setErrorStatus: (status: number) => void,
 	doIfLegal: (id: string) => void
 ) {
 	if (token) {
@@ -42,9 +43,11 @@ function authenticate(
 		if (response.isSuccess()) {
 			response.ifGood(doIfLegal);
 		} else {
+			setErrorStatus(400)
 			sendErrorMsg(response.getError());
 		}
 	} else {
+		setErrorStatus(400)
 		sendErrorMsg('Token does not match any id');
 	}
 }
@@ -66,6 +69,7 @@ function checkInputs(
 	inputs: string[],
 	reqBody: any,
 	sendErrorMsg: (msg: string) => void,
+	setErrorStatus: (status: number) => void,
 	doIfLegal: () => void
 ) {
 	let answer = '';
@@ -78,6 +82,7 @@ function checkInputs(
 	}
 	if (missing) {
 		answer = answer.substring(0, answer.length - 2) + ' not in request.';
+		setErrorStatus(400)
 		sendErrorMsg(answer);
 	} else {
 		doIfLegal();
@@ -88,10 +93,8 @@ app.post('/login', (req, res) => {
 	checkInputs(
 		['password'],
 		req.body,
-		(msg: string) => {
-			res.status(400)
-			res.send(msg)
-		},
+		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		() => {
 			authenticator
 				.login(req.body['password'])
@@ -124,6 +127,7 @@ app.get('/getGuestOrder', (req, res) => {
 		req.headers.authorization,
 		1,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async (id: string) => {
 			const response = await guest.getGuestOrder(id);
 			sendResponse(
@@ -139,12 +143,17 @@ app.post('/createOrder', (req, res) => {
 	checkInputs(
 		['orderItems'],
 		req.body,
-		(msg: string) => res.send(msg),
+		(msg: string) => {
+			res.status(400)
+			res.send(msg)
+		},
+		(status) => res.status(status),
 		() => {
 			authenticate(
 				req.headers.authorization,
 				1,
 				(msg: string) => res.send(msg),
+				(status) => res.status(status),
 				(id: string) => {
 					guest
 						.createOrder(id, new Map(Object.entries(req.body['orderItems'])))
@@ -166,6 +175,7 @@ app.post('/submitReview', (req, res) => {
 		['orderId', 'details', 'rating'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		() =>
 			res.send(
 				guest.submitReview(
@@ -182,6 +192,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await guest.cancelOrder(req.body['orderId']);
 			sendResponse(
@@ -200,6 +211,7 @@ app.get('/getWaiterOrders', (req, res) => {
 		req.headers.authorization,
 		2,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async (id: string) => {
 			const response = await waiter.getWaiterOrders(id);
 			sendResponse(
@@ -216,6 +228,7 @@ app.post('/orderArrived', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await waiter.orderArrived(req.body['orderId']);
 			sendResponse(
@@ -232,6 +245,7 @@ app.post('/orderOnTheWay', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await waiter.orderOnTheWay(req.body['orderId']);
 			sendResponse(
@@ -251,6 +265,7 @@ io.on('connection', function (socket: socketio.Socket) {
 		(msg: string) => {
 			socket.emit('Error', msg);
 		},
+		(_status) => {},
 		(id: string) =>
 			NotificationInterface.addSubscriber(
 				id,
@@ -262,11 +277,13 @@ io.on('connection', function (socket: socketio.Socket) {
 			['mapId', 'location'],
 			message,
 			(msg: string) => socket.emit('Error', msg),
+			(_status) => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
 					1,
 					(msg: string) => socket.emit('Error', msg),
+					(_status) => {},
 					(id: string) =>
 						guest.updateLocationGuest(
 							id,
@@ -281,11 +298,13 @@ io.on('connection', function (socket: socketio.Socket) {
 			['mapId', 'location'],
 			message,
 			(msg: string) => socket.emit('Error', msg),
+			(_status) => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
 					2,
 					(msg: string) => socket.emit('Error', msg),
+					(_status) => {},
 					(id: string) =>
 						waiter.updateLocationWaiter(
 							id,
@@ -304,6 +323,7 @@ app.post('/assignWaiter', (req, res) => {
 		['orderIds', 'waiterId'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.assignWaiter(
 				req.body['orderIds'],
@@ -343,6 +363,7 @@ app.get('/getWaitersByOrder', (req, res) => {
 		['orderId'],
 		req.query,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.getWaiterByOrder(
 				String(req.query['orderId'])
@@ -361,6 +382,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		['orderId'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.cancelOrderAdmin(
 				req.body['orderId']
@@ -379,6 +401,7 @@ app.post('/changeOrderStatus', (req, res) => {
 		['orderId', 'newStatus'],
 		req.body,
 		(msg: string) => res.send(msg),
+		(status) => res.status(status),
 		async () => {
 			const response = await dashboard.changeOrderStatus(
 				req.body['orderId'],
