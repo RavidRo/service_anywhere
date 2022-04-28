@@ -43,7 +43,7 @@ function submitReview(
 	throw new Error('Method not implemented');
 }
 
-async function cancelOrder(orderID: string): Promise<ResponseMsg<void>> {
+async function cancelOrder(orderID: string, _guestID: string): Promise<ResponseMsg<void>> {
 	const response = await onOrder(orderID, o => {
 		return o.changeOrderStatus('canceled', false, false);
 	});
