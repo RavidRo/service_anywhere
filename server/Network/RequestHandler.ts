@@ -22,7 +22,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const statusFail = 400;
 app.use(express.json());
-app.use(cors({origin: '*'}));
+app.use(cors({origin: '*', credentials:true}));
+
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
@@ -229,18 +230,29 @@ app.post('/cancelOrderGuest', (req, res) => {
 		},
 		(status) => res.status(status),
 		async () => {
-			const response = await guest.cancelOrder(req.body['orderId']);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if(response.isSuccess()){
-				logger.info("A guest canceled their order. Order ID: " + req.body['orderId'])
-			}
-			else{
-				logger.info("A guest failed to cancel their order. Error: " + response.getError())
-			}
+			authenticate(
+				req.headers.authorization,
+				1,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A guest tried to cancel their order but used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (guestId) => {
+					const response = await guest.cancelOrder(req.body['orderId'], guestId);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					);
+					if(response.isSuccess()){
+						logger.info("A guest canceled their order. Order ID: " + req.body['orderId'])
+					}
+					else{
+						logger.info("A guest failed to cancel their order. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
@@ -280,18 +292,29 @@ app.post('/orderArrived', (req, res) => {
 		},
 		(status) => res.status(status),
 		async () => {
-			const response = await waiter.orderArrived(req.body['orderId']);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if(response.isSuccess()){
-				logger.info("A waiter changes order status to 'arrived'. Order ID: " + req.body['orderId'])
-			}
-			else{
-				logger.info("A waiter failed to change order status to 'arrived'. Error: " + response.getError())
-			}
+			authenticate(
+				req.headers.authorization,
+				2,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A user tried to change order status to 'arrived' but had no permission or used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (waiterId) => {
+					const response = await waiter.orderArrived(req.body['orderId'], waiterId);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					);
+					if(response.isSuccess()){
+						logger.info("A waiter changes order status to 'arrived'. Order ID: " + req.body['orderId'])
+					}
+					else{
+						logger.info("A waiter failed to change order status to 'arrived'. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
@@ -306,12 +329,29 @@ app.post('/orderOnTheWay', (req, res) => {
 		},
 		(status) => res.status(status),
 		async () => {
-			const response = await waiter.orderOnTheWay(req.body['orderId']);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
+			authenticate(
+				req.headers.authorization,
+				2,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A waiter tried to change order status to 'on the way' but had no permission or used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (waiterId) => {
+					const response = await waiter.orderOnTheWay(req.body['orderId'], waiterId);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
+					if(response.isSuccess()){
+						logger.info("Order status was changed to 'on the way'. Order ID: " + req.body['orderId'])
+					}
+					else{
+						logger.info("A waiter failed to change order status to 'on the way'. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
@@ -389,7 +429,7 @@ io.on('connection', function (socket: socketio.Socket) {
 
 //Dashboard
 
-app.post('/assignWaiter', (req, res) => {	//todo: authenticate
+app.post('/assignWaiter', (req, res) => {
 	checkInputs(
 		['orderIds', 'waiterId'],
 		req.body,
@@ -399,49 +439,82 @@ app.post('/assignWaiter', (req, res) => {	//todo: authenticate
 		},
 		(status) => res.status(status),
 		async () => {
-			const response = await dashboard.assignWaiter(
-				req.body['orderIds'],
-				req.body['waiterId']
-			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if(response.isSuccess()){
-				logger.info("A waiter was assigned successfuly. Waiter ID: " + req.body['waiterId'] + " Order IDs: " + req.body['orderIds'])
-			}
-			else{
-				logger.info("A waiter could not be assigned. Error: " + response.getError())
-			}
+			authenticate(
+				req.headers.authorization,
+				3,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A user tried to assign a waiter but had no permission or used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (_adminId) => {
+					const response = await dashboard.assignWaiter(
+						req.body['orderIds'],
+						req.body['waiterId']
+					);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					);
+					if(response.isSuccess()){
+						logger.info("A waiter was assigned successfuly. Waiter ID: " + req.body['waiterId'] + " Order IDs: " + req.body['orderIds'])
+					}
+					else{
+						logger.info("A waiter could not be assigned. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
 
-app.get('/getOrders', (_req, res) => {	//todo: authenticate
-	dashboard.getAllOrders().then(response => {
-		sendResponse(
-			response,
-			st => res.status(st),
-			msg => res.send(msg)
-		);
-		if(!response.isSuccess()){
-			logger.info("Admin could not get orders. Error: " + response.getError())
+app.get('/getOrders', (req, res) => {
+	authenticate(
+		req.headers.authorization,
+		3,
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to get all orders but has no permission or used an unmatched token")
+		},
+		(status) => res.status(status),
+		(_id) => {
+			dashboard.getAllOrders().then(response => {
+				sendResponse(
+					response,
+					st => res.status(st),
+					msg => res.send(msg)
+				);
+				if(!response.isSuccess()){
+					logger.info("Admin could not get orders. Error: " + response.getError())
+				}
+			});
 		}
-	});
+	)
 });
 
-app.get('/getWaiters', (_req, res) => {	//todo: authenticate
-	dashboard.getWaiters().then(response => {
-		sendResponse(
-			response,
-			st => res.status(st),
-			msg => res.send(msg)
-		);
-		if(!response.isSuccess()){
-			logger.info("Admin could not get waiters. Error: " + response.getError())
+app.get('/getWaiters', (req, res) => {
+	authenticate(
+		req.headers.authorization,
+		3,
+		(msg: string) => {
+			res.send(msg)
+			logger.info("A user tried to get all orders but has no permission or used an unmatched token")
+		},
+		(status) => res.status(status),
+		(_id) => {
+			dashboard.getWaiters().then(response => {
+				sendResponse(
+					response,
+					st => res.status(st),
+					msg => res.send(msg)
+				);
+				if(!response.isSuccess()){
+					logger.info("Admin could not get waiters. Error: " + response.getError())
+				}
+			});
 		}
-	});
+	)
 });
 
 app.get('/getWaitersByOrder', (req, res) => {	//todo: authenticate
@@ -454,17 +527,28 @@ app.get('/getWaitersByOrder', (req, res) => {	//todo: authenticate
 		},
 		(status) => res.status(status),
 		async () => {
-			const response = await dashboard.getWaiterByOrder(
-				String(req.query['orderId'])
-			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if(!response.isSuccess()){
-				logger.info("Admin could not get waiters by order. Error: " + response.getError())
-			}
+			authenticate(
+				req.headers.authorization,
+				3,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A user tried to get waiters by order but did not have permission or used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (_id) => {
+					const response = await dashboard.getWaiterByOrder(
+						String(req.query['orderId'])
+					);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					);
+					if(!response.isSuccess()){
+						logger.info("Admin could not get waiters by order. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
@@ -479,17 +563,28 @@ app.post('/cancelOrderAdmin', (req, res) => {	//todo: authenticate
 		},
 		(status) => res.status(status),
 		async () => {
-			const response = await dashboard.cancelOrderAdmin(
-				req.body['orderId']
-			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if(!response.isSuccess()){
-				logger.info("Admin could not cancel order. Error: " + response.getError())
-			}
+			authenticate(
+				req.headers.authorization,
+				3,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A user tried to cancel an order but did not have permission or used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (_id) => {
+					const response = await dashboard.cancelOrderAdmin(
+						req.body['orderId']
+					);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					);
+					if(!response.isSuccess()){
+						logger.info("Admin could not cancel order. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
@@ -503,18 +598,29 @@ app.post('/changeOrderStatus', (req, res) => {	//todo: authenticate
 			logger.info("A user tried to change order status but did not include an order ID or a new status")
 		},		(status) => res.status(status),
 		async () => {
-			const response = await dashboard.changeOrderStatus(
-				req.body['orderId'],
-				req.body['newStatus']
-			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if(!response.isSuccess()){
-				logger.info("Admin could not cancel order. Error: " + response.getError())
-			}
+			authenticate(
+				req.headers.authorization,
+				3,
+				(msg: string) => {
+					res.send(msg)
+					logger.info("A user tried to change order status but did not have permission or used an unmatched token")
+				},
+				(status) => res.status(status),
+				async (_id) => {
+					const response = await dashboard.changeOrderStatus(
+						req.body['orderId'],
+						req.body['newStatus']
+					);
+					sendResponse(
+						response,
+						st => res.status(st),
+						msg => res.send(msg)
+					);
+					if(!response.isSuccess()){
+						logger.info("Admin could not cancel order. Error: " + response.getError())
+					}
+				}
+			)
 		}
 	);
 });
