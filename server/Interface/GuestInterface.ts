@@ -1,11 +1,12 @@
 import {Location, OrderIDO} from '../../api';
 
-import {ResponseMsg} from '../Response';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 import {IOrder} from '../Logic/IOrder';
 import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
+import { logger } from 'server/Logger';
 
 function createOrder(
 	guestId: string,
@@ -43,14 +44,8 @@ function submitReview(
 	throw new Error('Method not implemented');
 }
 
-async function cancelOrder(orderID: string, _guestID: string): Promise<ResponseMsg<void>> {
-	const response = await onOrder(orderID, o => {
-		return o.changeOrderStatus('canceled', false, false);
-	});
-	return response.ifGood(() => {
-		// TODO: check response
-		WaiterOrder.makeAvailable(orderID);
-	});
+async function cancelOrder(orderID: string, guestID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID)
 }
 
 export default {

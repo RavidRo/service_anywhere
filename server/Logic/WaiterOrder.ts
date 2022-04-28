@@ -115,13 +115,16 @@ export async function createOrder(
 
 export async function changeOrderStatus(
 	orderID: string,
-	newStatus: OrderStatus
+	newStatus: OrderStatus,
+	id: string
 ): Promise<ResponseMsg<void>> {
 	const orderDAO = await OrderStore.getOrder(orderID);
 	if (!orderDAO) {
 		return makeFail('Requested order does not exists');
 	}
-
+	if(id !== orderDAO.guest.id && orderDAO.waiters.filter((w) => w.id === id).length < 1){
+		return makeFail("The user does not have permission to change this order's status.")
+	}
 	const hasAssignedWaiters = orderDAO.waiters.length > 0;
 	const neededWaitersStatuses: OrderStatus[] = ['assigned', 'on the way'];
 	const willUnassignWaiters = !neededWaitersStatuses.includes(newStatus);
