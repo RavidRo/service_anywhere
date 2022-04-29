@@ -9,6 +9,8 @@ import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
 import {onOrder, getGuestActiveOrder} from './Orders';
 import {OrderNotifier} from './OrderNotifier';
 
+import config from '../config.json';
+
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
 }
@@ -34,7 +36,7 @@ export async function assignWaiter(
 	orderIDs: string[],
 	waiterID: string
 ): Promise<ResponseMsg<void>> {
-	const waiter = await WaiterStore.getWaiter(waiterID)
+	const waiter = await WaiterStore.getWaiter(waiterID);
 	if (waiter === null) {
 		return makeFail('The requested waiter does not exit', 400);
 	}
@@ -105,7 +107,7 @@ export async function createOrder(
 			400
 		);
 	}
-	console.debug("order: " + guestId)
+	console.debug('order: ' + guestId);
 	const newOrderResponse = await OrderNotifier.createNewOrder(
 		guestId,
 		new Map(filteredEntries)
@@ -116,14 +118,20 @@ export async function createOrder(
 export async function changeOrderStatus(
 	orderID: string,
 	newStatus: OrderStatus,
-	id: string
+	requesterID: string
 ): Promise<ResponseMsg<void>> {
 	const orderDAO = await OrderStore.getOrder(orderID);
 	if (!orderDAO) {
 		return makeFail('Requested order does not exists');
 	}
-	if(id !== orderDAO.guest.id && orderDAO.waiters.filter((w) => w.id === id).length < 1){
-		return makeFail("The user does not have permission to change this order's status.")
+	if (
+		requesterID !== orderDAO.guest.id &&
+		orderDAO.waiters.filter(w => w.id === requesterID).length < 1 &&
+		requesterID !== config.admin_id
+	) {
+		return makeFail(
+			"The user does not have permission to change this order's status."
+		);
 	}
 	const hasAssignedWaiters = orderDAO.waiters.length > 0;
 	const neededWaitersStatuses: OrderStatus[] = ['assigned', 'on the way'];

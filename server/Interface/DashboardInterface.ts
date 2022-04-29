@@ -5,6 +5,8 @@ import {makeGood, ResponseMsg} from '../Response';
 import {onOrder, getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 
+import config from '../config.json';
+
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
 }
@@ -29,14 +31,14 @@ async function getWaiterByOrder(
 }
 
 async function cancelOrderAdmin(orderID: string): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderID, 'canceled');
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', config.admin_id);
 }
 
 async function changeOrderStatus(
 	orderID: string,
 	newStatus: OrderStatus
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderID, newStatus);
+	return WaiterOrder.changeOrderStatus(orderID, newStatus, config.admin_id);
 }
 
 export default {
