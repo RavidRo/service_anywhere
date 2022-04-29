@@ -56,7 +56,7 @@ export class OrderDAO extends BaseEntity {
 		return {
 			id: this.id,
 			guestId: this.guest.id,
-			items: new Map(items),
+			items: Object.fromEntries(items),
 			status: this.status,
 			creationTime: new Date(this.creationTime),
 			completionTime: this.completionTime

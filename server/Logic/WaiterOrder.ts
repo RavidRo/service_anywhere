@@ -146,7 +146,7 @@ export async function changeOrderStatus(
 
 	if (changeStatusResponse.isSuccess() && willUnassignWaiters) {
 		const response = await unassignWaiters(orderID);
-		if (response.isSuccess()) {
+		if (!response.isSuccess()) {
 			console.error(
 				`Order's status has been changed to ${newStatus} but could not unassign waiters`,
 				response.getError()
