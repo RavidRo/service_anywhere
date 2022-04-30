@@ -180,7 +180,6 @@ describe('update order status tests', () => {
 		const requests = new Requests();
 		const orderViewModel = new OrderViewModel(requests);
 		orderViewModel.updateOrderStatus(orderAtServer.id, 'in preparation');
-		console.log(orderViewModel.getOrder())
 		expect(orderViewModel.getOrder() === null).toBeTruthy()
 	});
 });
