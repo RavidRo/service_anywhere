@@ -4,6 +4,9 @@ import {ILocationService} from '../localization/ILocationService';
 import MyLocationModel from '../Models/MyLocationModel';
 import configuration from '../../configuration.json';
 import Singleton from '../Singleton';
+import Communicate from '../communication/Communicate';
+import {ItemViewModel} from './ItemViewModel';
+import Requests from '../networking/Requests';
 
 const corners: Corners = {
 	bottomRightGPS: configuration.corners['bottom-right-gps'],
@@ -14,15 +17,18 @@ const corners: Corners = {
 export default class MyLocationViewModel implements Singleton {
 	private locationService: ILocationService;
 	private locationModel: MyLocationModel;
+	private communicate: Communicate;
 
-	constructor() {
+	constructor(requests: Requests, itemViewModel: ItemViewModel) {
 		this.locationModel = new MyLocationModel();
 		this.locationService = new Geolocation(corners);
+		this.communicate = new Communicate(requests, itemViewModel);
 	}
 
 	startTrackingLocation() {
 		this.locationService.watchLocation(
 			location => {
+				this.communicate.updateWaiterLocation(location);
 				this.locationModel.location = location;
 			},
 			error => {
