@@ -25,8 +25,7 @@ const ConnectController = observer((_props: LoginControllerProps) => {
 	};
 
 	const logIn = (password: string) => {
-		return connectionViewModel
-			.login(password)
+		return connectionViewModel.login(password);
 	};
 
 	const onSubmit = () => {

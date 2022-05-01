@@ -2,7 +2,7 @@ import Location from '../types';
 import GeolocationAdapter from './GeolocationAdapter';
 
 import {ILocationService} from './ILocationService';
-import { Corners, GPS } from './location';
+import {Corners, GPS} from './location';
 import LocationMap from './Map';
 
 export default class Geolocation implements ILocationService {

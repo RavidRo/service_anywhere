@@ -57,7 +57,6 @@ export type Waiter = {
 	location: Location;
 };
 
-
 export type OrderStatus =
 	| 'received'
 	| 'in preparation'

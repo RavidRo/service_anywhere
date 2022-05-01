@@ -3,8 +3,7 @@ import Geolocation from '../localization/Geolocation';
 import {MyLocationModel} from '../Model/MyLocationModel';
 import {LocationService} from '../types';
 import configuration from '../../configuration.json';
-import { Corners } from '../localization/location';
-
+import {Corners} from '../localization/location';
 
 const corners: Corners = {
 	bottomRightGPS: configuration.corners['bottom-right-gps'],
@@ -27,7 +26,7 @@ export class MyLocationViewModel {
 		return this.locationModel.location;
 	}
 	startTracking() {
-		console.log("start tracking location!!")
+		console.log('start tracking location!!');
 		this.locationService.watchLocation(
 			location => {
 				this.locationModel.location = location;

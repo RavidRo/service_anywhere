@@ -12,24 +12,22 @@ export default class OrderViewModel {
 	}
 
 	getOrderFromServer() {
-		return this.requests.getGuestOrder()
-		.then(order => {
-			this.order_model.order = {
-				id: order.id,
-				items: order.items,
-				status: order.status,
-			};
-		})
-		.catch((error) => 
-			{
-				if(error.response.status == 404)
-				{
+		return this.requests
+			.getGuestOrder()
+			.then(order => {
+				this.order_model.order = {
+					id: order.id,
+					items: order.items,
+					status: order.status,
+				};
+			})
+			.catch(error => {
+				if (error.response.status == 404) {
 					this.removeOrder();
-					return Promise.resolve("no order");
+					return Promise.resolve('no order');
 				}
 				return Promise.reject(error);
-			}
-		);
+			});
 	}
 
 	createOrder(items: Object): Promise<Order> {
@@ -40,8 +38,8 @@ export default class OrderViewModel {
 					items: items,
 					status: 'received',
 				};
-				this.order_model.order =order;
-				console.log("created order = ", this.order_model.order)
+				this.order_model.order = order;
+				console.log('created order = ', this.order_model.order);
 				return order;
 			});
 		}
@@ -53,9 +51,8 @@ export default class OrderViewModel {
 	cancelOrder(): Promise<void> {
 		const order = this.getOrder();
 		if (order != null) {
-			return this.requests.cancelOrderGuest(order.id)
-			.then(() => {
-					this.order_model.order = null;
+			return this.requests.cancelOrderGuest(order.id).then(() => {
+				this.order_model.order = null;
 			});
 		}
 		return new Promise((_resolve, reject) =>

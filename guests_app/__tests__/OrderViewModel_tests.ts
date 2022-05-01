@@ -2,7 +2,7 @@ import {Order, OrderIDO} from 'guests_app/src/types';
 import {flushPromises, makePromise as mockMakePromise} from '../PromiseUtils';
 import Requests from 'guests_app/src/Networking/requests';
 import OrderViewModel from 'guests_app/src/ViewModel/OrderViewModel';
-import { OrderModel } from 'guests_app/src/Model/OrderModel';
+import {OrderModel} from 'guests_app/src/Model/OrderModel';
 
 let items1 = new Map<string, number>();
 items1.set('Item1_ID', 1);
@@ -89,7 +89,6 @@ describe('create order tests', () => {
 			mockMakePromise(orderAtServer)
 		);
 		OrderModel.getInstance().order = null;
-
 	});
 
 	it('create order succes', async () => {
@@ -116,7 +115,7 @@ describe('cancel order tests', () => {
 		// Clears the record of calls to the mock constructor function and its methods
 		(Requests as jest.Mock).mockClear();
 		mockGetGuestOrder.mockClear();
-	//	mockCreateOrder.mockClear();
+		//	mockCreateOrder.mockClear();
 		mockCancelOrderGuest.mockClear();
 		mockGetGuestOrder.mockImplementation(
 			() => new Promise((_resolve, reject) => reject())
@@ -180,7 +179,7 @@ describe('update order status tests', () => {
 		const requests = new Requests();
 		const orderViewModel = new OrderViewModel(requests);
 		orderViewModel.updateOrderStatus(orderAtServer.id, 'in preparation');
-		expect(orderViewModel.getOrder() === null).toBeTruthy()
+		expect(orderViewModel.getOrder() === null).toBeTruthy();
 	});
 });
 
@@ -189,7 +188,6 @@ describe('submit review tests', () => {
 		// Clears the record of calls to the mock constructor function and its methods
 		(Requests as jest.Mock).mockClear();
 		OrderModel.getInstance().order = null;
-
 	});
 
 	it('submit review sucess when order status is delivered', async () => {

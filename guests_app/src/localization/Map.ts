@@ -1,6 +1,5 @@
-import Location from "../types";
-import { Corners, GPS } from "./location";
-
+import Location from '../types';
+import {Corners, GPS} from './location';
 
 export default class LocationMap {
 	private corners: Corners;
@@ -24,7 +23,7 @@ export default class LocationMap {
 		return Math.abs(numerator) / Math.sqrt(denominator);
 	}
 
-	translateGps(location: GPS) : Location {
+	translateGps(location: GPS): Location {
 		const localX =
 			this.distanceFromLine(
 				this.corners.topLeftGPS,

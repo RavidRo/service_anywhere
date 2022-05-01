@@ -22,7 +22,7 @@ export default class ConnectionViewModel {
 	login(password: string): Promise<string> {
 		return this.requests.login(password).then(token => {
 			this.model.token = token;
-			console.log("token in login after set: " + this.model.token)
+			console.log('token in login after set: ' + this.model.token);
 			return token;
 		});
 	}
@@ -32,22 +32,22 @@ export default class ConnectionViewModel {
 	}
 
 	public connect() {
-		
-	const promises = [
+		const promises = [
 			this.orders.getOrderFromServer(),
 			this.items.syncItems(),
 			new Promise<void>((resolve, reject) => {
 				if (this.model.token) {
-					this.connectionHandler.connect(this.model.token, () => resolve());
+					this.connectionHandler.connect(this.model.token, () =>
+						resolve()
+					);
 				} else {
-					console.log("no token found")
+					console.log('no token found');
 					reject(
 						'Tried to connect but an authorization token could not be found'
 					);
 				}
 			}),
-		]; 
+		];
 		return Promise.all(promises);
-
 	}
 }

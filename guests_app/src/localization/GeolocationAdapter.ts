@@ -1,6 +1,6 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import { GPS } from './location';
+import {GPS} from './location';
 
 export default class GeolocationAdapter {
 	private watchID?: number;

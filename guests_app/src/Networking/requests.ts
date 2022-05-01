@@ -40,13 +40,12 @@
 // 		err => console.log('get location eror - ' + err)
 // 	);
 // }
-import { ItemIDO, OrderID, OrderIDO } from '../types';
+import {ItemIDO, OrderID, OrderIDO} from '../types';
 import {GuestAPI} from './../signatures';
 import RequestsHandler from './RequestsHandler';
 
 export default class Requests implements GuestAPI {
 	private handler: RequestsHandler;
-
 
 	constructor() {
 		this.handler = new RequestsHandler();
@@ -65,11 +64,11 @@ export default class Requests implements GuestAPI {
 		return this.handler.get<OrderIDO>('getGuestOrder');
 	}
 	createOrder(orderItems: Object): Promise<OrderID> {
-		console.log("order items -- " + orderItems)
-		return this.handler.post<OrderID>('createOrder', {orderItems,});
+		console.log('order items -- ' + orderItems);
+		return this.handler.post<OrderID>('createOrder', {orderItems});
 	}
 	cancelOrderGuest(orderId: OrderID): Promise<void> {
-		return this.handler.post<void>('cancelOrderGuest', {orderId,});
+		return this.handler.post<void>('cancelOrderGuest', {orderId});
 	}
 	submitReview(
 		orderId: string,

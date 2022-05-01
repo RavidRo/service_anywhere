@@ -1,5 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-import { ItemIDO } from '../types';
+import {ItemIDO} from '../types';
 
 export class ItemModel {
 	private _items: ItemIDO[];

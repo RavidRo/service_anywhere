@@ -2,7 +2,13 @@
 Copied into project the relevant signatures and types from the shared api.ts file
 */
 
-import Location, { ItemIDO, OrderID, OrderIDO, OrderStatus, WaiterID } from "./types";
+import Location, {
+	ItemIDO,
+	OrderID,
+	OrderIDO,
+	OrderStatus,
+	WaiterID,
+} from './types';
 
 export interface GuestAPI {
 	// Guest

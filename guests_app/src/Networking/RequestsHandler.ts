@@ -2,7 +2,6 @@ import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import configuration from '../../configuration.json';
 import ConnectionModel from '../Model/ConnectionModel';
 
-
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
 	private connection: ConnectionModel;
@@ -28,7 +27,11 @@ class RequestsHandler {
 			},
 		};
 		const request = GET ? this.axiosInstance.get : this.axiosInstance.post;
-		return request(`${endPoint}`, GET ? {params, ...config} : params, config)
+		return request(
+			`${endPoint}`,
+			GET ? {params, ...config} : params,
+			config
+		)
 			.then(response => this.handleResponse<T>(response))
 			.catch(e => {
 				console.warn(e.response.data);

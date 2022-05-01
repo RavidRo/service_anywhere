@@ -5,7 +5,7 @@ import {MainPage} from '../View/MainPageView';
 
 import {observer} from 'mobx-react-lite';
 
-export const MainPageViewController =  observer(() => {
+export const MainPageViewController = observer(() => {
 	const orderViewModel = useContext(OrdersContext);
 	const itemViewModel = useContext(itemsContext);
 	const locationViewModel = useContext(MyLocationContext);
@@ -24,39 +24,45 @@ export const MainPageViewController =  observer(() => {
 		// 		PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
 		// 	);
 		// }
-		
+
 		return PermissionsAndroid.request(
-			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+		);
 	}
 	//future signature - SendOrderToServer(items: Map<string, Number>)
 	async function SendOrderToServer() {
-		let itemID1 = itemViewModel.getItems()[0].id
-		console.log("items for order: ", itemViewModel.getItems())
-		let items = {[itemID1]: 2}
+		let itemID1 = itemViewModel.getItems()[0].id;
+		console.log('items for order: ', itemViewModel.getItems());
+		let items = {[itemID1]: 2};
 
 		requestPermissions()
-			.then((response) => {
-				if(response === PermissionsAndroid.RESULTS.GRANTED){
-					console.log("res - " , response)
+			.then(response => {
+				if (response === PermissionsAndroid.RESULTS.GRANTED) {
+					console.log('res - ', response);
 					orderViewModel
 						.createOrder(items)
 						.then(createdOrder => {
 							console.log(
-								'order created with order id: ' + createdOrder.id
+								'order created with order id: ' +
+									createdOrder.id
 							);
 							startWaitingForOrder();
 						})
-						.catch(err => Alert.alert("failed to create order due to "  + err.response.data));
-				}
-				else{
-					Alert.alert('Please Approve using location')
+						.catch(err =>
+							Alert.alert(
+								'failed to create order due to ' +
+									err.response.data
+							)
+						);
+				} else {
+					Alert.alert('Please Approve using location');
 				}
 			})
-			.catch((err) => Alert.alert(err)); 
+			.catch(err => Alert.alert(err));
 	}
 
 	function startWaitingForOrder() {
-		console.log("start waiting for order")
+		console.log('start waiting for order');
 		// locationViewModel.startTracking();
 	}
 	/*  function waitForOrder(_orderID: String){
@@ -74,15 +80,17 @@ export const MainPageViewController =  observer(() => {
 		orderID: orderViewModel.getOrderId(),
 		orderStatus: orderViewModel.getOrderStatus(),
 	};
-	function CancelOrder(){
-		orderViewModel.cancelOrder().then(() => Alert.alert("order canceled succesfully"))
-		.catch((err) => Alert.alert("failed to cancel order due to: " + err))
+	function CancelOrder() {
+		orderViewModel
+			.cancelOrder()
+			.then(() => Alert.alert('order canceled succesfully'))
+			.catch(err => Alert.alert('failed to cancel order due to: ' + err));
 	}
 	// return <MainPage {...Props} />;
 	return (
 		<MainPage
 			sendOrderToServer={SendOrderToServer}
-			cancelOrder = {CancelOrder}
+			cancelOrder={CancelOrder}
 			hasActiveOrder={orderViewModel.hasActiveOrder()}
 			orderID={orderViewModel.getOrderId()}
 			orderStatus={orderViewModel.getOrderStatus()}
