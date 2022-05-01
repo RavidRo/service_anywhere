@@ -1,20 +1,23 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
 import {OrderIDO, OrderStatus} from '../../../api';
+import {observer} from 'mobx-react';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
 	private api: Api;
 
 	constructor(ordersModel: OrderModel, api: Api) {
+		console.log('Starting orders view model');
 		this.ordersModel = ordersModel;
 		this.api = api;
 	}
-	get orders(): OrderIDO[] {
+
+	getOrders(): OrderIDO[] {
 		return this.ordersModel.orders;
 	}
 
-	set orders(orders: OrderIDO[]) {
+	setOrders(orders: OrderIDO[]) {
 		this.ordersModel.orders = orders;
 	}
 
@@ -22,6 +25,7 @@ export default class OrdersViewModel {
 		return this.api
 			.getOrders()
 			.then(orders => {
+				console.info('Synchronized orders');
 				this.ordersModel.orders = orders;
 			})
 			.catch(err =>

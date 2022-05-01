@@ -14,6 +14,7 @@ import {
 	MuiEvent,
 } from '@mui/x-data-grid';
 import {makeStyles} from '@mui/styles';
+import {observer} from 'mobx-react';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
@@ -26,7 +27,8 @@ const useStyles = makeStyles({
 	},
 });
 
-function OrdersViewController(props: viewModelProps) {
+const OrdersViewController = observer((props: viewModelProps) => {
+	console.info('Starting orders view controller');
 	const {ordersViewModel, waitersViewModel} = props;
 	const handleRowEditStart = (_: any, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
@@ -116,12 +118,11 @@ function OrdersViewController(props: viewModelProps) {
 		},
 	];
 	const classes = useStyles();
-
 	return (
 		<div>
 			<AppBarView />
 			<OrdersView
-				orders={ordersViewModel.orders}
+				orders={ordersViewModel.getOrders()}
 				columns={columns}
 				handleRowEditStart={handleRowEditStart}
 				handleRowEditStop={handleRowEditStop}
@@ -129,12 +130,6 @@ function OrdersViewController(props: viewModelProps) {
 			/>
 		</div>
 	);
-}
+});
 
 export default OrdersViewController;
-
-OrdersViewController.propTypes = {
-	ordersViewModel: propTypes.object,
-	waitersViewModel: propTypes.object,
-	row: propTypes.object,
-};

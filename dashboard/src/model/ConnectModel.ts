@@ -1,6 +1,6 @@
 import {makeAutoObservable} from 'mobx';
 
-export default class ConnectModel {
+class ConnectModel {
 	private _token: string | undefined;
 	private _isReconnecting: boolean;
 
@@ -31,3 +31,5 @@ export default class ConnectModel {
 		return this.instance;
 	}
 }
+
+export default ConnectModel;

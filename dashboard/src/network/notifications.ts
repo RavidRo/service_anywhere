@@ -15,7 +15,7 @@ export default class Notificiations {
 
 	updateOrders(params: any[]) {
 		if (isOrderArray(params[0])) {
-			this.ordersViewModel.orders = params[0];
+			this.ordersViewModel.setOrders(params[0]);
 		} else {
 			console.warn(
 				"Haven't received the correct arguments, the first argument should contain orders"

@@ -12,7 +12,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function OrdersView(props: any) {
+const OrdersView = observer((props: any) => {
 	console.log('Starting the orders view');
 	const {
 		orders,
@@ -48,14 +48,6 @@ function OrdersView(props: any) {
 			/>
 		</Box>
 	);
-}
+});
 
-export default observer(OrdersView);
-OrdersView.propTypes = {
-	orders: PropTypes.array,
-	columns: PropTypes.array,
-	apiRef: PropTypes.object,
-	handleRowEditStart: PropTypes.func,
-	handleRowEditStop: PropTypes.func,
-	handleCellFocusOut: PropTypes.func,
-};
+export default OrdersView;

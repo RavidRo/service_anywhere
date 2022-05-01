@@ -5,14 +5,9 @@ import ordersViewModel from '../viewModel/ordersViewModel';
 import waitersViewModel from '../viewModel/waitersViewModel';
 import ConnectModel from '../model/ConnectModel';
 import {DefaultEventsMap} from 'socket.io/dist/typed-events';
+import {Console} from 'console';
 
 const config = require('./config.json');
-const host = config.host;
-const port = config.port;
-
-const _host_port = `${host}:${port}`;
-const base_route = `${host}`;
-
 export default class ConnectionHandler extends Singleton {
 	private socket: Socket;
 	private notifications: Notification;
@@ -75,11 +70,11 @@ export default class ConnectionHandler extends Singleton {
 		});
 
 		this.socket = this.socket;
-
 		this.registerEvents(this.socket);
 	}
 
 	private registerEvents(socket: Socket<DefaultEventsMap, DefaultEventsMap>) {
+		console.info('Registering Events');
 		for (const event in this.notifications.eventCallbacks) {
 			socket.on(event, params => {
 				console.info(`Notification ${event}:`, params);

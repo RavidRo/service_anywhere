@@ -64,16 +64,14 @@ describe('update orders', () => {
 	});
 
 	it('Sending exactly the needed arguments', () => {
-		const ordersViewModel = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
+		const model = new ordersModel();
+		const ordersViewModel = new OrdersViewModel(model, new Api());
 		const notifications = new Notifications(
 			ordersViewModel,
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
-		notifications.eventCallbacks.updateOrders([[]]);
-		expect(mockWarn).toBeCalledTimes(0);
+		notifications.eventCallbacks.updateOrders([mockListOfOrders]);
+		expect(model.orders).toEqual(ordersViewModel.orders);
 	});
 
 	it('Sending extra argument is accepted', () => {

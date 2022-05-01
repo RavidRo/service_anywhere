@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {observer} from 'mobx-react';
 
 // function Copyright(props: any) {
 //   return (
@@ -28,7 +29,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 
 const theme = createTheme();
 
-export default function Login(props: any) {
+function Login(props: any) {
 	const {handleSubmit} = props;
 
 	return (
@@ -77,3 +78,4 @@ export default function Login(props: any) {
 		</ThemeProvider>
 	);
 }
+export default observer(Login);

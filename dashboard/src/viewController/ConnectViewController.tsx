@@ -9,19 +9,16 @@ import ordersModel from '../model/ordersModel';
 import ConnectionHandler from '../network/connectionHandler';
 import Api from '../network/api';
 import Button from '@mui/material/Button';
+import {observer} from 'mobx-react';
 
-export default function ConnectViewController() {
-	const waiterModel = new waitersModel();
-	const orderModel = new ordersModel();
-	const api: Api = new Api();
+interface Props {
+	ordersViewModel: OrdersViewModel;
+	waitersViewModel: WaitersViewModel;
+	connectViewModel: ConnectViewModel;
+}
 
-	const ordersViewModel = new OrdersViewModel(orderModel, api);
-	const waitersViewModel = new WaitersViewModel(waiterModel, api);
-	const connectViewModel = new ConnectViewModel(
-		api,
-		ordersViewModel,
-		waitersViewModel
-	);
+const ConnectViewController = observer((props: Props) => {
+	const {ordersViewModel, waitersViewModel, connectViewModel} = props;
 
 	const token = connectViewModel.connection.token;
 	const isLoggedIn = token !== undefined;
@@ -55,6 +52,7 @@ export default function ConnectViewController() {
 	if (isConnected) {
 		return (
 			<>
+				{console.info('opening orders View Controller')}
 				{connectViewModel.connection.isReconnecting &&
 					alert('Connection lost, trying to reconnect...')}
 				<OrdersViewController
@@ -79,4 +77,6 @@ export default function ConnectViewController() {
 	}
 
 	return <Login handleSubmit={handleSubmit} />;
-}
+});
+
+export default ConnectViewController;

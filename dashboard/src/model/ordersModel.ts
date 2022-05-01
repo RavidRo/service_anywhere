@@ -1,4 +1,3 @@
-import {Console} from 'console';
 import {makeAutoObservable} from 'mobx';
 import {OrderIDO, OrderStatus} from '../../../api';
 
@@ -6,6 +5,7 @@ export default class ordersModel {
 	_orders: OrderIDO[] = [];
 
 	constructor() {
+		console.log('Starting the order model');
 		makeAutoObservable(this);
 	}
 	set orders(orders: OrderIDO[]) {
