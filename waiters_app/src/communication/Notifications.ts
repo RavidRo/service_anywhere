@@ -1,45 +1,41 @@
 import Requests from '../networking/Requests';
 import {isLocation, isOrderStatus, isString} from '../typeGuards';
+import {ItemViewModel} from '../ViewModel/ItemViewModel';
 import OrderViewModel from '../ViewModel/OrderViewModel';
 
+type Params = {[param: string]: unknown};
 export default class Notifications {
 	private orders: OrderViewModel;
-	public eventToCallback: Record<string, (params: unknown[]) => void> = {
+	public eventToCallback: Record<string, (params: Params) => void> = {
 		updateGuestLocation: params => this.updateGuestLocation(params),
-		updateOrderStatus: params => this.updateOrderStatus(params),
+		changeOrderStatus: params => this.updateOrderStatus(params),
 	};
 
-	constructor() {
-		this.orders = new OrderViewModel(new Requests());
-
-		// for (const event in this.eventToCallback) {
-		// 	this.eventToCallback[event].bind(this);
-		// }
+	constructor(requests: Requests, itemViewModel: ItemViewModel) {
+		this.orders = new OrderViewModel(requests, itemViewModel);
 	}
 
-	private updateGuestLocation(params: unknown[]): void {
-		if (params.length >= 2) {
-			if (isString(params[0]) && isLocation(params[1])) {
-				const guestID = params[0];
-				const guestLocation = params[1];
-				this.orders.updateGuestLocation(guestID, guestLocation);
-				return;
-			}
+	private updateGuestLocation(params: Params): void {
+		const guestID = params.guestId;
+		const guestLocation = params.location;
+		if (isString(guestID) && isLocation(guestLocation)) {
+			this.orders.updateGuestLocation(guestID, guestLocation);
+			return;
 		}
+
 		console.warn(
 			`In the event, "updateGuestLocation", parameters ${params} are not in the right format`
 		);
 	}
 
-	private updateOrderStatus(params: unknown[]): void {
-		if (params.length >= 2) {
-			if (isString(params[0]) && isOrderStatus(params[1])) {
-				const orderID = params[0];
-				const status = params[1];
-				this.orders.updateOrderStatus(orderID, status);
-				return;
-			}
+	private updateOrderStatus(params: Params): void {
+		const orderID = params.orderID;
+		const status = params.orderStatus;
+		if (isString(orderID) && isOrderStatus(status)) {
+			this.orders.updateOrderStatus(orderID, status);
+			return;
 		}
+
 		console.warn(
 			`In the event, "updateOrderStatus", parameters ${params} are not in the right format`
 		);

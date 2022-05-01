@@ -6,7 +6,7 @@ import {ItemDAO} from './entities/Domain/ItemDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
 import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
 import {WaiterDAO} from './entities/Domain/WaiterDAO';
-import config from 'server/config.json'
+import config from 'server/config.json';
 
 async function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
 	const saves = entities.map(item => item.save());
@@ -58,81 +58,107 @@ function getGuests() {
 	return [guest1, guest2];
 }
 
-const entitiesDefaults: [EntityTarget<unknown>, () => BaseEntity[], string][] =
-	// ! The order here matters, dont change it (SQL FOREIGN-KEY CONSTRAINT)
-	[
-		[OrderToItemDAO, () => [], 'OrderToItemDAO'],
-		[ItemDAO, getItems, 'ItemDAO'],
-		[OrderDAO, () => [], 'OrderDAO'],
-		[WaiterDAO, getWaiters, 'WaiterDAO'],
-		[GuestDAO, getGuests, 'GuestDAO'],
-	];
+function getOrders(guests: GuestDAO[], waiters: WaiterDAO[]) {
+	const order1 = new OrderDAO();
+	order1.guest = guests[0];
+	order1.creationTime = Date.now();
+	order1.status = 'assigned';
+	order1.waiters = waiters;
 
-// async function cleanAll() {
-// 	try {
-// 		for (const entity of entitiesDefaults) {
-// 			const repository = await this.databaseService.getRepository(
-// 				entity.name
-// 			);
-// 			await repository.query(`TRUNCATE TABLE \`${entity.tableName}\`;`);
-// 		}
-// 	} catch (error) {
-// 		throw new Error(`ERROR: Cleaning test db: ${error}`);
-// 	}
-// }
-
-export async function load_data() {
-	for (const [_, entitiesGetter, entityName] of entitiesDefaults) {
-		const entities = entitiesGetter();
-		try {
-			await saveAll(entities);
-		} catch (e) {
-			throw new Error(`Failed loading ${entityName}'s table: ${e}`);
-		}
-	}
-	try {
-		const guests = await GuestDAO.find();
-		for (const user of [...guests]) {
-			const credentialsGuest = new UserCredentials();
-			credentialsGuest.id = user.id;
-			credentialsGuest.password = '1234';
-			credentialsGuest.permissionLevel = 1;
-			await credentialsGuest.save();
-		}
-		const waiters = await WaiterDAO.find();
-		for (const user of [...waiters]) {
-			const credentialsWaiter = new UserCredentials();
-			credentialsWaiter.id = user.id;
-			credentialsWaiter.password = '5678';
-			credentialsWaiter.permissionLevel = 2;
-			await credentialsWaiter.save();
-		}
-		const credentialsAdmin = new UserCredentials();
-		credentialsAdmin.id = config.admin_id;
-		credentialsAdmin.password = '9999';
-		credentialsAdmin.permissionLevel = 3;
-		await credentialsAdmin.save();
-
-	} catch (e) {
-		throw new Error(`Failed loading UserCredentials's table: ${e}`);
-	}
+	return [order1];
 }
 
-export default async function reset_all() {
-	for (const [entityTarget, _, entityName] of entitiesDefaults) {
+async function getUsersCredentials() {
+	const guests = await AppDataSource.manager.find(GuestDAO);
+	const waiters = await AppDataSource.manager.find(WaiterDAO);
+
+	const guestCredentials = guests.map(guest => {
+		const credentialsGuest = new UserCredentials();
+		credentialsGuest.id = guest.id;
+		credentialsGuest.password = '1234';
+		credentialsGuest.permissionLevel = 1;
+		return credentialsGuest;
+	});
+
+	const waiterCredentials = waiters.map(waiter => {
+		const credentialsWaiter = new UserCredentials();
+		credentialsWaiter.id = waiter.id;
+		credentialsWaiter.password = '5678';
+		credentialsWaiter.permissionLevel = 2;
+		return credentialsWaiter;
+	});
+
+	const adminCredentials = new UserCredentials();
+	adminCredentials.id = config.admin_id;
+	adminCredentials.password = '9999';
+	adminCredentials.permissionLevel = 3;
+
+	return [...guestCredentials, ...waiterCredentials, adminCredentials];
+}
+
+function getOrdersToItems(orders: OrderDAO[], items: ItemDAO[]) {
+	const orderToItem1 = new OrderToItemDAO();
+	orderToItem1.quantity = 2;
+	orderToItem1.item = items[0];
+	orderToItem1.order = orders[0];
+
+	const orderToItem2 = new OrderToItemDAO();
+	orderToItem2.quantity = 3;
+	orderToItem2.item = items[1];
+	orderToItem2.order = orders[0];
+
+	return [orderToItem1, orderToItem2];
+}
+
+const entitiesDefaults: () => [
+	EntityTarget<unknown>,
+	() => Promise<BaseEntity[]>,
+	string
+][] = () => {
+	const items = getItems();
+	const waiters = getWaiters();
+	const guests = getGuests();
+	const orders = getOrders(guests, waiters);
+
+	// ! The order here matters, dont change it (SQL FOREIGN-KEY CONSTRAINT)
+	return [
+		[ItemDAO, async () => items, 'ItemDAO'],
+		[WaiterDAO, async () => waiters, 'WaiterDAO'],
+		[GuestDAO, async () => guests, 'GuestDAO'],
+		[OrderDAO, async () => orders, 'OrderDAO'],
+		[
+			OrderToItemDAO,
+			async () => getOrdersToItems(orders, items),
+			'OrderToItemDAO',
+		],
+		[UserCredentials, getUsersCredentials, 'UserCredentials'],
+	];
+};
+
+export async function clearALl() {
+	for (const [entityTarget, _, entityName] of (
+		await entitiesDefaults()
+	).reverse()) {
 		try {
 			await clearTable(entityTarget);
 		} catch (e) {
 			throw new Error(`Failed clearing ${entityName}'s table: ${e}`);
 		}
 	}
+}
 
-	try {
-		const itemRepository = AppDataSource.getRepository(UserCredentials);
-		await itemRepository.clear();
-	} catch (e) {
-		throw new Error(`Failed clearing UserCredentials's table: ${e}`);
+export async function load_data() {
+	for (const [_, entitiesGetter, entityName] of await entitiesDefaults()) {
+		const entities = await entitiesGetter();
+		try {
+			await saveAll(entities);
+		} catch (e) {
+			throw new Error(`Failed loading ${entityName}'s table: ${e}`);
+		}
 	}
+}
 
+export default async function reset_all() {
+	await clearALl();
 	await load_data();
 }

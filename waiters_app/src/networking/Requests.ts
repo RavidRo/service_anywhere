@@ -10,14 +10,18 @@ export default class Requests extends Singleton {
 	}
 
 	getWaiterOrders(): Promise<OrderIdo[]> {
-		return this.handler.get<OrderIdo[]>('getWaiterOrders');
+		return this.handler.get('getWaiterOrders');
 	}
 
 	login(password: string): Promise<string> {
-		return this.handler.post<string>('login', {password});
+		return this.handler.post('login', {password});
 	}
 
 	getItems(): Promise<ItemIdo[]> {
-		return this.handler.get<ItemIdo[]>('getItems');
+		return this.handler.get('getItems');
+	}
+
+	delivered(orderId: string): Promise<void> {
+		return this.handler.post('orderArrived', {orderId});
 	}
 }

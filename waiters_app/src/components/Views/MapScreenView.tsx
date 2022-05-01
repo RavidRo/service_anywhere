@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 import OrdersListController from '../Controllers/OrdersListController';
@@ -30,9 +30,9 @@ export default function MapScreenView(props: MapScreenViewProps): JSX.Element {
 						draggableIcon: {
 							backgroundColor: '#000',
 						},
-						// container: {
-						// 	backgroundColor: 'yellow'
-						// }
+						container: {
+							backgroundColor: '#addaed',
+						},
 					}}>
 					<OrdersListController />
 				</RBSheet>
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
 	},
 	map: {
 		flexGrow: 1,
-		backgroundColor: 'red',
 	},
 	openDrawerButton: {
 		padding: 10,

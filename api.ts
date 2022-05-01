@@ -11,7 +11,7 @@ type OrderID = string;
 export type OrderIDO = {
 	id: OrderID;
 	guestId: string;
-	items: Map<string, number>;
+	items: Record<string, number>;
 	status: OrderStatus;
 	creationTime: Date;
 	completionTime: Date | undefined;
@@ -80,7 +80,7 @@ interface WaiterCommunication {
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;
 	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
-    assignedToOrder(order: OrderIDO) :void;
+	assignedToOrder(order: OrderIDO): void;
 }
 
 interface DashboardAPI {

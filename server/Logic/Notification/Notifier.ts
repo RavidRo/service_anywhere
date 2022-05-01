@@ -26,6 +26,7 @@ export class Notifier {
 			// Removes subscribers if they did not receive a notifications
 			const newEmits = emits.filter(emit => {
 				const received = emit(event, params);
+				console.log(`Notifying<${event} , ${received}>`, params);
 				return received;
 			});
 			this.subscribers[id] = newEmits;

@@ -5,6 +5,8 @@ import {makeGood, ResponseMsg} from '../Response';
 import {onOrder, getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 
+import config from '../config.json';
+
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
 }

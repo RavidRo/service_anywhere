@@ -4,14 +4,17 @@ import ConnectionModel from '../Models/ConnectionModel';
 import Singleton from '../Singleton';
 import Notifications from './Notifications';
 import configuration from '../../configuration.json';
+import {ItemViewModel} from '../ViewModel/ItemViewModel';
+import Requests from '../networking/Requests';
 
 export default class ConnectionHandler extends Singleton {
 	private socket: Socket;
 	private connectionModel: ConnectionModel;
-	private notifications: Notifications = new Notifications();
+	private notifications: Notifications;
 
-	constructor() {
+	constructor(requests: Requests, itemViewModel: ItemViewModel) {
 		super();
+		this.notifications = new Notifications(requests, itemViewModel);
 		this.connectionModel = ConnectionModel.getInstance();
 		this.socket = io(configuration['server-url'], {autoConnect: false});
 	}
