@@ -621,7 +621,6 @@ app.get('/getWaiters', (req, res) => {
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
-	//todo: authenticate
 	checkInputs(
 		['orderId'],
 		req.query,
@@ -665,7 +664,6 @@ app.get('/getWaitersByOrder', (req, res) => {
 });
 
 app.post('/cancelOrderAdmin', (req, res) => {
-	//todo: authenticate
 	checkInputs(
 		['orderId'],
 		req.body,
@@ -687,9 +685,10 @@ app.post('/cancelOrderAdmin', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async _id => {
+				async id => {
 					const response = await dashboard.cancelOrderAdmin(
-						req.body['orderId']
+						req.body['orderId'],
+						id
 					);
 					sendResponse(
 						response,
@@ -709,7 +708,6 @@ app.post('/cancelOrderAdmin', (req, res) => {
 });
 
 app.post('/changeOrderStatus', (req, res) => {
-	//todo: authenticate
 	checkInputs(
 		['orderId', 'newStatus'],
 		req.body,
@@ -731,10 +729,11 @@ app.post('/changeOrderStatus', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async _id => {
+				async id => {
 					const response = await dashboard.changeOrderStatus(
 						req.body['orderId'],
-						req.body['newStatus']
+						req.body['newStatus'],
+						id
 					);
 					sendResponse(
 						response,

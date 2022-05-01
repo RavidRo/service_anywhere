@@ -28,15 +28,16 @@ async function getWaiterByOrder(
 	return await WaiterOrder.getWaiterByOrder(orderID);
 }
 
-async function cancelOrderAdmin(orderID: string): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderID, 'canceled');
+async function cancelOrderAdmin(orderID: string, ID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', ID);
 }
 
 async function changeOrderStatus(
 	orderID: string,
-	newStatus: OrderStatus
+	newStatus: OrderStatus,
+	ID: string
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderID, newStatus);
+	return WaiterOrder.changeOrderStatus(orderID, newStatus, ID);
 }
 
 export default {
