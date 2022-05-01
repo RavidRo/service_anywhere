@@ -1,47 +1,51 @@
 import {Location, OrderIDO} from '../../api';
 
-import {ResponseMsg} from '../Response';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 import {IOrder} from '../Logic/IOrder';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
+
+import WaiterOrder from '../Logic/WaiterOrder';
+import { logger } from 'server/Logger';
 
 function createOrder(
 	guestId: string,
 	items: Map<string, number>
 ): Promise<ResponseMsg<string>> {
-	return WaiterOrder.getInstance().createOrder(guestId, items);
+	return WaiterOrder.createOrder(guestId, items);
 }
 
 function updateLocationGuest(
 	guestId: string,
-	mapId: string,
+	mapID: string,
 	location: Location
-): ResponseMsg<void> {
-	return getGuestOrder(guestId).ifGood(order => {
-		IOrder.delegate(order.id, (o: IOrder) =>
-			o.updateGuestLocation(mapId, location)
-		);
+): void {
+	getGuestOrder(guestId).then(orderResponse => {
+		orderResponse.ifGood(order => {
+			onOrder(order.id, (o: IOrder) =>
+				o.updateGuestLocation(mapID, location)
+			);
+		});
 	});
 }
 
-function getGuestOrder(guestId: string): ResponseMsg<OrderIDO> {
-	return WaiterOrder.getInstance().getGuestOrder(guestId);
+async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
+	return await getGuestActiveOrder(guestID);
 }
 
-function submitReview(orderId: string, details: string, rating: number): ResponseMsg<void> {
+function submitReview(
+	orderId: string,
+	details: string,
+	rating: number
+): ResponseMsg<void> {
 	orderId;
 	details;
 	rating;
 	throw new Error('Method not implemented');
 }
 
-function cancelOrder(orderId: string): ResponseMsg<void> {
-	const response = IOrder.delegate(orderId, o => {
-		return o.cancelOrder();
-	});
-	return response.ifGood(() => {
-		WaiterOrder.getInstance().makeAvailable(orderId);
-	});
+async function cancelOrder(orderID: string, guestID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID)
 }
 
 export default {

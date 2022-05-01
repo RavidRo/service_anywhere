@@ -1,71 +1,67 @@
 import {ResponseMsg} from '../Response';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import WaiterOrder from '../Logic/WaiterOrder';
 import DashboardInterface from '../Interface/DashboardInterface';
 import ItemsInterface from '../Interface/ItemsInterface';
 
-import {IOrder} from '../Logic/IOrder';
-import {test_resetWaiters} from '../Data/WaiterStore';
-import {test_resetItems} from '../Data/ItemStore';
+import {AppDataSource} from '../Data/data-source';
+import reset_all from '../Data/test_ResetDatabase';
+import {getGuests} from '../Data/Stores/GuestStore';
+import GuestInterface from '../Interface/GuestInterface';
 
-beforeEach(() => {
-	IOrder.test_deleteAllOrders();
-	WaiterOrder.getInstance().test_deleteAll();
-	test_resetWaiters();
-	test_resetItems();
+beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
+	await AppDataSource.initialize();
 });
 
-const createOrder = async () => {
-	const guestID = 'guestId2';
+beforeEach(async () => {
+	await reset_all();
+});
 
-	const items = await ItemsInterface.getItems();
-	const orderItems = new Map<string, number>([
-		[items[0].id, 1],
-		[items[1].id, 2],
-	]);
-	const orderID = (
-		await WaiterOrder.getInstance().createOrder(guestID, orderItems)
-	).getData();
+const createOrder = async ({index = 0, advance = true} = {}) => {
+	const guests = await getGuests();
+	const itemsList = await ItemsInterface.getItems();
+	const guestID = guests[index].id;
+	const items = new Map([[itemsList[0].id, 5]]);
 
-	return {orderID, guestID};
+	const createOrderResponse = await GuestInterface.createOrder(
+		guestID,
+		items
+	);
+	const orderID = createOrderResponse.getData();
+	if (advance) {
+		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+	}
+
+	return {orderID, guestID, items};
 };
 
 test('get waiter by order with our order should return nothing', async () => {
 	const {orderID} = await createOrder();
-	const waiters: ResponseMsg<string[]> =
-		WaiterOrder.getInstance().getWaiterByOrder(orderID);
-	expect(waiters.isSuccess());
+	const waiters: ResponseMsg<string[]> = await WaiterOrder.getWaiterByOrder(
+		orderID
+	);
+	expect(waiters.isSuccess()).toBeTruthy();
 	expect(waiters.getData()).toStrictEqual([]);
 });
 
 test('get waiter order with our waiter should return nothing', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
-	const orders: ResponseMsg<string[]> =
-		WaiterOrder.getInstance().getWaiterOrder(waitersIDs[0]);
-	expect(orders.isSuccess());
+	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0]);
+	expect(orders.isSuccess()).toBeTruthy();
 	expect(orders.getData()).toStrictEqual([]);
-});
-
-test('get guest order with our guestId should return our order', async () => {
-	const {orderID, guestID} = await createOrder();
-	expect(
-		WaiterOrder.getInstance().getGuestOrder(guestID).getData().guestId
-	).toBe(guestID);
-	expect(WaiterOrder.getInstance().getGuestOrder(guestID).getData().id).toBe(
-		orderID
-	);
 });
 
 test('get waiter by order with our order should return our waiter', async () => {
 	const {orderID} = await createOrder();
 
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
-	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+	await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
 
-	const waiterOrder = WaiterOrder.getInstance();
-	await waiterOrder.assignWaiter([orderID], waitersIDs[0]);
+	await WaiterOrder.assignWaiter([orderID], waitersIDs[0]);
 
-	const waiters: ResponseMsg<string[]> =
-		waiterOrder.getWaiterByOrder(orderID);
+	const waiters: ResponseMsg<string[]> = await WaiterOrder.getWaiterByOrder(
+		orderID
+	);
 
 	expect(waiters.isSuccess()).toBeTruthy();
 	expect(waiters.getData().length).toBe(1);
@@ -78,14 +74,10 @@ test('get waiter order with our waiter should return our order', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
 
-	const waiterOrder = WaiterOrder.getInstance();
+	await WaiterOrder.assignWaiter([orderID], waitersIDs[0]);
 
-	await waiterOrder.assignWaiter([orderID], waitersIDs[0]);
-
-	const orders: ResponseMsg<string[]> = waiterOrder.getWaiterOrder(
-		waitersIDs[0]
-	);
+	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0]);
 	expect(orders.isSuccess()).toBeTruthy();
 	expect(orders.getData().length).toBe(1);
-	expect(orders.getData()[0]).toEqual(orderID);
+	expect(orders.getData()[0].id).toEqual(orderID);
 });

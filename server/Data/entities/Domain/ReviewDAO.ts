@@ -1,8 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from 'typeorm';
 
 @Entity()
-export class Review extends BaseEntity {
-	@PrimaryGeneratedColumn()
+export class ReviewDAO extends BaseEntity {
+	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
 	@Column()

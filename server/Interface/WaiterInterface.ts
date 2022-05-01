@@ -1,57 +1,34 @@
-import {Location} from '../../api';
+import {Location, OrderIDO} from '../../api';
 
-import {makeGood, ResponseMsg} from '../Response';
+import {ResponseMsg} from '../Response';
 
-import {IOrder} from '../Logic/IOrder';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import WaiterOrder from '../Logic/WaiterOrder';
 
-function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
-	return WaiterOrder.getInstance()
-		.getWaiterOrder(waiterId)
-		.ifGood((data: string[]) => {
-			return IOrder.orderList.filter(order =>
-				data.includes(order.getID())
-			);
-		});
+async function getOrdersByWaiter(
+	waiterID: string
+): Promise<ResponseMsg<OrderIDO[]>> {
+	return await WaiterOrder.getOrdersByWaiter(waiterID);
 }
 
-function orderArrived(orderId: string): ResponseMsg<void> {
-	const response = IOrder.delegate(orderId, (order: IOrder) => {
-		return order.orderArrived();
-	});
-	return response.ifGood(() => {
-		WaiterOrder.getInstance().makeAvailable(orderId);
-	});
+async function orderArrived(orderId: string, waiterID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderId, 'delivered', waiterID);
 }
-
-// function connectWaiter(): ResponseMsg<string> {
-// 	return WaiterOrder.getInstance().connectWaiter();
-// }
 
 function updateLocationWaiter(
 	waiterId: string,
 	mapId: string,
 	location: Location
-): ResponseMsg<void> {
-	return makeGood(
-		WaiterOrder.getInstance().updateWaiterLocation(
-			waiterId,
-			mapId,
-			location
-		)
-	);
+): void {
+	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
-function orderOnTheWay(orderId: string): ResponseMsg<void> {
-	return IOrder.delegate(orderId, order => {
-		return order.changeOrderStatus('on the way');
-	});
+async function orderOnTheWay(orderId: string, waiterID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderId, 'on the way', waiterID);
 }
 
 export default {
-	getWaiterOrders,
+	getWaiterOrders: getOrdersByWaiter,
 	orderArrived,
-	// connectWaiter,
 	updateLocationWaiter,
 	orderOnTheWay,
 };

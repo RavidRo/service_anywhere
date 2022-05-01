@@ -1,21 +1,22 @@
-import {IOrder} from '../../Logic/IOrder';
-import {WaiterOrder} from '../../Logic/WaiterOrder';
+import {getGuests} from '../../Data/Stores/GuestStore';
+import {AppDataSource} from '../../Data/data-source';
+import reset_all from '../../Data/test_ResetDatabase';
 import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
-import {test_resetWaiters} from '../../Data/WaiterStore';
-import {test_resetItems} from '../../Data/ItemStore';
 
-beforeEach(() => {
-	IOrder.test_deleteAllOrders();
-	WaiterOrder.getInstance().test_deleteAll();
-	test_resetWaiters();
-	test_resetItems();
+beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
+	await AppDataSource.initialize();
 });
 
-const guestID = 'guestID';
+beforeEach(async () => {
+	await reset_all();
+});
 
 test('Creating order with not items returns a failure', async () => {
 	const items = await ItemsInterface.getItems();
+	const guests = await getGuests();
+	const guestID = guests[0].id;
 
 	const response1 = await GuestInterface.createOrder(guestID, new Map());
 
@@ -30,6 +31,8 @@ test('Creating order with not items returns a failure', async () => {
 
 test('Creating order with negative quantity fails', async () => {
 	const items = await ItemsInterface.getItems();
+	const guests = await getGuests();
+	const guestID = guests[0].id;
 
 	const response = await GuestInterface.createOrder(
 		guestID,
@@ -40,6 +43,9 @@ test('Creating order with negative quantity fails', async () => {
 });
 
 test('Creating order with items that does not exists fails', async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const response = await GuestInterface.createOrder(
 		guestID,
 		new Map([['random item', 5]])
@@ -47,17 +53,23 @@ test('Creating order with items that does not exists fails', async () => {
 	expect(response.isSuccess()).toBeFalsy();
 });
 
-test('Getting the order of a guest with no order returns a failure', () => {
-	const response = GuestInterface.getGuestOrder(guestID);
+test('Getting the order of a guest with no order returns a failure', async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
+	const response = await GuestInterface.getGuestOrder(guestID);
 	expect(response.isSuccess()).toBeFalsy();
 });
 
 test('Guests can get their order details', async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const itemsList = await ItemsInterface.getItems();
 	const items = new Map([[itemsList[0].id, 5]]);
 
 	const createResponse = await GuestInterface.createOrder(guestID, items);
-	const orderResponse = GuestInterface.getGuestOrder(guestID);
+	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(createResponse.isSuccess()).toBeTruthy();
 	expect(orderResponse.getData().guestId).toBe(guestID);
@@ -65,6 +77,9 @@ test('Guests can get their order details', async () => {
 });
 
 test('Creating order with items with zero quantities removes them', async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const itemsList = await ItemsInterface.getItems();
 	const items = new Map([
 		[itemsList[0].id, 5],
@@ -73,13 +88,16 @@ test('Creating order with items with zero quantities removes them', async () => 
 
 	await GuestInterface.createOrder(guestID, items);
 
-	const orderResponse = GuestInterface.getGuestOrder(guestID);
+	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	const desiredItems = new Map([[itemsList[0].id, 5]]);
 	expect(orderResponse.getData().items).toEqual(desiredItems);
 });
 
 test('Creating order sets it to the received status', async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const itemsList = await ItemsInterface.getItems();
 	const items = new Map([
 		[itemsList[0].id, 5],
@@ -88,12 +106,15 @@ test('Creating order sets it to the received status', async () => {
 
 	await GuestInterface.createOrder(guestID, items);
 
-	const orderResponse = GuestInterface.getGuestOrder(guestID);
+	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(orderResponse.getData().status).toBe('received');
 });
 
 test('A new order does not have a termination time', async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const itemsList = await ItemsInterface.getItems();
 	const items = new Map([
 		[itemsList[0].id, 5],
@@ -102,12 +123,15 @@ test('A new order does not have a termination time', async () => {
 
 	await GuestInterface.createOrder(guestID, items);
 
-	const orderResponse = GuestInterface.getGuestOrder(guestID);
+	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
-	expect(orderResponse.getData().terminationTime).toBeUndefined();
+	expect(orderResponse.getData().completionTime).toBeUndefined();
 });
 
 test("Creating an order returns the new order's id", async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const itemsList = await ItemsInterface.getItems();
 	const items = new Map([
 		[itemsList[0].id, 5],
@@ -116,12 +140,15 @@ test("Creating an order returns the new order's id", async () => {
 
 	const newOrderResponse = await GuestInterface.createOrder(guestID, items);
 
-	const orderResponse = GuestInterface.getGuestOrder(guestID);
+	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(orderResponse.getData().id).toBe(newOrderResponse.getData());
 });
 
 test("A guest with an active order can't create a new order", async () => {
+	const guests = await getGuests();
+	const guestID = guests[0].id;
+
 	const itemsList = await ItemsInterface.getItems();
 	const items = new Map([
 		[itemsList[0].id, 5],

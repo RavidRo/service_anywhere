@@ -11,6 +11,8 @@ export class Notifier {
 
 	private subscribers: Record<string, emitOperation[]> = {};
 
+	private constructor() {}
+
 	/**
 	 * @param id The subscriberID
 	 * @param event The functions that is called when the subscriber is notified
@@ -24,6 +26,7 @@ export class Notifier {
 			// Removes subscribers if they did not receive a notifications
 			const newEmits = emits.filter(emit => {
 				const received = emit(event, params);
+				console.log(`Notifying<${event} , ${received}>`, params);
 				return received;
 			});
 			this.subscribers[id] = newEmits;
@@ -33,5 +36,9 @@ export class Notifier {
 	public addSubscriber(id: string, emit: emitOperation): void {
 		if (this.subscribers[id] === undefined) this.subscribers[id] = [];
 		this.subscribers[id].push(emit);
+	}
+
+	public clearSubscribers(): void {
+		this.subscribers = {};
 	}
 }
