@@ -1,8 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from 'typeorm';
+import {Entity, Column, BaseEntity, PrimaryColumn} from 'typeorm';
 
 @Entity()
 export class UserCredentials extends BaseEntity {
-	@PrimaryGeneratedColumn()
+	@PrimaryColumn()
 	id: string;
 
 	@Column()

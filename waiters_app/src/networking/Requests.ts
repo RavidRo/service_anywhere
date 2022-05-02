@@ -13,8 +13,8 @@ export default class Requests extends Singleton {
 		return this.handler.get<OrderIdo[]>('getWaiterOrders');
 	}
 
-	login(): Promise<string> {
-		return this.handler.post<string>('connectWaiter');
+	login(password: string): Promise<string> {
+		return this.handler.post<string>('login', {password});
 	}
 
 	getItems(): Promise<ItemIdo[]> {

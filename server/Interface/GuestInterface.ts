@@ -1,38 +1,54 @@
-import {IOrder} from 'server/Logic/IOrder';
-import {makeGood, ResponseMsg} from 'server/Response';
 import {Location, OrderIDO} from '../../api';
-import {WaiterOrder} from '../Logic/WaiterOrder';
 
-function createOrder(guestId: string, items: Map<string, number>): string {
+import {makeFail, makeGood, ResponseMsg} from '../Response';
+
+import {IOrder} from '../Logic/IOrder';
+import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
+
+import WaiterOrder from '../Logic/WaiterOrder';
+import {logger} from 'server/Logger';
+
+function createOrder(
+	guestId: string,
+	items: Map<string, number>
+): Promise<ResponseMsg<string>> {
 	return WaiterOrder.createOrder(guestId, items);
 }
 
 function updateLocationGuest(
 	guestId: string,
-	mapId: string,
+	mapID: string,
 	location: Location
 ): void {
-	IOrder.delegate(getGuestOrder(guestId).id, (o: IOrder) =>
-		o.updateGuestLocation(mapId, location)
-	);
+	getGuestOrder(guestId).then(orderResponse => {
+		orderResponse.ifGood(order => {
+			onOrder(order.id, (o: IOrder) =>
+				o.updateGuestLocation(mapID, location)
+			);
+		});
+	});
 }
 
-function getGuestOrder(guestId: string): OrderIDO {
-	return WaiterOrder.getGuestOrder(guestId);
+async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
+	return await getGuestActiveOrder(guestID);
 }
 
-function submitReview(orderId: string, details: string, rating: number): void {
+function submitReview(
+	orderId: string,
+	details: string,
+	rating: number
+): ResponseMsg<void> {
 	orderId;
 	details;
 	rating;
 	throw new Error('Method not implemented');
 }
 
-function cancelOrder(orderId: string): Boolean {
-	return IOrder.delegate(orderId, o => {
-		o.cancelOrder();
-		return makeGood();
-	}).isSuccess();
+async function cancelOrder(
+	orderID: string,
+	guestID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
 export default {

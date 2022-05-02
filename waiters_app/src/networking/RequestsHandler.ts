@@ -18,7 +18,6 @@ class RequestsHandler {
 		params: Record<string, unknown>,
 		GET = true
 	) {
-		console.info(`Request ${endPoint}`, params);
 		const config: AxiosRequestConfig = {
 			headers: {
 				...(this.connection.token && {
@@ -26,25 +25,25 @@ class RequestsHandler {
 				}),
 			},
 		};
+		console.info(`Request<${endPoint}>`, params);
 
 		const request = GET ? this.axiosInstance.get : this.axiosInstance.post;
-		return request(`${endPoint}`, GET ? {params} : params, config)
-			.then(response => this.handleResponse<T>(response))
+		return request(
+			`${endPoint}`,
+			GET ? {params, ...config} : params,
+			config
+		)
+			.then(response => this.handleResponse<T>(response, endPoint))
 			.catch(e => {
 				console.warn(e);
 				return Promise.reject(e);
 			});
 	}
 
-	private handleResponse<T>(response: AxiosResponse<T>) {
-		if (response.status === 200) {
-			const data = response.data;
-			console.info('The server response:', data);
-			return Promise.resolve(data);
-		} else {
-			console.warn(`HTTP Error - ${response.status}`);
-			return Promise.reject(`HTTP Error - ${response.status}`);
-		}
+	private handleResponse<T>(response: AxiosResponse<T>, endPoint: string) {
+		const data = response.data;
+		console.info(`Response<<${endPoint}>,${response.status}>:`, data);
+		return data;
 	}
 
 	public post<T>(endPoint: string, params = {}) {

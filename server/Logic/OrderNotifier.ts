@@ -1,120 +1,167 @@
 import {OrderStatus, Location, OrderIDO} from 'api';
-import {IOrder} from './IOrder';
-import {NotificationFacade} from './Notification/NotificationFacade';
-import {Order} from './Order';
 import config from '../config.json';
 import {ResponseMsg} from '../Response';
 
-const notificationFacade: NotificationFacade = new NotificationFacade();
+import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
 
-export class OrderNotifier extends IOrder {
-	order: IOrder;
-	receiverId: string;
+import {IOrder} from './IOrder';
+import {Order} from './Order';
+import {NotificationFacade} from './Notification/NotificationFacade';
 
-	static override createOrder(
-		guestId: string,
+export abstract class OrderNotifier implements IOrder {
+	protected notificationFacade: NotificationFacade = new NotificationFacade();
+	private order: IOrder;
+	protected abstract receiverId: string;
+
+	constructor(order: IOrder) {
+		this.order = order;
+	}
+
+	static async createNewOrder(
+		guestID: string,
 		items: Map<string, number>
-	): IOrder {
-		let newOrder = new GuestNotifier(guestId);
-		let newOrderOrder = new OrderNotifier(config.admin_id);
-		newOrderOrder.order = new Order(guestId, items);
-		newOrder.order = newOrderOrder;
-		notificationFacade.newOrder(guestId, newOrder.getDetails());
-		return newOrder;
+	): Promise<ResponseMsg<IOrder>> {
+		const orderResponse = await Order.createNewOrder(guestID, items);
+		return orderResponse.ifGood(order => {
+			const orderGuest = new GuestNotifier(order, guestID);
+			const orderDashboard = new DashboardNotifier(orderGuest);
+
+			const notification = new NotificationFacade();
+			notification.newOrder(guestID, order.getDetails());
+			notification.newOrder(config.admin_id, order.getDetails());
+
+			return orderDashboard;
+		});
 	}
 
-	constructor(receiverId: string) {
-		super();
-		this.receiverId = receiverId;
+	static createOrder(orderDAO: OrderDAO): IOrder {
+		const guestID = orderDAO.guest.id;
+
+		const order = Order.createOrder(orderDAO);
+		const orderGuest = new GuestNotifier(order, guestID);
+		const orderDashboard = new DashboardNotifier(orderGuest);
+		const orderNotified = orderDAO.waiters.reduce(
+			(lastOrder: IOrder, waiter) =>
+				new WaiterNotifier(lastOrder, waiter.id),
+			orderDashboard
+		);
+
+		return orderNotified;
 	}
 
-	override getId(): string {
-		return this.order.getId();
+	getID(): string {
+		return this.order.getID();
 	}
-
-	override getGuestId(): string {
+	getGuestId(): string {
 		return this.order.getGuestId();
 	}
-
-	override assign(waiterId: string): ResponseMsg<void> {
-		let newWaiterNotifier = new WaiterNotifier(waiterId);
-		newWaiterNotifier.order = this.order;
-		this.order = newWaiterNotifier;
-		notificationFacade.assignedToOrder(waiterId, this.getDetails());
-		return this.changeOrderStatus('assigned');
-	}
-
-	override updateGuestLocation(
-		mapId: string,
-		location: Location
-	): ResponseMsg<void> {
-		return this.order.updateGuestLocation(mapId, location);
-	}
-
-	override updateWaiterLocation(
-		mapId: string,
-		location: Location
-	): ResponseMsg<void> {
-		return this.order.updateWaiterLocation(mapId, location);
-	}
-
-	override changeOrderStatus(status: OrderStatus): ResponseMsg<void> {
-		notificationFacade.changeOrderStatus(
-			this.receiverId,
-			this.getId(),
-			status
-		);
-		return this.order.changeOrderStatus(status);
-	}
-
-	override cancelOrder(): void {
-		notificationFacade.changeOrderStatus(
-			this.receiverId,
-			this.getId(),
-			'canceled'
-		);
-		this.order.cancelOrder();
-	}
-
-	override giveFeedback(review: string, score: number): boolean {
-		return this.order.giveFeedback(review, score);
-	}
-
-	override getDetails(): OrderIDO {
+	getDetails(): OrderIDO {
 		return this.order.getDetails();
 	}
 
-	override orderArrived(): ResponseMsg<void> {
-		return this.order.orderArrived();
+	canAssign(): boolean {
+		return this.order.canAssign();
+	}
+	isActive(): boolean {
+		return this.order.isActive();
+	}
+
+	updateGuestLocation(mapID: string, location: Location): ResponseMsg<void> {
+		return this.order.updateGuestLocation(mapID, location);
+	}
+	updateWaiterLocation(mapID: string, location: Location): ResponseMsg<void> {
+		return this.order.updateWaiterLocation(mapID, location);
+	}
+
+	async assign(waiterID: string): Promise<ResponseMsg<void>> {
+		const oldStatus = this.getDetails().status;
+		const newStatus = oldStatus === 'on the way' ? oldStatus : 'assigned';
+		return (await this.changeOrderStatus(newStatus, true, true)).ifGood(
+			() => {
+				const orderWaiter = new WaiterNotifier(this.order, waiterID);
+				this.order = orderWaiter;
+				this.notificationFacade.assignedToOrder(
+					waiterID,
+					this.getDetails()
+				);
+			}
+		);
+	}
+
+	async changeOrderStatus(
+		status: OrderStatus,
+		assigningWaiter: boolean,
+		adminPrivileges: boolean
+	): Promise<ResponseMsg<void>> {
+		return (
+			await this.order.changeOrderStatus(
+				status,
+				assigningWaiter,
+				adminPrivileges
+			)
+		).ifGood(() =>
+			this.notificationFacade.changeOrderStatus(
+				this.receiverId,
+				this.getID(),
+				status
+			)
+		);
+	}
+
+	giveFeedback(review: string, score: number): boolean {
+		return this.order.giveFeedback(review, score);
 	}
 }
 
 class GuestNotifier extends OrderNotifier {
+	protected receiverId: string;
+
+	constructor(order: IOrder, guestID: string) {
+		super(order);
+		this.receiverId = guestID;
+	}
+
 	override updateWaiterLocation(
-		mapId: string,
-		location: Location
+		...params: [mapID: string, location: Location]
 	): ResponseMsg<void> {
-		notificationFacade.updateWaiterLocation(
-			this.receiverId,
-			this.getId(),
-			mapId,
-			location
-		);
-		return this.order.updateWaiterLocation(mapId, location);
+		return super
+			.updateWaiterLocation(...params)
+			.ifGood(() =>
+				this.notificationFacade.updateWaiterLocation(
+					this.receiverId,
+					this.getID(),
+					...params
+				)
+			);
 	}
 }
 
 class WaiterNotifier extends OrderNotifier {
+	protected receiverId: string;
+
+	constructor(order: IOrder, waiterID: string) {
+		super(order);
+		this.receiverId = waiterID;
+	}
+
 	override updateGuestLocation(
-		mapId: string,
-		location: Location
+		...params: [mapID: string, location: Location]
 	): ResponseMsg<void> {
-		notificationFacade.updateGuestLocation(
-			this.receiverId,
-			this.getId(),
-			mapId,
-			location
-		);
-		return this.order.updateGuestLocation(mapId, location);
+		return super.updateGuestLocation(...params).ifGood(() => {
+			this.notificationFacade.updateGuestLocation(
+				this.receiverId,
+				this.getID(),
+				...params
+			);
+		});
+	}
+}
+
+class DashboardNotifier extends OrderNotifier {
+	protected receiverId: string;
+
+	constructor(order: IOrder) {
+		super(order);
+		this.receiverId = config.admin_id;
 	}
 }

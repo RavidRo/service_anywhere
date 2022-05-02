@@ -1,23 +1,20 @@
-import {stringify} from 'querystring';
-import {IOrder} from 'server/Logic/IOrder';
-import {makeGood, ResponseMsg} from 'server/Response';
-import {Location} from '../../api';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import {Location, OrderIDO} from '../../api';
 
-function getWaiterOrders(waiterId: string): ResponseMsg<IOrder[]> {
-	return WaiterOrder.getWaiterOrder(waiterId).then((data: string[]) => {
-		return IOrder.orderList.filter(order => data.includes(order.getId()));
-	});
+import {ResponseMsg} from '../Response';
+
+import WaiterOrder from '../Logic/WaiterOrder';
+
+async function getOrdersByWaiter(
+	waiterID: string
+): Promise<ResponseMsg<OrderIDO[]>> {
+	return await WaiterOrder.getOrdersByWaiter(waiterID);
 }
 
-function orderArrived(orderId: string): void {
-	IOrder.delegate(orderId, (order: IOrder) => {
-		return order.orderArrived();
-	});
-}
-
-function connectWaiter(): string {
-	return WaiterOrder.connectWaiter();
+async function orderArrived(
+	orderId: string,
+	waiterID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderId, 'delivered', waiterID);
 }
 
 function updateLocationWaiter(
@@ -28,15 +25,16 @@ function updateLocationWaiter(
 	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
-function orderOnTheWay(orderId: string): void {
-	orderId;
-	throw new Error('Method not implemented');
+async function orderOnTheWay(
+	orderId: string,
+	waiterID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderId, 'on the way', waiterID);
 }
 
 export default {
-	getWaiterOrders,
+	getWaiterOrders: getOrdersByWaiter,
 	orderArrived,
-	connectWaiter,
 	updateLocationWaiter,
 	orderOnTheWay,
 };
