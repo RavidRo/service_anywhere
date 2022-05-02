@@ -1,5 +1,3 @@
-import {OrderStatus} from './signatures';
-
 export default class Location {
 	public readonly x: number;
 	public readonly y: number;
@@ -27,6 +25,11 @@ export default class Location {
 	}
 }
 
+export type LocationCoordinates = {
+	x: number;
+	y: number;
+};
+
 export interface LocationService {
 	getLocation(
 		successCallback: (location: Location) => void,
@@ -44,7 +47,7 @@ export interface LocationService {
 export type OrderID = string;
 export type Order = {
 	id: OrderID;
-	items: Map<String, Number>;
+	items: Object;
 	status: OrderStatus;
 };
 
@@ -58,3 +61,36 @@ export type Waiter = {
 	id: string;
 	location: Location;
 };
+
+export type OrderStatus =
+	| 'received'
+	| 'in preparation'
+	| 'ready to deliver'
+	| 'assigned'
+	| 'on the way'
+	| 'delivered'
+	| 'canceled';
+
+export type OrderIDO = {
+	id: OrderID;
+	guestId: string;
+	items: Map<string, number>;
+	status: OrderStatus;
+	creationTime: Date;
+	terminationTime: Date | undefined;
+};
+export type ItemIDO = {
+	id: string;
+	name: string;
+	price: number;
+	preparationTime: number;
+};
+
+export type WaiterID = string;
+export type WaiterIDO = {
+	id: WaiterID;
+	name: string;
+	avialabe: boolean;
+};
+
+type Token = string;

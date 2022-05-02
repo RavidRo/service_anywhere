@@ -40,49 +40,42 @@
 // 		err => console.log('get location eror - ' + err)
 // 	);
 // }
-import {GuestAPI, ItemIDO, OrderIDO, OrderID} from './../signatures';
+import {ItemIDO, OrderID, OrderIDO} from '../types';
+import {GuestAPI} from './../signatures';
 import RequestsHandler from './RequestsHandler';
 
 export default class Requests implements GuestAPI {
 	private handler: RequestsHandler;
-	private token: string;
 
 	constructor() {
 		this.handler = new RequestsHandler();
 	}
 
-	setToken(token: string) {
-		this.token = token;
-	}
-
 	login(password: string): Promise<string> {
-		return this.handler.post<string>('login', '', {
+		return this.handler.post<string>('login', {
 			password,
 		});
 	}
-	getItemsGuest(): Promise<ItemIDO[]> {
-		return this.handler.get<ItemIDO[]>('getItemsGuest', this.token, {});
+	getItems(): Promise<ItemIDO[]> {
+		return this.handler.get<ItemIDO[]>('getItems');
 	}
 
 	getGuestOrder(): Promise<OrderIDO> {
-		return this.handler.get<OrderIDO>('getGuestOrder', this.token, {});
+		return this.handler.get<OrderIDO>('getGuestOrder');
 	}
-	createOrder(order_items: Map<string, Number>): Promise<OrderID> {
-		return this.handler.post<OrderID>('createOrder', this.token, {
-			order_items,
-		});
+	createOrder(orderItems: Object): Promise<OrderID> {
+		console.log('order items -- ' + orderItems);
+		return this.handler.post<OrderID>('createOrder', {orderItems});
 	}
-	cancelOrderGuest(order_id: OrderID): Promise<Boolean> {
-		return this.handler.post<Boolean>('cancelOrderGuest', this.token, {
-			order_id,
-		});
+	cancelOrderGuest(orderId: OrderID): Promise<void> {
+		return this.handler.post<void>('cancelOrderGuest', {orderId});
 	}
 	submitReview(
 		orderId: string,
 		details: string,
 		rating: Number
 	): Promise<void> {
-		return this.handler.post<void>('submitReview', this.token, {
+		return this.handler.post<void>('submitReview', {
 			orderId,
 			details,
 			rating,

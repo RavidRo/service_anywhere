@@ -13,8 +13,8 @@ import {DummyPage} from './src/View/DummyView';
 import ConnectController from './src/ViewController/ConnectController';
 
 const App = () => {
-	// return <ConnectController />;
-
+	return <ConnectController />;
+	/*
 	const [status, setStatus] = useState('');
 	const [hasActiveOrder, sethasActiveOrder] = useState(false);
 	const [orderID, setOrderID] = useState('');
@@ -30,7 +30,7 @@ const App = () => {
 			hasActiveOrder={hasActiveOrder}
 			orderID={orderID}
 			orderStatus={status}></DummyPage>
-	);
+	); */
 };
 
 export default App;

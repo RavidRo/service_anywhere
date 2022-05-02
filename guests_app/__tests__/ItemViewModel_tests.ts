@@ -1,7 +1,7 @@
 import {makePromise as mockMakePromise} from '../PromiseUtils';
 import Requests from 'guests_app/src/Networking/requests';
 import ItemViewModel from 'guests_app/src/ViewModel/ItemViewModel';
-import {ItemIDO} from 'guests_app/src/signatures';
+import {ItemIDO} from 'guests_app/src/types';
 
 const items: ItemIDO[] = [
 	{id: '1', name: 'Beer', price: 10, preparationTime: 1},
@@ -9,7 +9,7 @@ const items: ItemIDO[] = [
 ];
 
 beforeAll(() => {
-	jest.spyOn(Requests.prototype, 'getItemsGuest').mockImplementation(() =>
+	jest.spyOn(Requests.prototype, 'getItems').mockImplementation(() =>
 		mockMakePromise(items)
 	);
 });
