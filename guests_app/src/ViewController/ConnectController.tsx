@@ -1,4 +1,5 @@
-import {observer} from '../../node_modules/mobx-react-lite';
+//import {observer} from '../../node_modules/mobx-react-lite';
+import {observer} from 'mobx-react-lite';
 import React, {useContext, useState} from 'react';
 import {Alert} from 'react-native';
 import {ConnectionContext} from '../contexts';
