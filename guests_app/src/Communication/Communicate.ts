@@ -1,5 +1,5 @@
 import {guestCommunication} from '../signatures';
-import { LocationCoordinates } from '../types';
+import {LocationCoordinates} from '../types';
 import ConnectionHandler from './ConnectionHandler';
 
 export default class Communicate implements guestCommunication {
