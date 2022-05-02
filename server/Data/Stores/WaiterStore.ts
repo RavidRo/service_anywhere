@@ -61,4 +61,3 @@ export async function getWaiter(waiterID: string) {
 	});
 	return waiter;
 }
-

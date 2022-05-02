@@ -6,7 +6,7 @@ import {IOrder} from '../Logic/IOrder';
 import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
-import { logger } from 'server/Logger';
+import {logger} from 'server/Logger';
 
 function createOrder(
 	guestId: string,
@@ -44,8 +44,11 @@ function submitReview(
 	throw new Error('Method not implemented');
 }
 
-async function cancelOrder(orderID: string, guestID: string): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID)
+async function cancelOrder(
+	orderID: string,
+	guestID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
 export default {
