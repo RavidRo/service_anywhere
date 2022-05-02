@@ -23,9 +23,11 @@ export const MainPage = observer((props: MainPageViewProps) => {
 					{'\t Order status:'} {props.orderStatus}
 				</Text>
 				<ActivityIndicator size='large' color='#00ff00' />
-				{props.orderStatus === 'received' ? 
-				(<Button title='Cancel Order' onPress={props.cancelOrder} />) : 
-				(<Text> {'\t cannot cancel order in making'} </Text>)}
+				{props.orderStatus === 'received' ? (
+					<Button title='Cancel Order' onPress={props.cancelOrder} />
+				) : (
+					<Text> {'\t cannot cancel order in making'} </Text>
+				)}
 			</View>
 		);
 	}
