@@ -38,7 +38,6 @@ export const MainPageViewController = observer(() => {
 		requestPermissions()
 			.then(response => {
 				if (response === PermissionsAndroid.RESULTS.GRANTED) {
-					console.log('res - ', response);
 					orderViewModel
 						.createOrder(items)
 						.then(createdOrder => {

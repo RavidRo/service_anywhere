@@ -1,4 +1,5 @@
-import {guestCommunication, Location} from '../signatures';
+import {guestCommunication} from '../signatures';
+import { LocationCoordinates } from '../types';
 import ConnectionHandler from './ConnectionHandler';
 
 export default class Communicate implements guestCommunication {
@@ -7,7 +8,7 @@ export default class Communicate implements guestCommunication {
 		this.connectionHandler = new ConnectionHandler();
 	}
 
-	updateGuestLocation(...params: [guestLocation: Location]): void {
+	updateGuestLocation(...params: [guestLocation: LocationCoordinates]): void {
 		this.connectionHandler.send('updateGuestLocation', ...params);
 	}
 }

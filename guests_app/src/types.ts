@@ -25,6 +25,11 @@ export default class Location {
 	}
 }
 
+export type LocationCoordinates = {
+	x: number;
+	y: number;
+};
+
 export interface LocationService {
 	getLocation(
 		successCallback: (location: Location) => void,
