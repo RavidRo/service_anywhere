@@ -37,7 +37,7 @@ const io = new socketIO.Server(httpServer, {
 // use it before all route definitions
 
 app.get('/', (_req, res) => {
-	res.send('Hello World!');
+	res.send("Ima shel Tommer ve'aba shel Tommer");
 });
 
 function authenticate(

@@ -73,7 +73,7 @@ export abstract class OrderNotifier implements IOrder {
 		return this.order.updateWaiterLocation(mapID, location);
 	}
 
-	async assign(waiterID: string): Promise<ResponseMsg<void>> {
+	async assign(waiterID: string): Promise<ResponseMsg<void>> {	//todo: why no call to this.order.assign()?
 		const oldStatus = this.getDetails().status;
 		const newStatus = oldStatus === 'on the way' ? oldStatus : 'assigned';
 		return (await this.changeOrderStatus(newStatus, true, true)).ifGood(

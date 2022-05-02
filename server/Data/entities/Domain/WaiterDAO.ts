@@ -22,7 +22,7 @@ export class WaiterDAO extends BaseEntity {
 	orders: OrderDAO[];
 
 	get available(): boolean {
-		return this.orders.length === 0;
+		return this.orders === undefined || this.orders.length === 0;
 	}
 
 	getDetails(): WaiterIDO {
