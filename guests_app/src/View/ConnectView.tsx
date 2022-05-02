@@ -3,14 +3,13 @@ import {Button, StyleSheet, Text, TextInput} from 'react-native';
 import {MainPageViewController} from '../ViewController/MainPageViewController';
 
 type LoginViewProps = {
-	isConnected: boolean;
 	loggedIn: boolean;
 	isLoading: boolean;
-	phone_number: string;
-	onPhoneNumberChange: (newPhoneNumber: string) => void;
+	isConnected: boolean;
+	password: string;
+	onPasswordChange: (newPassword: string) => void;
 	onSubmit: () => void;
 	establishConnection: () => void;
-
 	isReconnecting: boolean;
 };
 
@@ -42,9 +41,9 @@ export default function LoginView(props: LoginViewProps) {
 		<>
 			<TextInput
 				style={styles.input}
-				onChangeText={props.onPhoneNumberChange}
-				value={props.phone_number}
-				placeholder='Your Phone Number'
+				onChangeText={props.onPasswordChange}
+				value={props.password}
+				placeholder='Enter password'
 				secureTextEntry
 			/>
 			<Button

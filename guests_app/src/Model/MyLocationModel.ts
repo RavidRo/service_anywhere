@@ -1,13 +1,11 @@
-//import {makeAutoObservable} from 'mobx';
-import Singleton from '../Singeltone';
+import {makeAutoObservable} from 'mobx';
 import Location from '../types';
 
-export class MyLocationModel extends Singleton {
+export class MyLocationModel {
 	private _location: Location | null;
 
 	public constructor() {
-		super();
-		//		makeAutoObservable(this);
+		makeAutoObservable(this);
 	}
 
 	get location() {

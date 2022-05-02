@@ -1,20 +1,25 @@
-//import {makeAutoObservable} from 'mobx';
-import Singleton from '../Singeltone';
-import {Item} from '../types';
+import {makeAutoObservable} from 'mobx';
+import {ItemIDO} from '../types';
 
-export class ItemModel extends Singleton {
-	private _items: Item[];
+export class ItemModel {
+	private _items: ItemIDO[];
 
-	public constructor() {
-		super();
-		//		makeAutoObservable(this);
+	private constructor() {
+		makeAutoObservable(this);
+	}
+	static instance?: ItemModel;
+	static getInstance(): ItemModel {
+		if (!this.instance) {
+			this.instance = new ItemModel();
+		}
+		return this.instance;
 	}
 
-	get items(): Item[] {
+	get items(): ItemIDO[] {
 		return this._items;
 	}
 
-	set items(items: Item[]) {
+	set items(items: ItemIDO[]) {
 		this._items = items;
 	}
 }

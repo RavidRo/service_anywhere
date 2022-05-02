@@ -1,11 +1,11 @@
 import {makeAutoObservable} from 'mobx';
 
 export default class ConnectionModel {
-	private _token: string | undefined;
-	private _reconnectingToServer: boolean;
+	private _token: string;
+	private _isReconnecting: boolean;
 
 	private constructor() {
-		this._reconnectingToServer = false;
+		this.isReconnecting = false;
 		makeAutoObservable(this);
 	}
 
@@ -17,18 +17,19 @@ export default class ConnectionModel {
 		return this.instance;
 	}
 
-	get token(): string | undefined {
+	set token(newToken: string) {
+		this._token = newToken;
+	}
+
+	get token(): string {
 		return this._token;
 	}
 
-	set token(newID: string | undefined) {
-		this._token = newID;
+	set isReconnecting(value: boolean) {
+		this._isReconnecting = value;
 	}
 
-	get reconnectingToServer() {
-		return this._reconnectingToServer;
-	}
-	set reconnectingToServer(reconnecting: boolean) {
-		this._reconnectingToServer = reconnecting;
+	get isReconnecting() {
+		return this._isReconnecting;
 	}
 }

@@ -1,6 +1,3 @@
-import {OrderIDO} from '../ido';
-import {Item, OrderID} from '../types';
-
 // const service = new Gps();
 // const corners = {
 // 	topRightGPS: new Location(34.802516, 31.26355),
@@ -43,48 +40,42 @@ import {Item, OrderID} from '../types';
 // 		err => console.log('get location eror - ' + err)
 // 	);
 // }
-
+import {ItemIDO, OrderID, OrderIDO} from '../types';
+import {GuestAPI} from './../signatures';
 import RequestsHandler from './RequestsHandler';
 
-export default class Requests {
+export default class Requests implements GuestAPI {
 	private handler: RequestsHandler;
-	private token: string;
 
 	constructor() {
 		this.handler = new RequestsHandler();
 	}
-	setToken(token: string) {
-		this.token = token;
+
+	login(password: string): Promise<string> {
+		return this.handler.post<string>('login', {
+			password,
+		});
+	}
+	getItems(): Promise<ItemIDO[]> {
+		return this.handler.get<ItemIDO[]>('getItems');
 	}
 
-	login(phone_number: string): Promise<string> {
-		return this.handler.post<string>('guestLogin', '', {
-			phone_number,
-		});
+	getGuestOrder(): Promise<OrderIDO> {
+		return this.handler.get<OrderIDO>('getGuestOrder');
 	}
-	getItems(): Promise<Item[]> {
-		return this.handler.get<Item[]>('getItems', this.token, {});
+	createOrder(orderItems: Object): Promise<OrderID> {
+		console.log('order items -- ' + orderItems);
+		return this.handler.post<OrderID>('createOrder', {orderItems});
 	}
-
-	getMyOrders(): Promise<OrderIDO[]> {
-		return this.handler.get<OrderIDO[]>('getGuestOrders', this.token, {});
-	}
-	createOrder(order_items: Map<string, Number>): Promise<OrderID> {
-		return this.handler.post<OrderID>('createOrder', this.token, {
-			order_items,
-		});
-	}
-	cancelOrder(order_id: OrderID): Promise<Boolean> {
-		return this.handler.post<Boolean>('cancelOrder', this.token, {
-			order_id,
-		});
+	cancelOrderGuest(orderId: OrderID): Promise<void> {
+		return this.handler.post<void>('cancelOrderGuest', {orderId});
 	}
 	submitReview(
 		orderId: string,
 		details: string,
 		rating: Number
 	): Promise<void> {
-		return this.handler.post<void>('submitReview', this.token, {
+		return this.handler.post<void>('submitReview', {
 			orderId,
 			details,
 			rating,
@@ -97,21 +88,3 @@ export default class Requests {
 	{
 		return this.handler.get<Map[]>('getMaps',this.token,{})
 	} */
-
-// updateLocationGuest(location: Location, orderID: OrderID): Promise<void> {
-// 	return this.handler.post<void>('updateLocationGuest', this.token, {
-// 		location: {x: location.x, y: location.y},
-// 		orderID,
-// 	});
-// }
-
-// export function hasOrderArrived(orderID: String) {
-// 	const url = `${server_adress}/hasOrderArrived`;
-// 	return axios({
-// 		method: 'get',
-// 		url: url,
-// 		params: {
-// 			orderID: orderID,
-// 		},
-// 	});
-// }
