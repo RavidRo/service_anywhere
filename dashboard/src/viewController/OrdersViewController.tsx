@@ -15,6 +15,7 @@ import {
 } from '@mui/x-data-grid';
 import {makeStyles} from '@mui/styles';
 import {observer} from 'mobx-react';
+import {Divider, Typography} from '@mui/material';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
@@ -43,12 +44,18 @@ const OrdersViewController = observer((props: viewModelProps) => {
 	};
 
 	const columns = [
-		{field: 'id', headerName: 'id', editable: false},
+		{
+			field: 'id',
+			headerName: 'id',
+			editable: false,
+			renderCell: ExpandCellGrid,
+		},
 		{
 			field: 'guestId',
 			headerName: 'Guest Id',
 			editable: false,
 			flex: 1,
+			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'creationTime',
@@ -56,27 +63,32 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			type: 'date',
 			editable: false,
 			flex: 1,
-			// renderCell: ExpandCellGrid,
+			renderCell: ExpandCellGrid,
 		},
-		{
-			field: 'terminationTime',
-			headerName: 'Termination Time',
-			type: 'date',
-			editable: false,
-			flex: 1,
-			// renderCell: ExpandCellGrid,
-		},
+		// {
+		// 	field: 'terminationTime',
+		// 	headerName: 'Termination Time',
+		// 	type: 'date',
+		// 	editable: false,
+		// 	flex: 1,
+		// 	// renderCell: ExpandCellGrid,
+		// },
 		{
 			field: 'items',
 			headerName: 'items',
 			editable: false,
-			flex: 1,
+			flex: 1.5,
 			type: 'string',
 			valueGetter: (params: GridValueGetterParams) => {
 				//(entry: (number | string)[])
-				return Array.from(params.value)
-					.map((entry: any) => `${entry[0]} - ${entry[1]}`)
-					.join(' | ');
+				return Object.keys(params.value).map((key: any) => {
+					return (
+						<React.Fragment key={key}>
+							{`${key} - ${params.value[key]}`}
+							<Divider variant='fullWidth' />
+						</React.Fragment>
+					);
+				});
 			},
 			renderCell: ExpandCellGrid,
 		},
@@ -105,9 +117,9 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			headerName: 'AssignedWaiter',
 			type: 'actions',
 			cellClassName: 'assignWaiter',
-			flex: 1,
+			flex: 1.5,
 			renderCell: (props: GridRenderCellParams) => {
-				const orderId = Number.parseInt(props.row.id);
+				const orderId = props.row.id;
 				return (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}

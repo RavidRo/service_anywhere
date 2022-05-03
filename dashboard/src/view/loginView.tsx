@@ -14,19 +14,6 @@ import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {observer} from 'mobx-react';
 
-// function Copyright(props: any) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
 const theme = createTheme();
 
 function Login(props: any) {
@@ -47,7 +34,7 @@ function Login(props: any) {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
-						Sign in
+						Log in
 					</Typography>
 					<Box
 						component='form'
@@ -69,11 +56,10 @@ function Login(props: any) {
 							fullWidth
 							variant='contained'
 							sx={{mt: 3, mb: 2}}>
-							Sign In
+							Log In
 						</Button>
 					</Box>
 				</Box>
-				{/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
 			</Container>
 		</ThemeProvider>
 	);

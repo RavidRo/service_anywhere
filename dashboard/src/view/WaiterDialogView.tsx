@@ -24,7 +24,7 @@ function WaiterDialogView(props: any) {
 	} = props;
 	return (
 		<div>
-			<Typography variant='h6'>
+			<Typography fontSize={10} paragraph>
 				{assignedWaiter.length === 0 ? (
 					<IconButton
 						color='primary'
@@ -58,12 +58,3 @@ function WaiterDialogView(props: any) {
 }
 
 export default observer(WaiterDialogView);
-
-WaiterDialogView.propTypes = {
-	assignedWaiter: PropTypes.string,
-	waiters: PropTypes.array,
-	handleOpen: PropTypes.func,
-	handleClose: PropTypes.func,
-	handleListItemClick: PropTypes.func,
-	open: PropTypes.bool,
-};

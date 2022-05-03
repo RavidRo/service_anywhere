@@ -70,6 +70,24 @@ export default class ConnectionHandler extends Singleton {
 		});
 
 		this.socket = this.socket;
+
+		const mockListOfOrders: any[] = [
+			{
+				id: '1',
+				items: {a: 3, b: 4},
+				status: 'received',
+				guestId: '1',
+				creationTime: '2022-05-02T12:13:27.588Z',
+			},
+			{
+				id: '2',
+				items: {c: 1, d: 2},
+				status: 'delivered',
+				guestId: '2',
+				creationTime: '2022-05-02T12:13:27.588Z',
+			},
+		];
+		this.notifications.updateOrders([mockListOfOrders]);
 		this.registerEvents(this.socket);
 	}
 

@@ -10,6 +10,13 @@ import waitersModel from './model/waiterModel';
 import ordersModel from './model/ordersModel';
 import Api from './network/api';
 
+if (
+	!new (class {
+		x: any;
+	})().hasOwnProperty('x')
+)
+	throw new Error('Transpiler is not configured correctly');
+
 console.log('Starting Log');
 
 const waiterModel = new waitersModel();

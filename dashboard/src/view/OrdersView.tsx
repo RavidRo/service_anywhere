@@ -2,7 +2,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import {toJS} from 'mobx';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {observer} from 'mobx-react';
 import Box from '@mui/material/Box';
 import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
 
@@ -12,7 +11,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const OrdersView = observer((props: any) => {
+const OrdersView = (props: any) => {
 	console.log('Starting the orders view');
 	const {
 		orders,
@@ -48,6 +47,6 @@ const OrdersView = observer((props: any) => {
 			/>
 		</Box>
 	);
-});
+};
 
 export default OrdersView;

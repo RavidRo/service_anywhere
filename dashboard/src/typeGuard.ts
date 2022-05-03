@@ -20,7 +20,7 @@ export function isWaiterArray(waiters: any[]): waiters is WaiterIDO[] {
 }
 
 export function isOrderArray(orders: any[]): orders is OrderIDO[] {
-	console.log('Received: ' + orders);
+	console.log('is Order Array: ', orders);
 	if (!orders || !Array.isArray(orders)) {
 		return false;
 	}
@@ -34,7 +34,6 @@ export function isOrderArray(orders: any[]): orders is OrderIDO[] {
 			(order as OrderIDO).id !== undefined &&
 			(order as OrderIDO).items !== undefined &&
 			(order as OrderIDO).status !== undefined &&
-			(order as OrderIDO).terminationTime !== undefined &&
 			prev
 		);
 	});

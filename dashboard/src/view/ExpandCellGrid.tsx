@@ -113,7 +113,6 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 		</Box>
 	);
 });
-
 export default function ExpandCellGrid(params: GridRenderCellParams<string>) {
 	return (
 		<GridCellExpand
@@ -122,14 +121,3 @@ export default function ExpandCellGrid(params: GridRenderCellParams<string>) {
 		/>
 	);
 }
-
-ExpandCellGrid.propTypes = {
-	/**
-	 * The column of the row that the current cell belongs to.
-	 */
-	colDef: PropTypes.object.isRequired,
-	/**
-	 * The cell value, but if the column has valueGetter, use getValue.
-	 */
-	value: PropTypes.string.isRequired,
-};

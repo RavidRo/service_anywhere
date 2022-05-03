@@ -107,8 +107,8 @@ describe('Constructor', () => {
 	test('Set and get orders in model', async () => {
 		const model = new ordersModel();
 		const ordersViewModel = new OrderViewModel(model, new Api());
-		ordersViewModel.orders = mockListOfOrders;
-		expect(ordersViewModel.orders).toEqual(model.orders);
+		ordersViewModel.setOrders(mockListOfOrders);
+		expect(ordersViewModel.getOrders()).toEqual(model.orders);
 	});
 
 	test('synchronise orders in model', async () => {
@@ -116,7 +116,7 @@ describe('Constructor', () => {
 		const ordersViewModel = new OrderViewModel(model, new Api());
 		ordersViewModel.synchroniseOrders();
 		await flushPromises();
-		const orders = ordersViewModel.orders;
+		const orders = ordersViewModel.getOrders();
 		expect(mockGetOrders).toHaveBeenCalled();
 	});
 });

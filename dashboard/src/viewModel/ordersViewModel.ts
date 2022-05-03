@@ -1,7 +1,6 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
 import {OrderIDO, OrderStatus} from '../../../api';
-import {observer} from 'mobx-react';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -19,6 +18,10 @@ export default class OrdersViewModel {
 
 	setOrders(orders: OrderIDO[]) {
 		this.ordersModel.orders = orders;
+	}
+
+	updateOrder(order: OrderIDO[]) {
+		this.ordersModel.orders = order;
 	}
 
 	synchroniseOrders(): Promise<void> {

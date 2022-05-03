@@ -2,7 +2,6 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {observer} from 'mobx-react';
 import React from 'react';
 
 function AppBarView() {
@@ -26,4 +25,4 @@ function AppBarView() {
 	);
 }
 
-export default observer(AppBarView);
+export default AppBarView;

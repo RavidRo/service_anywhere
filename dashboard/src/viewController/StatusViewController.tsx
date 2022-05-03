@@ -12,8 +12,9 @@ import Avatar from '@mui/material/Avatar';
 import {blue, red} from '@mui/material/colors';
 import {CardHeader} from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
+import {observer} from 'mobx-react';
 
-export default function StatusViewController(props: {
+function StatusViewController(props: {
 	orderId: number;
 	status: string;
 	orderViewModel: any;
@@ -216,10 +217,4 @@ export default function StatusViewController(props: {
 		</Box>
 	);
 }
-
-StatusViewController.propTypes = {
-	orderId: PropTypes.string,
-	status: PropTypes.string,
-	orderViewModel: PropTypes.object,
-	width: PropTypes.number,
-};
+export default observer(StatusViewController);

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import WaiterDialogView from '../view/WaiterDialogView';
 import propTypes from 'prop-types';
+import {observer} from 'mobx-react';
 
-export default function WaiterDialogViewController(props: any) {
+function WaiterDialogViewController(props: any) {
 	const {waitersViewModel, orderId} = props;
 	const [open, setOpen] = React.useState(false);
 	const [assignedWaiter, setAssignedWaiter] = React.useState('');
@@ -15,7 +16,10 @@ export default function WaiterDialogViewController(props: any) {
 				if (mounted) {
 					setAssignedWaiter(assignedWaiter);
 				}
-			});
+			})
+			.catch((err: string) =>
+				alert('Could not find waiter by order ' + err)
+			);
 		return () => {
 			mounted = false;
 		};
@@ -31,16 +35,17 @@ export default function WaiterDialogViewController(props: any) {
 
 	const handleListItemClick = (waiter: string) => {
 		if (waiter !== '') {
-			if (waitersViewModel.assignWaiter(orderId, waiter)) {
-				setAssignedWaiter(waiter);
-			}
+			waitersViewModel
+				.assignWaiter(orderId, waiter)
+				.then(() => setAssignedWaiter(waiter))
+				.catch((_: any) => alert('Could not assign waiter to order'));
 		}
 	};
 
 	return (
 		<WaiterDialogView
 			assignedWaiter={assignedWaiter}
-			waiters={waitersViewModel.waiters}
+			waiters={waitersViewModel.getWaiters()}
 			handleOpen={handleOpen}
 			handleClose={handleClose}
 			handleListItemClick={handleListItemClick}
@@ -49,9 +54,4 @@ export default function WaiterDialogViewController(props: any) {
 	);
 }
 
-WaiterDialogViewController.propTypes = {
-	orderId: propTypes.number,
-	onClose: propTypes.func,
-	open: propTypes.bool,
-	waitersViewModel: propTypes.object,
-};
+export default observer(WaiterDialogViewController);

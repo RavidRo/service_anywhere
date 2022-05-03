@@ -10,7 +10,7 @@ export default class ordersModel {
 	}
 	set orders(orders: OrderIDO[]) {
 		console.info('Setting orders to ', orders);
-		this._orders = orders;
+		this._orders.push(...orders);
 	}
 
 	get orders(): OrderIDO[] {
