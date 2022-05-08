@@ -1,6 +1,6 @@
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
-import {isOrderArray, isWaiterArray} from '../typeGuard';
+import {isOrder, isOrderStatus, orderStatus, isWaiterArray} from '../typeGuard';
 
 export default class Notificiations {
 	private ordersViewModel: OrdersViewModel;
@@ -13,30 +13,36 @@ export default class Notificiations {
 		this.waitersViewModel = waitersViewModel;
 	}
 
-	updateOrders(params: any[]) {
+	addNewOrder(params: object) {
 		console.log('Updating new orders', params);
-		if (isOrderArray(params[0])) {
-			this.ordersViewModel.updateOrder(params[0]);
+		if (isOrder(params)) {
+			this.ordersViewModel.updateOrder(params);
 		} else {
 			console.warn(
-				"Haven't received the correct arguments, the first argument should contain orders"
+				"Haven't received the correct arguments, the argument should be an order"
 			);
 		}
 	}
 
-	updateWaiters(params: any[]) {
-		if (isWaiterArray(params[0])) {
-			this.waitersViewModel.setWaiters(params[0]);
+	changeOrderStatus(params: object) {
+		console.info('Changing order status', params);
+		if (isOrderStatus(params)) {
+			const orderStatus = params as orderStatus;
+			this.ordersViewModel.changeOrderStatus(
+				orderStatus.orderID,
+				orderStatus.orderStatus
+			);
 		} else {
 			console.warn(
-				"Haven't received the correct arguments, the first argument should contain the waiters"
+				"Haven't received the correct arguments, the param should be a order status"
 			);
 		}
 	}
 
-	eventCallbacks: Record<string, (params: unknown[]) => void> = {
-		newOrder: params => this.updateOrders(params),
-		updateWaiters: params => this.updateWaiters(params),
+	eventCallbacks: Record<string, (params: object) => void> = {
+		newOrder: params => this.addNewOrder(params),
+		changeOrderStatus: params => this.changeOrderStatus(params),
+		// updateWaiters: params => this.updateWaiters(params),
 	};
 }
 // updateOrderStatus: params => this.updateOrderStatus(params),

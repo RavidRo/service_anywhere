@@ -10,7 +10,7 @@ export default class ordersModel {
 	}
 	set orders(orders: OrderIDO[]) {
 		console.info('Setting orders to ', orders);
-		this._orders.push(...orders);
+		this._orders = orders;
 	}
 
 	get orders(): OrderIDO[] {
@@ -18,6 +18,11 @@ export default class ordersModel {
 		return this._orders;
 	}
 
+	addOrder(order: OrderIDO) {
+		this._orders.push(order);
+		const orders = this._orders;
+		this.orders = orders;
+	}
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
 		for (const order of this._orders) {
 			if (order.id === orderId) {

@@ -20,8 +20,8 @@ export default class OrdersViewModel {
 		this.ordersModel.orders = orders;
 	}
 
-	updateOrder(order: OrderIDO[]) {
-		this.ordersModel.orders = order;
+	updateOrder(order: OrderIDO) {
+		this.ordersModel.addOrder(order);
 	}
 
 	synchroniseOrders(): Promise<void> {

@@ -1,4 +1,4 @@
-import {WaiterIDO, OrderIDO} from '../../api';
+import {WaiterIDO, OrderIDO, OrderStatus} from '../../api';
 
 export function isWaiterArray(waiters: any[]): waiters is WaiterIDO[] {
 	console.log('Received ' + waiters);
@@ -19,24 +19,27 @@ export function isWaiterArray(waiters: any[]): waiters is WaiterIDO[] {
 	return ret;
 }
 
-export function isOrderArray(orders: any[]): orders is OrderIDO[] {
-	console.log('is Order Array: ', orders);
-	if (!orders || !Array.isArray(orders)) {
+export function isOrder(order: object): order is OrderIDO {
+	console.log('is Order Array: ', order);
+	if (!order) {
 		return false;
 	}
-	if (orders.length === 0) {
-		return true;
-	}
-	const ret = orders.reduce((prev, order) => {
-		return (
-			(order as OrderIDO).creationTime !== undefined &&
-			(order as OrderIDO).guestId !== undefined &&
-			(order as OrderIDO).id !== undefined &&
-			(order as OrderIDO).items !== undefined &&
-			(order as OrderIDO).status !== undefined &&
-			prev
-		);
-	});
+	return (
+		(order as OrderIDO).creationTime !== undefined &&
+		(order as OrderIDO).guestId !== undefined &&
+		(order as OrderIDO).id !== undefined &&
+		(order as OrderIDO).items !== undefined &&
+		(order as OrderIDO).status !== undefined
+	);
+}
 
-	return ret;
+export type orderStatus = {orderID: string; orderStatus: OrderStatus};
+export function isOrderStatus(status: object): status is orderStatus {
+	if (!status) {
+		return false;
+	}
+	return (
+		(status as orderStatus).orderID !== undefined &&
+		(status as orderStatus).orderStatus !== undefined
+	);
 }
