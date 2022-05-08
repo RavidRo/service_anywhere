@@ -1,22 +1,15 @@
 import {WaiterIDO, OrderIDO, OrderStatus} from '../../api';
 
-export function isWaiterArray(waiters: any[]): waiters is WaiterIDO[] {
-	console.log('Received ' + waiters);
-	if (!waiters || !Array.isArray(waiters)) {
+export function isWaiterArray(waiter: object): waiter is WaiterIDO {
+	console.log('Received ' + waiter);
+	if (!waiter) {
 		return false;
 	}
-	if (waiters.length === 0) {
-		return true;
-	}
-	const ret = waiters.reduce((prev, waiter) => {
-		return (
-			(waiter as WaiterIDO).avialabe !== undefined &&
-			(waiter as WaiterIDO).id !== undefined &&
-			(waiter as WaiterIDO).name !== undefined &&
-			prev
-		);
-	});
-	return ret;
+	return (
+		(waiter as WaiterIDO).avialabe !== undefined &&
+		(waiter as WaiterIDO).id !== undefined &&
+		(waiter as WaiterIDO).name !== undefined
+	);
 }
 
 export function isOrder(order: object): order is OrderIDO {
@@ -33,13 +26,13 @@ export function isOrder(order: object): order is OrderIDO {
 	);
 }
 
-export type orderStatus = {orderID: string; orderStatus: OrderStatus};
-export function isOrderStatus(status: object): status is orderStatus {
+export type orderStatusType = {orderID: string; orderStatus: OrderStatus};
+export function isOrderStatus(status: object): status is orderStatusType {
 	if (!status) {
 		return false;
 	}
 	return (
-		(status as orderStatus).orderID !== undefined &&
-		(status as orderStatus).orderStatus !== undefined
+		(status as orderStatusType).orderID !== undefined &&
+		(status as orderStatusType).orderStatus !== undefined
 	);
 }

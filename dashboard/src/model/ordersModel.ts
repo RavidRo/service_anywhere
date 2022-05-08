@@ -19,6 +19,7 @@ export default class ordersModel {
 	}
 
 	addOrder(order: OrderIDO) {
+		console.log('Adding a new order', order);
 		this._orders.push(order);
 		const orders = this._orders;
 		this.orders = orders;

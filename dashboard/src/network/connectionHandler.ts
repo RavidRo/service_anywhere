@@ -7,7 +7,7 @@ import ConnectModel from '../model/ConnectModel';
 import {DefaultEventsMap} from 'socket.io/dist/typed-events';
 import {Console} from 'console';
 
-const config = require('./config.json');
+import config from './config.json';
 export default class ConnectionHandler extends Singleton {
 	private socket: Socket;
 	private notifications: Notification;

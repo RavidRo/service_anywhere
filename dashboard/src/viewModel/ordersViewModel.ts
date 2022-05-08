@@ -35,6 +35,9 @@ export default class OrdersViewModel {
 				alert('Could not get orders please reload, Error: ' + err)
 			);
 	}
+	changeOrderStatusNotification(orderId: string, newStatus: OrderStatus) {
+		this.ordersModel.changeOrderStatus(orderId, newStatus);
+	}
 
 	changeOrderStatus(
 		orderId: string,

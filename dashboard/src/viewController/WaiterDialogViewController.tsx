@@ -1,9 +1,12 @@
 import * as React from 'react';
 import WaiterDialogView from '../view/WaiterDialogView';
-import propTypes from 'prop-types';
 import {observer} from 'mobx-react';
 
-function WaiterDialogViewController(props: any) {
+// type waiterDialogViewControllerProps = {
+// 	waitersViewModel: WaitersViewModel;
+// 	orderId: string;
+// };
+function WaiterDialogViewController(props) {
 	const {waitersViewModel, orderId} = props;
 	const [open, setOpen] = React.useState(false);
 	const [assignedWaiter, setAssignedWaiter] = React.useState('');
@@ -12,9 +15,9 @@ function WaiterDialogViewController(props: any) {
 		let mounted = true;
 		waitersViewModel
 			.getWaitersByOrder(orderId)
-			.then((assignedWaiter: string) => {
+			.then((waiter: string) => {
 				if (mounted) {
-					setAssignedWaiter(assignedWaiter);
+					setAssignedWaiter(waiter);
 				}
 			})
 			.catch((err: string) =>
@@ -23,7 +26,7 @@ function WaiterDialogViewController(props: any) {
 		return () => {
 			mounted = false;
 		};
-	}, []);
+	});
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -38,7 +41,7 @@ function WaiterDialogViewController(props: any) {
 			waitersViewModel
 				.assignWaiter(orderId, waiter)
 				.then(() => setAssignedWaiter(waiter))
-				.catch((_: any) => alert('Could not assign waiter to order'));
+				.catch(_ => alert('Could not assign waiter to order'));
 		}
 	};
 

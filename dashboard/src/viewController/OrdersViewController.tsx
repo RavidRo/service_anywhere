@@ -1,6 +1,5 @@
 import * as React from 'react';
 import AppBarView from '../view/AppBarView';
-import propTypes from 'prop-types';
 import WaiterDialogViewController from './WaiterDialogViewController';
 import OrdersView from '../view/OrdersView';
 import StatusViewController from './StatusViewController';
@@ -8,38 +7,29 @@ import ExpandCellGrid from '../view/ExpandCellGrid';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
 import {
-	GridParamsApi,
 	GridRenderCellParams,
 	GridValueGetterParams,
 	MuiEvent,
 } from '@mui/x-data-grid';
-import {makeStyles} from '@mui/styles';
 import {observer} from 'mobx-react';
-import {Divider, Typography} from '@mui/material';
+import {Divider} from '@mui/material';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaiterViewModel;
 }
-
-const useStyles = makeStyles({
-	div: {
-		height: '100%',
-	},
-});
-
 const OrdersViewController = observer((props: viewModelProps) => {
 	console.info('Starting orders view controller');
 	const {ordersViewModel, waitersViewModel} = props;
-	const handleRowEditStart = (_: any, event: MuiEvent) => {
+	const handleRowEditStart = (_, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleRowEditStop = (_: any, event: MuiEvent) => {
+	const handleRowEditStop = (_, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleCellFocusOut = (_: any, event: MuiEvent) => {
+	const handleCellFocusOut = (_, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
@@ -81,7 +71,7 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			type: 'string',
 			valueGetter: (params: GridValueGetterParams) => {
 				//(entry: (number | string)[])
-				return Object.keys(params.value).map((key: any) => {
+				return Object.keys(params.value).map((key: string) => {
 					return (
 						<React.Fragment key={key}>
 							{`${key} - ${params.value[key]}`}
@@ -118,8 +108,8 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			type: 'actions',
 			cellClassName: 'assignWaiter',
 			flex: 1.5,
-			renderCell: (props: GridRenderCellParams) => {
-				const orderId = props.row.id;
+			renderCell: (renderProps: GridRenderCellParams) => {
+				const orderId = renderProps.row.id;
 				return (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
@@ -129,7 +119,6 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			},
 		},
 	];
-	const classes = useStyles();
 	return (
 		<div>
 			<AppBarView />

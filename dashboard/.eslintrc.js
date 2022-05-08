@@ -28,12 +28,12 @@ module.exports = {
 		],
 		'no-shadow': 'off',
 		'@typescript-eslint/no-shadow': ['error'],
-		'@typescript-eslint/explicit-function-return-type': [
-			'error',
-			{
-				allowExpressions: true,
-			},
-		],
+		// '@typescript-eslint/explicit-function-return-type': [
+		// 	'error',
+		// 	{
+		// 		allowExpressions: true,
+		// 	},
+		// ],
 		'max-len': ['warn', {code: 80}],
 		'react-hooks/rules-of-hooks': 'error',
 		'react-hooks/exhaustive-deps': 'warn',

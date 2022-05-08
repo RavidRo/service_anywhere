@@ -1,6 +1,7 @@
+/* eslint-disable max-len */
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
-import {isOrder, isOrderStatus, orderStatus, isWaiterArray} from '../typeGuard';
+import {isOrder, isOrderStatus, orderStatusType} from '../typeGuard';
 
 export default class Notificiations {
 	private ordersViewModel: OrdersViewModel;
@@ -27,8 +28,8 @@ export default class Notificiations {
 	changeOrderStatus(params: object) {
 		console.info('Changing order status', params);
 		if (isOrderStatus(params)) {
-			const orderStatus = params as orderStatus;
-			this.ordersViewModel.changeOrderStatus(
+			const orderStatus = params as orderStatusType;
+			this.ordersViewModel.changeOrderStatusNotification(
 				orderStatus.orderID,
 				orderStatus.orderStatus
 			);
