@@ -34,9 +34,9 @@ export default class ConnectionHandler extends Singleton {
 		let returnedResult = false;
 
 		this.socket.on('connect', () => {
+			this.connectionModel.isReconnecting = false;
 			// Connected successfully to the server
 			if (!returnedResult) {
-				this.connectionModel.isReconnecting = false;
 				onSuccess?.();
 			}
 			returnedResult = true;
