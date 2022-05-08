@@ -40,24 +40,32 @@ export default class ConnectViewModel {
 	}
 
 	public connect() {
-		return new Promise<void>((resolve, reject) => {
-			if (this.model.token !== undefined) {
-				console.info('Trying to connect with token ', this.model.token);
-				this.waitersViewModel.synchroniseWaiters();
-				this.ordersViewModel.synchroniseOrders();
-				this.connectionHandler.connect(
-					this.model.token,
-					() => resolve(),
-					() =>
-						reject(
-							'Could not connect to server, please try again later'
-						)
-				);
-			} else {
+		const token = this.model.token;
+
+		if (token !== undefined) {
+			console.info('Trying to connect with token ', this.model.token);
+			return Promise.all([
+				this.waitersViewModel.synchroniseWaiters(),
+				this.ordersViewModel.synchroniseOrders(),
+				new Promise<void>((resolve, reject) => {
+					this.connectionHandler.connect(
+						token,
+						() => resolve(),
+						() =>
+							reject(
+								'Could not connect to server, please try again later'
+							)
+					);
+				}),
+			])
+				.then(() => console.info('Finished synchrosing and connecting'))
+				.catch(() => alert('Error in synchronisation or connecting'));
+		} else {
+			return new Promise<void>((_, reject) => {
 				reject(
 					'Tried to connect but an authorization token could not be found'
 				);
-			}
-		});
+			});
+		}
 	}
 }
