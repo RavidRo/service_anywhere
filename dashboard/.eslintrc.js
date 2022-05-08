@@ -1,14 +1,12 @@
 module.exports = {
-	plugins: ['react'],
+	plugins: ['react-hooks'],
 	extends: [
-		'eslint:recommended',
-		'plugin:react/recommended',
-		'../.eslintrc.js',
+		'react-app',
+		'react-app/jest',
+		'plugin:@typescript-eslint/recommended',
 	],
-	parser: 'babel-eslint',
-	env: {node: true, es6: true, browser: true},
 	rules: {
-		'no-unused-vars': [
+		'@typescript-eslint/no-unused-vars': [
 			'warn',
 			{
 				argsIgnorePattern: '^_',
@@ -16,16 +14,36 @@ module.exports = {
 				caughtErrorsIgnorePattern: '^_',
 			},
 		],
-	},
-	parserOptions: {
-		ecmaVersion: 2017,
-		browser: true,
-		sourceType: 'module',
-		allowImportExportEverywhere: true,
+		'no-unused-vars': 'off',
+		'no-use-before-define': 'off',
+		'@typescript-eslint/no-use-before-define': ['error'],
+		'react/jsx-filename-extension': ['warn', {extensions: ['.tsx']}],
+		'import/extensions': [
+			'error',
+			'ignorePackages',
+			{
+				ts: 'never',
+				tsx: 'never',
+			},
+		],
+		'no-shadow': 'off',
+		'@typescript-eslint/no-shadow': ['error'],
+		'@typescript-eslint/explicit-function-return-type': [
+			'error',
+			{
+				allowExpressions: true,
+			},
+		],
+		'max-len': ['warn', {code: 80}],
+		'react-hooks/rules-of-hooks': 'error',
+		'react-hooks/exhaustive-deps': 'warn',
+		'import/prefer-default-export': 'off',
+		'react/prop-types': 'off',
+		'@typescript-eslint/explicit-function-return-type': 'off',
 	},
 	settings: {
-		react: {
-			version: 'detect',
+		'import/resolver': {
+			typescript: {},
 		},
 	},
 };
