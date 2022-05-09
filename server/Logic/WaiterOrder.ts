@@ -159,7 +159,7 @@ export async function changeOrderStatus(
 async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>>{
 	const response = await WaiterStore.getWaiter(waiterID)
 	if(response !== null){
-		return makeGood(response.id)
+		return makeGood(response.name)
 	} else {
 		return makeFail('There is no waiter with that token')
 	}
