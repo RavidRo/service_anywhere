@@ -429,7 +429,7 @@ app.post('/orderOnTheWay', (req, res) => {
 	);
 });
 
-app.post('/getWaiterName', (req, res) => {
+app.get('/getWaiterName', (req, res) => {
 	authenticate(
 		req.headers.authorization,
 		2,
