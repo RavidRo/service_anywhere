@@ -29,7 +29,7 @@ export default class WaitersViewModel {
 				alert('Could not get waiters please reload, Error:' + err)
 			);
 	}
-	assignWaiter(orderId: string, waiter: string) {
+	assignWaiter(orderId: string, waiter: string[]) {
 		return this.api.assignWaiter(orderId, waiter);
 	}
 

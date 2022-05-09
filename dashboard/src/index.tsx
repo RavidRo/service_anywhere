@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import ConnectViewController from './viewController/ConnectViewController';
 import ConnectViewModel from './viewModel/connectViewModel';
-import OrdersViewController from './viewController/OrdersViewController';
 import OrdersViewModel from './viewModel/ordersViewModel';
 import WaitersViewModel from './viewModel/waitersViewModel';
 import waitersModel from './model/waiterModel';
@@ -12,6 +11,7 @@ import Api from './network/api';
 
 if (
 	!new (class {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		x: any;
 	})().hasOwnProperty('x')
 )

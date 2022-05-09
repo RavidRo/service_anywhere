@@ -22,7 +22,7 @@ export default class Api extends Singleton {
 		return this.handler.get<WaiterIDO[]>('getWaiters');
 	}
 
-	assignWaiter(orderId: string, waiterId: string): Promise<void> {
+	assignWaiter(orderId: string, waiterId: string[]): Promise<void> {
 		return this.handler.post<void>('assignWaiter', {
 			orderIds: [orderId],
 			waiterId: waiterId,

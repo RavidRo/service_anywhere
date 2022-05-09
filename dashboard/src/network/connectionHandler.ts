@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {io, Socket} from 'socket.io-client';
 import Singleton from '../singleton';
 import Notification from './notifications';
@@ -5,7 +6,6 @@ import ordersViewModel from '../viewModel/ordersViewModel';
 import waitersViewModel from '../viewModel/waitersViewModel';
 import ConnectModel from '../model/ConnectModel';
 import {DefaultEventsMap} from 'socket.io/dist/typed-events';
-import {Console} from 'console';
 
 import config from './config.json';
 export default class ConnectionHandler extends Singleton {
@@ -69,6 +69,7 @@ export default class ConnectionHandler extends Singleton {
 			}
 		});
 
+		// eslint-disable-next-line no-self-assign
 		this.socket = this.socket;
 		this.registerEvents(this.socket);
 	}

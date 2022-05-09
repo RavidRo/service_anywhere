@@ -55,14 +55,14 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			flex: 1,
 			renderCell: ExpandCellGrid,
 		},
-		// {
-		// 	field: 'terminationTime',
-		// 	headerName: 'Termination Time',
-		// 	type: 'date',
-		// 	editable: false,
-		// 	flex: 1,
-		// 	// renderCell: ExpandCellGrid,
-		// },
+		{
+			field: 'completionTime',
+			headerName: 'Completion Time',
+			type: 'date',
+			editable: false,
+			flex: 1,
+			renderCell: ExpandCellGrid,
+		},
 		{
 			field: 'items',
 			headerName: 'items',

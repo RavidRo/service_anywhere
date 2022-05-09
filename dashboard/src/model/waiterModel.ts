@@ -14,7 +14,7 @@ export default class waiterModel {
 	}
 
 	get waiters(): WaiterIDO[] {
-		console.info('Getting waiters');
+		console.info('Getting waiters', this._waiters);
 		return this._waiters;
 	}
 }

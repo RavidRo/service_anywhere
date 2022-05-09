@@ -1,8 +1,6 @@
-import {OrderStatus} from '../../../api';
 import * as React from 'react';
 import StatusView from '../view/StatusView';
 import {Status, StatusToNumber} from '../Status';
-import PropTypes from 'prop-types';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -15,9 +13,9 @@ import WarningIcon from '@mui/icons-material/Warning';
 import {observer} from 'mobx-react';
 
 function StatusViewController(props: {
-	orderId: number;
+	orderId: string;
 	status: string;
-	orderViewModel: any;
+	orderViewModel: OrdersViewModel;
 	width: number;
 }) {
 	const {orderId, status, orderViewModel, width} = props;
@@ -56,30 +54,37 @@ function StatusViewController(props: {
 		if (!isStepNextable(currentStep)) {
 			console.error('This step is not nextable');
 		}
-		if (
-			orderViewModel.changeOrderStatus(orderId, Status[currentStep + 1])
-		) {
-			setCurrentStep(currentStep + 1);
-		}
+		orderViewModel
+			.changeOrderStatus(orderId, Status[currentStep + 1])
+			.then(boolean => {
+				if (boolean) setCurrentStep(currentStep + 1);
+			})
+			.catch(err => alert("Can't change order status " + err));
 	};
 
 	const handleBack = () => {
 		if (!isStepBackable(currentStep)) {
 			console.error('This step is not backable');
 		}
-		if (
-			orderViewModel.changeOrderStatus(orderId, Status[currentStep - 1])
-		) {
-			setCurrentStep(currentStep - 1);
-		}
+		orderViewModel
+			.changeOrderStatus(orderId, Status[currentStep - 1])
+			.then(boolean => {
+				if (boolean) setCurrentStep(currentStep - 1);
+			})
+			.catch(err => alert("Can't change order status " + err));
 	};
 	const handleCancel = () => {
 		if (!isStepCancelable(currentStep)) {
 			throw new Error('This step is not cancelable');
 		}
-		if (orderViewModel.changeOrderStatus(orderId, 'canceled')) {
-			setCurrentStep(StatusToNumber.get('canceled') || 6);
-		}
+
+		orderViewModel
+			.changeOrderStatus(orderId, 'canceled')
+			.then(boolean => {
+				if (boolean)
+					setCurrentStep(StatusToNumber.get('canceled') || 6);
+			})
+			.catch(err => alert("Can't change order status " + err));
 	};
 
 	const wrapper = React.useRef<HTMLDivElement | null>(null);
@@ -88,7 +93,7 @@ function StatusViewController(props: {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [showFullCell, setShowFullCell] = React.useState(false);
 	const [showPopper, setShowPopper] = React.useState(false);
-	const popperWidth = 1100;
+	const popperWidth = 1000;
 	const handleMouseEnter = () => {
 		setShowPopper(true);
 		setAnchorEl(cellDiv.current);
@@ -172,20 +177,20 @@ function StatusViewController(props: {
 										bgcolor: blue[700],
 									}}>
 									<Typography variant='body1'>
-										{statusNumber + 1}
+										{currentStep + 1}
 									</Typography>
 								</Avatar>
 							)}
 						</>
 					}
-					title={status}
+					title={Status[currentStep]}
 				/>
 			</Box>
 			{showPopper && (
 				<Popper
 					open={showFullCell && anchorEl !== null}
 					anchorEl={anchorEl}
-					style={{width: popperWidth, marginLeft: -17}}>
+					style={{width: popperWidth}}>
 					<Paper
 						elevation={1}
 						style={{

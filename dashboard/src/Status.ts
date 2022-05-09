@@ -6,8 +6,11 @@
 // 'on the way',
 // 'delivered',
 // 'canceled',
+
+import {OrderStatus} from '../../api';
+
 // }
-export const Status: string[] = [
+export const Status: OrderStatus[] = [
 	'received',
 	'in preparation',
 	'ready to deliver',
