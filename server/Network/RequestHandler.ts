@@ -429,6 +429,34 @@ app.post('/orderOnTheWay', (req, res) => {
 	);
 });
 
+app.post('/getWaiterName', (req, res) => {
+	authenticate(
+		req.headers.authorization,
+		2,
+		(msg: string) => {
+			res.send(msg);
+			logger.info(
+				"A waiter tried to get their name but had no permission or used an unmatched token"
+			);
+		},
+		status => res.status(status),
+		async waiterId => {
+			const response = await waiter.getWaiterName(waiterId);
+			sendResponse(
+				response,
+				st => res.status(st),
+				msg => res.send(msg)
+			);
+			if (!response.isSuccess()) {
+				logger.info(
+					"A waiter failed to get their name. Error: " +
+						response.getError()
+				);
+			}
+		}
+	);
+});
+
 io.on('connection', function (socket: socketio.Socket) {
 	console.debug('a user connected');
 	authenticate(

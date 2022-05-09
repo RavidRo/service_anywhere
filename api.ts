@@ -62,7 +62,7 @@ interface GuestNotificationHandler {
 		waiterId: WaiterID,
 		waiterLocation: Location
 	) => void;
-	orderStatusChange: (orderId: string, status: OrderStatus) => void;
+	changeOrderStatus: (orderId: string, status: OrderStatus) => void;
 }
 
 interface WaiterAPI {
@@ -79,7 +79,7 @@ interface WaiterCommunication {
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;
-	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
+	changeOrderStatus(orderId: OrderID, status: OrderStatus): void;
 	assignedToOrder(order: OrderIDO): void;
 }
 

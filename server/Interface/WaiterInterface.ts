@@ -26,9 +26,14 @@ async function orderOnTheWay(orderId: string, waiterID: string): Promise<Respons
 	return WaiterOrder.changeOrderStatus(orderId, 'on the way', waiterID);
 }
 
+function getWaiterName(waiterID: string): Promise<ResponseMsg<string>>{
+	return WaiterOrder.getWaiterName(waiterID)
+}
+
 export default {
 	getWaiterOrders: getOrdersByWaiter,
 	orderArrived,
 	updateLocationWaiter,
 	orderOnTheWay,
+	getWaiterName,
 };
