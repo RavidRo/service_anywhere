@@ -6,6 +6,7 @@ import {onOrder, getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 
 import config from '../config.json';
+import { WaiterDAO } from 'server/Data/entities/Domain/WaiterDAO';
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
@@ -18,9 +19,9 @@ function assignWaiter(
 	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
-async function getWaiters(): Promise<ResponseMsg<string[]>> {
+async function getWaiters(): Promise<ResponseMsg<WaiterDAO[]>> {
 	return makeGood(
-		(await WaiterOrder.getAllWaiters()).map(waiter => waiter.id)
+		(await WaiterOrder.getAllWaiters())
 	);
 }
 
