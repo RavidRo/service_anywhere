@@ -25,11 +25,13 @@ export default class ordersModel {
 		this.orders = orders;
 	}
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
-		for (const order of this._orders) {
+		this._orders.find(order => {
 			if (order.id === orderId) {
-				console.info('changing order to ' + newStatus);
-				order['status'] = newStatus;
+				order.status = newStatus;
 			}
-		}
+		});
+		const orders = this._orders;
+		this.orders = orders;
+		console.log(this.orders);
 	}
 }

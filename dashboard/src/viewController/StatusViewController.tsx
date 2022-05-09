@@ -183,21 +183,21 @@ function StatusViewController(props: {
 							)}
 						</>
 					}
-					title={Status[currentStep]}
+					title={status}
 				/>
 			</Box>
 			{showPopper && (
 				<Popper
 					open={showFullCell && anchorEl !== null}
 					anchorEl={anchorEl}
-					style={{width: popperWidth}}>
+					style={{width: popperWidth, padding: -20, offset: -20}}>
 					<Paper
 						elevation={1}
 						style={{
 							minHeight:
 								wrapperCurrent === null
 									? 40
-									: wrapperCurrent.offsetHeight - 3,
+									: wrapperCurrent.offsetHeight - 5,
 						}}>
 						<Typography variant='body2' style={{padding: 8}}>
 							<Box sx={{width: '100%'}}>

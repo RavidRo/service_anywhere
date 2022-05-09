@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
+import {observer} from 'mobx-react';
 
 const useStyles = makeStyles({
 	dataGrid: {
@@ -49,4 +50,4 @@ const OrdersView = (props: any) => {
 	);
 };
 
-export default OrdersView;
+export default observer(OrdersView);

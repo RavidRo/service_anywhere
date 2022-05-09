@@ -18,7 +18,7 @@ interface Props {
 	connectViewModel: ConnectViewModel;
 }
 
-const ConnectViewController = observer((props: Props) => {
+const ConnectViewController = (props: Props) => {
 	const {ordersViewModel, waitersViewModel, connectViewModel} = props;
 
 	const token = connectViewModel.connection.token;
@@ -78,6 +78,6 @@ const ConnectViewController = observer((props: Props) => {
 	}
 
 	return <Login handleSubmit={handleSubmit} />;
-});
+};
 
-export default ConnectViewController;
+export default observer(ConnectViewController);

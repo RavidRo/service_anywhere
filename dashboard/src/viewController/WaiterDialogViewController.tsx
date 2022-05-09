@@ -2,7 +2,6 @@
 import * as React from 'react';
 import WaiterDialogView from '../view/WaiterDialogView';
 import {observer} from 'mobx-react';
-import {WaiterIDO} from '../../../api';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 
 type waiterDialogViewControllerProps = {

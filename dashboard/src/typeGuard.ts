@@ -12,11 +12,12 @@ export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 	);
 }
 
-export function isOrder(order: object): order is OrderIDO {
-	console.log('is Order Array: ', order);
-	if (!order) {
+export function isOrder(params: object): params is {order: OrderIDO} {
+	console.log('is Order: ', params);
+	if (!params) {
 		return false;
 	}
+	const order = (params as {order: OrderIDO}).order;
 	return (
 		(order as OrderIDO).creationTime !== undefined &&
 		(order as OrderIDO).guestId !== undefined &&
@@ -28,6 +29,7 @@ export function isOrder(order: object): order is OrderIDO {
 
 export type orderStatusType = {orderID: string; orderStatus: OrderStatus};
 export function isOrderStatus(status: object): status is orderStatusType {
+	console.log('is Status: ', status);
 	if (!status) {
 		return false;
 	}

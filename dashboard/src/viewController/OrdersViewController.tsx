@@ -18,7 +18,7 @@ interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaiterViewModel;
 }
-const OrdersViewController = observer((props: viewModelProps) => {
+const OrdersViewController = (props: viewModelProps) => {
 	console.info('Starting orders view controller');
 	const {ordersViewModel, waitersViewModel} = props;
 	const handleRowEditStart = (_, event: MuiEvent) => {
@@ -131,6 +131,6 @@ const OrdersViewController = observer((props: viewModelProps) => {
 			/>
 		</div>
 	);
-});
+};
 
-export default OrdersViewController;
+export default observer(OrdersViewController);

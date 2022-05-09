@@ -15,9 +15,9 @@ export default class Notificiations {
 	}
 
 	addNewOrder(params: object) {
-		console.log('Updating new orders', params);
 		if (isOrder(params)) {
-			this.ordersViewModel.updateOrder(params);
+			console.log('Updating new orders', params);
+			this.ordersViewModel.updateOrder(params.order);
 		} else {
 			console.warn(
 				"Haven't received the correct arguments, the argument should be an order"
@@ -26,8 +26,8 @@ export default class Notificiations {
 	}
 
 	changeOrderStatus(params: object) {
-		console.info('Changing order status', params);
 		if (isOrderStatus(params)) {
+			console.info('Changing order status', params);
 			const orderStatus = params as orderStatusType;
 			this.ordersViewModel.changeOrderStatusNotification(
 				orderStatus.orderID,
