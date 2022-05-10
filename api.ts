@@ -34,6 +34,12 @@ export type Location = {
 	y: number;
 };
 
+export type GuestIDO = {
+	id: string;
+	name: string;
+	phoneNumber: string;
+};
+
 type Token = string;
 
 interface GuestAPI {
@@ -67,10 +73,10 @@ interface GuestNotificationHandler {
 
 interface WaiterAPI {
 	loginWaiter: (password: string) => Promise<void>;
-	getItemsWaiter: () => Promise<ItemIDO[]>; //ItemIDO ?
+	getItemsWaiter: () => Promise<ItemIDO[]>;
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
-	//  getGuestDetails: (id: string) => Promise<GuestIDO>; // GuestIDO?
+	getGuestDetails: (id: string) => Promise<GuestIDO>;
 	orderArrived: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
 }
