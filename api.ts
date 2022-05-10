@@ -76,7 +76,7 @@ interface WaiterAPI {
 	getItemsWaiter: () => Promise<ItemIDO[]>;
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
-	getGuestDetails: (id: string) => Promise<GuestIDO>;
+	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
 	orderArrived: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
 }
