@@ -1,6 +1,7 @@
 import {flushPromises, makePromise as mockMakePromise} from '../PromiseUtils';
 import WaitersViewModel from '../src/viewModel/waitersViewModel';
-
+import Api from '../src/network/api';
+import waiterModel from '../src/model/waiterModel';
 import {OrderIDO, WaiterIDO} from '../../api';
 
 const mockListOfOrders: OrderIDO[] = [
@@ -65,9 +66,6 @@ jest.mock('../src/network/api', () => {
 	});
 });
 
-import Api from '../src/network/api';
-import waiterModel from '../src/model/waiterModel';
-
 beforeEach(() => {
 	(Api as unknown as jest.Mock).mockClear();
 	mockGetOrders.mockClear();
@@ -88,7 +86,7 @@ describe('Constructor', () => {
 			new waiterModel(),
 			new Api()
 		);
-		waiterViewModel.assignWaiter('1', '1');
+		waiterViewModel.assignWaiter('1', ['1', '2']);
 		expect(mockAssignWaiter).toHaveBeenCalled();
 	});
 

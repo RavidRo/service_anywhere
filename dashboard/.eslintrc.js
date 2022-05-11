@@ -2,7 +2,7 @@ module.exports = {
 	plugins: ['react-hooks'],
 	extends: [
 		'react-app',
-		'react-app/jest',
+		// 'react-app/jest',
 		'plugin:@typescript-eslint/recommended',
 	],
 	rules: {

@@ -1,6 +1,7 @@
 import {flushPromises, makePromise as mockMakePromise} from '../PromiseUtils';
 import OrderViewModel from '../src/viewModel/ordersViewModel';
-
+import Api from '../src/network/api';
+import ordersModel from '../src/model/ordersModel';
 import {OrderIDO, WaiterIDO} from '../../api';
 
 const mockListOfOrders: OrderIDO[] = [
@@ -64,9 +65,6 @@ jest.mock('../src/network/api', () => {
 		};
 	});
 });
-
-import Api from '../src/network/api';
-import ordersModel from '../src/model/ordersModel';
 
 beforeEach(() => {
 	(Api as unknown as jest.Mock).mockClear();

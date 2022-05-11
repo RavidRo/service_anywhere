@@ -59,7 +59,7 @@ describe('update orders', () => {
 			ordersViewModels,
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
-		notifications.updateOrders([null, 'asd']);
+		notifications.addNewOrder([null, 'asd']);
 		expect(mockWarn).toBeCalledTimes(1);
 	});
 
@@ -71,7 +71,7 @@ describe('update orders', () => {
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
 		notifications.eventCallbacks.updateOrders([mockListOfOrders]);
-		expect(model.orders).toEqual(ordersViewModel.orders);
+		expect(model.orders).toEqual(ordersViewModel.getOrders());
 	});
 
 	it('Sending extra argument is accepted', () => {
@@ -102,7 +102,7 @@ describe('update orders', () => {
 		);
 
 		notifications.eventCallbacks.updateOrders(['asd']);
-		console.log(ordersViewModels.orders);
+		console.log(ordersViewModels.getOrders());
 		expect(mockWarn).toBeCalledTimes(1);
 	});
 });
