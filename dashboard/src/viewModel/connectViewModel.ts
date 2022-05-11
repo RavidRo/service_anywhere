@@ -47,6 +47,7 @@ export default class ConnectViewModel {
 			return Promise.all([
 				this.waitersViewModel.synchroniseWaiters(),
 				this.ordersViewModel.synchroniseOrders(),
+				this.ordersViewModel.synchroniseItems(),
 				new Promise<void>((resolve, reject) => {
 					this.connectionHandler.connect(
 						token,

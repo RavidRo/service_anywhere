@@ -74,7 +74,9 @@ const OrdersViewController = (props: viewModelProps) => {
 				return Object.keys(params.value).map((key: string) => {
 					return (
 						<React.Fragment key={key}>
-							{`${key} - ${params.value[key]}`}
+							{`${ordersViewModel.getItemName(key)} - ${
+								params.value[key]
+							}`}
 							<Divider variant='fullWidth' />
 						</React.Fragment>
 					);

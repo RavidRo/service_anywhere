@@ -1,6 +1,6 @@
 import RequestsHandler from './RequestsHandler';
 import Singleton from '../singleton';
-import {OrderIDO, WaiterIDO} from '../../../api';
+import {ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
 
 export default class Api extends Singleton {
 	private handler: RequestsHandler;
@@ -46,5 +46,9 @@ export default class Api extends Singleton {
 		return this.handler.post<void>('cancelOrder', {
 			orderId: orderId,
 		});
+	}
+
+	getItems(): Promise<ItemIDO[]> {
+		return this.handler.get<ItemIDO[]>('getItems');
 	}
 }
