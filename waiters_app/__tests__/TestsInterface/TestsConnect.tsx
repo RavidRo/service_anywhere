@@ -1,7 +1,6 @@
 import {
 	makeFail,
 	makePromise as mockMakePromise,
-	timeout,
 } from 'waiters_app/PromiseUtils';
 import React from 'react';
 

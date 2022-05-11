@@ -61,3 +61,10 @@ buck-out/
 
 # Visual Studio Code
 .vscode/
+
+*.db
+*.key
+
+.env
+
+log.*

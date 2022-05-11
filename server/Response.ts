@@ -43,7 +43,7 @@ export interface ResponseMsg<T, U = T> extends Parsable<T, ResponseMsg<U>> {
 	getError(): string;
 	getStatusCode(): number;
 	getData(): T;
-	then<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V>;
+	ifGood<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V>;
 }
 
 function isResponse<T, U = T>(object: unknown): object is ResponseMsg<T, U> {
@@ -52,7 +52,7 @@ function isResponse<T, U = T>(object: unknown): object is ResponseMsg<T, U> {
 		response?.isSuccess !== undefined &&
 		response?.getError !== undefined &&
 		response?.getData !== undefined &&
-		response?.then !== undefined
+		response?.ifGood !== undefined
 	);
 }
 
@@ -85,7 +85,7 @@ class ResponseSuccess<T, U = T> implements ResponseMsg<T, U> {
 		return response;
 	}
 
-	then<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
+	ifGood<V>(func: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
 		const returnValue = func(this._data.getData());
 		if (isResponse(returnValue)) {
 			return returnValue;
@@ -98,9 +98,7 @@ class ResponseFail implements ResponseMsg<unknown> {
 	private _error: string;
 	private _statusCode: number;
 
-	// https://en.wikipedia.org/wiki/HTTP_403
-	// Forbidden error code
-	private static DEFAULT_ERROR_CODE = 403;
+	private static DEFAULT_ERROR_CODE = 400;
 
 	constructor(error: string, statusCode = ResponseFail.DEFAULT_ERROR_CODE) {
 		this._error = error;
@@ -123,7 +121,7 @@ class ResponseFail implements ResponseMsg<unknown> {
 		return new ResponseFail(this._error);
 	}
 
-	then<V, T>(_: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
+	ifGood<V, T>(_: (data: T) => V | ResponseMsg<V>): ResponseMsg<V> {
 		return this;
 	}
 }
@@ -174,4 +172,12 @@ export const makeFail = <T, U>(
 	statusCode?: number
 ): ResponseMsg<T, U> => {
 	return new ResponseFail(error, statusCode);
+};
+
+export const mapResponse = <T, U>(
+	responses: ResponseMsg<T, U>[]
+): ResponseMsg<T[], U[]> => {
+	return responses.reduce((acc, curr) => {
+		return curr.ifGood(data => makeGood([...acc.getData(), data]));
+	}, makeGood<T[]>([]));
 };

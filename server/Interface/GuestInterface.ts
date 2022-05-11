@@ -1,41 +1,54 @@
-import {ResponseMsg} from 'server/Response';
 import {Location, OrderIDO} from '../../api';
-import {Order} from '../Logic/Order';
 
-function createOrder(items: string[]): string {
-	return Order.createOrder(items);
+import {makeFail, makeGood, ResponseMsg} from '../Response';
+
+import {IOrder} from '../Logic/IOrder';
+import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
+
+import WaiterOrder from '../Logic/WaiterOrder';
+import {logger} from 'server/Logger';
+
+function createOrder(
+	guestId: string,
+	items: Map<string, number>
+): Promise<ResponseMsg<string>> {
+	return WaiterOrder.createOrder(guestId, items);
 }
 
-function updateLocationGuest(guestId: string, location: Location): void {
-	location;
-	guestId;
-	throw new Error('Method not implemented');
+function updateLocationGuest(
+	guestId: string,
+	mapID: string,
+	location: Location
+): void {
+	getGuestOrder(guestId).then(orderResponse => {
+		orderResponse.ifGood(order => {
+			onOrder(order.id, (o: IOrder) =>
+				o.updateGuestLocation(mapID, location)
+			);
+		});
+	});
 }
 
-function getGuestOrder(guestId: string): OrderIDO {
-	var m = new Map();
-	var d = new Date();
-	throw new Error('Method not implemented');
-	return {
-		id: '',
-		guestId: guestId,
-		items: m,
-		status: 'received',
-		creationTime: d,
-		terminationTime: d,
-	};
+async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
+	return await getGuestActiveOrder(guestID);
 }
 
-function submitReview(orderId: string, details: string, rating: Number): void {
+function submitReview(
+	orderId: string,
+	details: string,
+	rating: number
+): ResponseMsg<void> {
 	orderId;
 	details;
 	rating;
 	throw new Error('Method not implemented');
 }
 
-function cancelOrder(orderId: string): Boolean {
-	orderId;
-	throw new Error('Method not implemented');
+async function cancelOrder(
+	orderID: string,
+	guestID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
 export default {

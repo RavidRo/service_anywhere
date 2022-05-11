@@ -1,50 +1,56 @@
-import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import configuration from '../../configuration.json';
+import ConnectionModel from '../Model/ConnectionModel';
 
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
+	private connection: ConnectionModel;
 
 	constructor() {
+		this.connection = ConnectionModel.getInstance();
 		this.axiosInstance = axios.create({
-			baseURL: 'https://service-everywhere.herokuapp.com/',
+			baseURL: configuration['server-url'],
 		});
 	}
 
 	private request<T>(
 		endPoint: string,
-		token: string,
 		params: Record<string, unknown>,
 		GET = true
 	) {
-		console.debug(`Request ${endPoint}`, params);
-
+		console.info(`Request ${endPoint}`, params);
+		const config: AxiosRequestConfig = {
+			headers: {
+				...(this.connection.token && {
+					Authorization: this.connection.token,
+				}),
+			},
+		};
 		const request = GET ? this.axiosInstance.get : this.axiosInstance.post;
-		return request(`${endPoint}`, GET ? {params} : params, {
-			headers: {Authorization: token},
-		})
+		return request(
+			`${endPoint}`,
+			GET ? {params, ...config} : params,
+			config
+		)
 			.then(response => this.handleResponse<T>(response))
 			.catch(e => {
-				console.debug(e);
+				console.warn(e.response.data);
 				return Promise.reject(e);
 			});
 	}
 
 	private handleResponse<T>(response: AxiosResponse<T>) {
-		if (response.status === 200) {
-			const data = response.data;
-			console.debug('The server response', data);
-			return Promise.resolve(data);
-		} else {
-			console.debug(`HTTP Error - ${response.status}`);
-			return Promise.reject(`HTTP Error - ${response.status}`);
-		}
+		const data = response.data;
+		console.info('The server response:', data);
+		return Promise.resolve(data);
 	}
 
-	post<T>(endPoint: string, token: string, params = {}) {
-		return this.request<T>(endPoint, token, params, false);
+	public post<T>(endPoint: string, params = {}) {
+		return this.request<T>(endPoint, params, false);
 	}
 
-	get<T>(endPoint: string, token: string, params = {}) {
-		return this.request<T>(endPoint, token, params);
+	public get<T>(endPoint: string, params = {}) {
+		return this.request<T>(endPoint, params);
 	}
 }
 

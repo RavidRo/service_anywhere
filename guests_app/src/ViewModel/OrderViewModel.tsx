@@ -7,30 +7,39 @@ export default class OrderViewModel {
 	private requests;
 
 	constructor(requests: Requests) {
-		this.order_model = new OrderModel();
+		this.order_model = OrderModel.getInstance();
 		this.requests = requests;
-		this.getOrderFromServer();
 	}
 
 	getOrderFromServer() {
-		this.requests.getMyOrders().then(orders => {
-			if (orders.length > 0) {
-				this.order_model.order = orders[0];
-			} else {
-				this.removeOrder();
-			}
-		});
+		return this.requests
+			.getGuestOrder()
+			.then(order => {
+				this.order_model.order = {
+					id: order.id,
+					items: order.items,
+					status: order.status,
+				};
+			})
+			.catch(error => {
+				if (error.response.status == 404) {
+					this.removeOrder();
+					return Promise.resolve('no order');
+				}
+				return Promise.reject(error);
+			});
 	}
 
-	createOrder(items: Map<string, Number>): Promise<Order> {
-		if (this.getOrder() == null) {
+	createOrder(items: Object): Promise<Order> {
+		if (!this.hasActiveOrder()) {
 			return this.requests.createOrder(items).then(order_id => {
 				const order: Order = {
 					id: order_id,
 					items: items,
-					status: 'recieved',
+					status: 'received',
 				};
 				this.order_model.order = order;
+				console.log('created order = ', this.order_model.order);
 				return order;
 			});
 		}
@@ -39,15 +48,11 @@ export default class OrderViewModel {
 		);
 	}
 
-	cancelOrder(): Promise<boolean> {
+	cancelOrder(): Promise<void> {
 		const order = this.getOrder();
 		if (order != null) {
-			return this.requests.cancelOrder(order.id).then(res => {
-				if (res) {
-					this.order_model.order = null;
-					return true;
-				}
-				return false;
+			return this.requests.cancelOrderGuest(order.id).then(() => {
+				this.order_model.order = null;
 			});
 		}
 		return new Promise((_resolve, reject) =>
@@ -58,11 +63,11 @@ export default class OrderViewModel {
 	submitReview(deatils: string, rating: Number): Promise<void> {
 		const order = this.getOrder();
 		if (order != null) {
-			if (order.status === 'arrived') {
+			if (order.status === 'delivered') {
 				return this.requests.submitReview(order.id, deatils, rating);
 			}
 			return new Promise((_resolve, reject) =>
-				reject("cancelOrder called when order status isn't arrived")
+				reject("cancelOrder called when order status isn't received")
 			);
 		}
 		return new Promise((_resolve, reject) =>
