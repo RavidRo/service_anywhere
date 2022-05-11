@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AppBarView from '../view/AppBarView';
-import WaiterDialogViewController from './WaiterDialogViewController';
+import WaiterDialogViewController from './WaiterViewController';
 import OrdersView from '../view/OrdersView';
 import StatusViewController from './StatusViewController';
 import ExpandCellGrid from '../view/ExpandCellGrid';
@@ -114,6 +114,7 @@ const OrdersViewController = (props: viewModelProps) => {
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
 						orderId={orderId}
+						status={renderProps.row.status}
 					/>
 				);
 			},

@@ -8,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import {FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import {WaiterIDO} from '../../../api';
+import {StatusToNumber} from '../Status';
 
 const dialogTitle = 'Choose Waiter';
 
@@ -21,7 +22,15 @@ function WaiterDialogView(props: any) {
 		handleOk,
 		handleCheckboxChange,
 		open,
+		status,
 	} = props;
+	if (StatusToNumber[status] < 2) {
+		return (
+			<Typography fontSize={10} paragraph>
+				Order is not ready to deliver
+			</Typography>
+		);
+	}
 	return (
 		<div>
 			<Typography fontSize={10} paragraph>
@@ -53,6 +62,7 @@ function WaiterDialogView(props: any) {
 											key={waiter.id}
 											onChange={handleCheckboxChange}
 											name={waiter.id}
+											disabled={!waiter.avialabe}
 										/>
 									}
 									label={waiter.name}

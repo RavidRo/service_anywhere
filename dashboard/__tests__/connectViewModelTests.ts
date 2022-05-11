@@ -2,8 +2,16 @@ import {
 	flushPromises,
 	makePromise,
 	makePromise as mockMakePromise,
+	// eslint-disable-next-line import/extensions
 } from '../PromiseUtils';
 import ConnectViewModel from '../src/viewModel/connectViewModel';
+import Api from '../src/network/api';
+import OrdersViewModel from '../src/viewModel/ordersViewModel';
+import WaitersViewModel from '../src/viewModel/waitersViewModel';
+import ordersModel from '../src/model/ordersModel';
+import waiterModel from '../src/model/waiterModel';
+import {OrderIDO, WaiterIDO} from '../../api';
+import ConnectionHandler from '../src/network/connectionHandler';
 
 const mockListOfOrders: OrderIDO[] = [
 	{
@@ -79,13 +87,6 @@ jest.mock('../src/network/connectionHandler', () => {
 		return {connect: mockConnect};
 	});
 });
-import Api from '../src/network/api';
-import OrdersViewModel from '../src/viewModel/ordersViewModel';
-import WaitersViewModel from '../src/viewModel/waitersViewModel';
-import ordersModel from '../src/model/ordersModel';
-import waiterModel from '../src/model/waiterModel';
-import {OrderIDO, WaiterIDO} from '../../api';
-import ConnectionHandler from '../src/network/connectionHandler';
 
 beforeEach(() => {
 	(Api as unknown as jest.Mock).mockClear();
@@ -113,14 +114,14 @@ describe('Constructor', () => {
 	test('Login in server receive token', async () => {
 		const connectViewModel = getViewModel();
 		const ret = connectViewModel.login('password');
-		ret.then(token => expect(token !== undefined));
+		return ret.then(token => expect(token !== undefined));
 	});
 
 	test('Login in server receive undefined', async () => {
 		mockLogin.mockImplementation(password => makePromise(undefined));
 		const connectViewModel = getViewModel();
 		const ret = connectViewModel.login('password');
-		ret.then(token => expect(token === undefined));
+		return ret.then(token => expect(token === undefined));
 	});
 
 	test('connect websockets with token', async () => {
@@ -159,7 +160,7 @@ describe('Constructor', () => {
 		);
 		viewModel.login('Asd');
 		await flushPromises();
-		viewModel.connect().catch(r => expect(r).toBeTruthy());
+		return viewModel.connect().catch(r => expect(r).toBeTruthy());
 	});
 
 	test('connect websockets with token and expect reject', async () => {
@@ -178,6 +179,6 @@ describe('Constructor', () => {
 		);
 		viewModel.login('Asd');
 		await flushPromises();
-		viewModel.connect().catch(r => expect(r).toBeTruthy());
+		return viewModel.connect().catch(r => expect(r).toBeTruthy());
 	});
 });

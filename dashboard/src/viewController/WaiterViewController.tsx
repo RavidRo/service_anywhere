@@ -1,15 +1,17 @@
 /* eslint-disable max-len */
 import * as React from 'react';
-import WaiterDialogView from '../view/WaiterDialogView';
+import WaiterDialogView from '../view/WaiterView';
 import {observer} from 'mobx-react';
 import WaitersViewModel from '../viewModel/waitersViewModel';
+import {OrderStatus} from '../../../api';
 
 type waiterDialogViewControllerProps = {
 	waitersViewModel: WaitersViewModel;
 	orderId: string;
+	status: OrderStatus;
 };
 function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
-	const {waitersViewModel, orderId} = props;
+	const {waitersViewModel, orderId, status} = props;
 	const [open, setOpen] = React.useState(false);
 	const [assignedWaiters, setAssignedWaiters] = React.useState<string[]>([]);
 	const [selectedWaiters, setSelectedWaiters] = React.useState<string[]>([]);
@@ -71,6 +73,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 			handleCheckboxChange={handleCheckboxChange}
 			handleOk={handleOk}
 			open={open}
+			status={status}
 		/>
 	);
 }
