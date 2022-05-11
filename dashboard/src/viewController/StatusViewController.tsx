@@ -24,6 +24,7 @@ function StatusViewController(props: {
 	);
 
 	const backable: number[] = [
+		1,
 		2, // 'ready to deliver'
 		3, // 'assigned'
 		4, // 'on the way'

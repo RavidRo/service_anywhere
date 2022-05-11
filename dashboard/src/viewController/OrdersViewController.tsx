@@ -67,7 +67,7 @@ const OrdersViewController = (props: viewModelProps) => {
 			field: 'items',
 			headerName: 'items',
 			editable: false,
-			flex: 1.5,
+			flex: 1,
 			type: 'string',
 			valueGetter: (params: GridValueGetterParams) => {
 				//(entry: (number | string)[])
