@@ -303,6 +303,44 @@ app.post('/cancelOrderGuest', (req, res) => {
 
 //waiter
 
+app.get('/getGuestsDetails', (req, res) => {
+	checkInputs(
+		['ids'],
+		req.body,
+		(msg: string) => {
+			res.send(msg);
+			logger.info(
+				"A waiter tried to get a guest details but gave no id list"
+			);
+		},
+		status => res.status(status),
+		async () => {
+			authenticate(
+				req.headers.authorization,
+				2,
+				(msg: string) => {
+					res.send(msg);
+					logger.info(
+						"A user tried to get a guest details but had no permission or used an unmatched token"
+					);
+				},
+				status => res.status(status),
+				async _waiterId => {
+					const response = await waiter.getGuestsDetails(
+						req.body['ids']
+					).then(guests => res.send(guests))
+					.catch(() => {
+						res.status(500);
+						res.send('Getting guests failed, try again later');
+						logger.error('An error occured while getting guests data');
+					});
+				}
+			);
+		}
+	);
+});
+
+
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,

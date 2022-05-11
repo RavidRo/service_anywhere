@@ -1,8 +1,10 @@
-import {Location, OrderIDO} from '../../api';
+import {GuestIDO, Location, OrderIDO} from '../../api';
 
 import {ResponseMsg} from '../Response';
 
 import WaiterOrder from '../Logic/WaiterOrder';
+
+import {getGuestsDetails as getDetails} from '../Data/Stores/GuestStore'
 
 async function getOrdersByWaiter(
 	waiterID: string
@@ -30,10 +32,15 @@ function getWaiterName(waiterID: string): Promise<ResponseMsg<string>>{
 	return WaiterOrder.getWaiterName(waiterID)
 }
 
+function getGuestsDetails(ids: string[]): Promise<GuestIDO[]>{
+	return getDetails(ids)
+}
+
 export default {
 	getWaiterOrders: getOrdersByWaiter,
 	orderArrived,
 	updateLocationWaiter,
 	orderOnTheWay,
 	getWaiterName,
+	getGuestsDetails,
 };
