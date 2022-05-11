@@ -14,7 +14,7 @@ export const Status: OrderStatus[] = [
 	'received',
 	'in preparation',
 	'ready to deliver',
-	'assigned',	
+	'assigned',
 	'on the way',
 	'delivered',
 	'canceled',
