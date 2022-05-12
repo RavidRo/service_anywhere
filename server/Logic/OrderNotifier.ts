@@ -150,7 +150,7 @@ class WaiterNotifier extends OrderNotifier {
 		return super.updateGuestLocation(...params).ifGood(() => {
 			this.notificationFacade.updateGuestLocation(
 				this.receiverId,
-				this.getID(),
+				this.getGuestId(),
 				...params
 			);
 		});

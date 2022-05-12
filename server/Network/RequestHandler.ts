@@ -83,7 +83,6 @@ function checkInputs(
 ) {
 	let answer = '';
 	let missing = false;
-	console.debug(reqBody)
 	for (const input of inputs) {
 		if (!(input in reqBody)) {
 			answer += `\"${input}\", `;
@@ -525,7 +524,7 @@ io.on('connection', function (socket: socketio.Socket) {
 	);
 	socket.on('updateGuestLocation', (message: any) => {
 		checkInputs(
-			['x', 'y', 'mapID'],
+			['location'],
 			message,
 			(msg: string) => {
 				socket.emit('Error', msg);
@@ -545,22 +544,23 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(id: string) =>
+					(id: string) =>{
+						console.debug('guest updates location: ', message)
 						guest.updateLocationGuest(
 							id,
-							message
-						)
+							message['location']
+					)}
 				)
 		);
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
 		checkInputs(
-			['x', 'y', 'mapID'],
+			['location'],
 			message,
 			(msg: string) => {
 				socket.emit('Error', msg);
 				logger.info(
-					"A user tried to update a waiter's location but didn't include the map ID or the location"
+					"A user tried to update a waiter's location but didn't include the location"
 				);
 			},
 			_status => {},
@@ -575,11 +575,13 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(id: string) =>
+					(id: string) =>{
+						console.debug('waiter updates location: ', message)
 						waiter.updateLocationWaiter(
 							id,
 							message['location']
-						)
+							)
+						}
 				)
 		);
 	});

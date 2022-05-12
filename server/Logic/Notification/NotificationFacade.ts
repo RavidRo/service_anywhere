@@ -16,11 +16,11 @@ export class NotificationFacade {
 
 	public updateGuestLocation(
 		receiverID: string,
-		orderID: string,
+		guestID: string,
 		location: Location
 	) {
 		this.notifier.notify(receiverID, 'updateGuestLocation', {
-			orderID,
+			guestID,
 			location,
 		});
 		console.debug('updateGuestLocation', receiverID)
