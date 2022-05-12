@@ -8,7 +8,7 @@ export async function getGuests(): Promise<GuestDAO[]> {
 
 export async function getGuestsDetails(ids: string[]): Promise<GuestDAO[]> {
 	const guestRepository = AppDataSource.getRepository(GuestDAO);
-	return  await guestRepository
+	return await guestRepository
 		.createQueryBuilder()
 		.where('GuestDAO.id IN (:...itemsIDs)', {itemsIDs: ids})
 		.getMany();
