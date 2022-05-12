@@ -591,7 +591,7 @@ io.on('connection', function (socket: socketio.Socket) {
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
-		['orderIds', 'waiterId'],
+		['orderId', 'waiterId'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);

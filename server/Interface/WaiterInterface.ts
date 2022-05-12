@@ -12,7 +12,10 @@ async function getOrdersByWaiter(
 	return await WaiterOrder.getOrdersByWaiter(waiterID);
 }
 
-async function orderArrived(orderId: string, waiterID: string): Promise<ResponseMsg<void>> {
+async function orderArrived(
+	orderId: string,
+	waiterID: string
+): Promise<ResponseMsg<void>> {
 	return WaiterOrder.changeOrderStatus(orderId, 'delivered', waiterID);
 }
 
@@ -23,7 +26,10 @@ function updateLocationWaiter(
 	WaiterOrder.updateWaiterLocation(waiterId, location);
 }
 
-async function orderOnTheWay(orderId: string, waiterID: string): Promise<ResponseMsg<void>> {
+async function orderOnTheWay(
+	orderId: string,
+	waiterID: string
+): Promise<ResponseMsg<void>> {
 	return WaiterOrder.changeOrderStatus(orderId, 'on the way', waiterID);
 }
 
