@@ -22,25 +22,20 @@ function WaiterDialogView(props: any) {
 		handleOk,
 		handleCheckboxChange,
 		open,
-		status,
+		isDisabled,
 	} = props;
-	if (StatusToNumber[status] < 2) {
-		return (
-			<Typography fontSize={10} paragraph>
-				Order is not ready to deliver
-			</Typography>
-		);
-	}
+
 	return (
 		<div>
-			<Typography fontSize={10} paragraph>
+			<Typography fontSize={16}>
 				{assignedWaiters.length === 0 ? (
 					<IconButton
 						color='primary'
 						aria-label='service'
 						component='span'
 						size='large'
-						onClick={handleOpen}>
+						onClick={handleOpen}
+						disabled={isDisabled()}>
 						<RoomServiceIcon />
 					</IconButton>
 				) : (

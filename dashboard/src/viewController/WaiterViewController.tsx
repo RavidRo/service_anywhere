@@ -4,6 +4,7 @@ import WaiterDialogView from '../view/WaiterView';
 import {observer} from 'mobx-react';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 import {OrderStatus} from '../../../api';
+import {StatusToNumber} from '../Status';
 
 type waiterDialogViewControllerProps = {
 	waitersViewModel: WaitersViewModel;
@@ -65,6 +66,9 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 			.catch(_ => alert('Could not assign waiters to order'));
 	};
 
+	const isDisabled = () => {
+		return (StatusToNumber.get(status) || 0) >= 3;
+	};
 	return (
 		<WaiterDialogView
 			assignedWaiters={assignedWaiters}
@@ -74,7 +78,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 			handleCheckboxChange={handleCheckboxChange}
 			handleOk={handleOk}
 			open={open}
-			status={status}
+			isDisabled={isDisabled}
 		/>
 	);
 }
