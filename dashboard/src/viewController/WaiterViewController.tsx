@@ -39,6 +39,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	};
 
 	const handleClose = () => {
+		setSelectedWaiters([]);
 		setOpen(false);
 	};
 
@@ -46,9 +47,9 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		event.target.checked
-			? setSelectedWaiters(assignedWaiters.concat(event.target.name))
+			? setSelectedWaiters(selectedWaiters.concat(event.target.name))
 			: setSelectedWaiters(
-					assignedWaiters.filter(
+					selectedWaiters.filter(
 						waiter => waiter !== event.target.name
 					)
 			  );
@@ -59,7 +60,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 			.assignWaiter(orderId, selectedWaiters)
 			.then(() => {
 				setAssignedWaiters(selectedWaiters);
-				setOpen(false);
+				handleClose();
 			})
 			.catch(_ => alert('Could not assign waiters to order'));
 	};

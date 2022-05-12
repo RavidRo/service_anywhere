@@ -22,14 +22,14 @@ export default class ConnectionHandler extends Singleton {
 
 		this.socket.on('connect', () => {
 			// Connected successfully to the server
-			this.connectionModel.reconnectingToServer = false;
+			this.connectionModel.isReconnecting = false;
 			onSuccess?.();
 			console.info(
 				'A socket connection has been created successfully with the server'
 			);
 		});
 		this.socket.on('disconnect', reason => {
-			this.connectionModel.reconnectingToServer = true;
+			this.connectionModel.isReconnecting = true;
 			if (reason === 'io server disconnect') {
 				// the disconnection was initiated by the server, you need to reconnect manually
 				console.warn(

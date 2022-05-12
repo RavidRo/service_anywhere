@@ -1,7 +1,11 @@
-import {Status} from './Status';
-import {v4 as uuidv4} from 'uuid';
-import {Location} from '../../api';
+import {OrderStatus as OrderStatusName, Location, OrderIDO} from 'api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
+
+import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
+import * as OrderStore from '../Data/Stores/OrderStore';
+
+import {IOrder} from './IOrder';
+import {OrderStatus} from './OrderStatus';
 
 class Review {
 	content: string;
@@ -13,64 +17,96 @@ class Review {
 	}
 }
 
-export class Order {
-	static orderList: Order[] = [];
-	status: Status;
-	id: string;
-	items: string[];
-	review: Review;
-	guestLocation: Location;
+export class Order implements IOrder {
+	private orderDAO: OrderDAO;
 
-	static createOrder(items: string[]): string {
-		let order = new Order(items);
-		this.orderList.push(order);
-		return order.id;
+	private constructor(orderDAO: OrderDAO) {
+		this.orderDAO = orderDAO;
 	}
 
-	static delegate<T, U>(
-		orderId: string,
-		func: (order: Order) => ResponseMsg<T, U>
-	): ResponseMsg<T, U> {
-		for (const element of Order.orderList) {
-			if (element.id === orderId) {
-				return func(element);
-			}
-		}
-		return makeFail('No such order.', 0); //todo: status code
+	static async createNewOrder(
+		guestID: string,
+		items: Map<string, number>
+	): Promise<ResponseMsg<IOrder>> {
+		const orderResponse = await OrderStore.saveOrder(guestID, items);
+		return orderResponse.ifGood(order => this.createOrder(order));
 	}
 
-	static getGuestLocation(orderID: string): ResponseMsg<Location> {
-		for (const element of Order.orderList) {
-			if (element.id === orderID) {
-				console.log(`get location: ${element.guestLocation}`);
-				return makeGood(element.guestLocation);
-			}
-		}
-		return makeFail('No such order.', 0); //todo: status code
+	static createOrder(orderDAO: OrderDAO): IOrder {
+		return new Order(orderDAO);
 	}
 
-	constructor(items: string[]) {
-		this.items = items;
-		this.status = Status.RECEIVED;
-		this.id = uuidv4();
+	getID(): string {
+		return this.orderDAO.id;
 	}
 
-	giveFeedback(content: string, rating: number): ResponseMsg<void> {
-		this.review = new Review(content, rating);
+	getGuestId(): string {
+		return this.orderDAO.guest.id;
+	}
+
+	getDetails(): OrderIDO {
+		return this.orderDAO.getDetails();
+	}
+
+	isActive(): boolean {
+		return !OrderStatus.makeStatus(this.orderDAO.status).isEndStatus();
+	}
+
+	canAssign(): boolean {
+		const futureNewStatusName =
+			this.orderDAO.status === 'on the way'
+				? this.orderDAO.status
+				: 'assigned';
+		const futureNewStatus = OrderStatus.makeStatus(futureNewStatusName);
+		return OrderStatus.makeStatus(this.orderDAO.status)
+			.to(futureNewStatus, true, true)
+			.isSuccess();
+	}
+
+	updateGuestLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<void> {
 		return makeGood();
 	}
 
-	updateLocationGuest(location: Location): ResponseMsg<void> {
-		this.guestLocation = location;
-		console.log(`update: ${location}`);
+	updateWaiterLocation(
+		_mapId: string,
+		_location: Location
+	): ResponseMsg<void> {
 		return makeGood();
 	}
 
-	hasOrderArrived(): ResponseMsg<boolean> {
-		return makeGood(this.status === Status.DELIVERED);
+	async changeOrderStatus(
+		newStatusName: OrderStatusName,
+		assigningWaiter: boolean,
+		adminPrivileges: boolean
+	): Promise<ResponseMsg<void>> {
+		const newStatus = OrderStatus.makeStatus(newStatusName);
+		const currentStatus = OrderStatus.makeStatus(this.orderDAO.status);
+		const toResponse = currentStatus.to(
+			newStatus,
+			assigningWaiter,
+			adminPrivileges
+		);
+		if (!toResponse.isSuccess()) {
+			return toResponse;
+		}
+
+		this.orderDAO.status = newStatusName;
+		if (newStatus.isEndStatus()) {
+			this.orderDAO.completionTime = Date.now();
+		}
+		await this.orderDAO.save();
+
+		return makeGood();
 	}
 
-	orderArrived(): void {
-		this.status = Status.DELIVERED;
+	async assign(_waiterId: string): Promise<ResponseMsg<void>> {
+		return this.changeOrderStatus('assigned', true, true);
+	}
+
+	giveFeedback(_review: string, _score: number): boolean {
+		throw new Error('Method not implemented');
 	}
 }

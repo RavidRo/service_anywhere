@@ -1,52 +1,40 @@
-import {stringify} from 'querystring';
-import {makeGood, ResponseMsg} from 'server/Response';
-import {Location} from '../../api';
-import {Order} from '../Logic/Order';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import {Location, OrderIDO} from '../../api';
 
-function getWaiterOrders(waiterId: string): ResponseMsg<Order[]> {
-	return WaiterOrder.getWaiterOrder(waiterId).then((data: string[]) => {
-		return Order.orderList.filter(order => data.includes(order.id));
-	});
+import {ResponseMsg} from '../Response';
+
+import WaiterOrder from '../Logic/WaiterOrder';
+
+async function getOrdersByWaiter(
+	waiterID: string
+): Promise<ResponseMsg<OrderIDO[]>> {
+	return await WaiterOrder.getOrdersByWaiter(waiterID);
 }
 
-function getGuestLocation(orderId: string): ResponseMsg<Location> {
-	return Order.getGuestLocation(orderId);
-}
-
-function orderArrived(orderId: string): void {
-	Order.delegate(orderId, (order: Order) => {
-		order.orderArrived();
-		return makeGood();
-	});
-}
-
-function connectWaiter(): string {
-	return WaiterOrder.connectWaiter();
+async function orderArrived(
+	orderId: string,
+	waiterID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderId, 'delivered', waiterID);
 }
 
 function updateLocationWaiter(
 	waiterId: string,
 	mapId: string,
 	location: Location
-): string {
-	waiterId;
-	mapId;
-	location;
-	return '';
-	//todo: this
+): void {
+	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
 }
 
-function orderOnTheWay(orderId: string): void {
-	orderId;
-	throw new Error('Method not implemented');
+async function orderOnTheWay(
+	orderId: string,
+	waiterID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderId, 'on the way', waiterID);
 }
 
 export default {
-	getWaiterOrders,
-	getGuestLocation,
+	getWaiterOrders: getOrdersByWaiter,
 	orderArrived,
-	connectWaiter,
 	updateLocationWaiter,
 	orderOnTheWay,
 };

@@ -13,6 +13,7 @@ export default class Notifications {
 		this.orders = new OrderViewModel(new Requests());
 	}
 
+	// should remain with params: unknown[] ?
 	private waiterLocationUpdate(params: unknown[]): void {
 		if (params.length >= 2) {
 			if (isString(params[0]) && isLocation(params[1])) {

@@ -8,7 +8,7 @@ type LoginViewProps = {
 	isLoading: boolean;
 	password: string;
 	onPasswordChange: (newPassword: string) => void;
-	onSubmit: () => void;
+	onSubmit: (password: string) => void;
 	establishConnection: () => void;
 
 	isReconnecting: boolean;
@@ -19,7 +19,9 @@ export default function LoginView(props: LoginViewProps) {
 		return (
 			<>
 				{props.isReconnecting && (
-					<Text>Connection lost, trying to reconnect...</Text>
+					<Text style={styles.reconnecting}>
+						Connection lost, trying to reconnect...
+					</Text>
 				)}
 				<MapScreenController />
 			</>
@@ -54,7 +56,7 @@ export default function LoginView(props: LoginViewProps) {
 			/>
 			<Button
 				title='Log in'
-				onPress={props.onSubmit}
+				onPress={() => props.onSubmit(props.password)}
 				disabled={props.isLoading}
 				testID='submit'
 			/>
@@ -69,5 +71,9 @@ const styles = StyleSheet.create({
 		margin: 12,
 		borderWidth: 1,
 		padding: 10,
+	},
+	reconnecting: {
+		fontSize: 16,
+		color: '#e05555',
 	},
 });

@@ -8,11 +8,29 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
+import {DummyPage} from './src/View/DummyView';
 import ConnectController from './src/ViewController/ConnectController';
 
 const App = () => {
 	return <ConnectController />;
+	/*
+	const [status, setStatus] = useState('');
+	const [hasActiveOrder, sethasActiveOrder] = useState(false);
+	const [orderID, setOrderID] = useState('');
+	return (
+		<DummyPage
+			SendOrderToServer={() => {
+				sethasActiveOrder(true);
+				setStatus('order recieved');
+				setOrderID('123456');
+				console.log('sent order');
+			}}
+			cancelOrder={() => sethasActiveOrder(false)}
+			hasActiveOrder={hasActiveOrder}
+			orderID={orderID}
+			orderStatus={status}></DummyPage>
+	); */
 };
 
 export default App;

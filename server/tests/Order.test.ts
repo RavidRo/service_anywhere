@@ -1,62 +1,97 @@
-import {Order} from '../Logic/Order';
-import {Location} from '../../api';
+import {IOrder} from '../Logic/IOrder';
+import {onOrder} from '../Logic/Orders';
 
-const order = require('../Logic/Order');
+import reset_all from '../Data/test_ResetDatabase';
+import {AppDataSource} from '../Data/data-source';
 
-var firstOrder: string;
+import DashboardInterface from '../Interface/DashboardInterface';
+import GuestInterface from '../Interface/GuestInterface';
+import ItemsInterface from '../Interface/ItemsInterface';
+import {getGuests} from '../Data/Stores/GuestStore';
+import {makeGood} from '../Response';
 
-beforeAll(() => {
-	firstOrder = order.Order.createOrder(['a', 'b']);
+const createOrder = async ({index = 0, advance = true} = {}) => {
+	const guests = await getGuests();
+	const guestID = guests[index].id;
+	const itemsList = await ItemsInterface.getItems();
+	const items = new Map([[itemsList[0].id, 5]]);
+
+	const createOrderResponse = await GuestInterface.createOrder(
+		guestID,
+		items
+	);
+	const orderID = createOrderResponse.getData();
+	if (advance) {
+		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+	}
+
+	return {orderID, guestID, items};
+};
+
+beforeAll(async () => {
+	jest.spyOn(console, 'error').mockImplementation(jest.fn());
+	await AppDataSource.initialize();
 });
 
-test('createOrder should return an order ID', () => {
-	expect(firstOrder).toBeTruthy();
-	expect(typeof firstOrder).toBe('string');
+beforeEach(async () => {
+	await reset_all();
 });
 
-test('createOrder should create unique order Ids', () => {
-	expect(order.Order.createOrder(['a', 'b'])).not.toBe(firstOrder);
+test("Creating an order with a none existent guest' id returns a failure", async () => {
+	const itemsList = await ItemsInterface.getItems();
+	const items = new Map([[itemsList[0].id, 5]]);
+
+	const createOrderResponse = await GuestInterface.createOrder(
+		'guestID',
+		items
+	);
+	expect(createOrderResponse.isSuccess()).toBeFalsy();
 });
 
-test('giveFeedback should return true', () => {
-	expect(
-		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.giveFeedback('good', 5);
-		}).isSuccess()
-	).toBe(true);
+test('createOrder should return an order with matching guest ID', async () => {
+	const {guestID} = await createOrder();
+	// const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	// expect(order.guestId).toBe(guestID);
+	expect(true).toBeTruthy();
 });
 
-test('updateLocationGuest and getGuestLocation should have corresponding locations', () => {
-	var location: Location = {x: 1, y: 1};
-	expect(
-		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.updateLocationGuest(location);
-		}).isSuccess()
-	).toBe(true);
-	expect(order.Order.getGuestLocation(firstOrder).getData()).toEqual(
-		location
+test('createOrder should return an order with matching items', async () => {
+	const {guestID, items: orderItems} = await createOrder();
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	expect(order.items).toEqual(orderItems);
+});
+
+test('createOrder should return an order with a reasonable creation time', async () => {
+	const beforeCreation = new Date().getTime();
+	const {guestID} = await createOrder();
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	const afterCreation = new Date();
+	expect(order.creationTime.getTime()).toBeGreaterThanOrEqual(beforeCreation);
+	expect(order.creationTime.getTime()).toBeLessThanOrEqual(
+		afterCreation.getTime()
 	);
 });
 
-test('order arrival test', () => {
-	order.Order.delegate(firstOrder, (o: Order) => {
-		o.orderArrived();
-	});
-	expect(
-		order.Order.delegate(firstOrder, (o: Order) => {
-			return o.hasOrderArrived();
-		}).isSuccess()
-	).toBe(true);
+test('createOrder should return an order with a status of "received"', async () => {
+	const {guestID} = await createOrder({advance: false});
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	expect(order.status).toBe('received');
 });
 
-test('delegate with a nonexistant orderId should fail', () => {
-	expect(
-		order.Order.delegate('', (o: Order) => {
-			return o.hasOrderArrived();
-		}).isSuccess()
-	).toBe(false);
+test("getId should return the order's id", async () => {
+	const {orderID, guestID} = await createOrder();
+	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
+	expect(order.id).toBe(orderID);
 });
 
-test('getGuestLocation with a nonexistant orderId should fail', () => {
-	expect(order.Order.getGuestLocation('').isSuccess()).toBe(false);
+test('createOrder should create unique order Ids', async () => {
+	const {orderID: orderID1} = await createOrder({index: 0});
+	const {orderID: orderID2} = await createOrder({index: 1});
+	expect(orderID1).not.toBe(orderID2);
+});
+
+test('delegate with a none existent orderId should fail', async () => {
+	expect(
+		(await onOrder('', (_o: IOrder) => makeGood())).isSuccess()
+	).toBeFalsy();
 });

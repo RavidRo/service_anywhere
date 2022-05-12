@@ -19,9 +19,9 @@ function StatusViewController(props: {
 	width: number;
 }) {
 	const {orderId, status, orderViewModel, width} = props;
-	const [currentStep, setCurrentStep] = React.useState(
-		StatusToNumber.get(status) || 0
-	);
+
+	const sn = StatusToNumber.get(status);
+	const currentStep: number = sn === undefined ? 0 : sn;
 
 	const backable: number[] = [
 		1,
@@ -47,9 +47,7 @@ function StatusViewController(props: {
 		return Status[step] !== 'delivered' && Status[step] !== 'canceled';
 	};
 	const isStepFailed = (step: number) => {
-		return (
-			Status[currentStep] === 'canceled' || Status[step] === 'canceled'
-		);
+		return status === 'canceled' || Status[step] === 'canceled';
 	};
 	const handleNext = () => {
 		if (!isStepNextable(currentStep)) {
@@ -57,9 +55,9 @@ function StatusViewController(props: {
 		}
 		orderViewModel
 			.changeOrderStatus(orderId, Status[currentStep + 1])
-			.then(boolean => {
-				if (boolean) setCurrentStep(currentStep + 1);
-			})
+			// .then(boolean => {
+			// 	if (boolean) setCurrentStep(currentStep + 1);
+			// })
 			.catch(err => alert("Can't change order status " + err));
 	};
 
@@ -69,9 +67,9 @@ function StatusViewController(props: {
 		}
 		orderViewModel
 			.changeOrderStatus(orderId, Status[currentStep - 1])
-			.then(boolean => {
-				if (boolean) setCurrentStep(currentStep - 1);
-			})
+			// .then(boolean => {
+			// 	if (boolean) setCurrentStep(currentStep - 1);
+			// })
 			.catch(err => alert("Can't change order status " + err));
 	};
 	const handleCancel = () => {
@@ -81,10 +79,10 @@ function StatusViewController(props: {
 
 		orderViewModel
 			.changeOrderStatus(orderId, 'canceled')
-			.then(boolean => {
-				if (boolean)
-					setCurrentStep(StatusToNumber.get('canceled') || 6);
-			})
+			// .then(boolean => {
+			// 	if (boolean)
+			// 		setCurrentStep(StatusToNumber.get('canceled') || 6);
+			// })
 			.catch(err => alert("Can't change order status " + err));
 	};
 
@@ -105,8 +103,6 @@ function StatusViewController(props: {
 		setShowFullCell(false);
 	};
 
-	const sn = StatusToNumber.get(status);
-	const statusNumber: number = sn === undefined ? 0 : sn;
 	const wrapperCurrent = wrapper.current;
 
 	React.useEffect(() => {

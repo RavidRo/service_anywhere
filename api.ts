@@ -11,10 +11,10 @@ type OrderID = string;
 export type OrderIDO = {
 	id: OrderID;
 	guestId: string;
-	items: Map<string, number>;
+	items: Record<string, number>;
 	status: OrderStatus;
 	creationTime: Date;
-	terminationTime: Date;
+	completionTime: Date | undefined;
 };
 export type ItemIDO = {
 	id: string;
@@ -27,8 +27,15 @@ type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
 	name: string;
-	avialabe: boolean;
+	available: boolean;
 };
+
+// export type WaiterDAO = {
+// 	id: string;
+// 	name: string;
+// 	orders: OrderDAO[];
+// };
+
 export type Location = {
 	x: number;
 	y: number;
@@ -38,7 +45,7 @@ type Token = string;
 
 interface GuestAPI {
 	// Guest
-	loginGuest(phoneNumber: string): Promise<string>;
+	login(password: string): Promise<string>;
 	getItemsGuest: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
@@ -49,7 +56,7 @@ interface GuestAPI {
 		details: string,
 		rating: number
 	): Promise<void>;
-	cancelOrderGuest: (orderId: OrderID) => Promise<Boolean>;
+	cancelOrderGuest: (orderId: OrderID) => Promise<void>;
 }
 
 interface guestCommunication {
@@ -66,8 +73,8 @@ interface GuestNotificationHandler {
 }
 
 interface WaiterAPI {
-	loginWaiter: (password: string) => Promise<void>;
-	getItemsWaiter: () => Promise<ItemIDO[]>; //ItemIDO ?
+	login: (password: string) => Promise<void>;
+	getItemsWaiter: () => Promise<ItemIDO[]>;
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	//  getGuestDetails: (id: string) => Promise<GuestIDO>; // GuestIDO?
@@ -80,15 +87,16 @@ interface WaiterCommunication {
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;
 	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
+	assignedToOrder(order: OrderIDO): void;
 }
 
 interface DashboardAPI {
 	// Dashboard
-	loginAdmin: (password: string) => Promise<void>;
-	assignWaiter: (orderIds: OrderID[], waiterId: WaiterID) => Promise<void>;
+	login: (password: string) => Promise<void>;
+	assignWaiter: (orderId: OrderID, waiterId: WaiterID) => Promise<void>;
 	getOrders: () => Promise<OrderIDO[]>;
 	getWaiters: () => Promise<WaiterIDO[]>;
-	getWaitersByOrder: (orderId: OrderID) => WaiterID;
+	getWaitersByOrder: (orderId: OrderID) => WaiterID[];
 	cancelOrderAdmin: (orderId: OrderID) => Promise<void>;
 	changeOrderStatus: (orderId: string, newStatus: string) => Promise<void>;
 }

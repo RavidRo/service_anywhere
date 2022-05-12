@@ -6,7 +6,7 @@ export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 		return false;
 	}
 	return (
-		(waiter as WaiterIDO).avialabe !== undefined &&
+		(waiter as WaiterIDO).available !== undefined &&
 		(waiter as WaiterIDO).id !== undefined &&
 		(waiter as WaiterIDO).name !== undefined
 	);
@@ -37,4 +37,8 @@ export function isOrderStatus(status: object): status is orderStatusType {
 		(status as orderStatusType).orderID !== undefined &&
 		(status as orderStatusType).orderStatus !== undefined
 	);
+}
+
+export function isString(someString: any): someString is string {
+	return typeof someString === 'string';
 }

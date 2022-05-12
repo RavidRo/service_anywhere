@@ -1,40 +1,48 @@
-import {OrderStatus} from '../../api';
-import {Order} from '../Logic/Order';
-import {WaiterOrder} from '../Logic/WaiterOrder';
+import {OrderIDO, OrderStatus} from '../../api';
 
-function getOrders(): Order[] {
-	return Order.orderList;
+import {makeGood, ResponseMsg} from '../Response';
+
+import {onOrder, getOrders} from '../Logic/Orders';
+import WaiterOrder from '../Logic/WaiterOrder';
+
+import config from '../config.json';
+
+async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
+	return makeGood((await getOrders()).map(order => order.getDetails()));
 }
 
-function assignWaiter(orderID: string, waiterID: string): void {
-	WaiterOrder.assignWaiter(orderID, waiterID);
+function assignWaiter(
+	orderIds: string[],
+	waiterID: string
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
-function getWaiters(): string[] {
-	return WaiterOrder.waiterList;
+async function getWaiters(): Promise<ResponseMsg<string[]>> {
+	return makeGood(
+		(await WaiterOrder.getAllWaiters()).map(waiter => waiter.id)
+	);
 }
 
-function getWaiterByOrder(orderID: string): string[] {
-	let waiters = WaiterOrder.orderToWaiters.get(orderID);
-	if (waiters) {
-		return waiters;
-	}
-	return [];
+async function getWaiterByOrder(
+	orderID: string
+): Promise<ResponseMsg<string[]>> {
+	return await WaiterOrder.getWaiterByOrder(orderID);
 }
 
-function cancelOrderAdmin(orderId: string): void {
-	orderId;
-	throw new Error('Method not implemented');
+async function cancelOrderAdmin(orderID: string): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, 'canceled', config.admin_id);
 }
 
-function changeOrderStatus(orderId: string, newStatus: OrderStatus): void {
-	orderId;
-	newStatus;
-	throw new Error('Method not implemented');
+async function changeOrderStatus(
+	orderID: string,
+	newStatus: OrderStatus
+): Promise<ResponseMsg<void>> {
+	return WaiterOrder.changeOrderStatus(orderID, newStatus, config.admin_id);
 }
 
 export default {
-	getOrders,
+	getAllOrders,
 	assignWaiter,
 	getWaiters,
 	getWaiterByOrder,
