@@ -83,6 +83,7 @@ function checkInputs(
 ) {
 	let answer = '';
 	let missing = false;
+	console.debug(reqBody)
 	for (const input of inputs) {
 		if (!(input in reqBody)) {
 			answer += `\"${input}\", `;
@@ -306,7 +307,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 app.get('/getGuestsDetails', (req, res) => {
 	checkInputs(
 		['ids'],
-		req.body,
+		req.query,
 		(msg: string) => {
 			res.send(msg);
 			logger.info(
@@ -326,19 +327,30 @@ app.get('/getGuestsDetails', (req, res) => {
 				},
 				status => res.status(status),
 				async _waiterId => {
-					const response = await waiter.getGuestsDetails(
-						req.body['ids']
-					).then(guests => res.send(guests))
-					.catch(() => {
-						res.status(500);
-						res.send('Getting guests failed, try again later');
-						logger.error('An error occured while getting guests data');
-					});
+					const ids = req.query['ids']
+					if(ids && Array.isArray(ids) && isStringArray(ids)){
+						const response = await waiter.getGuestsDetails(
+							ids
+						).then(guests => res.send(guests))
+						.catch(() => {
+							res.status(500);
+							res.send('Getting guests failed, try again later');
+							logger.error('An error occured while getting guests data');
+						});
+					} else {
+						res.status(400)
+						res.send('Getting guests failed, the ids given were the wrong type')
+						logger.info('A user tried to get guests details but gave the list of ids in the wrong type')
+					}
 				}
 			);
 		}
 	);
 });
+
+function isStringArray(arr: any): arr is string[]{
+	return arr.every((val:any) => typeof val === 'string')
+}
 
 
 app.get('/getWaiterOrders', (req, res) => {
@@ -513,12 +525,12 @@ io.on('connection', function (socket: socketio.Socket) {
 	);
 	socket.on('updateGuestLocation', (message: any) => {
 		checkInputs(
-			['mapId', 'location'],
+			['x', 'y', 'mapID'],
 			message,
 			(msg: string) => {
 				socket.emit('Error', msg);
 				logger.info(
-					"A user tried to update a guest's location but didn't include the map ID or the location"
+					"A user tried to update a guest's location but didn't include the location"
 				);
 			},
 			_status => {},
@@ -536,15 +548,14 @@ io.on('connection', function (socket: socketio.Socket) {
 					(id: string) =>
 						guest.updateLocationGuest(
 							id,
-							message['mapId'],
-							message['location']
+							message
 						)
 				)
 		);
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
 		checkInputs(
-			['mapId', 'location'],
+			['x', 'y', 'mapID'],
 			message,
 			(msg: string) => {
 				socket.emit('Error', msg);
@@ -567,7 +578,6 @@ io.on('connection', function (socket: socketio.Socket) {
 					(id: string) =>
 						waiter.updateLocationWaiter(
 							id,
-							message['mapId'],
 							message['location']
 						)
 				)

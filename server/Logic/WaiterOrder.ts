@@ -21,13 +21,12 @@ export function unassignWaiters(orderID: string): Promise<ResponseMsg<void>> {
 
 export async function updateWaiterLocation(
 	waiterId: string,
-	mapId: string,
 	location: Location
 ) {
 	const orders = await getOrdersByWaiter(waiterId);
 	orders.ifGood(orders =>
 		orders.forEach(order =>
-			onOrder(order.id, o => o.updateWaiterLocation(mapId, location))
+			onOrder(order.id, o => o.updateWaiterLocation(location))
 		)
 	);
 }

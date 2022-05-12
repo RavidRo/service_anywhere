@@ -18,10 +18,9 @@ async function orderArrived(orderId: string, waiterID: string): Promise<Response
 
 function updateLocationWaiter(
 	waiterId: string,
-	mapId: string,
 	location: Location
 ): void {
-	WaiterOrder.updateWaiterLocation(waiterId, mapId, location);
+	WaiterOrder.updateWaiterLocation(waiterId, location);
 }
 
 async function orderOnTheWay(orderId: string, waiterID: string): Promise<ResponseMsg<void>> {

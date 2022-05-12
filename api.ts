@@ -32,6 +32,7 @@ export type WaiterIDO = {
 export type Location = {
 	x: number;
 	y: number;
+	mapID: string;
 };
 
 export type GuestIDO = {

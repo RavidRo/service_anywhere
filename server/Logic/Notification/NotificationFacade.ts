@@ -17,12 +17,10 @@ export class NotificationFacade {
 	public updateGuestLocation(
 		receiverID: string,
 		orderID: string,
-		mapID: string,
 		location: Location
 	) {
 		this.notifier.notify(receiverID, 'updateGuestLocation', {
 			orderID,
-			mapID,
 			location,
 		});
 		console.debug('updateGuestLocation', receiverID)
@@ -31,12 +29,10 @@ export class NotificationFacade {
 	public updateWaiterLocation(
 		receiverID: string,
 		orderID: string,
-		mapID: string,
 		location: Location
 	) {
 		this.notifier.notify(receiverID, 'updateWaiterLocation', {
 			orderID,
-			mapID,
 			location,
 		});
 		console.debug('updateWaiterLocation', receiverID)

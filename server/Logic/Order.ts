@@ -64,14 +64,12 @@ export class Order implements IOrder {
 	}
 
 	updateGuestLocation(
-		_mapId: string,
 		_location: Location
 	): ResponseMsg<void> {
 		return makeGood();
 	}
 
 	updateWaiterLocation(
-		_mapId: string,
 		_location: Location
 	): ResponseMsg<void> {
 		return makeGood();
