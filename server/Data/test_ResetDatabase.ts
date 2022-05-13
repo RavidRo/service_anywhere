@@ -59,7 +59,7 @@ function getGuests() {
 }
 
 function getOrders(guests: GuestDAO[], waiters: WaiterDAO[]) {
-	return []
+	return [];
 	const order1 = new OrderDAO();
 	order1.guest = guests[0];
 	order1.creationTime = Date.now();

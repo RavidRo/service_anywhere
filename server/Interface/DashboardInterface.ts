@@ -6,7 +6,7 @@ import {onOrder, getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 
 import config from '../config.json';
-import { WaiterDAO } from 'server/Data/entities/Domain/WaiterDAO';
+import {WaiterDAO} from 'server/Data/entities/Domain/WaiterDAO';
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
@@ -20,9 +20,7 @@ function assignWaiter(
 }
 
 async function getWaiters(): Promise<ResponseMsg<WaiterDAO[]>> {
-	return makeGood(
-		(await WaiterOrder.getAllWaiters())
-	);
+	return makeGood(await WaiterOrder.getAllWaiters());
 }
 
 async function getWaiterByOrder(
@@ -31,7 +29,10 @@ async function getWaiterByOrder(
 	return await WaiterOrder.getWaiterByOrder(orderID);
 }
 
-async function cancelOrderAdmin(orderID: string, ID: string): Promise<ResponseMsg<void>> {
+async function cancelOrderAdmin(
+	orderID: string,
+	ID: string
+): Promise<ResponseMsg<void>> {
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', ID);
 }
 

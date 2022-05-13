@@ -310,7 +310,7 @@ app.get('/getGuestsDetails', (req, res) => {
 		(msg: string) => {
 			res.send(msg);
 			logger.info(
-				"A waiter tried to get a guest details but gave no id list"
+				'A waiter tried to get a guest details but gave no id list'
 			);
 		},
 		status => res.status(status),
@@ -321,25 +321,33 @@ app.get('/getGuestsDetails', (req, res) => {
 				(msg: string) => {
 					res.send(msg);
 					logger.info(
-						"A user tried to get a guest details but had no permission or used an unmatched token"
+						'A user tried to get a guest details but had no permission or used an unmatched token'
 					);
 				},
 				status => res.status(status),
 				async _waiterId => {
-					const ids = req.query['ids']
-					if(ids && Array.isArray(ids) && isStringArray(ids)){
-						const response = await waiter.getGuestsDetails(
-							ids
-						).then(guests => res.send(guests))
-						.catch(() => {
-							res.status(500);
-							res.send('Getting guests failed, try again later');
-							logger.error('An error occured while getting guests data');
-						});
+					const ids = req.query['ids'];
+					if (ids && Array.isArray(ids) && isStringArray(ids)) {
+						const response = await waiter
+							.getGuestsDetails(ids)
+							.then(guests => res.send(guests))
+							.catch(() => {
+								res.status(500);
+								res.send(
+									'Getting guests failed, try again later'
+								);
+								logger.error(
+									'An error occured while getting guests data'
+								);
+							});
 					} else {
-						res.status(400)
-						res.send('Getting guests failed, the ids given were the wrong type')
-						logger.info('A user tried to get guests details but gave the list of ids in the wrong type')
+						res.status(400);
+						res.send(
+							'Getting guests failed, the ids given were the wrong type'
+						);
+						logger.info(
+							'A user tried to get guests details but gave the list of ids in the wrong type'
+						);
 					}
 				}
 			);
@@ -347,10 +355,9 @@ app.get('/getGuestsDetails', (req, res) => {
 	);
 });
 
-function isStringArray(arr: any): arr is string[]{
-	return arr.every((val:any) => typeof val === 'string')
+function isStringArray(arr: any): arr is string[] {
+	return arr.every((val: any) => typeof val === 'string');
 }
-
 
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
@@ -485,7 +492,7 @@ app.get('/getWaiterName', (req, res) => {
 		(msg: string) => {
 			res.send(msg);
 			logger.info(
-				"A waiter tried to get their name but had no permission or used an unmatched token"
+				'A waiter tried to get their name but had no permission or used an unmatched token'
 			);
 		},
 		status => res.status(status),
@@ -498,7 +505,7 @@ app.get('/getWaiterName', (req, res) => {
 			);
 			if (!response.isSuccess()) {
 				logger.info(
-					"A waiter failed to get their name. Error: " +
+					'A waiter failed to get their name. Error: ' +
 						response.getError()
 				);
 			}
@@ -544,12 +551,10 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(id: string) =>{
-						console.debug('guest updates location: ', message)
-						guest.updateLocationGuest(
-							id,
-							message['location']
-					)}
+					(id: string) => {
+						console.debug('guest updates location: ', message);
+						guest.updateLocationGuest(id, message['location']);
+					}
 				)
 		);
 	});
@@ -575,13 +580,10 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(id: string) =>{
-						console.debug('waiter updates location: ', message)
-						waiter.updateLocationWaiter(
-							id,
-							message['location']
-							)
-						}
+					(id: string) => {
+						console.debug('waiter updates location: ', message);
+						waiter.updateLocationWaiter(id, message['location']);
+					}
 				)
 		);
 	});
