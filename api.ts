@@ -46,7 +46,7 @@ type Token = string;
 interface GuestAPI {
 	// Guest
 	login(password: string): Promise<string>;
-	getItemsGuest: () => Promise<ItemIDO[]>;
+	getItems: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
 	getGuestOrder: () => Promise<OrderIDO>;
@@ -74,7 +74,7 @@ interface GuestNotificationHandler {
 
 interface WaiterAPI {
 	login: (password: string) => Promise<void>;
-	getItemsWaiter: () => Promise<ItemIDO[]>;
+	getItems: () => Promise<ItemIDO[]>;
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
@@ -100,5 +100,3 @@ interface DashboardAPI {
 	cancelOrderAdmin: (orderId: OrderID) => Promise<void>;
 	changeOrderStatus: (orderId: string, newStatus: string) => Promise<void>;
 }
-
-interface ServerNotifications {}
