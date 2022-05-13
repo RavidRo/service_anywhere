@@ -7,25 +7,25 @@ import {OrderIDO, WaiterIDO} from '../../api';
 const mockListOfOrders: OrderIDO[] = [
 	{
 		id: '1',
-		items: new Map([
-			['a', 2],
-			['b', 3],
-		]),
+		items: {
+			a: 2,
+			b: 3,
+		},
 		status: 'received',
 		guestId: '1',
 		creationTime: new Date(),
-		terminationTime: new Date(),
+		completionTime: new Date(),
 	},
 	{
 		id: '2',
-		items: new Map([
-			['c', 4],
-			['d', 5],
-		]),
+		items: {
+			c: 4,
+			d: 5,
+		},
 		status: 'delivered',
 		guestId: '2',
 		creationTime: new Date(),
-		terminationTime: new Date(),
+		completionTime: new Date(),
 	},
 ];
 
@@ -33,19 +33,18 @@ const mockListOfWaiters: WaiterIDO[] = [
 	{
 		id: '1',
 		name: 'waiter 1',
-		avialabe: false,
+		available: false,
 	},
 	{
 		id: '2',
 		name: 'waiter 2',
-		avialabe: true,
+		available: true,
 	},
 ];
 const mockGetOrders = jest.fn(() => mockMakePromise(mockListOfOrders));
 const mockGetWaiters = jest.fn(() => mockMakePromise(mockListOfWaiters));
-const mockAssignWaiter = jest.fn((orderId: string, waiterId: string) => {
-	return mockListOfWaiters.filter(waiter => waiter.id === waiterId)[0]
-		.avialabe;
+const mockAssignWaiter = jest.fn((orderId: string, waiterIds: string[]) => {
+	return mockListOfWaiters.filter(waiter => waiter.id in waiterIds);
 });
 const mockGetWaitersByOrder = jest.fn((orderId: string) => mockListOfOrders[0]);
 const mockChangeOrderStatus = jest.fn(

@@ -29,8 +29,8 @@ export default class WaitersViewModel {
 				alert('Could not get waiters please reload, Error:' + err)
 			);
 	}
-	assignWaiter(orderId: string, waiter: string[]) {
-		return this.api.assignWaiter(orderId, waiter);
+	assignWaiter(orderId: string, waiters: string[]) {
+		return this.api.assignWaiter(orderId, waiters);
 	}
 
 	getWaitersByOrder(orderId: string) {

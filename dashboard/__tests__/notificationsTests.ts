@@ -9,27 +9,28 @@ import {OrderIDO} from '../../api';
 const mockListOfOrders: OrderIDO[] = [
 	{
 		id: '1',
-		items: new Map([
-			['a', 2],
-			['b', 3],
-		]),
+		items: {
+			a: 2,
+			b: 3,
+		},
 		status: 'received',
 		guestId: '1',
 		creationTime: new Date(),
-		terminationTime: new Date(),
+		completionTime: new Date(),
 	},
 	{
 		id: '2',
-		items: new Map([
-			['c', 4],
-			['d', 5],
-		]),
+		items: {
+			c: 4,
+			d: 5,
+		},
 		status: 'delivered',
 		guestId: '2',
 		creationTime: new Date(),
-		terminationTime: new Date(),
+		completionTime: new Date(),
 	},
 ];
+
 const mockWarn = jest.fn();
 beforeEach(() => {
 	(mockWarn as unknown as jest.Mock).mockClear();
@@ -46,7 +47,7 @@ describe('update orders', () => {
 			ordersViewModels,
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
-		notifications.eventCallbacks.updateOrders([]);
+		notifications.addNewOrder([]);
 		expect(mockWarn).toBeCalledTimes(1);
 	});
 
@@ -70,11 +71,11 @@ describe('update orders', () => {
 			ordersViewModel,
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
-		notifications.eventCallbacks.updateOrders([mockListOfOrders]);
+		notifications.addNewOrder([mockListOfOrders]);
 		expect(model.orders).toEqual(ordersViewModel.getOrders());
 	});
 
-	it('Sending extra argument is accepted', () => {
+	it('Sending extra argument is rejected', () => {
 		const ordersViewModels = new OrdersViewModel(
 			new ordersModel(),
 			new Api()
@@ -83,12 +84,8 @@ describe('update orders', () => {
 			ordersViewModels,
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
-		notifications.eventCallbacks.updateOrders([
-			[],
-			'inprogress',
-			'Hola Mr. Almog',
-		]);
-		expect(mockWarn).toBeCalledTimes(0);
+		notifications.addNewOrder([[], 'inprogress', 'Hola Mr. Almog']);
+		expect(mockWarn).toBeCalledTimes(1);
 	});
 
 	it('Sending something else than OrderIDO[] as orders', () => {
@@ -101,100 +98,8 @@ describe('update orders', () => {
 			new WaitersViewModel(new waiterModel(), new Api())
 		);
 
-		notifications.eventCallbacks.updateOrders(['asd']);
+		notifications.addNewOrder(['asd']);
 		console.log(ordersViewModels.getOrders());
-		expect(mockWarn).toBeCalledTimes(1);
-	});
-});
-
-describe('update waiters', () => {
-	it('Sending no arguments', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const waitersViewModels = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			waitersViewModels
-		);
-		notifications.eventCallbacks.updateWaiters([]);
-		expect(mockWarn).toBeCalledTimes(1);
-	});
-
-	it('Sending wrong arguments than required', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const waitersViewModels = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			waitersViewModels
-		);
-		notifications.eventCallbacks.updateWaiters([null, 'asd']);
-		expect(mockWarn).toBeCalledTimes(1);
-	});
-
-	it('Sending exactly the needed arguments', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const waitersViewModels = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			waitersViewModels
-		);
-		notifications.eventCallbacks.updateWaiters([[]]);
-		expect(mockWarn).toBeCalledTimes(0);
-	});
-
-	it('Sending extra argument is accepted', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const waitersViewModels = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			waitersViewModels
-		);
-		notifications.eventCallbacks.updateWaiters([
-			[],
-			'inprogress',
-			'Hola Mr. Almog',
-		]);
-		expect(mockWarn).toBeCalledTimes(0);
-	});
-
-	it('Sending something else than OrderIDO[] as orders', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const waitersViewModels = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			waitersViewModels
-		);
-		notifications.eventCallbacks.updateWaiters(['asd']);
-
 		expect(mockWarn).toBeCalledTimes(1);
 	});
 });

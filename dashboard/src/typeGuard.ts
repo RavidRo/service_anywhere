@@ -18,6 +18,9 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 		return false;
 	}
 	const order = (params as {order: OrderIDO}).order;
+	if (order === undefined) {
+		return false;
+	}
 	return (
 		(order as OrderIDO).creationTime !== undefined &&
 		(order as OrderIDO).guestId !== undefined &&
