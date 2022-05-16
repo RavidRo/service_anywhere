@@ -35,12 +35,17 @@ export default class ordersModel {
 		const orders = this._orders;
 		this.orders = orders;
 	}
+
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
 		this._orders.forEach(order => {
 			if (order.id === orderId) {
+				if (newStatus === 'delivered' || newStatus === 'canceled') {
+					order.completionTime = new Date(Date.now());
+				}
 				order.status = newStatus;
 			}
 		});
+
 		const orders = this._orders;
 		this.orders = orders;
 		console.log(this.orders);
