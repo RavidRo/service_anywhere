@@ -1,5 +1,5 @@
 import Api from '../network/api';
-import OrderModel from '../model/ordersModel';
+import OrderModel, {assignedWaitersType} from '../model/ordersModel';
 import {ItemIDO, OrderIDO, OrderStatus} from '../../../api';
 
 export default class OrdersViewModel {
@@ -30,6 +30,31 @@ export default class OrdersViewModel {
 
 	setItems(items: ItemIDO[]) {
 		this.ordersModel.items = items;
+	}
+
+	getAssignedWaiters(orderId: string): string[] {
+		const assignedWaiters = this.ordersModel.assignedWaiters;
+		const assignedWaiter = assignedWaiters.find(
+			entry => entry.orderId === orderId
+		);
+		if (assignedWaiter !== undefined) {
+			return assignedWaiter.waiterIds;
+		}
+		return [];
+	}
+
+	synchroniseAssignedWaiters(): void {
+		this.ordersModel.orders.map((order: OrderIDO) => 
+			this.api.getWaitersByOrder(order.id)
+			.then((waiterIds: string[]) => {
+				
+			})
+			.catch((err: string) =>
+				alert('Could not find waiter by order ' + err)
+			);
+		)
+
+		
 	}
 
 	synchroniseOrders(): Promise<void> {

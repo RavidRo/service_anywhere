@@ -1,9 +1,12 @@
 import {makeAutoObservable} from 'mobx';
 import {ItemIDO, OrderIDO, OrderStatus} from '../../../api';
 
+export type assignedWaitersType = {orderId: string; waiterIds: string[]}[];
+
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
+	_assignedWaiters: assignedWaitersType;
 
 	constructor() {
 		console.log('Starting the order model');
@@ -28,6 +31,18 @@ export default class ordersModel {
 		console.info('getting items');
 		return this._items;
 	}
+
+	get assignedWaiters(): assignedWaitersType {
+		console.info('Gettings assigned waiters');
+		return this._assignedWaiters;
+	}
+
+	set assignedWaiters(assignedWaiters: assignedWaitersType) {
+		console.info('Setting assigned waiters');
+		this._assignedWaiters = assignedWaiters;
+	}
+
+	addAssignedWaiters(orderId: string, waitersIds: string[]): void {}
 
 	addOrder(order: OrderIDO) {
 		console.log('Adding a new order', order);
