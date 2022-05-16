@@ -43,7 +43,7 @@ const mockListOfWaiters: WaiterIDO[] = [
 ];
 const mockGetOrders = jest.fn(() => mockMakePromise(mockListOfOrders));
 const mockGetWaiters = jest.fn(() => mockMakePromise(mockListOfWaiters));
-const mockAssignWaiter = jest.fn((orderId: string, waiterId: string) => {
+const mockAssignWaiter = jest.fn((_orderId: string, waiterId: string) => {
 	return mockListOfWaiters.filter(waiter => waiter.id === waiterId)[0]
 		.available;
 });

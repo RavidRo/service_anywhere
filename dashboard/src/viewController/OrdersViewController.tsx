@@ -7,7 +7,10 @@ import ExpandCellGrid from '../view/ExpandCellGrid';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
 import {
+	GridCallbackDetails,
+	GridCellParams,
 	GridRenderCellParams,
+	GridRowParams,
 	GridValueGetterParams,
 	MuiEvent,
 } from '@mui/x-data-grid';
@@ -21,15 +24,19 @@ interface viewModelProps {
 const OrdersViewController = (props: viewModelProps) => {
 	console.info('Starting orders view controller');
 	const {ordersViewModel, waitersViewModel} = props;
-	const handleRowEditStart = (_, event: MuiEvent) => {
+	const handleRowEditStart = (_params: GridRowParams, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleRowEditStop = (_, event: MuiEvent) => {
+	const handleRowEditStop = (_params: GridRowParams, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
 
-	const handleCellFocusOut = (_, event: MuiEvent) => {
+	const handleCellFocusOut = (
+		_params: GridCellParams,
+		event: MuiEvent,
+		_details: GridCallbackDetails
+	) => {
 		event.defaultMuiPrevented = true;
 	};
 
