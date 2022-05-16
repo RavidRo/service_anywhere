@@ -6,7 +6,7 @@ export type assignedWaitersType = {orderId: string; waiterIds: string[]}[];
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
-	_assignedWaiters: assignedWaitersType;
+	_assignedWaiters: assignedWaitersType = [];
 
 	constructor() {
 		console.log('Starting the order model');
