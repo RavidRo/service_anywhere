@@ -111,7 +111,10 @@ test('Status changes successfully when waiter is on the way with the order', asy
 	const waiterIds = await DashboardInterface.getWaiters();
 	await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
 	await DashboardInterface.assignWaiter([orderID], waiterIds.getData()[0]);
-	const orderOnTheWayResponse = await WaiterInterface.orderOnTheWay(orderID, waiterIds.getData()[0]);
+	const orderOnTheWayResponse = await WaiterInterface.orderOnTheWay(
+		orderID,
+		waiterIds.getData()[0]
+	);
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(orderOnTheWayResponse.isSuccess()).toBeTruthy();
