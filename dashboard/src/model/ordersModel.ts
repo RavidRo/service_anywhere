@@ -42,7 +42,21 @@ export default class ordersModel {
 		this._assignedWaiters = assignedWaiters;
 	}
 
-	addAssignedWaiters(orderId: string, waitersIds: string[]): void {}
+	updateAssignedWaiters(orderId: string, waitersIds: string[]): void {
+		const assignedWaiterObject = this._assignedWaiters.find(
+			entry => entry.orderId === orderId
+		);
+		if (assignedWaiterObject !== undefined) {
+			assignedWaiterObject.waiterIds = waitersIds;
+		} else {
+			this._assignedWaiters.push({
+				orderId: orderId,
+				waiterIds: waitersIds,
+			});
+		}
+		const assigned = this._assignedWaiters;
+		this.assignedWaiters = assigned;
+	}
 
 	addOrder(order: OrderIDO) {
 		console.log('Adding a new order', order);

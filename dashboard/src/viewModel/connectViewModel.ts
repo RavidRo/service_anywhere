@@ -45,8 +45,9 @@ export default class ConnectViewModel {
 			console.info('Trying to connect with token ', this.model.token);
 			return Promise.all([
 				this.waitersViewModel.synchroniseWaiters(),
-				this.ordersViewModel.synchroniseOrders(),
-				this.ordersViewModel.synchroniseItems(),
+				this.ordersViewModel
+					.synchroniseItems()
+					.then(() => this.ordersViewModel.synchroniseOrders()),
 				new Promise<void>((resolve, reject) => {
 					this.connectionHandler.connect(
 						token,

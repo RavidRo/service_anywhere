@@ -123,6 +123,12 @@ const OrdersViewController = (props: viewModelProps) => {
 						waitersViewModel={waitersViewModel}
 						orderId={orderId}
 						status={renderProps.row.status}
+						assignedWaiters={ordersViewModel.getAssignedWaiters(
+							orderId
+						)}
+						updateAssignedWaiters={
+							ordersViewModel.updateAssignedWaiter
+						}
 					/>
 				);
 			},
