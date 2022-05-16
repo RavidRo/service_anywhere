@@ -8,11 +8,20 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import {FormControlLabel, FormGroup, Checkbox, Button} from '@mui/material';
 import {WaiterIDO} from '../../../api';
-import {StatusToNumber} from '../Status';
 
 const dialogTitle = 'Choose Waiter';
 
-function WaiterDialogView(props: any) {
+type waiterProps = {
+	assignedWaiters: string[];
+	waiters: WaiterIDO[];
+	handleOpen: () => void;
+	handleClose: () => void;
+	handleOk: () => void;
+	handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	open: boolean;
+	isDisabled: () => boolean;
+};
+function WaiterDialogView(props: waiterProps) {
 	console.log('creating waiters view');
 	const {
 		assignedWaiters,
@@ -40,7 +49,12 @@ function WaiterDialogView(props: any) {
 					</IconButton>
 				) : (
 					`Assigned waiter: ${assignedWaiters.map(
-						id => waiters.find(waiter => waiter.id === id).name
+						id =>
+							(
+								waiters.find(waiter => waiter.id === id) || {
+									name: 'Cannot find correct waiter',
+								}
+							).name
 					)}`
 				)}
 			</Typography>

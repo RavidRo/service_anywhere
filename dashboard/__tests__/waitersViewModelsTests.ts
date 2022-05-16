@@ -43,14 +43,16 @@ const mockListOfWaiters: WaiterIDO[] = [
 ];
 const mockGetOrders = jest.fn(() => mockMakePromise(mockListOfOrders));
 const mockGetWaiters = jest.fn(() => mockMakePromise(mockListOfWaiters));
-const mockAssignWaiter = jest.fn((orderId: string, waiterIds: string[]) => {
+const mockAssignWaiter = jest.fn((_orderId: string, waiterIds: string[]) => {
 	return mockListOfWaiters.filter(waiter => waiter.id in waiterIds);
 });
-const mockGetWaitersByOrder = jest.fn((orderId: string) => mockListOfOrders[0]);
-const mockChangeOrderStatus = jest.fn(
-	(orderId: string, status: string) => true
+const mockGetWaitersByOrder = jest.fn(
+	(_orderId: string) => mockListOfOrders[0]
 );
-const mockCancelOrder = jest.fn((orderId: string) => true);
+const mockChangeOrderStatus = jest.fn(
+	(_orderId: string, _status: string) => true
+);
+const mockCancelOrder = jest.fn((_orderId: string) => true);
 
 jest.mock('../src/network/api', () => {
 	return jest.fn().mockImplementation(() => {

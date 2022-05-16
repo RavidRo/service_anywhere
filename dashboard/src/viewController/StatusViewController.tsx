@@ -110,6 +110,7 @@ function StatusViewController(props: {
 			return undefined;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		function handleKeyDown(nativeEvent: any) {
 			// IE11, Edge (prior to using Bink?) use 'Esc'
 			if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
@@ -199,9 +200,7 @@ function StatusViewController(props: {
 						<Typography variant='body2' style={{padding: 8}}>
 							<Box sx={{width: '100%'}}>
 								<StatusView
-									steps={Object.values(Status).filter(
-										entry => !Number.isInteger(entry)
-									)}
+									steps={Status}
 									isStepNextable={isStepNextable}
 									isStepBackable={isStepBackable}
 									isStepCancelable={isStepCancelable}

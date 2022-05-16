@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {observer} from 'mobx-react';
-import React from 'react';
 
 function AppBarView() {
 	console.log('Starting the app bar');

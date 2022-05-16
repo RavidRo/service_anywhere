@@ -1,10 +1,9 @@
 import {makeStyles} from '@material-ui/core/styles';
 import {toJS} from 'mobx';
-import React from 'react';
-import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
-import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
+import {DataGrid, GridColumns, MuiEvent} from '@mui/x-data-grid';
 import {observer} from 'mobx-react';
+import {OrderIDO} from '../../../api';
 
 const useStyles = makeStyles({
 	dataGrid: {
@@ -12,7 +11,14 @@ const useStyles = makeStyles({
 	},
 });
 
-const OrdersView = (props: any) => {
+type orderProps = {
+	orders: OrderIDO[];
+	columns: GridColumns;
+	handleRowEditStart: (_, event: MuiEvent) => void;
+	handleRowEditStop: (_, event: MuiEvent) => void;
+	handleCellFocusOut: (_, event: MuiEvent) => void;
+};
+const OrdersView = (props: orderProps) => {
 	console.log('Starting the orders view');
 	const {
 		orders,

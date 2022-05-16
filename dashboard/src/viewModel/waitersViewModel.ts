@@ -1,7 +1,6 @@
 import Api from '../network/api';
 import WaiterModel from '../model/waiterModel';
 import {WaiterIDO} from '../../../api';
-import Singleton from '../singleton';
 
 export default class WaitersViewModel {
 	private waitersModel: WaiterModel;

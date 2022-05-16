@@ -86,7 +86,6 @@ const OrdersViewController = (props: viewModelProps) => {
 		},
 		{
 			field: 'status',
-			align: 'left',
 			headerName: 'Status',
 			alignHeaderName: 'left',
 			type: 'actions',

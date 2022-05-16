@@ -42,6 +42,6 @@ export function isOrderStatus(status: object): status is orderStatusType {
 	);
 }
 
-export function isString(someString: any): someString is string {
+export function isString(someString: unknown): someString is string {
 	return typeof someString === 'string';
 }

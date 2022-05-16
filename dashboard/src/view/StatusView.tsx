@@ -5,8 +5,20 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import {observer} from 'mobx-react';
+import {OrderStatus} from '../../../api';
 
-function StatusView(props: any) {
+type statusProps = {
+	steps: OrderStatus[];
+	isStepNextable: (step: number) => boolean;
+	isStepBackable: (step: number) => boolean;
+	isStepCancelable: (step: number) => boolean;
+	isStepFailed: (step: number) => boolean;
+	currentStep: number;
+	handleNext: () => void;
+	handleBack: () => void;
+	handleCancel: () => void;
+};
+function StatusView(props: statusProps) {
 	console.log('creating status view');
 	const {
 		steps,

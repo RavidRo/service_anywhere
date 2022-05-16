@@ -36,7 +36,7 @@ export default class ordersModel {
 		this.orders = orders;
 	}
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
-		this._orders.find(order => {
+		this._orders.forEach(order => {
 			if (order.id === orderId) {
 				order.status = newStatus;
 			}

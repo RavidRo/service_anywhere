@@ -5,10 +5,6 @@ import ConnectViewModel from '../viewModel/connectViewModel';
 import OrdersViewController from '../viewController/OrdersViewController';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaitersViewModel from '../viewModel/waitersViewModel';
-import waitersModel from '../model/waiterModel';
-import ordersModel from '../model/ordersModel';
-import ConnectionHandler from '../network/connectionHandler';
-import Api from '../network/api';
 import Button from '@mui/material/Button';
 import {observer} from 'mobx-react';
 
