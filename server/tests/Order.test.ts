@@ -59,7 +59,7 @@ test('createOrder should return an order with matching guest ID', async () => {
 test('createOrder should return an order with matching items', async () => {
 	const {guestID, items: orderItems} = await createOrder();
 	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
-	expect(order.items).toEqual(orderItems.entries());
+	expect(order.items).toEqual(Object.fromEntries(orderItems.entries()));
 });
 
 test('createOrder should return an order with a reasonable creation time', async () => {
