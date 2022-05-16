@@ -35,7 +35,7 @@ export default class Notificiations {
 			);
 		} else {
 			console.warn(
-				"Haven't received the correct arguments, the param should be a order status"
+				"Haven't received the correct arguments, the param should be an order status"
 			);
 		}
 	}
