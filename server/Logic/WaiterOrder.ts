@@ -107,7 +107,6 @@ export async function createOrder(
 			400
 		);
 	}
-	console.debug('order: ' + guestId);
 	const newOrderResponse = await OrderNotifier.createNewOrder(
 		guestId,
 		new Map(filteredEntries)
@@ -141,7 +140,7 @@ export async function changeOrderStatus(
 	const changeStatusResponse = await order.changeOrderStatus(
 		newStatus,
 		hasAssignedWaiters && !willUnassignWaiters,
-		true
+		requesterID !== orderDAO.guest.id
 	);
 
 	if (changeStatusResponse.isSuccess() && willUnassignWaiters) {

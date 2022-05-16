@@ -430,7 +430,6 @@ app.post('/orderOnTheWay', (req, res) => {
 });
 
 io.on('connection', function (socket: socketio.Socket) {
-	console.debug('a user connected');
 	authenticate(
 		socket.handshake.auth['token'],
 		0,

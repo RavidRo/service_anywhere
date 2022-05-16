@@ -73,7 +73,9 @@ test('Guests can get their order details', async () => {
 
 	expect(createResponse.isSuccess()).toBeTruthy();
 	expect(orderResponse.getData().guestId).toBe(guestID);
-	expect(orderResponse.getData().items).toEqual(items);
+	expect(orderResponse.getData().items).toEqual(
+		Object.fromEntries(items.entries())
+	);
 });
 
 test('Creating order with items with zero quantities removes them', async () => {
@@ -90,7 +92,7 @@ test('Creating order with items with zero quantities removes them', async () => 
 
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
-	const desiredItems = new Map([[itemsList[0].id, 5]]);
+	const desiredItems = {[itemsList[0].id]: 5};
 	expect(orderResponse.getData().items).toEqual(desiredItems);
 });
 
