@@ -551,7 +551,7 @@ io.on('connection', function (socket: socketio.Socket) {
 					},
 					_status => {},
 					(id: string) => {
-						console.debug('guest updates location: ', message);
+						//console.debug('guest updates location: ', message);
 						guest.updateLocationGuest(id, message['location']);
 					}
 				)
@@ -580,7 +580,7 @@ io.on('connection', function (socket: socketio.Socket) {
 					},
 					_status => {},
 					(id: string) => {
-						console.debug('waiter updates location: ', message);
+						//console.debug('waiter updates location: ', message);
 						waiter.updateLocationWaiter(id, message['location']);
 					}
 				)

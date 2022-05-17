@@ -9,6 +9,9 @@ import GuestInterface from '../Interface/GuestInterface';
 import ItemsInterface from '../Interface/ItemsInterface';
 import {getGuests} from '../Data/Stores/GuestStore';
 import {makeGood} from '../Response';
+import config from '../config.json'
+
+const adminID = config['admin_id']
 
 const createOrder = async ({index = 0, advance = true} = {}) => {
 	const guests = await getGuests();
@@ -22,7 +25,7 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 	);
 	const orderID = createOrderResponse.getData();
 	if (advance) {
-		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
 	}
 
 	return {orderID, guestID, items};
