@@ -5,9 +5,9 @@ import DashboardInterface from '../../Interface/DashboardInterface';
 import {AppDataSource} from '../../Data/data-source';
 import {getGuests} from '../../Data/Stores/GuestStore';
 import reset_all from '../../Data/test_ResetDatabase';
-import config from '../../config.json'
+import config from '../../config.json';
 
-const adminID = config['admin_id']
+const adminID = config['admin_id'];
 
 const createOrder = async ({index = 0, advance = true} = {}) => {
 	const guests = await getGuests();
@@ -21,7 +21,11 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 	);
 	const orderID = createOrderResponse.getData();
 	if (advance) {
-		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
+		await DashboardInterface.changeOrderStatus(
+			orderID,
+			'ready to deliver',
+			adminID
+		);
 	}
 
 	return {orderID, guestID, items};

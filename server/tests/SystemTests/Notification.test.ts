@@ -6,9 +6,9 @@ import ItemsInterface from '../../Interface/ItemsInterface';
 import DashboardInterface from '../../Interface/DashboardInterface';
 import {Notifier} from '../../Logic/Notification/Notifier';
 import WaiterInterface from '../../Interface/WaiterInterface';
-import config from '../../config.json'
+import config from '../../config.json';
 
-const adminID = config['admin_id']
+const adminID = config['admin_id'];
 
 function timeout(time: number) {
 	return new Promise<void>(resolve => {
@@ -94,7 +94,11 @@ test('Notified guest on changeOrderStatus', async () => {
 	const func = jest.fn().mockReturnValue(true);
 	notifier.addSubscriber(guestID, func);
 
-	await DashboardInterface.changeOrderStatus(orderID, 'in preparation', adminID);
+	await DashboardInterface.changeOrderStatus(
+		orderID,
+		'in preparation',
+		adminID
+	);
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(1);
 });
@@ -145,7 +149,11 @@ test('Notified guest on updateWaiterLocation', async () => {
 	const func = jest.fn();
 	await timeout(200);
 	notifier.addSubscriber(guestID, func);
-	await WaiterInterface.updateLocationWaiter(waiterID, {x: 0.5, y: 0.5, mapID: '1'});
+	await WaiterInterface.updateLocationWaiter(waiterID, {
+		x: 0.5,
+		y: 0.5,
+		mapID: '1',
+	});
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(1);
 });

@@ -7,9 +7,9 @@ import {AppDataSource} from '../Data/data-source';
 import reset_all from '../Data/test_ResetDatabase';
 import {getGuests} from '../Data/Stores/GuestStore';
 import GuestInterface from '../Interface/GuestInterface';
-import config from '../config.json'
+import config from '../config.json';
 
-const adminID = config['admin_id']
+const adminID = config['admin_id'];
 
 beforeAll(async () => {
 	jest.spyOn(console, 'error').mockImplementation(jest.fn());
@@ -32,7 +32,11 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 	);
 	const orderID = createOrderResponse.getData();
 	if (advance) {
-		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
+		await DashboardInterface.changeOrderStatus(
+			orderID,
+			'ready to deliver',
+			adminID
+		);
 	}
 
 	return {orderID, guestID, items};
@@ -58,7 +62,11 @@ test('get waiter by order with our order should return our waiter', async () => 
 	const {orderID} = await createOrder();
 
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
-	await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
+	await DashboardInterface.changeOrderStatus(
+		orderID,
+		'ready to deliver',
+		adminID
+	);
 
 	await WaiterOrder.assignWaiter([orderID], waitersIDs[0].id);
 
