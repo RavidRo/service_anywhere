@@ -13,7 +13,8 @@
 		"start": "npm run start --workspace=server",
 		"test": "npm run test --workspaces",
 		"format": "npx prettier --write .",
-		"lint": "npx eslint . && npx tsc --noEmit --jsx react-native"
+		"lint": "npx eslint . && npx tsc --noEmit --jsx react-native",
+		"dashboard": "npm run start --workspace=dashboard"
 	},
 	"devDependencies": {
 		"@types/jest": "^27.4.0",

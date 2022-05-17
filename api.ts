@@ -29,6 +29,13 @@ export type WaiterIDO = {
 	name: string;
 	available: boolean;
 };
+
+// export type WaiterDAO = {
+// 	id: string;
+// 	name: string;
+// 	orders: OrderDAO[];
+// };
+
 export type Location = {
 	x: number;
 	y: number;
