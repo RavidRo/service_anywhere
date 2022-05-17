@@ -1,7 +1,7 @@
 export default class Singleton {
-	instances = {};
+	protected static instances: {[className: string]: Singleton} = {};
 
-	constructor() {
+	protected constructor() {
 		if (Singleton.instances[this.constructor.name]) {
 			return Singleton.instances[this.constructor.name];
 		}

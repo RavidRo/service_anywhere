@@ -76,7 +76,9 @@ test('Getting the assigned waiters successfully', async () => {
 	const assignedResponse = await DashboardInterface.getWaiterByOrder(
 		orderID2
 	);
-	expect(assignedResponse.getData()).toEqual([waitersIDs[0], waitersIDs[1]]);
+	expect(new Set(assignedResponse.getData())).toEqual(
+		new Set([waitersIDs[0], waitersIDs[1]])
+	);
 });
 
 test('Getting waiters of none existed order results with failure', async () => {

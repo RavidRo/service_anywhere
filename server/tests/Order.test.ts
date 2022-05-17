@@ -29,6 +29,7 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 };
 
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	await AppDataSource.initialize();
 });
@@ -58,7 +59,7 @@ test('createOrder should return an order with matching guest ID', async () => {
 test('createOrder should return an order with matching items', async () => {
 	const {guestID, items: orderItems} = await createOrder();
 	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
-	expect(order.items).toEqual(orderItems);
+	expect(order.items).toEqual(Object.fromEntries(orderItems.entries()));
 });
 
 test('createOrder should return an order with a reasonable creation time', async () => {

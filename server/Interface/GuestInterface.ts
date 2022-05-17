@@ -1,12 +1,11 @@
 import {Location, OrderIDO} from '../../api';
 
-import {makeFail, makeGood, ResponseMsg} from '../Response';
+import {ResponseMsg} from '../Response';
 
 import {IOrder} from '../Logic/IOrder';
 import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
-import {logger} from 'server/Logger';
 
 function createOrder(
 	guestId: string,

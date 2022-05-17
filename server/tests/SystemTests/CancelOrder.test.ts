@@ -33,13 +33,13 @@ beforeEach(async () => {
 });
 
 test('Cancel order by guest should fail when order status is not received', async () => {
-	const {orderID} = await createOrder();
-	const response = await GuestInterface.cancelOrder(orderID);
+	const {orderID, guestID} = await createOrder();
+	const response = await GuestInterface.cancelOrder(orderID, guestID);
 	expect(response.isSuccess()).toBeFalsy();
 });
 
 test('Cancel order by guest success for order status received', async () => {
-	const {orderID} = await createOrder({advance: false});
-	const response = await GuestInterface.cancelOrder(orderID);
+	const {orderID, guestID} = await createOrder({advance: false});
+	const response = await GuestInterface.cancelOrder(orderID, guestID);
 	expect(response.isSuccess()).toBeTruthy();
 });

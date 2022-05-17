@@ -1,0 +1,82 @@
+import Api from '../network/api';
+import OrderModel from '../model/ordersModel';
+import {ItemIDO, OrderIDO, OrderStatus} from '../../../api';
+
+export default class OrdersViewModel {
+	private ordersModel: OrderModel;
+	private api: Api;
+
+	constructor(ordersModel: OrderModel, api: Api) {
+		console.log('Starting orders view model');
+		this.ordersModel = ordersModel;
+		this.api = api;
+	}
+
+	getOrders(): OrderIDO[] {
+		return this.ordersModel.orders;
+	}
+
+	setOrders(orders: OrderIDO[]) {
+		this.ordersModel.orders = orders;
+	}
+
+	updateOrder(order: OrderIDO) {
+		this.ordersModel.addOrder(order);
+	}
+
+	getItems(): ItemIDO[] {
+		return this.ordersModel.items;
+	}
+
+	setItems(items: ItemIDO[]) {
+		this.ordersModel.items = items;
+	}
+
+	synchroniseOrders(): Promise<void> {
+		return this.api
+			.getOrders()
+			.then(orders => {
+				console.info('Synchronized orders');
+				this.ordersModel.orders = orders;
+			})
+			.catch(err =>
+				alert('Could not get orders please reload, Error: ' + err)
+			);
+	}
+
+	getItemName(itemId: string): string {
+		const items = this.ordersModel.items;
+		if (items.length === 0) {
+			return itemId;
+		}
+		return items.filter(item => item.id === itemId)[0].name;
+	}
+
+	synchroniseItems(): Promise<void> {
+		return this.api
+			.getItems()
+			.then(items => {
+				console.info('Synchronized items');
+				this.ordersModel.items = items;
+			})
+			.catch(err =>
+				alert('Could not get orders please reload, Error: ' + err)
+			);
+	}
+	changeOrderStatusNotification(orderId: string, newStatus: OrderStatus) {
+		this.ordersModel.changeOrderStatus(orderId, newStatus);
+	}
+
+	changeOrderStatus(
+		orderId: string,
+		newStatus: OrderStatus
+	): Promise<boolean> {
+		return this.api
+			.changeOrderStatus(orderId, newStatus)
+			.then(() => {
+				this.ordersModel.changeOrderStatus(orderId, newStatus);
+				return true;
+			})
+			.catch(() => false);
+	}
+}

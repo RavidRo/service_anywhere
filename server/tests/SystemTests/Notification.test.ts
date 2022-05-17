@@ -137,10 +137,7 @@ test('Notified guest on updateWaiterLocation', async () => {
 	const waiterID = waitersIDs.getData()[0];
 	await DashboardInterface.assignWaiter([orderResponse.getData()], waiterID);
 	const notifier = Notifier.getInstance();
-	const func = jest.fn().mockImplementation((...args) => {
-		console.log(args);
-		return true;
-	});
+	const func = jest.fn();
 	await timeout(200);
 	notifier.addSubscriber(guestID, func);
 	await WaiterInterface.updateLocationWaiter(waiterID, '1', {x: 0.5, y: 0.5});
