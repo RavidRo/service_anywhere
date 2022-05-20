@@ -6,36 +6,36 @@ export class NotificationFacade {
 
 	public newOrder(receiverID: string, order: OrderIDO) {
 		this.notifier.notify(receiverID, 'newOrder', {order});
+		//console.debug('newOrder', receiverID);
 	}
 
 	public assignedToOrder(receiverID: string, order: OrderIDO) {
 		this.notifier.notify(receiverID, 'assignedToOrder', {order});
+		//console.debug('assignToOrder', receiverID);
 	}
 
 	public updateGuestLocation(
 		receiverID: string,
-		orderID: string,
-		mapID: string,
+		guestID: string,
 		location: Location
 	) {
 		this.notifier.notify(receiverID, 'updateGuestLocation', {
-			orderID,
-			mapID,
+			guestID,
 			location,
 		});
+		//console.debug('updateGuestLocation', receiverID);
 	}
 
 	public updateWaiterLocation(
 		receiverID: string,
 		orderID: string,
-		mapID: string,
 		location: Location
 	) {
 		this.notifier.notify(receiverID, 'updateWaiterLocation', {
 			orderID,
-			mapID,
 			location,
 		});
+		//console.debug('updateWaiterLocation', receiverID);
 	}
 
 	public changeOrderStatus(
@@ -47,5 +47,6 @@ export class NotificationFacade {
 			orderID,
 			orderStatus,
 		});
+		//console.debug('changeOrderStatus', receiverID);
 	}
 }
