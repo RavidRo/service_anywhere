@@ -63,17 +63,11 @@ export class Order implements IOrder {
 			.isSuccess();
 	}
 
-	updateGuestLocation(
-		_mapId: string,
-		_location: Location
-	): ResponseMsg<void> {
+	updateGuestLocation(_location: Location): ResponseMsg<void> {
 		return makeGood();
 	}
 
-	updateWaiterLocation(
-		_mapId: string,
-		_location: Location
-	): ResponseMsg<void> {
+	updateWaiterLocation(_location: Location): ResponseMsg<void> {
 		return makeGood();
 	}
 

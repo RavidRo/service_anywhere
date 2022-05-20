@@ -17,6 +17,10 @@ export class ItemViewModel extends Singleton {
 		return this.itemsModel.items;
 	}
 
+	getItemByID(id: string): ItemIdo | undefined {
+		return this.itemsModel.items.find(item => item.id === id);
+	}
+
 	syncItems(): Promise<void> {
 		return this.requests.getItems().then(items => {
 			this.itemsModel.items = items;

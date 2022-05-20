@@ -21,13 +21,12 @@ export function unassignWaiters(orderID: string): Promise<ResponseMsg<void>> {
 
 export async function updateWaiterLocation(
 	waiterId: string,
-	mapId: string,
 	location: Location
 ) {
 	const orders = await getOrdersByWaiter(waiterId);
 	orders.ifGood(orders =>
 		orders.forEach(order =>
-			onOrder(order.id, o => o.updateWaiterLocation(mapId, location))
+			onOrder(order.id, o => o.updateWaiterLocation(location))
 		)
 	);
 }
@@ -107,7 +106,6 @@ export async function createOrder(
 			400
 		);
 	}
-	console.debug('order: ' + guestId);
 	const newOrderResponse = await OrderNotifier.createNewOrder(
 		guestId,
 		new Map(filteredEntries)
@@ -141,7 +139,7 @@ export async function changeOrderStatus(
 	const changeStatusResponse = await order.changeOrderStatus(
 		newStatus,
 		hasAssignedWaiters && !willUnassignWaiters,
-		true
+		requesterID !== orderDAO.guest.id
 	);
 
 	if (changeStatusResponse.isSuccess() && willUnassignWaiters) {
@@ -156,6 +154,15 @@ export async function changeOrderStatus(
 	return changeStatusResponse;
 }
 
+async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
+	const response = await WaiterStore.getWaiter(waiterID);
+	if (response !== null) {
+		return makeGood(response.name);
+	} else {
+		return makeFail('There is no waiter with that token');
+	}
+}
+
 export default {
 	createOrder,
 	assignWaiter,
@@ -165,4 +172,5 @@ export default {
 	makeAvailable: unassignWaiters,
 	updateWaiterLocation,
 	changeOrderStatus,
+	getWaiterName,
 };

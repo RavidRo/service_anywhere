@@ -9,8 +9,8 @@ export interface IOrder {
 	isActive(): boolean;
 	canAssign(): boolean;
 
-	updateWaiterLocation(mapId: string, location: Location): ResponseMsg<void>;
-	updateGuestLocation(mapId: string, location: Location): ResponseMsg<void>;
+	updateWaiterLocation(location: Location): ResponseMsg<void>;
+	updateGuestLocation(location: Location): ResponseMsg<void>;
 
 	assign(waiterId: string): Promise<ResponseMsg<void>>;
 	changeOrderStatus(

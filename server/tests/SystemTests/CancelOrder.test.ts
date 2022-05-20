@@ -4,6 +4,9 @@ import DashboardInterface from '../../Interface/DashboardInterface';
 import {AppDataSource} from '../../Data/data-source';
 import {getGuests} from '../../Data/Stores/GuestStore';
 import reset_all from '../../Data/test_ResetDatabase';
+import config from '../../config.json';
+
+const adminID = config['admin_id'];
 
 const createOrder = async ({index = 0, advance = true} = {}) => {
 	const guests = await getGuests();
@@ -17,7 +20,11 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 	);
 	const orderID = createOrderResponse.getData();
 	if (advance) {
-		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+		await DashboardInterface.changeOrderStatus(
+			orderID,
+			'ready to deliver',
+			adminID
+		);
 	}
 
 	return {orderID, guestID, items};
@@ -33,13 +40,13 @@ beforeEach(async () => {
 });
 
 test('Cancel order by guest should fail when order status is not received', async () => {
-	const {orderID} = await createOrder();
-	const response = await GuestInterface.cancelOrder(orderID);
+	const {orderID, guestID} = await createOrder();
+	const response = await GuestInterface.cancelOrder(orderID, guestID);
 	expect(response.isSuccess()).toBeFalsy();
 });
 
 test('Cancel order by guest success for order status received', async () => {
-	const {orderID} = await createOrder({advance: false});
-	const response = await GuestInterface.cancelOrder(orderID);
+	const {orderID, guestID} = await createOrder({advance: false});
+	const response = await GuestInterface.cancelOrder(orderID, guestID);
 	expect(response.isSuccess()).toBeTruthy();
 });

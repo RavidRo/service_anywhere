@@ -66,14 +66,15 @@ export abstract class OrderNotifier implements IOrder {
 		return this.order.isActive();
 	}
 
-	updateGuestLocation(mapID: string, location: Location): ResponseMsg<void> {
-		return this.order.updateGuestLocation(mapID, location);
+	updateGuestLocation(location: Location): ResponseMsg<void> {
+		return this.order.updateGuestLocation(location);
 	}
-	updateWaiterLocation(mapID: string, location: Location): ResponseMsg<void> {
-		return this.order.updateWaiterLocation(mapID, location);
+	updateWaiterLocation(location: Location): ResponseMsg<void> {
+		return this.order.updateWaiterLocation(location);
 	}
 
 	async assign(waiterID: string): Promise<ResponseMsg<void>> {
+		//todo: why no call to this.order.assign()?
 		const oldStatus = this.getDetails().status;
 		const newStatus = oldStatus === 'on the way' ? oldStatus : 'assigned';
 		return (await this.changeOrderStatus(newStatus, true, true)).ifGood(
@@ -122,7 +123,7 @@ class GuestNotifier extends OrderNotifier {
 	}
 
 	override updateWaiterLocation(
-		...params: [mapID: string, location: Location]
+		...params: [location: Location]
 	): ResponseMsg<void> {
 		return super
 			.updateWaiterLocation(...params)
@@ -145,12 +146,12 @@ class WaiterNotifier extends OrderNotifier {
 	}
 
 	override updateGuestLocation(
-		...params: [mapID: string, location: Location]
+		...params: [location: Location]
 	): ResponseMsg<void> {
 		return super.updateGuestLocation(...params).ifGood(() => {
 			this.notificationFacade.updateGuestLocation(
 				this.receiverId,
-				this.getID(),
+				this.getGuestId(),
 				...params
 			);
 		});

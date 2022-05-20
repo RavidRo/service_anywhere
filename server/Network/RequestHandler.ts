@@ -37,7 +37,7 @@ const io = new socketIO.Server(httpServer, {
 // use it before all route definitions
 
 app.get('/', (_req, res) => {
-	res.send('Hello World!');
+	res.send("Ima shel Tommer ve'aba shel Tommer");
 });
 
 function authenticate(
@@ -303,6 +303,62 @@ app.post('/cancelOrderGuest', (req, res) => {
 
 //waiter
 
+app.get('/getGuestsDetails', (req, res) => {
+	checkInputs(
+		['ids'],
+		req.query,
+		(msg: string) => {
+			res.send(msg);
+			logger.info(
+				'A waiter tried to get a guest details but gave no id list'
+			);
+		},
+		status => res.status(status),
+		async () => {
+			authenticate(
+				req.headers.authorization,
+				2,
+				(msg: string) => {
+					res.send(msg);
+					logger.info(
+						'A user tried to get a guest details but had no permission or used an unmatched token'
+					);
+				},
+				status => res.status(status),
+				async _waiterId => {
+					const ids = req.query['ids'];
+					if (ids && Array.isArray(ids) && isStringArray(ids)) {
+						const response = await waiter
+							.getGuestsDetails(ids)
+							.then(guests => res.send(guests))
+							.catch(() => {
+								res.status(500);
+								res.send(
+									'Getting guests failed, try again later'
+								);
+								logger.error(
+									'An error occured while getting guests data'
+								);
+							});
+					} else {
+						res.status(400);
+						res.send(
+							'Getting guests failed, the ids given were the wrong type'
+						);
+						logger.info(
+							'A user tried to get guests details but gave the list of ids in the wrong type'
+						);
+					}
+				}
+			);
+		}
+	);
+});
+
+function isStringArray(arr: any): arr is string[] {
+	return arr.every((val: any) => typeof val === 'string');
+}
+
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,
@@ -429,8 +485,35 @@ app.post('/orderOnTheWay', (req, res) => {
 	);
 });
 
+app.get('/getWaiterName', (req, res) => {
+	authenticate(
+		req.headers.authorization,
+		2,
+		(msg: string) => {
+			res.send(msg);
+			logger.info(
+				'A waiter tried to get their name but had no permission or used an unmatched token'
+			);
+		},
+		status => res.status(status),
+		async waiterId => {
+			const response = await waiter.getWaiterName(waiterId);
+			sendResponse(
+				response,
+				st => res.status(st),
+				msg => res.send(msg)
+			);
+			if (!response.isSuccess()) {
+				logger.info(
+					'A waiter failed to get their name. Error: ' +
+						response.getError()
+				);
+			}
+		}
+	);
+});
+
 io.on('connection', function (socket: socketio.Socket) {
-	console.debug('a user connected');
 	authenticate(
 		socket.handshake.auth['token'],
 		0,
@@ -447,12 +530,12 @@ io.on('connection', function (socket: socketio.Socket) {
 	);
 	socket.on('updateGuestLocation', (message: any) => {
 		checkInputs(
-			['mapId', 'location'],
+			['location'],
 			message,
 			(msg: string) => {
 				socket.emit('Error', msg);
 				logger.info(
-					"A user tried to update a guest's location but didn't include the map ID or the location"
+					"A user tried to update a guest's location but didn't include the location"
 				);
 			},
 			_status => {},
@@ -467,23 +550,21 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(id: string) =>
-						guest.updateLocationGuest(
-							id,
-							message['mapId'],
-							message['location']
-						)
+					(id: string) => {
+						//console.debug('guest updates location: ', message);
+						guest.updateLocationGuest(id, message['location']);
+					}
 				)
 		);
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
 		checkInputs(
-			['mapId', 'location'],
+			['location'],
 			message,
 			(msg: string) => {
 				socket.emit('Error', msg);
 				logger.info(
-					"A user tried to update a waiter's location but didn't include the map ID or the location"
+					"A user tried to update a waiter's location but didn't include the location"
 				);
 			},
 			_status => {},
@@ -498,12 +579,10 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(id: string) =>
-						waiter.updateLocationWaiter(
-							id,
-							message['mapId'],
-							message['location']
-						)
+					(id: string) => {
+						//console.debug('waiter updates location: ', message);
+						waiter.updateLocationWaiter(id, message['location']);
+					}
 				)
 		);
 	});
@@ -621,7 +700,6 @@ app.get('/getWaiters', (req, res) => {
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
-	//todo: authenticate
 	checkInputs(
 		['orderId'],
 		req.query,
@@ -665,7 +743,6 @@ app.get('/getWaitersByOrder', (req, res) => {
 });
 
 app.post('/cancelOrderAdmin', (req, res) => {
-	//todo: authenticate
 	checkInputs(
 		['orderId'],
 		req.body,
@@ -687,9 +764,10 @@ app.post('/cancelOrderAdmin', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async _id => {
+				async id => {
 					const response = await dashboard.cancelOrderAdmin(
-						req.body['orderId']
+						req.body['orderId'],
+						id
 					);
 					sendResponse(
 						response,
@@ -709,7 +787,6 @@ app.post('/cancelOrderAdmin', (req, res) => {
 });
 
 app.post('/changeOrderStatus', (req, res) => {
-	//todo: authenticate
 	checkInputs(
 		['orderId', 'newStatus'],
 		req.body,
@@ -731,10 +808,11 @@ app.post('/changeOrderStatus', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async _id => {
+				async id => {
 					const response = await dashboard.changeOrderStatus(
 						req.body['orderId'],
-						req.body['newStatus']
+						req.body['newStatus'],
+						id
 					);
 					sendResponse(
 						response,

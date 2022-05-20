@@ -16,7 +16,7 @@ const mockListOfOrders: OrderIDO[] = [
 		status: 'received',
 		guestId: '1',
 		creationTime: new Date(),
-		completionTime: new Date(),
+		completionTime: undefined,
 	},
 	{
 		id: '2',
@@ -101,5 +101,65 @@ describe('update orders', () => {
 		notifications.addNewOrder(['asd']);
 		console.log(ordersViewModels.getOrders());
 		expect(mockWarn).toBeCalledTimes(1);
+	});
+});
+
+//  {orderID: string; orderStatus: OrderStatus};
+describe('update order status', () => {
+	it('Sending no arguments', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.changeOrderStatus({});
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending wrong arguments than required', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.changeOrderStatus([null, 'asd']);
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending exactly the needed arguments', () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrdersViewModel(model, new Api());
+		const notifications = new Notifications(
+			ordersViewModel,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		ordersViewModel.setOrders(mockListOfOrders);
+		notifications.changeOrderStatus({
+			orderID: '1',
+			orderStatus: 'on the way',
+		});
+		expect(model.orders[0].status).toEqual('on the way');
+	});
+
+	it('Checking if completion time is updated ', () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrdersViewModel(model, new Api());
+		const notifications = new Notifications(
+			ordersViewModel,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		ordersViewModel.setOrders(mockListOfOrders);
+		notifications.changeOrderStatus({
+			orderID: '1',
+			orderStatus: 'delivered',
+		});
+		expect(model.orders[0].status).toEqual('delivered');
+		expect(model.orders[0].completionTime).toBeDefined();
 	});
 });

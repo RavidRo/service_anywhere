@@ -13,13 +13,18 @@ export default class ConnectionViewModel {
 	private items: ItemViewModel;
 	private myLocation: MyLocationViewModel;
 
-	constructor(requests: Requests) {
+	constructor(
+		requests: Requests,
+		orderViewModel: OrderViewModel,
+		itemViewModel: ItemViewModel,
+		myLocationViewModel: MyLocationViewModel
+	) {
 		this.model = ConnectionModel.getInstance();
+		this.connectionHandler = new ConnectionHandler(requests, itemViewModel);
 		this.requests = requests;
-		this.connectionHandler = new ConnectionHandler();
-		this.orders = new OrderViewModel(requests);
-		this.items = new ItemViewModel(requests);
-		this.myLocation = new MyLocationViewModel();
+		this.orders = orderViewModel;
+		this.items = itemViewModel;
+		this.myLocation = myLocationViewModel;
 	}
 
 	login(password: string): Promise<string> {

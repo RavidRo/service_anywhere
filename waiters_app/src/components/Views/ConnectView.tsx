@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, StyleSheet, Text, TextInput} from 'react-native';
+import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
 import MapScreenController from '../Controllers/MapScreenController';
 
 type LoginViewProps = {
@@ -46,21 +46,23 @@ export default function LoginView(props: LoginViewProps) {
 
 	return (
 		<>
-			<TextInput
-				style={styles.input}
-				onChangeText={props.onPasswordChange}
-				value={props.password}
-				placeholder='Your Password'
-				secureTextEntry
-				testID='passwordInput'
-			/>
-			<Button
-				title='Log in'
-				onPress={() => props.onSubmit(props.password)}
-				disabled={props.isLoading}
-				testID='submit'
-			/>
-			{props.isLoading && <Text testID='loading'>Logging in...</Text>}
+			<View style={styles.buttonContainer}>
+				<TextInput
+					style={styles.input}
+					onChangeText={props.onPasswordChange}
+					value={props.password}
+					placeholder='Your Password'
+					secureTextEntry
+					testID='passwordInput'
+				/>
+				<Button
+					title='Log in'
+					onPress={() => props.onSubmit(props.password)}
+					disabled={props.isLoading}
+					testID='submit'
+				/>
+				{props.isLoading && <Text testID='loading'>Logging in...</Text>}
+			</View>
 		</>
 	);
 }
@@ -68,12 +70,18 @@ export default function LoginView(props: LoginViewProps) {
 const styles = StyleSheet.create({
 	input: {
 		height: 40,
-		margin: 12,
+		marginBottom: 15,
 		borderWidth: 1,
-		padding: 10,
+		textAlign: 'center',
 	},
 	reconnecting: {
 		fontSize: 16,
 		color: '#e05555',
+	},
+	buttonContainer: {
+		paddingHorizontal: 20,
+		flex: 1,
+		justifyContent: 'center',
+		paddingBottom: 30,
 	},
 });

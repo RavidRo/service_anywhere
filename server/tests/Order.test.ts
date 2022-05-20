@@ -9,6 +9,9 @@ import GuestInterface from '../Interface/GuestInterface';
 import ItemsInterface from '../Interface/ItemsInterface';
 import {getGuests} from '../Data/Stores/GuestStore';
 import {makeGood} from '../Response';
+import config from '../config.json';
+
+const adminID = config['admin_id'];
 
 const createOrder = async ({index = 0, advance = true} = {}) => {
 	const guests = await getGuests();
@@ -22,13 +25,18 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 	);
 	const orderID = createOrderResponse.getData();
 	if (advance) {
-		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+		await DashboardInterface.changeOrderStatus(
+			orderID,
+			'ready to deliver',
+			adminID
+		);
 	}
 
 	return {orderID, guestID, items};
 };
 
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	await AppDataSource.initialize();
 });
@@ -58,7 +66,7 @@ test('createOrder should return an order with matching guest ID', async () => {
 test('createOrder should return an order with matching items', async () => {
 	const {guestID, items: orderItems} = await createOrder();
 	const order = (await GuestInterface.getGuestOrder(guestID)).getData();
-	expect(order.items).toEqual(orderItems);
+	expect(order.items).toEqual(Object.fromEntries(orderItems.entries()));
 });
 
 test('createOrder should return an order with a reasonable creation time', async () => {

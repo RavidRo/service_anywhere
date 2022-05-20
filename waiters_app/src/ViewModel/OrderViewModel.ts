@@ -4,17 +4,20 @@ import Order from '../Models/Order';
 import OrdersModel from '../Models/OrdersModel';
 import Requests from '../networking/Requests';
 import Singleton from '../Singleton';
+import {ItemViewModel} from './ItemViewModel';
 
 export default class OrderViewModel extends Singleton {
 	private requests: Requests;
 	private ordersModel: OrdersModel;
 	private guestsModel: GuestsModel;
+	private itemViewModel: ItemViewModel;
 
-	constructor(requests: Requests) {
+	constructor(requests: Requests, itemViewModel: ItemViewModel) {
 		super();
 		this.requests = requests;
 		this.ordersModel = new OrdersModel();
 		this.guestsModel = new GuestsModel();
+		this.itemViewModel = itemViewModel;
 	}
 
 	public synchronizeOrders(): Promise<void> {
@@ -28,7 +31,20 @@ export default class OrderViewModel extends Singleton {
 	}
 
 	get orders(): Order[] {
-		return this.ordersModel.orders;
+		return this.ordersModel.orders.map(order => {
+			const rawItems = Object.entries(order.items);
+			const allNamedItems: [string | undefined, number][] = rawItems.map(
+				([id, quantity]) => [
+					this.itemViewModel.getItemByID(id)?.name,
+					quantity,
+				]
+			);
+			const namedItems = allNamedItems.filter(
+				([name, _]) => name !== undefined
+			) as [string, number][];
+			const items = Object.fromEntries(namedItems);
+			return {...order, items};
+		});
 	}
 	get guests(): Guest[] {
 		return this.guestsModel.guests;
@@ -53,5 +69,9 @@ export default class OrderViewModel extends Singleton {
 
 	public updateOrderStatus(orderID: string, status: OrderStatus): void {
 		this.ordersModel.updateOrderStatus(orderID, status);
+	}
+
+	public deliver(orderID: string) {
+		return this.requests.delivered(orderID);
 	}
 }

@@ -39,6 +39,13 @@ export type WaiterIDO = {
 export type Location = {
 	x: number;
 	y: number;
+	mapID: string;
+};
+
+export type GuestIDO = {
+	id: string;
+	name: string;
+	phoneNumber: string;
 };
 
 type Token = string;
@@ -46,7 +53,7 @@ type Token = string;
 interface GuestAPI {
 	// Guest
 	login(password: string): Promise<string>;
-	getItemsGuest: () => Promise<ItemIDO[]>;
+	getItems: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
 	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
 	getGuestOrder: () => Promise<OrderIDO>;
@@ -69,15 +76,15 @@ interface GuestNotificationHandler {
 		waiterId: WaiterID,
 		waiterLocation: Location
 	) => void;
-	orderStatusChange: (orderId: string, status: OrderStatus) => void;
+	changeOrderStatus: (orderId: string, status: OrderStatus) => void;
 }
 
 interface WaiterAPI {
 	login: (password: string) => Promise<void>;
-	getItemsWaiter: () => Promise<ItemIDO[]>;
+	getItems: () => Promise<ItemIDO[]>;
 	// getMaps: () => Promise<LocalizationDetailsIDO>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
-	//  getGuestDetails: (id: string) => Promise<GuestIDO>; // GuestIDO?
+	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
 	orderArrived: (orderId: OrderID) => Promise<void>;
 	orderOnTheWay: (orderId: OrderID) => Promise<void>;
 }
@@ -86,7 +93,7 @@ interface WaiterCommunication {
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;
-	updateOrderStatus(orderId: OrderID, status: OrderStatus): void;
+	changeOrderStatus(orderId: OrderID, status: OrderStatus): void;
 	assignedToOrder(order: OrderIDO): void;
 }
 
@@ -100,5 +107,3 @@ interface DashboardAPI {
 	cancelOrderAdmin: (orderId: OrderID) => Promise<void>;
 	changeOrderStatus: (orderId: string, newStatus: string) => Promise<void>;
 }
-
-interface ServerNotifications {}

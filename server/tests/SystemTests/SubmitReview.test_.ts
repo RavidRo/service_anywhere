@@ -5,6 +5,9 @@ import DashboardInterface from '../../Interface/DashboardInterface';
 import {AppDataSource} from '../../Data/data-source';
 import {getGuests} from '../../Data/Stores/GuestStore';
 import reset_all from '../../Data/test_ResetDatabase';
+import config from '../../config.json';
+
+const adminID = config['admin_id'];
 
 const createOrder = async ({index = 0, advance = true} = {}) => {
 	const guests = await getGuests();
@@ -18,7 +21,11 @@ const createOrder = async ({index = 0, advance = true} = {}) => {
 	);
 	const orderID = createOrderResponse.getData();
 	if (advance) {
-		await DashboardInterface.changeOrderStatus(orderID, 'ready to deliver');
+		await DashboardInterface.changeOrderStatus(
+			orderID,
+			'ready to deliver',
+			adminID
+		);
 	}
 
 	return {orderID, guestID, items};
@@ -35,7 +42,7 @@ beforeEach(async () => {
 
 test('submit review should fail when order status isnt delivered', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'on the way');
+	DashboardInterface.changeOrderStatus(orderID, 'on the way', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
@@ -46,7 +53,7 @@ test('submit review should fail when order status isnt delivered', async () => {
 
 test('submit review success when order status is delivered', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'delivered');
+	DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
@@ -57,7 +64,7 @@ test('submit review success when order status is delivered', async () => {
 
 test('submit review should fail when rating not in range 1-5', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'on the way');
+	DashboardInterface.changeOrderStatus(orderID, 'on the way', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
@@ -68,7 +75,7 @@ test('submit review should fail when rating not in range 1-5', async () => {
 
 test('submit review success for rating in range 1-5', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'delivered');
+	DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',

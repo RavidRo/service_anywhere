@@ -55,6 +55,9 @@ export async function getOrdersByWaiter(
 export async function getWaiter(waiterID: string) {
 	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
 	const waiter = await waiterRepository.findOne({
+		relations: {
+			orders: true,
+		},
 		where: {
 			id: waiterID,
 		},

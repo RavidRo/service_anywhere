@@ -1,12 +1,11 @@
 import {Location, OrderIDO} from '../../api';
 
-import {makeFail, makeGood, ResponseMsg} from '../Response';
+import {ResponseMsg} from '../Response';
 
 import {IOrder} from '../Logic/IOrder';
 import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
-import {logger} from 'server/Logger';
 
 function createOrder(
 	guestId: string,
@@ -15,16 +14,10 @@ function createOrder(
 	return WaiterOrder.createOrder(guestId, items);
 }
 
-function updateLocationGuest(
-	guestId: string,
-	mapID: string,
-	location: Location
-): void {
+function updateLocationGuest(guestId: string, location: Location): void {
 	getGuestOrder(guestId).then(orderResponse => {
 		orderResponse.ifGood(order => {
-			onOrder(order.id, (o: IOrder) =>
-				o.updateGuestLocation(mapID, location)
-			);
+			onOrder(order.id, (o: IOrder) => o.updateGuestLocation(location));
 		});
 	});
 }

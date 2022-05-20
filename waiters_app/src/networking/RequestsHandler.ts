@@ -42,7 +42,7 @@ class RequestsHandler {
 
 	private handleResponse<T>(response: AxiosResponse<T>, endPoint: string) {
 		const data = response.data;
-		console.info(`Response<<${endPoint}>,${response.status}>:`, data);
+		console.info(`Response<${endPoint} , ${response.status}>:`, data);
 		return data;
 	}
 
