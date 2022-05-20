@@ -13,8 +13,8 @@ export type OrderIDO = {
 	guestId: string;
 	items: Record<string, number>;
 	status: OrderStatus;
-	creationTime: Date;
-	completionTime: Date | undefined;
+	creationTime: Date | string | number;
+	completionTime: Date | undefined | string | number;
 };
 export type ItemIDO = {
 	id: string;
