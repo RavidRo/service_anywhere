@@ -5,21 +5,23 @@ import {observer} from 'mobx-react';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 import {OrderStatus} from '../../../api';
 import {StatusToNumber} from '../Status';
+import OrdersViewModel from '../viewModel/ordersViewModel';
 
 type waiterDialogViewControllerProps = {
 	waitersViewModel: WaitersViewModel;
+	ordersViewModel: OrdersViewModel;
 	orderId: string;
 	status: OrderStatus;
 	assignedWaiters: string[];
-	updateAssignedWaiters: (orderId: string, waiterIds: string[]) => void;
+	// updateAssignedWaiters: (orderId: string, waiterIds: string[]) => void;
 };
 function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	const {
 		waitersViewModel,
+		ordersViewModel,
 		orderId,
 		status,
 		assignedWaiters,
-		updateAssignedWaiters,
 	} = props;
 	const [open, setOpen] = React.useState(false);
 	// const [assignedWaiters, setAssignedWaiters] = React.useState<string[]>([]);
@@ -69,8 +71,10 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 		waitersViewModel
 			.assignWaiter(orderId, selectedWaiters)
 			.then(() => {
-				updateAssignedWaiters(orderId, selectedWaiters);
+				console.log('Selected waiters ', selectedWaiters);
+				ordersViewModel.updateAssignedWaiter(orderId, selectedWaiters);
 				handleClose();
+				return Promise.resolve();
 			})
 			.catch(_ => alert('Could not assign waiters to order'));
 	};

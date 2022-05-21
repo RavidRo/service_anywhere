@@ -33,7 +33,6 @@ export default class ordersModel {
 	}
 
 	get assignedWaiters(): assignedWaitersType {
-		console.info('Gettings assigned waiters');
 		return this._assignedWaiters;
 	}
 
@@ -70,7 +69,7 @@ export default class ordersModel {
 		this._orders.forEach(order => {
 			if (order.id === orderId) {
 				if (newStatus === 'delivered' || newStatus === 'canceled') {
-					order.completionTime = new Date(Date.now());
+					order.completionTime = new Date().toLocaleTimeString();
 				}
 				order.status = newStatus;
 			}

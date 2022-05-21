@@ -65,9 +65,16 @@ const OrdersViewController = (props: viewModelProps) => {
 		{
 			field: 'completionTime',
 			headerName: 'Completion Time',
-			type: 'date',
+			type: 'number',
 			editable: false,
 			flex: 1,
+			valueGetter: (params: GridValueGetterParams) => {
+				//(entry: (number | string)[])
+				// if (params.value !== undefined) return params.value.getDate();
+				// return '';
+				console.log(params.value);
+				return params.value;
+			},
 			renderCell: ExpandCellGrid,
 		},
 		{
@@ -121,14 +128,12 @@ const OrdersViewController = (props: viewModelProps) => {
 				return (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
+						ordersViewModel={ordersViewModel}
 						orderId={orderId}
 						status={renderProps.row.status}
 						assignedWaiters={ordersViewModel.getAssignedWaiters(
 							orderId
 						)}
-						updateAssignedWaiters={
-							ordersViewModel.updateAssignedWaiter
-						}
 					/>
 				);
 			},
