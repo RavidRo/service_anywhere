@@ -45,9 +45,11 @@ export default class ConnectViewModel {
 			console.info('Trying to connect with token ', this.model.token);
 			return Promise.all([
 				this.waitersViewModel.synchroniseWaiters(),
-				this.ordersViewModel
-					.synchroniseItems()
-					.then(() => this.ordersViewModel.synchroniseOrders()),
+				this.ordersViewModel.synchroniseItems(),
+				this.ordersViewModel.synchroniseOrders().then(() => {
+					console.info('Synchronising assigned waiters');
+					return this.ordersViewModel.synchroniseAssignedWaiters();
+				}),
 				new Promise<void>((resolve, reject) => {
 					this.connectionHandler.connect(
 						token,
@@ -59,7 +61,9 @@ export default class ConnectViewModel {
 					);
 				}),
 			])
-				.then(() => console.info('Finished synchrosing and connecting'))
+				.then(() =>
+					console.info('Finished synchronising and connecting')
+				)
 				.catch(() => alert('Error in synchronisation or connecting'));
 		} else {
 			return new Promise<void>((_, reject) => {

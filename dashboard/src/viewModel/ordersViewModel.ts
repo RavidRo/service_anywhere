@@ -61,6 +61,7 @@ export default class OrdersViewModel {
 			this.api
 				.getWaitersByOrder(order.id)
 				.then((waiterIds: string[]) => {
+					console.info('Synchronised assigned waiters ');
 					this.ordersModel.updateAssignedWaiters(order.id, waiterIds);
 				})
 				.catch((err: string) =>
