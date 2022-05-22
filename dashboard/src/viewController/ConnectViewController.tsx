@@ -31,17 +31,18 @@ const ConnectViewController = (props: Props) => {
 			.finally(() => setIsLoading(false));
 	};
 
-	const login = (password: string) => {
+	const login = (name: string, password: string) => {
 		return connectViewModel
-			.login(password)
+			.login(name, password)
 			.finally(() => setIsLoading(false));
 	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
+		const name: string = data.get('name')?.toString() || '';
 		const password: string = data.get('password')?.toString() || '';
-		login(password)
+		login(name, password)
 			.then(establishConnection)
 			.catch(() => alert("Can't login to server"));
 	};
