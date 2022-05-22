@@ -55,8 +55,8 @@ const mockAssignWaiter = jest.fn((_orderId: string, waiterId: string) => {
 	return mockListOfWaiters.filter(waiter => waiter.id === waiterId)[0]
 		.available;
 });
-const mockGetWaitersByOrder = jest.fn(
-	(_orderId: string) => mockListOfOrders[0]
+const mockGetWaitersByOrder = jest.fn((_orderId: string) =>
+	Promise.resolve(mockListOfOrders[0])
 );
 const mockChangeOrderStatus = jest.fn(
 	(_orderId: string, _status: string) => false
@@ -64,6 +64,7 @@ const mockChangeOrderStatus = jest.fn(
 const mockCancelOrder = jest.fn((_orderId: string) => true);
 const mockLogin = jest.fn((_password: string) => makePromise('token'));
 const mockGetItems = jest.fn(() => makePromise([]));
+
 jest.mock('../src/network/api', () => {
 	return jest.fn().mockImplementation(() => {
 		return {
@@ -93,9 +94,6 @@ jest.mock('../src/network/connectionHandler', () => {
 beforeEach(() => {
 	(Api as unknown as jest.Mock).mockClear();
 	(ConnectionHandler as unknown as jest.Mock).mockClear();
-
-	// (OrdersViewModel as unknown as jest.Mock).mockClear();
-	// (WaitersViewModel as unknown as jest.Mock).mockClear();
 });
 
 const getViewModel = (): ConnectViewModel => {
@@ -119,13 +117,6 @@ describe('Constructor', () => {
 		return ret.then(token => expect(token !== undefined));
 	});
 
-	// test('Login in server receive undefined', async () => {
-	// 	mockLogin.mockImplementation(_password => makePromise(undefined));
-	// 	const connectViewModel = getViewModel();
-	// 	const ret = connectViewModel.login('password');
-	// 	return ret.then(token => expect(token === undefined));
-	// });
-
 	test('connect websockets with token', async () => {
 		mockLogin.mockImplementation((_password: string) =>
 			makePromise('token')
@@ -145,6 +136,8 @@ describe('Constructor', () => {
 		await flushPromises();
 		expect(mockGetOrders).toHaveBeenCalled();
 		expect(mockGetWaiters).toHaveBeenCalled();
+		expect(mockGetItems).toHaveBeenCalled();
+		expect(mockGetWaitersByOrder).toHaveBeenCalled();
 	});
 
 	test('connect websockets without token', async () => {

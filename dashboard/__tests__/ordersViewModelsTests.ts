@@ -2,8 +2,22 @@ import {flushPromises, makePromise as mockMakePromise} from '../PromiseUtils';
 import OrderViewModel from '../src/viewModel/ordersViewModel';
 import Api from '../src/network/api';
 import ordersModel from '../src/model/ordersModel';
-import {OrderIDO, WaiterIDO} from '../../api';
+import {ItemIDO, OrderIDO, WaiterIDO} from '../../api';
 
+const mockListOfItems: ItemIDO[] = [
+	{
+		id: '57480f63-1361-45ee-9fab-46b8042464ce',
+		name: 'Banana',
+		preparationTime: 25,
+		price: 5.2,
+	},
+	{
+		id: 'b5b561b8-6ffc-49cf-825f-54eefeeb071d',
+		name: 'Bamba',
+		preparationTime: 5,
+		price: 8.9,
+	},
+];
 const mockListOfOrders: OrderIDO[] = [
 	{
 		id: '1',
@@ -55,6 +69,7 @@ const mockChangeOrderStatus = jest.fn((_orderId: string, _status: string) =>
 );
 const mockCancelOrder = jest.fn((_orderId: string) => true);
 
+const mockGetItems = jest.fn(() => Promise.resolve(mockListOfItems));
 jest.mock('../src/network/api', () => {
 	return jest.fn().mockImplementation(() => {
 		return {
@@ -64,6 +79,7 @@ jest.mock('../src/network/api', () => {
 			getWaitersByOrder: mockGetWaitersByOrder,
 			changeOrderStatus: mockChangeOrderStatus,
 			cancelOrder: mockCancelOrder,
+			getItems: mockGetItems,
 		};
 	});
 });
@@ -118,5 +134,41 @@ describe('Constructor', () => {
 		await flushPromises();
 		const _ = ordersViewModel.getOrders();
 		expect(mockGetOrders).toHaveBeenCalled();
+	});
+
+	test('synchronise items in model', async () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrderViewModel(model, new Api());
+		ordersViewModel.synchroniseItems();
+		await flushPromises();
+		const _ = ordersViewModel.getItems();
+		expect(mockGetItems).toHaveBeenCalled();
+	});
+
+	test('update waiters of order', async () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrderViewModel(model, new Api());
+		ordersViewModel.setOrders(mockListOfOrders);
+		ordersViewModel.updateAssignedWaiter(mockListOfOrders[0].id, [
+			mockListOfWaiters[0].id,
+		]);
+		await flushPromises();
+		expect(
+			ordersViewModel.getAssignedWaiters(mockListOfOrders[0].id)
+		).toEqual([mockListOfWaiters[0].id]);
+	});
+
+	test('update waiters of order to empty array', async () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrderViewModel(model, new Api());
+		ordersViewModel.setOrders(mockListOfOrders);
+		ordersViewModel.updateAssignedWaiter(mockListOfOrders[0].id, [
+			mockListOfWaiters[0].id,
+		]);
+		ordersViewModel.updateAssignedWaiter(mockListOfOrders[0].id, []);
+		await flushPromises();
+		expect(
+			ordersViewModel.getAssignedWaiters(mockListOfOrders[0].id)
+		).toEqual([]);
 	});
 });
