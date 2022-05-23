@@ -586,6 +586,35 @@ io.on('connection', function (socket: socketio.Socket) {
 				)
 		);
 	});
+	socket.on('locationError', (message: any) => {
+		checkInputs(
+			['errorMsg'],
+			message,
+			(msg: string) => {
+				socket.emit('Error', msg);
+				logger.info(
+					"A user tried to send an error regarding their location and didn't include an error message."
+				);
+			},
+			_status => {},
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					1,
+					(msg: string) => {
+						socket.emit('Error', msg);
+						logger.info(
+							"A user tried to send an error regarding their location but used an unmatched token"
+						);
+					},
+					_status => {},
+					(id: string) => {
+						//console.debug('location error: ', message);
+						NotificationInterface.locationError(id, message['errorMsg']);
+					}
+				)
+		);
+	});
 });
 
 //Dashboard

@@ -68,6 +68,7 @@ interface GuestAPI {
 
 interface guestCommunication {
 	updateGuestLocation: (guestLocation: Location) => void;
+	locationError: (errorMsg: string) => void;
 }
 
 // guests Notifications from server:
@@ -90,6 +91,7 @@ interface WaiterAPI {
 }
 interface WaiterCommunication {
 	updateWaiterLocation: (waiterLocation: Location) => void;
+	locationError: (errorMsg: string) => void;
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;
