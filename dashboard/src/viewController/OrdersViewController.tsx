@@ -61,23 +61,23 @@ const OrdersViewController = (props: viewModelProps) => {
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				console.log(typeof params.value);
-				return params.value;
+				// console.log(typeof new Date(params.value));
+				return new Date(params.value).toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'completionTime',
 			headerName: 'Completion Time',
-			type: 'number',
+			type: 'date',
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				//(entry: (number | string)[])
-				// if (params.value !== undefined) return params.value.getDate();
-				// return '';
-				console.log(params.value);
-				return params.value;
+				// (entry: (number | string)[])
+				if (params.value !== undefined)
+					return new Date(params.value).toLocaleTimeString();
+				return '';
+				// return params.value?.toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,
 		},
