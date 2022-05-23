@@ -14,7 +14,7 @@ export type OrderIDO = {
 	items: Record<string, number>;
 	status: OrderStatus;
 	creationTime: Date;
-	completionTime: Date | undefined | string | number;
+	completionTime: Date | undefined;
 };
 export type ItemIDO = {
 	id: string;
