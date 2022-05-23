@@ -141,8 +141,8 @@ describe('Constructor', () => {
 		const ordersViewModel = new OrderViewModel(model, new Api());
 		ordersViewModel.synchroniseItems();
 		await flushPromises();
-		const _ = ordersViewModel.getItems();
-		expect(mockGetItems).toHaveBeenCalled();
+		const items = ordersViewModel.getItems();
+		expect(items).toEqual(mockListOfItems);
 	});
 
 	test('update waiters of order', async () => {
