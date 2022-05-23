@@ -34,6 +34,7 @@ function submitReview(
 	orderId;
 	details;
 	rating;
+	onOrder(orderId, (o: IOrder) => o.giveFeedback(details, rating))
 	throw new Error('Method not implemented');
 }
 
