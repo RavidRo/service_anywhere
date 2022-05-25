@@ -117,7 +117,7 @@ describe('Constructor', () => {
 
 	test('Login in server receive token', async () => {
 		const connectViewModel = getViewModel();
-		const ret = connectViewModel.login('password');
+		const ret = connectViewModel.login('', 'password');
 		return ret.then(token => expect(token !== undefined));
 	});
 
@@ -134,7 +134,7 @@ describe('Constructor', () => {
 			orderViewModel,
 			waitersViewModel
 		);
-		viewModel.login('Asd');
+		viewModel.login('Asd', 'Asd');
 		await flushPromises();
 		viewModel.connect();
 		await flushPromises();
@@ -155,7 +155,7 @@ describe('Constructor', () => {
 			orderViewModel,
 			waitersViewModel
 		);
-		viewModel.login('Asd');
+		viewModel.login('asd', 'Asd');
 		await flushPromises();
 		return viewModel.connect().catch(r => expect(r).toBeTruthy());
 	});
@@ -174,7 +174,7 @@ describe('Constructor', () => {
 			orderViewModel,
 			waitersViewModel
 		);
-		viewModel.login('Asd');
+		viewModel.login('asd', 'Asd');
 		await flushPromises();
 		return viewModel.connect().catch(r => expect(r).toBeTruthy());
 	});

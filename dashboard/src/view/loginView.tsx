@@ -44,6 +44,16 @@ function Login(props: loginProps) {
 							margin='normal'
 							required
 							fullWidth
+							id='name'
+							label='name'
+							name='name'
+							autoComplete='name'
+							autoFocus
+						/>
+						<TextField
+							margin='normal'
+							required
+							fullWidth
 							name='password'
 							label='Password'
 							type='password'
