@@ -43,29 +43,25 @@ export default class ConnectViewModel {
 
 		if (token !== undefined) {
 			console.info('Trying to connect with token ', this.model.token);
-			return this.ordersViewModel.synchroniseOrders().then(() =>
-				Promise.all([
-					this.waitersViewModel.synchroniseWaiters(),
-					this.ordersViewModel.synchroniseItems(),
-					this.ordersViewModel.synchroniseAssignedWaiters(),
-					new Promise<void>((resolve, reject) => {
-						this.connectionHandler.connect(
-							token,
-							() => resolve(),
-							() =>
-								reject(
-									'Could not connect to server, please try again later'
-								)
-						);
-					}),
-				])
-					.then(() =>
-						console.info('Finished synchronising and connecting')
-					)
-					.catch(() =>
-						alert('Error in synchronisation or connecting')
-					)
-			);
+			return Promise.all([
+				this.waitersViewModel.synchroniseWaiters(),
+				this.ordersViewModel.synchroniseItems(),
+				this.ordersViewModel.synchroniseOrders(),
+				new Promise<void>((resolve, reject) => {
+					this.connectionHandler.connect(
+						token,
+						() => resolve(),
+						() =>
+							reject(
+								'Could not connect to server, please try again later'
+							)
+					);
+				}),
+			])
+				.then(() =>
+					console.info('Finished synchronising and connecting')
+				)
+				.catch(() => alert('Error in synchronisation or connecting'));
 		} else {
 			return new Promise<void>((_, reject) => {
 				reject(

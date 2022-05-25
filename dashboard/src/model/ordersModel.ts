@@ -54,15 +54,15 @@ export default class ordersModel {
 				waiterIds: waiterIds,
 			});
 		}
-		const assigned = this._assignedWaiters;
-		this.assignedWaiters = assigned;
+		// const assigned = this._assignedWaiters;
+		// this.assignedWaiters = assigned;
 	}
 
 	addOrder(order: OrderIDO) {
 		console.log('Adding a new order', order);
 		this._orders.push(order);
-		const orders = this._orders;
-		this.orders = orders;
+		// const orders = this._orders;
+		// this.orders = orders;
 	}
 
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
@@ -75,8 +75,8 @@ export default class ordersModel {
 			}
 		});
 
-		const orders = this._orders;
-		this.orders = orders;
+		// const orders = this._orders;
+		// this.orders = orders;
 		console.log(this.orders);
 	}
 }
