@@ -132,8 +132,12 @@ const OrdersViewController = (props: viewModelProps) => {
 				return (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
+						ordersViewModel={ordersViewModel}
 						orderId={orderId}
 						status={renderProps.row.status}
+						assignedWaiters={ordersViewModel.getAssignedWaiters(
+							orderId
+						)}
 					/>
 				);
 			},
