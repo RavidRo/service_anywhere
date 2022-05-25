@@ -73,7 +73,7 @@ export default class OrdersViewModel {
 			)
 		);
 	}
-
+	//asd
 	synchroniseOrders(): Promise<void | void[]> {
 		return this.api
 			.getOrders()
