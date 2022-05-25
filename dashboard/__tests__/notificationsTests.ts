@@ -35,6 +35,9 @@ const mockWarn = jest.fn();
 beforeEach(() => {
 	(mockWarn as unknown as jest.Mock).mockClear();
 	jest.spyOn(console, 'warn').mockImplementation(mockWarn);
+
+	jest.spyOn(console, 'info').mockImplementation(jest.fn());
+	jest.spyOn(console, 'log').mockImplementation(jest.fn());
 });
 
 describe('update orders', () => {

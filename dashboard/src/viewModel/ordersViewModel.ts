@@ -34,14 +34,6 @@ export default class OrdersViewModel {
 	}
 
 	updateAssignedWaiter(orderId: string, waiterIds: string[]) {
-		// this.api
-		// 	.getWaitersByOrder(orderId)
-		// 	.then((waiterIds: string[]) => {
-		// 		this.ordersModel.updateAssignedWaiters(orderId, waiterIds);
-		// 	})
-		// 	.catch((err: string) =>
-		// 		alert('Could not find waiter by order ' + err)
-		// 	);
 		console.info('Updating orderId: ' + orderId, 'waiters ' + waiterIds);
 		try {
 			this.ordersModel.updateAssignedWaiters(orderId, waiterIds);
@@ -63,26 +55,32 @@ export default class OrdersViewModel {
 		return [];
 	}
 
-	synchroniseAssignedWaiters(): void {
-		this.ordersModel.orders.map((order: OrderIDO) =>
-			this.api
-				.getWaitersByOrder(order.id)
-				.then((waiterIds: string[]) => {
-					console.info('Synchronised assigned waiters ');
-					this.ordersModel.updateAssignedWaiters(order.id, waiterIds);
-				})
-				.catch((err: string) =>
-					alert('Could not find waiter by order ' + err)
-				)
+	synchroniseAssignedWaiters(): Promise<void[]> {
+		return Promise.all(
+			this.ordersModel.orders.map((order: OrderIDO) =>
+				this.api
+					.getWaitersByOrder(order.id)
+					.then((waiterIds: string[]) => {
+						console.info('Synchronised assigned waiters ');
+						this.ordersModel.updateAssignedWaiters(
+							order.id,
+							waiterIds
+						);
+					})
+					.catch((err: string) =>
+						alert('Could not find waiter by order ' + err)
+					)
+			)
 		);
 	}
 
-	synchroniseOrders(): Promise<void> {
+	synchroniseOrders(): Promise<void | void[]> {
 		return this.api
 			.getOrders()
 			.then(orders => {
 				console.info('Synchronized orders');
 				this.ordersModel.orders = orders;
+				return this.synchroniseAssignedWaiters();
 			})
 			.catch(err =>
 				alert('Could not get orders please reload, Error: ' + err)
