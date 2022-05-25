@@ -74,7 +74,6 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 				console.log('Selected waiters ', selectedWaiters);
 				ordersViewModel.updateAssignedWaiter(orderId, selectedWaiters);
 				handleClose();
-				return Promise.resolve();
 			})
 			.catch(_ => alert('Could not assign waiters to order'));
 	};
