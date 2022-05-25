@@ -80,8 +80,8 @@ export default class OrdersViewModel {
 			.then(orders => {
 				console.info('Synchronized orders');
 				this.ordersModel.orders = orders;
+				return this.synchroniseAssignedWaiters();
 			})
-			.then(_ => this.synchroniseAssignedWaiters())
 			.catch(err =>
 				alert('Could not get orders please reload, Error: ' + err)
 			);
