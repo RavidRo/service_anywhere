@@ -60,6 +60,10 @@ const OrdersViewController = (props: viewModelProps) => {
 			type: 'date',
 			editable: false,
 			flex: 1,
+			valueGetter: (params: GridValueGetterParams) => {
+				// console.log(typeof new Date(params.value));
+				return new Date(params.value).toLocaleTimeString();
+			},
 			renderCell: ExpandCellGrid,
 		},
 		{
@@ -68,6 +72,13 @@ const OrdersViewController = (props: viewModelProps) => {
 			type: 'date',
 			editable: false,
 			flex: 1,
+			valueGetter: (params: GridValueGetterParams) => {
+				// (entry: (number | string)[])
+				if (params.value !== undefined)
+					return new Date(params.value).toLocaleTimeString();
+				return '';
+				// return params.value?.toLocaleTimeString();
+			},
 			renderCell: ExpandCellGrid,
 		},
 		{
