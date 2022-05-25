@@ -94,6 +94,10 @@ jest.mock('../src/network/connectionHandler', () => {
 beforeEach(() => {
 	(Api as unknown as jest.Mock).mockClear();
 	(ConnectionHandler as unknown as jest.Mock).mockClear();
+
+	jest.spyOn(console, 'info').mockImplementation(jest.fn());
+	jest.spyOn(console, 'log').mockImplementation(jest.fn());
+	jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 });
 
 const getViewModel = (): ConnectViewModel => {
