@@ -5,6 +5,6 @@ export async function getDetails(
 	username: string,
 ): Promise<UserCredentials | null> {
 	return await AppDataSource.manager.findOneBy(UserCredentials, {
-		username,
+		username: username,
 	});
 }

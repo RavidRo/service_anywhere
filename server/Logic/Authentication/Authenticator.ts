@@ -13,6 +13,7 @@ interface TokenPayload {
 
 async function login(username: string, password: string): Promise<ResponseMsg<string>> {
 	const UserCredentials = await AuthenticatorChecker.getDetails(username);
+	console.debug(UserCredentials)
 	if (!UserCredentials || UserCredentials.password !== password) {
 		return makeFail(
 			'No matched password was found',
