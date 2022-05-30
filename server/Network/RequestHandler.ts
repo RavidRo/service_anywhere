@@ -1,4 +1,5 @@
 require('dotenv').config();
+import config from 'server/config.json';
 
 import express from 'express';
 import * as socketio from 'socket.io';
@@ -133,6 +134,10 @@ app.post('/login', (req, res) => {
 				});
 		}
 	);
+});
+
+app.get('/getMaps', (_req, res) => {
+	res.send(config['maps'])
 });
 
 //Guest
