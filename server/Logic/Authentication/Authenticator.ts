@@ -11,9 +11,9 @@ interface TokenPayload {
 	userId: string;
 }
 
-async function login(password: string): Promise<ResponseMsg<string>> {
-	const UserCredentials = await AuthenticatorChecker.getDetails(password);
-	if (!UserCredentials) {
+async function login(username: string, password: string): Promise<ResponseMsg<string>> {
+	const UserCredentials = await AuthenticatorChecker.getDetails(username);
+	if (!UserCredentials || UserCredentials.password !== password) {
 		return makeFail(
 			'No matched password was found',
 			unauthorizedStatusCode

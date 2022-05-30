@@ -25,20 +25,19 @@ function getItems() {
 	item1.preparationTime = 5;
 
 	const item2 = new ItemDAO();
-	item2.name = 'Banana';
+	item2.name = 'Cookie';
 	item2.price = 5.2;
 	item2.preparationTime = 25;
-
 	return [item1, item2];
 }
 
 function getWaiters() {
 	const waiter1 = new WaiterDAO();
-	waiter1.name = 'Omer';
+	waiter1.username = 'Omer';
 	waiter1.orders = [];
 
 	const waiter2 = new WaiterDAO();
-	waiter2.name = 'Tommer';
+	waiter2.username = 'Tommer';
 	waiter2.orders = [];
 
 	return [waiter1, waiter2];
@@ -46,12 +45,12 @@ function getWaiters() {
 
 function getGuests() {
 	const guest1 = new GuestDAO();
-	guest1.name = 'Aviv';
+	guest1.username = 'aviv';
 	guest1.phoneNumber = '054-7828466';
 	guest1.orders = [];
 
 	const guest2 = new GuestDAO();
-	guest2.name = 'Ravid';
+	guest2.username = 'Ravid';
 	guest2.phoneNumber = '052-7599544';
 	guest2.orders = [];
 
@@ -78,6 +77,7 @@ async function getUsersCredentials() {
 	const guestCredentials = guests.map(guest => {
 		const credentialsGuest = new UserCredentials();
 		credentialsGuest.id = guest.id;
+		credentialsGuest.username = guest.username;
 		credentialsGuest.password = '1234';
 		credentialsGuest.permissionLevel = 1;
 		return credentialsGuest;
@@ -86,6 +86,7 @@ async function getUsersCredentials() {
 	const waiterCredentials = waiters.map(waiter => {
 		const credentialsWaiter = new UserCredentials();
 		credentialsWaiter.id = waiter.id;
+		credentialsWaiter.username = waiter.username;
 		credentialsWaiter.password = '5678';
 		credentialsWaiter.permissionLevel = 2;
 		return credentialsWaiter;
@@ -93,6 +94,7 @@ async function getUsersCredentials() {
 
 	const adminCredentials = new UserCredentials();
 	adminCredentials.id = config.admin_id;
+	adminCredentials.username = 'dashboard'
 	adminCredentials.password = '9999';
 	adminCredentials.permissionLevel = 3;
 

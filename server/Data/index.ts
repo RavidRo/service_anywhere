@@ -7,7 +7,7 @@ AppDataSource.initialize()
 	.then(async () => {
 		console.log('Inserting a new user into the database...');
 		const user = new GuestDAO();
-		user.name = 'Bob';
+		user.username = 'Bob';
 		user.phoneNumber = '0527599544';
 		const guestRepository = AppDataSource.getRepository(GuestDAO);
 		guestRepository.find();

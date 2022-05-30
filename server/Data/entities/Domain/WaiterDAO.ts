@@ -15,7 +15,7 @@ export class WaiterDAO extends BaseEntity {
 	id: string;
 
 	@Column()
-	name: string;
+	username: string;
 
 	@ManyToMany(() => OrderDAO, order => order.waiters)
 	@JoinTable()
@@ -26,6 +26,6 @@ export class WaiterDAO extends BaseEntity {
 	}
 
 	getDetails(): WaiterIDO {
-		return {available: this.available, id: this.id, name: this.name};
+		return {available: this.available, id: this.id, username: this.username};
 	}
 }

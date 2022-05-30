@@ -100,16 +100,16 @@ function checkInputs(
 
 app.post('/login', (req, res) => {
 	checkInputs(
-		['password'],
+		['password', 'username'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
-			logger.info('A user tried to log in without a password');
+			logger.info('A user tried to log in without a password or username');
 		},
 		status => res.status(status),
 		() => {
 			authenticator
-				.login(req.body['password'])
+				.login(req.body['username'], req.body['password'])
 				.then(response => {
 					sendResponse(
 						response,

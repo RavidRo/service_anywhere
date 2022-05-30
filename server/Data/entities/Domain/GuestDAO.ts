@@ -16,7 +16,7 @@ export class GuestDAO extends BaseEntity {
 	phoneNumber: string;
 
 	@Column()
-	name: string;
+	username: string;
 
 	@OneToMany(() => OrderDAO, order => order.guest)
 	orders: OrderDAO[];
