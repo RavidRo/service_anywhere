@@ -38,8 +38,8 @@ function getGuestsDetails(ids: string[]): Promise<GuestIDO[]> {
 	return getDetails(ids);
 }
 
-function locationErrorWaiter(errorMsg: string){
-	WaiterOrder.locationErrorWaiter(errorMsg)
+function locationErrorWaiter(errorMsg: string) {
+	WaiterOrder.locationErrorWaiter(errorMsg);
 }
 
 export default {
@@ -49,5 +49,5 @@ export default {
 	orderOnTheWay,
 	getWaiterName,
 	getGuestsDetails,
-	locationErrorWaiter
+	locationErrorWaiter,
 };

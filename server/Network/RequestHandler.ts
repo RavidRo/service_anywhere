@@ -618,7 +618,10 @@ io.on('connection', function (socket: socketio.Socket) {
 					},
 					_status => {},
 					(id: string) => {
-						GuestInterface.locationErrorGuest(id, message['errorMsg']);
+						GuestInterface.locationErrorGuest(
+							id,
+							message['errorMsg']
+						);
 					}
 				)
 		);
@@ -641,12 +644,14 @@ io.on('connection', function (socket: socketio.Socket) {
 					(msg: string) => {
 						socket.emit('Error', msg);
 						logger.info(
-							"A user tried to send an error regarding their location but used an unmatched token"
+							'A user tried to send an error regarding their location but used an unmatched token'
 						);
 					},
 					_status => {},
 					(_id: string) => {
-						WaiterInterface.locationErrorWaiter(message['errorMsg']);
+						WaiterInterface.locationErrorWaiter(
+							message['errorMsg']
+						);
 					}
 				)
 		);

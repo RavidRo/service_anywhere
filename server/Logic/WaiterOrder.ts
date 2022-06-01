@@ -10,7 +10,7 @@ import {onOrder, getGuestActiveOrder} from './Orders';
 import {OrderNotifier} from './OrderNotifier';
 
 import config from '../config.json';
-import { NotificationFacade } from './Notification/NotificationFacade';
+import {NotificationFacade} from './Notification/NotificationFacade';
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
@@ -165,18 +165,20 @@ async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
 }
 
 export function locationErrorGuest(orderId: string, errorMsg: string) {
-	const facade = new NotificationFacade()	
-	facade.notifyError(config.admin_id, errorMsg)
-	getWaiterByOrder(orderId).then(response => response.ifGood(waiters =>
-		waiters.forEach(waiter => {
-			facade.notifyError(waiter, errorMsg)
-		})
-	))
+	const facade = new NotificationFacade();
+	facade.notifyError(config.admin_id, errorMsg);
+	getWaiterByOrder(orderId).then(response =>
+		response.ifGood(waiters =>
+			waiters.forEach(waiter => {
+				facade.notifyError(waiter, errorMsg);
+			})
+		)
+	);
 }
 
 export function locationErrorWaiter(errorMsg: string) {
-	const facade = new NotificationFacade()	
-	facade.notifyError(config.admin_id, errorMsg)
+	const facade = new NotificationFacade();
+	facade.notifyError(config.admin_id, errorMsg);
 }
 
 export default {
@@ -190,5 +192,5 @@ export default {
 	changeOrderStatus,
 	getWaiterName,
 	locationErrorGuest,
-	locationErrorWaiter
+	locationErrorWaiter,
 };

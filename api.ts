@@ -24,9 +24,9 @@ export type ItemIDO = {
 };
 
 export type ReviewIDO = {
-	details: string,
-	rating: number
-}
+	details: string;
+	rating: number;
+};
 
 type WaiterID = string;
 export type WaiterIDO = {
@@ -42,20 +42,20 @@ export type WaiterIDO = {
 // };
 
 export type GPS = {
-    longitude: number;
-    latitude: number;
+	longitude: number;
+	latitude: number;
 };
 export type Corners = {
-    topRightGPS: GPS;
-    topLeftGPS: GPS;
-    bottomRightGPS: GPS;
-    bottomLeftGPS: GPS;
+	topRightGPS: GPS;
+	topLeftGPS: GPS;
+	bottomRightGPS: GPS;
+	bottomLeftGPS: GPS;
 };
 export type MapIDO = {
-    id: string;
-    name: string;
-    corners: Corners;
-    imageURL: string;
+	id: string;
+	name: string;
+	corners: Corners;
+	imageURL: string;
 };
 
 export type Location = {
