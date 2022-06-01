@@ -1,6 +1,6 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
-import {ItemIDO, OrderIDO, OrderStatus} from '../../../api';
+import {ItemIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../../api';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -35,11 +35,16 @@ export default class OrdersViewModel {
 
 	updateAssignedWaiter(orderId: string, waiterIds: string[]) {
 		console.info('Updating orderId: ' + orderId, 'waiters ' + waiterIds);
-		try {
-			this.ordersModel.updateAssignedWaiters(orderId, waiterIds);
-		} catch (error) {
-			console.log('Updating', error);
-		}
+		this.ordersModel.updateAssignedWaiters(orderId, waiterIds);
+	}
+
+	getReview(orderId: string): ReviewIDO | undefined {
+		return this.ordersModel.reviews.find(entry => entry.orderId === orderId)
+			?.review;
+	}
+
+	addReview(orderId: string, review: ReviewIDO): void {
+		this.ordersModel.addReview(orderId, review);
 	}
 
 	getAssignedWaiters(orderId: string): string[] {
@@ -73,7 +78,7 @@ export default class OrdersViewModel {
 			)
 		);
 	}
-	//asd
+
 	synchroniseOrders(): Promise<void | void[]> {
 		return this.api
 			.getOrders()
@@ -107,11 +112,13 @@ export default class OrdersViewModel {
 			);
 	}
 	changeOrderStatusNotification(orderId: string, newStatus: OrderStatus) {
+		console.log(orderId, newStatus);
 		if (
 			newStatus !== 'assigned' &&
 			newStatus !== 'on the way' &&
 			newStatus !== 'delivered'
 		) {
+			console.log('Changing assigned waiters');
 			this.ordersModel.updateAssignedWaiters(orderId, []);
 		}
 		this.ordersModel.changeOrderStatus(orderId, newStatus);

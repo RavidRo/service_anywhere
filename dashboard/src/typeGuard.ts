@@ -1,4 +1,4 @@
-import {WaiterIDO, OrderIDO, OrderStatus} from '../../api';
+import {WaiterIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../api';
 
 export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 	console.log('Received ' + waiter);
@@ -27,6 +27,18 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 		(order as OrderIDO).id !== undefined &&
 		(order as OrderIDO).items !== undefined &&
 		(order as OrderIDO).status !== undefined
+	);
+}
+
+type orderReview = {orderId: string; review: ReviewIDO};
+export function isReview(review: object): review is orderReview {
+	console.log('is Review: ', review);
+	if (!review) {
+		return false;
+	}
+	return (
+		(review as orderReview).orderId !== undefined &&
+		(review as orderReview).review !== undefined
 	);
 }
 

@@ -16,6 +16,7 @@ import {
 } from '@mui/x-data-grid';
 import {observer} from 'mobx-react';
 import {Divider} from '@mui/material';
+import ReviewViewController from './reviewViewController';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
@@ -129,7 +130,7 @@ const OrdersViewController = (props: viewModelProps) => {
 			flex: 1.5,
 			renderCell: (renderProps: GridRenderCellParams) => {
 				const orderId = renderProps.row.id;
-				return (
+				return renderProps.row.status !== 'delivered' ? (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
 						ordersViewModel={ordersViewModel}
@@ -138,6 +139,11 @@ const OrdersViewController = (props: viewModelProps) => {
 						assignedWaiters={ordersViewModel.getAssignedWaiters(
 							orderId
 						)}
+					/>
+				) : (
+					<ReviewViewController
+						ordersViewModel={ordersViewModel}
+						orderId={orderId}
 					/>
 				);
 			},

@@ -30,6 +30,10 @@ export type WaiterIDO = {
 	available: boolean;
 };
 
+export type ReviewIDO = {
+	details: string;
+	rating: number;
+};
 // export type WaiterDAO = {
 // 	id: string;
 // 	name: string;

@@ -1,17 +1,29 @@
 import {makeAutoObservable} from 'mobx';
-import {ItemIDO, OrderIDO, OrderStatus} from '../../../api';
+import {ItemIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../../api';
 
 export type assignedWaitersType = {orderId: string; waiterIds: string[]}[];
+export type orderReviews = {orderId: string; review: ReviewIDO}[];
 
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
 	_assignedWaiters: assignedWaitersType = [];
+	_reviews: orderReviews = [];
 
 	constructor() {
 		console.log('Starting the order model');
 		makeAutoObservable(this);
 	}
+
+	set reviews(orderReviews: orderReviews) {
+		console.info('setting review to ', orderReviews);
+		this._reviews = orderReviews;
+	}
+
+	get reviews(): orderReviews {
+		return this._reviews;
+	}
+
 	set orders(orders: OrderIDO[]) {
 		console.info('Setting orders to ', orders);
 		this._orders = orders;
@@ -41,6 +53,11 @@ export default class ordersModel {
 		this._assignedWaiters = assignedWaiters;
 	}
 
+	addReview(orderId: string, review: ReviewIDO): void {
+		console.info('Updating reviews with ', orderId, review);
+		this._reviews.push({orderId: orderId, review: review});
+	}
+
 	updateAssignedWaiters(orderId: string, waiterIds: string[]): void {
 		console.info('Updating assigned waiters with ', orderId, waiterIds);
 		const assignedWaiterObject = this._assignedWaiters.find(
@@ -54,15 +71,11 @@ export default class ordersModel {
 				waiterIds: waiterIds,
 			});
 		}
-		// const assigned = this._assignedWaiters;
-		// this.assignedWaiters = assigned;
 	}
 
 	addOrder(order: OrderIDO) {
 		console.log('Adding a new order', order);
 		this._orders.push(order);
-		// const orders = this._orders;
-		// this.orders = orders;
 	}
 
 	changeOrderStatus(orderId: string, newStatus: OrderStatus) {

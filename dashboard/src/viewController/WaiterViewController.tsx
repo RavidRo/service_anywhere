@@ -24,27 +24,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 		assignedWaiters,
 	} = props;
 	const [open, setOpen] = React.useState(false);
-	// const [assignedWaiters, setAssignedWaiters] = React.useState<string[]>([]);
 	const [selectedWaiters, setSelectedWaiters] = React.useState<string[]>([]);
-
-	// React.useEffect(() => {
-	// 	let mounted = true;
-
-	// 	waitersViewModel
-	// 		.getWaitersByOrder(orderId)
-	// 		.then((waiterIds: string[]) => {
-	// 			if (mounted) {
-	// 				setAssignedWaiters(waiterIds);
-	// 			}
-	// 		})
-	// 		.catch((err: string) =>
-	// 			alert('Could not find waiter by order ' + err)
-	// 		);
-	// 	return () => {
-	// 		mounted = false;
-	// 	};
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -68,6 +48,10 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	};
 
 	const handleOk = () => {
+		if (selectedWaiters.length === 0) {
+			handleClose();
+			return;
+		}
 		waitersViewModel
 			.assignWaiter(orderId, selectedWaiters)
 			.then(() => {
