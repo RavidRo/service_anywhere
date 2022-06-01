@@ -1,5 +1,17 @@
 {
 	"admin_id": "id-of-admin",
 	"admin_name": "dashboard",
-	"maps": "https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png"
+	"maps": [
+		{
+			"id": 1,
+			"name": "Bet HaStudent",
+			"imageURL": "https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png",
+			"corners": {
+				"bottomRightGps": {"longitude": 34.802516, "latitude": 31.261649},
+				"bottomLeftGps": {"longitude": 34.800838, "latitude": 31.261649},
+				"topRightGps": {"longitude": 34.802516, "latitude": 31.26355},
+				"topLeftGps": {"longitude": 34.800838, "latitude": 31.26355}
+			}
+		}
+	]
 }

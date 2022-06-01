@@ -77,7 +77,7 @@ interface GuestAPI {
 	login(password: string): Promise<string>;
 	getItems: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
-	getMaps: () => Promise<string>;
+	getMaps: () => Promise<MapIDO[]>;
 	getGuestOrder: () => Promise<OrderIDO>;
 	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
@@ -105,7 +105,7 @@ interface GuestNotificationHandler {
 interface WaiterAPI {
 	login: (password: string) => Promise<void>;
 	getItems: () => Promise<ItemIDO[]>;
-	getMaps: () => Promise<string>;
+	getMaps: () => Promise<MapIDO[]>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
 	orderArrived: (orderId: OrderID) => Promise<void>;
