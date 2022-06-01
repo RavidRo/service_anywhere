@@ -23,6 +23,11 @@ export type ItemIDO = {
 	preparationTime: number;
 };
 
+export type ReviewIDO = {
+	details: string,
+	rating: number
+}
+
 type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
@@ -35,6 +40,23 @@ export type WaiterIDO = {
 // 	name: string;
 // 	orders: OrderDAO[];
 // };
+
+export type GPS = {
+    longitude: number;
+    latitude: number;
+};
+export type Corners = {
+    topRightGPS: GPS;
+    topLeftGPS: GPS;
+    bottomRightGPS: GPS;
+    bottomLeftGPS: GPS;
+};
+export type MapIDO = {
+    id: string;
+    name: string;
+    corners: Corners;
+    imageURL: string;
+};
 
 export type Location = {
 	x: number;
@@ -68,7 +90,7 @@ interface GuestAPI {
 
 interface guestCommunication {
 	updateGuestLocation: (guestLocation: Location) => void;
-	locationError: (errorMsg: string) => void;
+	locationErrorGuest: (errorMsg: string) => void;
 }
 
 // guests Notifications from server:
@@ -91,7 +113,7 @@ interface WaiterAPI {
 }
 interface WaiterCommunication {
 	updateWaiterLocation: (waiterLocation: Location) => void;
-	locationError: (errorMsg: string) => void;
+	locationErrorWaiter: (errorMsg: string) => void;
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;

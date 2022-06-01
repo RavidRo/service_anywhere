@@ -1,4 +1,5 @@
 {
 	"admin_id": "id-of-admin",
+	"admin_name": "dashboard",
 	"maps": "https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png"
 }

@@ -27,6 +27,8 @@ app.use(cors({origin: '*', credentials: true}));
 
 import * as http from 'http';
 import * as socketIO from 'socket.io';
+import GuestInterface from '../Interface/GuestInterface';
+import WaiterInterface from '../Interface/WaiterInterface';
 
 const httpServer = new http.Server(app);
 const io = new socketIO.Server(httpServer, {
@@ -591,7 +593,7 @@ io.on('connection', function (socket: socketio.Socket) {
 				)
 		);
 	});
-	socket.on('locationError', (message: any) => {
+	socket.on('locationErrorGuest', (message: any) => {
 		checkInputs(
 			['errorMsg'],
 			message,
@@ -614,8 +616,35 @@ io.on('connection', function (socket: socketio.Socket) {
 					},
 					_status => {},
 					(id: string) => {
-						//console.debug('location error: ', message);
-						NotificationInterface.locationError(id, message['errorMsg']);
+						GuestInterface.locationErrorGuest(id, message['errorMsg']);
+					}
+				)
+		);
+	});
+	socket.on('locationErrorWaiter', (message: any) => {
+		checkInputs(
+			['errorMsg'],
+			message,
+			(msg: string) => {
+				socket.emit('Error', msg);
+				logger.info(
+					"A user tried to send an error regarding their location and didn't include an error message."
+				);
+			},
+			_status => {},
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					2,
+					(msg: string) => {
+						socket.emit('Error', msg);
+						logger.info(
+							"A user tried to send an error regarding their location but used an unmatched token"
+						);
+					},
+					_status => {},
+					(_id: string) => {
+						WaiterInterface.locationErrorWaiter(message['errorMsg']);
 					}
 				)
 		);
