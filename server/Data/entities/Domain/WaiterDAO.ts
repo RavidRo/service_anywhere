@@ -26,6 +26,10 @@ export class WaiterDAO extends BaseEntity {
 	}
 
 	getDetails(): WaiterIDO {
-		return {available: this.available, id: this.id, username: this.username};
+		return {
+			available: this.available,
+			id: this.id,
+			username: this.username,
+		};
 	}
 }

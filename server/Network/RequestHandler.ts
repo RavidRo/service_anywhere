@@ -105,7 +105,9 @@ app.post('/login', (req, res) => {
 		req.body,
 		(msg: string) => {
 			res.send(msg);
-			logger.info('A user tried to log in without a password or username');
+			logger.info(
+				'A user tried to log in without a password or username'
+			);
 		},
 		status => res.status(status),
 		() => {
@@ -137,7 +139,7 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/getMaps', (_req, res) => {
-	res.send(config['maps'])
+	res.send(config['maps']);
 });
 
 //Guest
@@ -609,13 +611,16 @@ io.on('connection', function (socket: socketio.Socket) {
 					(msg: string) => {
 						socket.emit('Error', msg);
 						logger.info(
-							"A user tried to send an error regarding their location but used an unmatched token"
+							'A user tried to send an error regarding their location but used an unmatched token'
 						);
 					},
 					_status => {},
 					(id: string) => {
 						//console.debug('location error: ', message);
-						NotificationInterface.locationError(id, message['errorMsg']);
+						NotificationInterface.locationError(
+							id,
+							message['errorMsg']
+						);
 					}
 				)
 		);
