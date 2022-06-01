@@ -94,7 +94,7 @@ async function getUsersCredentials() {
 
 	const adminCredentials = new UserCredentials();
 	adminCredentials.id = config.admin_id;
-	adminCredentials.username = config.admin_name	
+	adminCredentials.username = config.admin_name;
 	adminCredentials.password = '9999';
 	adminCredentials.permissionLevel = 3;
 

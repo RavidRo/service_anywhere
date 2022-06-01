@@ -9,5 +9,5 @@ function addSubscriber(
 }
 
 export default {
-	addSubscriber
+	addSubscriber,
 };

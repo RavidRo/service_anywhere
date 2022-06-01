@@ -44,10 +44,12 @@ async function cancelOrder(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
-function locationErrorGuest(id: string, errorMsg: string): void{
-	getGuestOrder(id).then(orderResponse => orderResponse.ifGood(order =>
-		WaiterOrder.locationErrorGuest(order.id, errorMsg)
-	))
+function locationErrorGuest(id: string, errorMsg: string): void {
+	getGuestOrder(id).then(orderResponse =>
+		orderResponse.ifGood(order =>
+			WaiterOrder.locationErrorGuest(order.id, errorMsg)
+		)
+	);
 }
 
 export default {
@@ -56,5 +58,5 @@ export default {
 	getGuestOrder,
 	submitReview,
 	cancelOrder,
-	locationErrorGuest
+	locationErrorGuest,
 };
