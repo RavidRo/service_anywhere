@@ -1,5 +1,5 @@
 import {Notifier} from '../Logic/Notification/Notifier';
-import { NotificationFacade } from 'server/Logic/Notification/NotificationFacade';
+import {NotificationFacade} from 'server/Logic/Notification/NotificationFacade';
 
 function addSubscriber(
 	id: string,
