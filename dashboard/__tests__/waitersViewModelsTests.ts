@@ -71,6 +71,10 @@ beforeEach(() => {
 	(Api as unknown as jest.Mock).mockClear();
 	mockGetOrders.mockClear();
 	mockGetWaiters.mockClear();
+
+	jest.spyOn(console, 'info').mockImplementation(jest.fn());
+	jest.spyOn(console, 'log').mockImplementation(jest.fn());
+	jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 });
 
 describe('Constructor', () => {

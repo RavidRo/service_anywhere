@@ -9,8 +9,11 @@ export default class Api extends Singleton {
 		this.handler = new RequestsHandler();
 	}
 
-	login(password: string): Promise<string> {
-		return this.handler.post<string>('login', {password: password});
+	login(name: string, password: string): Promise<string> {
+		return this.handler.post<string>('login', {
+			name: name,
+			password: password,
+		});
 	}
 
 	getOrders(): Promise<OrderIDO[]> {

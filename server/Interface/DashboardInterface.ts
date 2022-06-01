@@ -1,4 +1,4 @@
-import {OrderIDO, OrderStatus} from '../../api';
+import {OrderIDO, OrderStatus, WaiterIDO} from '../../api';
 
 import {makeGood, ResponseMsg} from '../Response';
 
@@ -19,8 +19,10 @@ function assignWaiter(
 	return WaiterOrder.assignWaiter(orderIds, waiterID);
 }
 
-async function getWaiters(): Promise<ResponseMsg<WaiterDAO[]>> {
-	return makeGood(await WaiterOrder.getAllWaiters());
+async function getWaiters(): Promise<ResponseMsg<WaiterIDO[]>> {
+	return makeGood(
+		(await WaiterOrder.getAllWaiters()).map(waiter => waiter.getDetails())
+	);
 }
 
 async function getWaiterByOrder(

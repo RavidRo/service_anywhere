@@ -27,8 +27,8 @@ export default class ConnectViewModel {
 		);
 	}
 
-	login(password: string): Promise<string> {
-		return this.api.login(password).then(token => {
+	login(name: string, password: string): Promise<string> {
+		return this.api.login(name, password).then(token => {
 			this.model.token = token;
 			return token;
 		});
@@ -45,8 +45,8 @@ export default class ConnectViewModel {
 			console.info('Trying to connect with token ', this.model.token);
 			return Promise.all([
 				this.waitersViewModel.synchroniseWaiters(),
-				this.ordersViewModel.synchroniseOrders(),
 				this.ordersViewModel.synchroniseItems(),
+				this.ordersViewModel.synchroniseOrders(),
 				new Promise<void>((resolve, reject) => {
 					this.connectionHandler.connect(
 						token,
@@ -58,7 +58,9 @@ export default class ConnectViewModel {
 					);
 				}),
 			])
-				.then(() => console.info('Finished synchrosing and connecting'))
+				.then(() =>
+					console.info('Finished synchronising and connecting')
+				)
 				.catch(() => alert('Error in synchronisation or connecting'));
 		} else {
 			return new Promise<void>((_, reject) => {
