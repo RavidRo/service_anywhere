@@ -33,31 +33,34 @@ export async function removeWaitersFromOrder(
 }
 
 export async function assignWaiter(
-	ordersIDs: string[],
-	waiterID: string
+	ordersID: string,
+	waiterIDs: string[]
 ): Promise<ResponseMsg<void>> {
-	const orders = await Promise.all(ordersIDs.map(getOrder));
-	if (orders.some(order => order === null)) {
+	const order = await getOrder(ordersID);
+	if (order === null) {
 		// Orders existence should have been validated before hand
 		return makeFail(
 			'Something went wrong, could not find requested order',
 			500
 		);
 	}
-	const existedOrders: OrderDAO[] = orders as OrderDAO[];
+	const existedOrders: OrderDAO = order as OrderDAO;
 
 	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
-	const waiter = await waiterRepository.findOne({where: {id: waiterID}});
-	if (!waiter) {
+	const waiters = await Promise.all(waiterIDs.map(waiterID => waiterRepository.findOne({where: {id: waiterID}})));
+
+	if (waiters.some(waiter => !waiter)) {
 		// Waiter existence should have been validated before hand
 		return makeFail(
 			'Something went wrong, could not find requested waiter',
 			500
 		);
 	}
-	const saves = existedOrders.map(order => {
-		order.waiters.push(waiter);
-		return order.save();
+	const saves = waiters.map(waiter => {
+		if(waiter){
+			order.waiters.push(waiter);
+		}
+		order.save();
 	});
 	return Promise.all(saves).then(() => makeGood());
 }
