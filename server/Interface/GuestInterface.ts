@@ -44,8 +44,8 @@ async function cancelOrder(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
-function locationErrorGuest(id: string, errorMsg: string): void {
-	getGuestOrder(id).then(orderResponse =>
+function locationErrorGuest(guestID: string, errorMsg: string): void {
+	getGuestOrder(guestID).then(orderResponse =>
 		orderResponse.ifGood(order =>
 			WaiterOrder.locationErrorGuest(order.id, errorMsg)
 		)
