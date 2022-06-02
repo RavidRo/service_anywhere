@@ -35,14 +35,18 @@ export async function assignWaiter(
 	orderID: string,
 	waiterIDs: string[]
 ): Promise<ResponseMsg<void>> {
-	const waiters = await Promise.all(waiterIDs.map((id) => WaiterStore.getWaiter(id)));
+	const waiters = await Promise.all(
+		waiterIDs.map(id => WaiterStore.getWaiter(id))
+	);
 	if (waiters.includes(null)) {
 		return makeFail('A requested waiter does not exit', 400);
 	}
-	const canAssignResponse = await onOrder(orderID, order => makeGood(order.canAssign()));
+	const canAssignResponse = await onOrder(orderID, order =>
+		makeGood(order.canAssign())
+	);
 	if (canAssignResponse.isSuccess()) {
 		// Change the order status
-		onOrder(orderID, order => order.assign(waiterIDs))
+		onOrder(orderID, order => order.assign(waiterIDs));
 
 		// Saves order <-> waiters assignments
 		return await OrderStore.assignWaiter(orderID, waiterIDs);

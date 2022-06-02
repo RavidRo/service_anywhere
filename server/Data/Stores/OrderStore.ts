@@ -47,7 +47,11 @@ export async function assignWaiter(
 	const existedOrders: OrderDAO = order as OrderDAO;
 
 	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
-	const waiters = await Promise.all(waiterIDs.map(waiterID => waiterRepository.findOne({where: {id: waiterID}})));
+	const waiters = await Promise.all(
+		waiterIDs.map(waiterID =>
+			waiterRepository.findOne({where: {id: waiterID}})
+		)
+	);
 
 	if (waiters.some(waiter => !waiter)) {
 		// Waiter existence should have been validated before hand
@@ -57,7 +61,7 @@ export async function assignWaiter(
 		);
 	}
 	const saves = waiters.map(waiter => {
-		if(waiter){
+		if (waiter) {
 			order.waiters.push(waiter);
 		}
 		order.save();
