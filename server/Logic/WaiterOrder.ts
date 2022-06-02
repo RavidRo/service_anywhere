@@ -6,7 +6,7 @@ import * as OrderStore from '../Data/Stores/OrderStore';
 import {getItems} from '../Data/Stores/ItemStore';
 import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
 
-import {onOrder, getGuestActiveOrder} from './Orders';
+import {onOrder, getGuestActiveOrder, getOrder} from './Orders';
 import {OrderNotifier} from './OrderNotifier';
 
 import config from '../config.json';

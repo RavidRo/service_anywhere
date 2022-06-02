@@ -86,7 +86,6 @@ export class Order implements IOrder {
 		if (!toResponse.isSuccess()) {
 			return toResponse;
 		}
-
 		this.orderDAO.status = newStatusName;
 		if (newStatus.isEndStatus()) {
 			this.orderDAO.completionTime = Date.now();

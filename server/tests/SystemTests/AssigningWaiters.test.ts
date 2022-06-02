@@ -43,8 +43,8 @@ test('Assigns a free waiter successfully', async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID} = await createOrder();
 	const assignResponse = await DashboardInterface.assignWaiter(
-		[orderID],
-		waitersIDs.getData()[0].id
+		orderID,
+		[waitersIDs.getData()[0].id]
 	);
 	expect(assignResponse.isSuccess()).toBeTruthy();
 });
@@ -53,29 +53,29 @@ test("Order's status is changed when first assigned", async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID, guestID} = await createOrder();
 	await DashboardInterface.assignWaiter(
-		[orderID],
-		waitersIDs.getData()[0].id
+		orderID,
+		[waitersIDs.getData()[0].id]
 	);
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 	expect(orderResponse.getData().status).toBe('assigned');
 });
 
-test('Assigning a busy waiter to an order results with a failure', async () => {
+test('Assigning a busy waiter to an order does not result with a failure', async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID: orderID1} = await createOrder({index: 0});
 	const {orderID: orderID2} = await createOrder({index: 1});
 
 	await DashboardInterface.assignWaiter(
-		[orderID1],
-		waitersIDs.getData()[0].id
+		orderID1,
+		[waitersIDs.getData()[0].id]
 	);
 
 	const assignResponse2 = await DashboardInterface.assignWaiter(
-		[orderID2],
-		waitersIDs.getData()[0].id
+		orderID2,
+		[waitersIDs.getData()[0].id]
 	);
 
-	expect(assignResponse2.isSuccess()).toBeFalsy();
+	expect(assignResponse2.isSuccess()).toBeTruthy();
 });
 
 test('Getting the assigned waiters successfully', async () => {
@@ -84,13 +84,13 @@ test('Getting the assigned waiters successfully', async () => {
 	const {orderID: orderID2} = await createOrder({index: 1});
 
 	await DashboardInterface.assignWaiter(
-		[orderID1, orderID2],
-		waitersIDs[0].id
+		orderID1,
+		[waitersIDs[0].id, waitersIDs[1].id]
 	);
-	await DashboardInterface.assignWaiter([orderID2], waitersIDs[1].id);
+	await DashboardInterface.assignWaiter(orderID2, [waitersIDs[1].id]);
 
 	const assignedResponse = await DashboardInterface.getWaiterByOrder(
-		orderID2
+		orderID1
 	);
 	expect(new Set(assignedResponse.getData())).toEqual(
 		new Set([waitersIDs[0].id, waitersIDs[1].id])
