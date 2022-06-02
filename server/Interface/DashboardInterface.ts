@@ -43,16 +43,18 @@ async function changeOrderStatus(
 	newStatus: string,
 	ID: string
 ): Promise<ResponseMsg<void>> {
-	const statuses = ['received',
-	'in preparation',
-	'ready to deliver',
-	'assigned',
-	'on the way',
-	'delivered',
-	'canceled']
-	
-	if(!statuses.includes(newStatus)){
-		return makeFail('There is no such status', 400)
+	const statuses = [
+		'received',
+		'in preparation',
+		'ready to deliver',
+		'assigned',
+		'on the way',
+		'delivered',
+		'canceled',
+	];
+
+	if (!statuses.includes(newStatus)) {
+		return makeFail('There is no such status', 400);
 	}
 	return WaiterOrder.changeOrderStatus(orderID, newStatus as OrderStatus, ID);
 }
