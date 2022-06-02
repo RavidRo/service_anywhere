@@ -100,13 +100,16 @@ export class Order implements IOrder {
 		return this.changeOrderStatus('assigned', true, true);
 	}
 
-	async giveFeedback(review: string, score: number): Promise<ResponseMsg<void>> {
-		if(score < 1 || score > 5){
-			return makeFail('Review score must be between 1 and 5.')
+	async giveFeedback(
+		review: string,
+		score: number
+	): Promise<ResponseMsg<void>> {
+		if (score < 1 || score > 5) {
+			return makeFail('Review score must be between 1 and 5.');
 		}
 		this.orderDAO.review.content = review;
 		this.orderDAO.review.rating = score;
 		await this.orderDAO.review.save();
-		return makeGood()
+		return makeGood();
 	}
 }
