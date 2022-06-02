@@ -1,6 +1,6 @@
 import {OrderIDO, OrderStatus, WaiterIDO} from '../../api';
 
-import {makeGood, ResponseMsg} from '../Response';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 import {onOrder, getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
@@ -40,10 +40,21 @@ async function cancelOrderAdmin(
 
 async function changeOrderStatus(
 	orderID: string,
-	newStatus: OrderStatus,
+	newStatus: string,
 	ID: string
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderID, newStatus, ID);
+	const statuses = ['received',
+	'in preparation',
+	'ready to deliver',
+	'assigned',
+	'on the way',
+	'delivered',
+	'canceled']
+	
+	if(!statuses.includes(newStatus)){
+		return makeFail('There is no such status', 400)
+	}
+	return WaiterOrder.changeOrderStatus(orderID, newStatus as OrderStatus, ID);
 }
 
 export default {
