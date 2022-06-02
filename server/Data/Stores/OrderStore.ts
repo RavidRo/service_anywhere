@@ -44,7 +44,6 @@ export async function assignWaiter(
 			500
 		);
 	}
-	const existedOrders: OrderDAO = order as OrderDAO;
 
 	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
 	const waiters = await Promise.all(
