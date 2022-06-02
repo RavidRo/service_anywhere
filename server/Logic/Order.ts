@@ -95,7 +95,7 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	async assign(_waiterId: string[]): Promise<ResponseMsg<void>> {
+	async assign(_waiterIds: string[]): Promise<ResponseMsg<void>> {
 		return this.changeOrderStatus('assigned', true, true);
 	}
 
