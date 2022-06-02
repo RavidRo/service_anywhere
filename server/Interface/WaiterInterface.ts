@@ -38,8 +38,8 @@ function getGuestsDetails(ids: string[]): Promise<GuestIDO[]> {
 	return getDetails(ids);
 }
 
-function locationErrorWaiter(errorMsg: string) {
-	WaiterOrder.locationErrorWaiter(errorMsg);
+function locationErrorWaiter(errorMsg: string, waiterID: string) {
+	WaiterOrder.locationErrorWaiter(errorMsg, waiterID);
 }
 
 export default {

@@ -166,19 +166,19 @@ async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
 
 export function locationErrorGuest(orderId: string, errorMsg: string) {
 	const facade = new NotificationFacade();
-	facade.notifyError(config.admin_id, errorMsg);
+	facade.notifyError(config.admin_id, errorMsg, orderId);
 	getWaiterByOrder(orderId).then(response =>
 		response.ifGood(waiters =>
 			waiters.forEach(waiter => {
-				facade.notifyError(waiter, errorMsg);
+				facade.notifyError(waiter, errorMsg, orderId);
 			})
 		)
 	);
 }
 
-export function locationErrorWaiter(errorMsg: string) {
+export function locationErrorWaiter(errorMsg: string, waiterID: string) {
 	const facade = new NotificationFacade();
-	facade.notifyError(config.admin_id, errorMsg);
+	facade.notifyError(config.admin_id, errorMsg, waiterID);
 }
 
 export default {

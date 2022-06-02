@@ -648,9 +648,10 @@ io.on('connection', function (socket: socketio.Socket) {
 						);
 					},
 					_status => {},
-					(_id: string) => {
+					(id: string) => {
 						WaiterInterface.locationErrorWaiter(
-							message['errorMsg']
+							message['errorMsg'],
+							id
 						);
 					}
 				)
