@@ -42,10 +42,9 @@ test('Notified waiter on assignedToOrder', async () => {
 	const notifier = Notifier.getInstance();
 	const func = jest.fn().mockReturnValue(true);
 	notifier.addSubscriber(waiterID, func);
-	await DashboardInterface.assignWaiter(
-		orderResponse.getData().id,
-		[waiterID]
-	);
+	await DashboardInterface.assignWaiter(orderResponse.getData().id, [
+		waiterID,
+	]);
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(1);
 });
