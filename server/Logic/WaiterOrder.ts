@@ -39,9 +39,6 @@ export async function assignWaiter(
 	if (waiter === null) {
 		return makeFail('The requested waiter does not exit', 400);
 	}
-	if (!waiter.available) {
-		return makeFail('The requested waiter is not available', 400);
-	}
 	const canAssignResponses = await Promise.all(
 		orderIDs.map(orderId =>
 			onOrder(orderId, order => makeGood(order.canAssign()))
