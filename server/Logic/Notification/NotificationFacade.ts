@@ -51,6 +51,9 @@ export class NotificationFacade {
 	}
 
 	public notifyError(receiverID: string, errorMsg: string, user: string) {
-		this.notifier.notify(receiverID, 'error', {errorMsg: errorMsg, user: user});
+		this.notifier.notify(receiverID, 'error', {
+			errorMsg: errorMsg,
+			user: user,
+		});
 	}
 }
