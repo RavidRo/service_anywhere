@@ -6,7 +6,7 @@ import * as OrderStore from '../Data/Stores/OrderStore';
 
 import {IOrder} from './IOrder';
 import {OrderStatus} from './OrderStatus';
-import { ReviewDAO } from 'server/Data/entities/Domain/ReviewDAO';
+import {ReviewDAO} from 'server/Data/entities/Domain/ReviewDAO';
 
 class Review {
 	content: string;
@@ -109,10 +109,12 @@ export class Order implements IOrder {
 			return makeFail('Review score must be between 1 and 5.');
 		}
 		if (this.orderDAO.status !== 'delivered') {
-			return makeFail('Cannot submit a review for an order that has not been delivered.');
+			return makeFail(
+				'Cannot submit a review for an order that has not been delivered.'
+			);
 		}
 		this.orderDAO.review = new ReviewDAO();
-		this.orderDAO.review.content = review
+		this.orderDAO.review.content = review;
 		this.orderDAO.review.rating = score;
 		await this.orderDAO.review.save();
 		return makeGood();

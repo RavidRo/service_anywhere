@@ -53,7 +53,11 @@ test('submit review should fail when order status isnt delivered', async () => {
 
 test('submit review success when order status is delivered', async () => {
 	const {orderID, guestID} = await createOrder();
-	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID).then((res) => res.getError());
+	await DashboardInterface.changeOrderStatus(
+		orderID,
+		'delivered',
+		adminID
+	).then(res => res.getError());
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
