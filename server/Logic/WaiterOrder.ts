@@ -41,11 +41,16 @@ export async function assignWaiter(
 	if (waiters.includes(null)) {
 		return makeFail('A requested waiter does not exit', 400);
 	}
-	const existingWaiters = await getWaiterByOrder(orderID)
-	if (existingWaiters.isSuccess()){
-		const intersection = existingWaiters.getData().filter(w => waiterIDs.includes(w))
-		if(intersection.length !== 0) {
-			return makeFail(`waiters ${intersection} are already assigned `, 400)
+	const existingWaiters = await getWaiterByOrder(orderID);
+	if (existingWaiters.isSuccess()) {
+		const intersection = existingWaiters
+			.getData()
+			.filter(w => waiterIDs.includes(w));
+		if (intersection.length !== 0) {
+			return makeFail(
+				`waiters ${intersection} are already assigned `,
+				400
+			);
 		}
 	}
 	const canAssignResponse = await onOrder(orderID, order =>
