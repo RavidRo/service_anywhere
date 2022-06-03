@@ -5,7 +5,7 @@ import {GuestDAO} from './entities/Domain/GuestDAO';
 import {ItemDAO} from './entities/Domain/ItemDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
 import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
-import {MapDAO} from './entities/Domain/MapDAO'
+import {MapDAO} from './entities/Domain/MapDAO';
 import {WaiterDAO} from './entities/Domain/WaiterDAO';
 import config from 'server/config.json';
 
@@ -73,16 +73,17 @@ function getOrders(guests: GuestDAO[], waiters: WaiterDAO[]) {
 
 function getMaps() {
 	const map1 = new MapDAO();
-	map1.name = 'Bet HaStudent'
-	map1.imageURL = "https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png"
-	map1.bottomLeftLat = 31.261649
-	map1.bottomLeftLong = 34.800838
-	map1.bottomRightLat = 31.261649
-	map1.bottomRightLong = 34.802516
-	map1.topLeftLat = 31.26355
-	map1.topLeftLong = 34.800838
-	map1.topRightLat = 31.26355
-	map1.topRightLong = 34.802516
+	map1.name = 'Bet HaStudent';
+	map1.imageURL =
+		'https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png';
+	map1.bottomLeftLat = 31.261649;
+	map1.bottomLeftLong = 34.800838;
+	map1.bottomRightLat = 31.261649;
+	map1.bottomRightLong = 34.802516;
+	map1.topLeftLat = 31.26355;
+	map1.topLeftLong = 34.800838;
+	map1.topRightLat = 31.26355;
+	map1.topRightLong = 34.802516;
 
 	return [map1];
 }
@@ -141,7 +142,7 @@ const entitiesDefaults: () => [
 	const waiters = getWaiters();
 	const guests = getGuests();
 	const orders = getOrders(guests, waiters);
-	const maps = getMaps()
+	const maps = getMaps();
 
 	// ! The order here matters, dont change it (SQL FOREIGN-KEY CONSTRAINT)
 	return [
@@ -155,7 +156,7 @@ const entitiesDefaults: () => [
 			'OrderToItemDAO',
 		],
 		[UserCredentials, getUsersCredentials, 'UserCredentials'],
-		[MapDAO, async () => maps, 'MapDAO']
+		[MapDAO, async () => maps, 'MapDAO'],
 	];
 };
 
