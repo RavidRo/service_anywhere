@@ -6,7 +6,6 @@ export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 		return false;
 	}
 	return (
-		(waiter as WaiterIDO).available !== undefined &&
 		(waiter as WaiterIDO).id !== undefined &&
 		(waiter as WaiterIDO).name !== undefined
 	);
