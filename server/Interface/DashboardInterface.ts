@@ -1,12 +1,10 @@
-import {OrderIDO, OrderStatus, WaiterIDO} from '../../api';
-
-import {makeFail, makeGood, ResponseMsg} from '../Response';
-
-import {onOrder, getOrders} from '../Logic/Orders';
+import { OrderIDO, OrderStatus, STATUSES, WaiterIDO } from '../../api';
+import { getOrders } from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
+import { makeFail, makeGood, ResponseMsg } from '../Response';
 
-import config from '../config.json';
-import {WaiterDAO} from 'server/Data/entities/Domain/WaiterDAO';
+
+
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
@@ -38,25 +36,19 @@ async function cancelOrderAdmin(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', ID);
 }
 
+function isStatus(s: string): s is OrderStatus{
+	return STATUSES.includes(s as OrderStatus)
+}
+
 async function changeOrderStatus(
 	orderID: string,
 	newStatus: string,
 	ID: string
 ): Promise<ResponseMsg<void>> {
-	const statuses = [
-		'received',
-		'in preparation',
-		'ready to deliver',
-		'assigned',
-		'on the way',
-		'delivered',
-		'canceled',
-	];
-
-	if (!statuses.includes(newStatus)) {
+	if (!isStatus(newStatus)) {
 		return makeFail('There is no such status', 400);
 	}
-	return WaiterOrder.changeOrderStatus(orderID, newStatus as OrderStatus, ID);
+	return WaiterOrder.changeOrderStatus(orderID, newStatus, ID);
 }
 
 export default {

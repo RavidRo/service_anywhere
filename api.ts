@@ -1,11 +1,12 @@
-export type OrderStatus =
-	| 'received'
-	| 'in preparation'
-	| 'ready to deliver'
-	| 'assigned'
-	| 'on the way'
-	| 'delivered'
-	| 'canceled';
+export const STATUSES = [
+	'received',
+	'in preparation',
+	'ready to deliver',
+	'assigned',
+	'on the way',
+	'delivered',
+	'canceled'] as const
+export type OrderStatus = typeof STATUSES[number];
 type OrderID = string;
 
 export type OrderIDO = {
