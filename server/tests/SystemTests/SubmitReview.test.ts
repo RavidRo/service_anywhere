@@ -42,7 +42,7 @@ beforeEach(async () => {
 
 test('submit review should fail when order status isnt delivered', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'on the way', adminID);
+	await DashboardInterface.changeOrderStatus(orderID, 'received', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
@@ -53,7 +53,7 @@ test('submit review should fail when order status isnt delivered', async () => {
 
 test('submit review success when order status is delivered', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
+	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID).then((res) => res.getError());
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
@@ -64,7 +64,7 @@ test('submit review success when order status is delivered', async () => {
 
 test('submit review should fail when rating not in range 1-5', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'on the way', adminID);
+	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
@@ -75,7 +75,7 @@ test('submit review should fail when rating not in range 1-5', async () => {
 
 test('submit review success for rating in range 1-5', async () => {
 	const {orderID, guestID} = await createOrder();
-	DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
+	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
 	const response = await GuestInterface.submitReview(
 		orderID,
 		'Very good service',
