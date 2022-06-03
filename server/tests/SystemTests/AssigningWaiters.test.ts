@@ -66,10 +66,9 @@ test('Assigning a waiter who is assigned to the order result with a failure', as
 		waitersIDs.getData()[0].id,
 	]);
 
-	const assignResponse2 = await DashboardInterface.assignWaiter(
-		orderID1,
-		[waitersIDs.getData()[0].id]
-	);
+	const assignResponse2 = await DashboardInterface.assignWaiter(orderID1, [
+		waitersIDs.getData()[0].id,
+	]);
 
 	expect(assignResponse2.isSuccess()).toBeFalsy();
 });
