@@ -30,7 +30,7 @@ function makeDevelopmentSource() {
 		entities: entities,
 		migrations: [],
 		subscribers: [],
-	}); 
+	});
 }
 
 function makeProductionSource() {
