@@ -58,7 +58,7 @@ test("Order's status is changed when first assigned", async () => {
 	);
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 	expect(orderResponse.getData().status).toBe('assigned');
-}); 
+});
 
 test('Assigning a busy waiter to an order results with a failure', async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
