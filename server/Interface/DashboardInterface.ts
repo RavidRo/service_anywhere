@@ -1,10 +1,7 @@
-import { OrderIDO, OrderStatus, STATUSES, WaiterIDO } from '../../api';
-import { getOrders } from '../Logic/Orders';
+import {OrderIDO, OrderStatus, STATUSES, WaiterIDO} from '../../api';
+import {getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
-import { makeFail, makeGood, ResponseMsg } from '../Response';
-
-
-
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
@@ -36,8 +33,8 @@ async function cancelOrderAdmin(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', ID);
 }
 
-function isStatus(s: string): s is OrderStatus{
-	return STATUSES.includes(s as OrderStatus)
+function isStatus(s: string): s is OrderStatus {
+	return STATUSES.includes(s as OrderStatus);
 }
 
 async function changeOrderStatus(

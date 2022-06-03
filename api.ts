@@ -5,7 +5,8 @@ export const STATUSES = [
 	'assigned',
 	'on the way',
 	'delivered',
-	'canceled'] as const
+	'canceled',
+] as const;
 export type OrderStatus = typeof STATUSES[number];
 type OrderID = string;
 
