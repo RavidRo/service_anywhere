@@ -60,10 +60,9 @@ test("Order's status is changed when first assigned", async () => {
 	expect(orderResponse.getData().status).toBe('assigned');
 });
 
-test('Assigning a busy waiter to an order does not result with a failure', async () => {
+test('Assigning a waiter who is assigned to the order result with a failure', async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID: orderID1} = await createOrder({index: 0});
-	const {orderID: orderID2} = await createOrder({index: 1});
 
 	await DashboardInterface.assignWaiter(
 		orderID1,
@@ -71,11 +70,11 @@ test('Assigning a busy waiter to an order does not result with a failure', async
 	);
 
 	const assignResponse2 = await DashboardInterface.assignWaiter(
-		orderID2,
+		orderID1,
 		[waitersIDs.getData()[0].id]
 	);
 
-	expect(assignResponse2.isSuccess()).toBeTruthy();
+	expect(assignResponse2.isSuccess()).toBeFalsy();
 });
 
 test('Getting the assigned waiters successfully', async () => {

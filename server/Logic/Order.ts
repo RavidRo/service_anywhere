@@ -1,11 +1,10 @@
-import {OrderStatus as OrderStatusName, Location, OrderIDO} from 'api';
-import {makeFail, makeGood, ResponseMsg} from '../Response';
-
+import {Location, OrderIDO, OrderStatus as OrderStatusName} from 'api';
 import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
 import * as OrderStore from '../Data/Stores/OrderStore';
-
+import {makeGood, ResponseMsg, makeFail} from '../Response';
 import {IOrder} from './IOrder';
 import {OrderStatus} from './OrderStatus';
+import {ReviewDAO} from 'server/Data/entities/Domain/ReviewDAO';
 
 class Review {
 	content: string;
@@ -99,7 +98,22 @@ export class Order implements IOrder {
 		return this.changeOrderStatus('assigned', true, true);
 	}
 
-	giveFeedback(_review: string, _score: number): boolean {
-		throw new Error('Method not implemented');
+	async giveFeedback(
+		review: string,
+		score: number
+	): Promise<ResponseMsg<void>> {
+		if (score < 1 || score > 5) {
+			return makeFail('Review score must be between 1 and 5.');
+		}
+		if (this.orderDAO.status !== 'delivered') {
+			return makeFail(
+				'Cannot submit a review for an order that has not been delivered.'
+			);
+		}
+		this.orderDAO.review = new ReviewDAO();
+		this.orderDAO.review.content = review;
+		this.orderDAO.review.rating = score;
+		await this.orderDAO.review.save();
+		return makeGood();
 	}
 }

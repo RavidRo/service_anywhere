@@ -110,7 +110,7 @@ export abstract class OrderNotifier implements IOrder {
 		);
 	}
 
-	giveFeedback(review: string, score: number): boolean {
+	giveFeedback(review: string, score: number): Promise<ResponseMsg<void>> {
 		return this.order.giveFeedback(review, score);
 	}
 }
