@@ -17,27 +17,27 @@ export class MapDAO extends BaseEntity {
 	@Column()
 	imageURL: string;
 
-    @Column('real')
-    topRightLat: number;
+	@Column('real')
+	topRightLat: number;
 
-    @Column('real')
+	@Column('real')
 	topLeftLat: number;
 
-    @Column('real')
+	@Column('real')
 	bottomRightLat: number;
 
-    @Column('real')
+	@Column('real')
 	bottomLeftLat: number;
 
-    @Column('real')
-    topRightLong: number;
+	@Column('real')
+	topRightLong: number;
 
-    @Column('real')
+	@Column('real')
 	topLeftLong: number;
 
-    @Column('real')
+	@Column('real')
 	bottomRightLong: number;
 
-    @Column('real')
+	@Column('real')
 	bottomLeftLong: number;
 }

@@ -10,7 +10,7 @@ import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
 import waiter from '../Interface/WaiterInterface';
 import items from '../Interface/ItemsInterface';
-import maps from '../Interface/MapsInterface'
+import maps from '../Interface/MapsInterface';
 import NotificationInterface from '../Interface/NotificationInterface';
 
 import authenticator from '../Logic/Authentication/Authenticator';
@@ -142,12 +142,13 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/getMaps', (_req, res) => {
-	maps.getMaps().then(maps => res.send(maps))
-	.catch(() => {
-		res.status(500);
-		res.send('Getting maps failed, try again later');
-		logger.error('An error occured while getting maps data');
-	});
+	maps.getMaps()
+		.then(maps => res.send(maps))
+		.catch(() => {
+			res.status(500);
+			res.send('Getting maps failed, try again later');
+			logger.error('An error occured while getting maps data');
+		});
 	res.send(maps.getMaps());
 });
 
