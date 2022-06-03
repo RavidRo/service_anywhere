@@ -29,7 +29,6 @@ type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
 	name: string;
-	available: boolean;
 };
 
 // export type WaiterDAO = {

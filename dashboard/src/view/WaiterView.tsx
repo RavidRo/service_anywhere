@@ -71,7 +71,6 @@ function WaiterDialogView(props: waiterProps) {
 											key={waiter.id}
 											onChange={handleCheckboxChange}
 											name={waiter.id}
-											disabled={!waiter.available}
 										/>
 									}
 									label={waiter.name}
