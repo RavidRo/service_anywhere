@@ -50,8 +50,15 @@ export class NotificationFacade {
 		//console.debug('changeOrderStatus', receiverID);
 	}
 
-	public notifyError(receiverID: string, errorMsg: string, user: string) {
-		this.notifier.notify(receiverID, 'error', {
+	public notifyErrorGuest(receiverID: string, errorMsg: string, user: string) {
+		this.notifier.notify(receiverID, 'errorGuest', {
+			errorMsg: errorMsg,
+			user: user,
+		});
+	}
+
+	public notifyErrorWaiter(receiverID: string, errorMsg: string, user: string) {
+		this.notifier.notify(receiverID, 'errorWaiter', {
 			errorMsg: errorMsg,
 			user: user,
 		});

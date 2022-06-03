@@ -1,16 +1,16 @@
-import {Location, OrderIDO, OrderStatus} from 'api';
-import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
-
-import * as WaiterStore from '../Data/Stores/WaiterStore';
-import * as OrderStore from '../Data/Stores/OrderStore';
-import {getItems} from '../Data/Stores/ItemStore';
-import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
-
-import {onOrder, getGuestActiveOrder} from './Orders';
-import {OrderNotifier} from './OrderNotifier';
-
+import { Location, OrderIDO, OrderStatus } from 'api';
 import config from '../config.json';
-import {NotificationFacade} from './Notification/NotificationFacade';
+import { WaiterDAO } from '../Data/entities/Domain/WaiterDAO';
+import { getItems } from '../Data/Stores/ItemStore';
+import * as OrderStore from '../Data/Stores/OrderStore';
+import * as WaiterStore from '../Data/Stores/WaiterStore';
+import { makeFail, makeGood, mapResponse, ResponseMsg } from '../Response';
+import { NotificationFacade } from './Notification/NotificationFacade';
+import { OrderNotifier } from './OrderNotifier';
+import { getGuestActiveOrder, onOrder } from './Orders';
+
+
+
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
@@ -166,11 +166,11 @@ async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
 
 export function locationErrorGuest(orderId: string, errorMsg: string) {
 	const facade = new NotificationFacade();
-	facade.notifyError(config.admin_id, errorMsg, orderId);
+	facade.notifyErrorGuest(config.admin_id, errorMsg, orderId);
 	getWaiterByOrder(orderId).then(response =>
 		response.ifGood(waiters =>
 			waiters.forEach(waiter => {
-				facade.notifyError(waiter, errorMsg, orderId);
+				facade.notifyErrorGuest(waiter, errorMsg, orderId);
 			})
 		)
 	);
@@ -178,7 +178,7 @@ export function locationErrorGuest(orderId: string, errorMsg: string) {
 
 export function locationErrorWaiter(errorMsg: string, waiterID: string) {
 	const facade = new NotificationFacade();
-	facade.notifyError(config.admin_id, errorMsg, waiterID);
+	facade.notifyErrorWaiter(config.admin_id, errorMsg, waiterID);
 }
 
 export default {
