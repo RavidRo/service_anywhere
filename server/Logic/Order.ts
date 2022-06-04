@@ -85,7 +85,6 @@ export class Order implements IOrder {
 		if (!toResponse.isSuccess()) {
 			return toResponse;
 		}
-
 		this.orderDAO.status = newStatusName;
 		if (newStatus.isEndStatus()) {
 			this.orderDAO.completionTime = Date.now();
@@ -95,7 +94,7 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	async assign(_waiterId: string): Promise<ResponseMsg<void>> {
+	async assign(_waiterIds: string[]): Promise<ResponseMsg<void>> {
 		return this.changeOrderStatus('assigned', true, true);
 	}
 

@@ -6,7 +6,7 @@ import * as OrderStore from '../Data/Stores/OrderStore';
 import {getItems} from '../Data/Stores/ItemStore';
 import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
 
-import {onOrder, getGuestActiveOrder} from './Orders';
+import {onOrder, getGuestActiveOrder, getOrder} from './Orders';
 import {OrderNotifier} from './OrderNotifier';
 
 import config from '../config.json';
@@ -32,35 +32,36 @@ export async function updateWaiterLocation(
 }
 
 export async function assignWaiter(
-	orderIDs: string[],
-	waiterID: string
+	orderID: string,
+	waiterIDs: string[]
 ): Promise<ResponseMsg<void>> {
-	const waiter = await WaiterStore.getWaiter(waiterID);
-	if (waiter === null) {
-		return makeFail('The requested waiter does not exit', 400);
-	}
-	const canAssignResponses = await Promise.all(
-		orderIDs.map(orderId =>
-			onOrder(orderId, order => makeGood(order.canAssign()))
-		)
+	const waiters = await Promise.all(
+		waiterIDs.map(id => WaiterStore.getWaiter(id))
 	);
-	const canAssignResponse = mapResponse(canAssignResponses);
-	if (canAssignResponse.isSuccess()) {
-		const canAssignToOrders = canAssignResponse.getData();
-		if (canAssignToOrders.some(can => !can)) {
+	if (waiters.includes(null)) {
+		return makeFail('A requested waiter does not exit', 400);
+	}
+	const existingWaiters = await getWaiterByOrder(orderID);
+	if (existingWaiters.isSuccess()) {
+		const intersection = existingWaiters
+			.getData()
+			.filter(w => waiterIDs.includes(w));
+		if (intersection.length !== 0) {
 			return makeFail(
-				'All orders must be in a ready status to assign waiters to them',
+				`waiters ${intersection} are already assigned `,
 				400
 			);
 		}
-
+	}
+	const canAssignResponse = await onOrder(orderID, order =>
+		makeGood(order.canAssign())
+	);
+	if (canAssignResponse.isSuccess()) {
 		// Change the order status
-		orderIDs.forEach(orderId =>
-			onOrder(orderId, order => order.assign(waiterID))
-		);
+		onOrder(orderID, order => order.assign(waiterIDs));
 
 		// Saves order <-> waiters assignments
-		return await OrderStore.assignWaiter(orderIDs, waiterID);
+		return await OrderStore.assignWaiter(orderID, waiterIDs);
 	}
 	return makeFail(canAssignResponse.getError());
 }

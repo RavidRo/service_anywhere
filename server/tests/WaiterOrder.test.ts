@@ -68,7 +68,7 @@ test('get waiter by order with our order should return our waiter', async () => 
 		adminID
 	);
 
-	await WaiterOrder.assignWaiter([orderID], waitersIDs[0].id);
+	await WaiterOrder.assignWaiter(orderID, [waitersIDs[0].id]);
 
 	const waiters: ResponseMsg<string[]> = await WaiterOrder.getWaiterByOrder(
 		orderID
@@ -85,7 +85,7 @@ test('get waiter order with our waiter should return our order', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
 
-	await WaiterOrder.assignWaiter([orderID], waitersIDs[0].id);
+	await WaiterOrder.assignWaiter(orderID, [waitersIDs[0].id]);
 
 	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0].id);
 	expect(orders.isSuccess()).toBeTruthy();
