@@ -30,11 +30,8 @@ function submitReview(
 	orderId: string,
 	details: string,
 	rating: number
-): ResponseMsg<void> {
-	orderId;
-	details;
-	rating;
-	throw new Error('Method not implemented');
+): Promise<ResponseMsg<void>> {
+	return onOrder(orderId, (o: IOrder) => o.giveFeedback(details, rating));
 }
 
 async function cancelOrder(

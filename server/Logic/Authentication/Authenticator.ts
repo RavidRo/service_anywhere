@@ -15,7 +15,7 @@ async function login(password: string): Promise<ResponseMsg<string>> {
 	const UserCredentials = await AuthenticatorChecker.getDetails(password);
 	if (!UserCredentials) {
 		return makeFail(
-			'No matched password was found',
+			'Username and password do not match',
 			unauthorizedStatusCode
 		);
 	}
