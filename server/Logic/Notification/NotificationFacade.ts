@@ -57,10 +57,10 @@ export class NotificationFacade {
 		});
 	}
 
-	public notifyErrorWaiter(receiverID: string, errorMsg: string, user: string) {
+	public notifyErrorWaiter(receiverID: string, errorMsg: string, waiterId: string) {
 		this.notifier.notify(receiverID, 'errorWaiter', {
 			errorMsg: errorMsg,
-			user: user,
+			waiterId: waiterId,
 		});
 	}
 }
