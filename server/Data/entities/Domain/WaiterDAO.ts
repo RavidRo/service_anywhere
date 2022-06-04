@@ -21,10 +21,6 @@ export class WaiterDAO extends BaseEntity {
 	@JoinTable()
 	orders: OrderDAO[];
 
-	get available(): boolean {
-		return this.orders === undefined || this.orders.length === 0;
-	}
-
 	getDetails(): WaiterIDO {
 		return {
 			available: this.available,
