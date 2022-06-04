@@ -42,10 +42,9 @@ test('Notified waiter on assignedToOrder', async () => {
 	const notifier = Notifier.getInstance();
 	const func = jest.fn().mockReturnValue(true);
 	notifier.addSubscriber(waiterID, func);
-	await DashboardInterface.assignWaiter(
-		[orderResponse.getData().id],
-		waiterID
-	);
+	await DashboardInterface.assignWaiter(orderResponse.getData().id, [
+		waiterID,
+	]);
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(1);
 });
@@ -70,7 +69,7 @@ test('Notified waiter on updateGuestLocation', async () => {
 	notifier.addSubscriber(waiterID, func);
 	// console.log('Waiter ID', waiterID);
 	// console.log('Guest ID', waiterID);
-	await DashboardInterface.assignWaiter([orderID], waiterID);
+	await DashboardInterface.assignWaiter(orderID, [waiterID]);
 	GuestInterface.updateLocationGuest(guestID, {x: 0.5, y: 0.5, mapID: '1'});
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(2);
@@ -144,7 +143,7 @@ test('Notified guest on updateWaiterLocation', async () => {
 
 	const orderResponse = await GuestInterface.createOrder(guestID, items);
 	const waiterID = waitersIDs.getData()[0].id;
-	await DashboardInterface.assignWaiter([orderResponse.getData()], waiterID);
+	await DashboardInterface.assignWaiter(orderResponse.getData(), [waiterID]);
 	const notifier = Notifier.getInstance();
 	const func = jest.fn();
 	await timeout(200);

@@ -12,7 +12,7 @@ export interface IOrder {
 	updateWaiterLocation(location: Location): ResponseMsg<void>;
 	updateGuestLocation(location: Location): ResponseMsg<void>;
 
-	assign(waiterId: string): Promise<ResponseMsg<void>>;
+	assign(waiterIds: string[]): Promise<ResponseMsg<void>>;
 	changeOrderStatus(
 		status: OrderStatus,
 		assigningWaiter: boolean,
