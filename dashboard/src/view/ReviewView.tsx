@@ -37,7 +37,7 @@ function ReviewView(props: reviewProps) {
 			</Typography>
 			<Dialog onClose={handleClose} open={open}>
 				<DialogTitle>{dialogTitle}</DialogTitle>
-				<Rating name='Rating' value={review?.rating} readOnly />
+				<Rating name='Rating' value={review?.rating || 0} readOnly />
 				<DialogContent dividers sx={{pt: 0}}>
 					<DialogContentText>{review?.details}</DialogContentText>
 				</DialogContent>

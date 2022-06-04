@@ -54,7 +54,6 @@ export default class OrdersViewModel {
 			entry => entry.orderId === orderId
 		);
 		if (assignedWaiter !== undefined) {
-			console.info('returning ', assignedWaiter);
 			return assignedWaiter.waiterIds;
 		}
 		return [];

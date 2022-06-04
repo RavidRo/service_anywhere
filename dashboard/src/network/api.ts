@@ -27,7 +27,7 @@ export default class Api extends Singleton {
 
 	assignWaiter(orderId: string, waiterId: string[]): Promise<void> {
 		return this.handler.post<void>('assignWaiter', {
-			orderIds: [orderId],
+			orderId: [orderId],
 			waiterId: waiterId,
 		});
 	}
