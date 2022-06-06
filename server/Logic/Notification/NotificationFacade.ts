@@ -77,11 +77,11 @@ export class NotificationFacade {
 		orderID: string,
 		details: string,
 		rating: number
-	){
+	) {
 		this.notifier.notify(receiverID, 'review', {
 			orderID,
 			details,
-			rating
-		})
+			rating,
+		});
 	}
 }
