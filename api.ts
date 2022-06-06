@@ -28,7 +28,7 @@ export type ItemIDO = {
 type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
-	name: string;
+	username: string;
 };
 
 export type ReviewIDO = {
@@ -49,7 +49,7 @@ export type Location = {
 
 export type GuestIDO = {
 	id: string;
-	username: string;
+	name: string;
 	phoneNumber: string;
 };
 
