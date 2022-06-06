@@ -25,6 +25,11 @@ export type ItemIDO = {
 	preparationTime: number;
 };
 
+export type ReviewIDO = {
+	details: string;
+	rating: number;
+};
+
 type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
@@ -41,6 +46,23 @@ export type ReviewIDO = {
 // 	orders: OrderDAO[];
 // };
 
+export type GPS = {
+	longitude: number;
+	latitude: number;
+};
+export type Corners = {
+	topRightGPS: GPS;
+	topLeftGPS: GPS;
+	bottomRightGPS: GPS;
+	bottomLeftGPS: GPS;
+};
+export type MapIDO = {
+	id: string;
+	name: string;
+	corners: Corners;
+	imageURL: string;
+};
+
 export type Location = {
 	x: number;
 	y: number;
@@ -49,7 +71,7 @@ export type Location = {
 
 export type GuestIDO = {
 	id: string;
-	name: string;
+	username: string;
 	phoneNumber: string;
 };
 
@@ -60,7 +82,7 @@ interface GuestAPI {
 	login(password: string): Promise<string>;
 	getItems: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
-	//getMaps: () => Promise<LocalizationDetailsIDO>; // LocalizationDetailsIDO ?
+	getMaps: () => Promise<MapIDO[]>;
 	getGuestOrder: () => Promise<OrderIDO>;
 	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
@@ -73,6 +95,7 @@ interface GuestAPI {
 
 interface guestCommunication {
 	updateGuestLocation: (guestLocation: Location) => void;
+	locationErrorGuest: (errorMsg: string) => void;
 }
 
 // guests Notifications from server:
@@ -87,7 +110,7 @@ interface GuestNotificationHandler {
 interface WaiterAPI {
 	login: (password: string) => Promise<void>;
 	getItems: () => Promise<ItemIDO[]>;
-	// getMaps: () => Promise<LocalizationDetailsIDO>;
+	getMaps: () => Promise<MapIDO[]>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
 	orderArrived: (orderId: OrderID) => Promise<void>;
@@ -95,6 +118,7 @@ interface WaiterAPI {
 }
 interface WaiterCommunication {
 	updateWaiterLocation: (waiterLocation: Location) => void;
+	locationErrorWaiter: (errorMsg: string) => void;
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;

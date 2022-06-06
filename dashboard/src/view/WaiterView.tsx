@@ -73,7 +73,7 @@ function WaiterDialogView(props: waiterProps) {
 											name={waiter.id}
 										/>
 									}
-									label={waiter.name}
+									label={waiter.username}
 								/>
 							);
 						})}
