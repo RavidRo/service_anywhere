@@ -24,7 +24,7 @@ export async function updateWaiterLocation(
 	const orders = await getOrdersByWaiter(waiterId);
 	orders.ifGood(orders =>
 		orders.forEach(order =>
-			onOrder(order.id, o => o.updateWaiterLocation(location))
+			onOrder(order.id, o => o.updateWaiterLocation(waiterId, location))
 		)
 	);
 }
