@@ -41,19 +41,27 @@ export async function assignWaiter(
 	if (waiters.includes(null)) {
 		return makeFail('A requested waiter does not exit', 400);
 	}
-	const existingWaiters = await getWaiterByOrder(orderID)
-	const overlap = waiterIDs.filter(w => existingWaiters.getData().includes(w))
-	if(overlap.length > 0) {
-		return makeFail('Some requested waiters are already assigned to this order: ' + overlap, 400)
+	const existingWaiters = await getWaiterByOrder(orderID);
+	const overlap = waiterIDs.filter(w =>
+		existingWaiters.getData().includes(w)
+	);
+	if (overlap.length > 0) {
+		return makeFail(
+			'Some requested waiters are already assigned to this order: ' +
+				overlap,
+			400
+		);
 	}
 	const canAssignResponse = await onOrder(orderID, order =>
 		makeGood(order.canAssign())
 	);
 	if (canAssignResponse.isSuccess()) {
 		// Change the order status
-		const statusChaneResponse = await onOrder(orderID, order => order.assign(waiterIDs));
-		if(!statusChaneResponse.isSuccess()){
-			return statusChaneResponse
+		const statusChaneResponse = await onOrder(orderID, order =>
+			order.assign(waiterIDs)
+		);
+		if (!statusChaneResponse.isSuccess()) {
+			return statusChaneResponse;
 		}
 
 		// Saves order <-> waiters assignments

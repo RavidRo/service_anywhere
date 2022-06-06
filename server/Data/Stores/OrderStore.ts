@@ -51,22 +51,20 @@ export async function assignWaiter(
 			waiterRepository.findOne({where: {id: waiterID}})
 		)
 	);
-	for(const waiter of waiters){
-		if(waiter){
-			order.waiters.push(waiter)
-		}
-		else{
+	for (const waiter of waiters) {
+		if (waiter) {
+			order.waiters.push(waiter);
+		} else {
 			return makeFail(
 				'Something went wrong, could not find requested waiter',
 				500
 			);
 		}
 	}
-	
+
 	return order.save().then(() => {
-		return makeGood()
+		return makeGood();
 	});
-	
 }
 export function getOrder(orderID: string) {
 	const orderRepository = AppDataSource.getRepository(OrderDAO);
