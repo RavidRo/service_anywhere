@@ -66,7 +66,7 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	updateWaiterLocation(_location: Location): ResponseMsg<void> {
+	updateWaiterLocation(_waiterID: string, _location: Location): ResponseMsg<void> {
 		return makeGood();
 	}
 
