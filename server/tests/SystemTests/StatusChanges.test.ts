@@ -142,7 +142,6 @@ test('Status changes successfully when waiter is on the way with the order', asy
 		waiterIds.getData()[0].id
 	);
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
-
 	expect(orderOnTheWayResponse.isSuccess()).toBeTruthy();
 	expect(orderResponse.getData().status).toBe('on the way');
 });
