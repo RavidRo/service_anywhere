@@ -22,7 +22,7 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 	}
 	return (
 		(order as OrderIDO).creationTime !== undefined &&
-		(order as OrderIDO).guestId !== undefined &&
+		(order as OrderIDO).guestID !== undefined &&
 		(order as OrderIDO).id !== undefined &&
 		(order as OrderIDO).items !== undefined &&
 		(order as OrderIDO).status !== undefined
