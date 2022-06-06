@@ -51,21 +51,22 @@ export async function assignWaiter(
 			waiterRepository.findOne({where: {id: waiterID}})
 		)
 	);
-
-	if (waiters.some(waiter => !waiter)) {
-		// Waiter existence should have been validated before hand
-		return makeFail(
-			'Something went wrong, could not find requested waiter',
-			500
-		);
-	}
-	const saves = waiters.map(async waiter => {
-		if (waiter) {
-			order.waiters.push(waiter);
+	for(const waiter of waiters){
+		if(waiter){
+			order.waiters.push(waiter)
 		}
-		await order.save();
+		else{
+			return makeFail(
+				'Something went wrong, could not find requested waiter',
+				500
+			);
+		}
+	}
+	
+	return order.save().then(() => {
+		return makeGood()
 	});
-	return Promise.all(saves).then(() => makeGood());
+	
 }
 export function getOrder(orderID: string) {
 	const orderRepository = AppDataSource.getRepository(OrderDAO);

@@ -75,7 +75,7 @@ test('Assigning a waiter who is assigned to the order result with a failure', as
 	expect(assignResponse2.isSuccess()).toBeFalsy();
 });
 
-test.only('Getting the assigned waiters successfully', async () => {
+test('Getting the assigned waiters successfully', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
 	const {orderID: orderID1} = await createOrder({index: 0});
 	const {orderID: orderID2} = await createOrder({index: 1});
