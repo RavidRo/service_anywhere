@@ -69,7 +69,10 @@ export abstract class OrderNotifier implements IOrder {
 	updateGuestLocation(location: Location): ResponseMsg<void> {
 		return this.order.updateGuestLocation(location);
 	}
-	updateWaiterLocation(waiterID: string, location: Location): ResponseMsg<void> {
+	updateWaiterLocation(
+		waiterID: string,
+		location: Location
+	): ResponseMsg<void> {
 		return this.order.updateWaiterLocation(waiterID, location);
 	}
 
@@ -124,7 +127,7 @@ class GuestNotifier extends OrderNotifier {
 	}
 
 	override updateWaiterLocation(
-		...params: [waitertID:string, location: Location]
+		...params: [waitertID: string, location: Location]
 	): ResponseMsg<void> {
 		return super
 			.updateWaiterLocation(...params)

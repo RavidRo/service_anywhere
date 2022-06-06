@@ -261,13 +261,13 @@ test("Guests can't get their none active orders", async () => {
 test("Waiters can't set status of orders they are not assigned to to 'on the way'", async () => {
 	const {orderID, guestID} = await createOrder();
 	const waiterIds = await (await DashboardInterface.getWaiters()).getData();
-	const res = WaiterInterface.orderOnTheWay(orderID, waiterIds[0].id)
-	expect((await res).isSuccess()).toBeFalsy()
-})
+	const res = WaiterInterface.orderOnTheWay(orderID, waiterIds[0].id);
+	expect((await res).isSuccess()).toBeFalsy();
+});
 
 test("Waiters can't set status of orders they are not assigned to to 'delivered'", async () => {
 	const {orderID, guestID} = await createOrder();
 	const waiterIds = await (await DashboardInterface.getWaiters()).getData();
-	const res = WaiterInterface.orderArrived(orderID, waiterIds[0].id)
-	expect((await res).isSuccess()).toBeFalsy()
-})
+	const res = WaiterInterface.orderArrived(orderID, waiterIds[0].id);
+	expect((await res).isSuccess()).toBeFalsy();
+});
