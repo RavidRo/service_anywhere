@@ -53,22 +53,22 @@ export class NotificationFacade {
 	public notifyErrorGuest(
 		receiverID: string,
 		errorMsg: string,
-		orderId: string
+		orderID: string
 	) {
 		this.notifier.notify(receiverID, 'errorGuest', {
 			errorMsg: errorMsg,
-			orderId: orderId,
+			orderID: orderID,
 		});
 	}
 
 	public notifyErrorWaiter(
 		receiverID: string,
 		errorMsg: string,
-		waiterId: string
+		waiterID: string
 	) {
 		this.notifier.notify(receiverID, 'errorWaiter', {
 			errorMsg: errorMsg,
-			waiterId: waiterId,
+			waiterID: waiterID,
 		});
 	}
 

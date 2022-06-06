@@ -254,14 +254,14 @@ app.post('/createOrder', (req, res) => {
 
 app.post('/submitReview', (req, res) => {
 	checkInputs(
-		['orderId', 'details', 'rating'],
+		['orderID', 'details', 'rating'],
 		req.body,
 		(msg: string) => res.send(msg),
 		status => res.status(status),
 		() =>
 			res.send(
 				guest.submitReview(
-					req.body['orderId'],
+					req.body['orderID'],
 					req.body['details'],
 					req.body['rating']
 				)
@@ -271,7 +271,7 @@ app.post('/submitReview', (req, res) => {
 
 app.post('/cancelOrderGuest', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
@@ -291,10 +291,10 @@ app.post('/cancelOrderGuest', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async guestId => {
+				async guestID => {
 					const response = await guest.cancelOrder(
-						req.body['orderId'],
-						guestId
+						req.body['orderID'],
+						guestID
 					);
 					sendResponse(
 						response,
@@ -304,7 +304,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							'A guest canceled their order. Order ID: ' +
-								req.body['orderId']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -342,7 +342,7 @@ app.get('/getGuestsDetails', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async _waiterId => {
+				async _waiterID => {
 					const ids = req.query['ids'];
 					if (ids && Array.isArray(ids) && isStringArray(ids)) {
 						const response = await waiter
@@ -406,7 +406,7 @@ app.get('/getWaiterOrders', (req, res) => {
 
 app.post('/orderArrived', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
@@ -426,10 +426,10 @@ app.post('/orderArrived', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async waiterId => {
+				async waiterID => {
 					const response = await waiter.orderArrived(
-						req.body['orderId'],
-						waiterId
+						req.body['orderID'],
+						waiterID
 					);
 					sendResponse(
 						response,
@@ -439,7 +439,7 @@ app.post('/orderArrived', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							"A waiter changes order status to 'arrived'. Order ID: " +
-								req.body['orderId']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -455,7 +455,7 @@ app.post('/orderArrived', (req, res) => {
 
 app.post('/orderOnTheWay', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
@@ -475,10 +475,10 @@ app.post('/orderOnTheWay', (req, res) => {
 					);
 				},
 				status => res.status(status),
-				async waiterId => {
+				async waiterID => {
 					const response = await waiter.orderOnTheWay(
-						req.body['orderId'],
-						waiterId
+						req.body['orderID'],
+						waiterID
 					);
 					sendResponse(
 						response,
@@ -488,7 +488,7 @@ app.post('/orderOnTheWay', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							"Order status was changed to 'on the way'. Order ID: " +
-								req.body['orderId']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -513,8 +513,8 @@ app.get('/getWaiterName', (req, res) => {
 			);
 		},
 		status => res.status(status),
-		async waiterId => {
-			const response = await waiter.getWaiterName(waiterId);
+		async waiterID => {
+			const response = await waiter.getWaiterName(waiterID);
 			sendResponse(
 				response,
 				st => res.status(st),
@@ -671,7 +671,7 @@ io.on('connection', function (socket: socketio.Socket) {
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
-		['orderId', 'waiterId'],
+		['orderID', 'waiterID'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
@@ -693,8 +693,8 @@ app.post('/assignWaiter', (req, res) => {
 				status => res.status(status),
 				async _adminId => {
 					const response = await dashboard.assignWaiter(
-						req.body['orderIds'],
-						req.body['waiterId']
+						req.body['orderIDs'],
+						req.body['waiterID']
 					);
 					sendResponse(
 						response,
@@ -704,9 +704,9 @@ app.post('/assignWaiter', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							'A waiter was assigned successfuly. Waiter ID: ' +
-								req.body['waiterId'] +
+								req.body['waiterID'] +
 								' Order IDs: ' +
-								req.body['orderIds']
+								req.body['orderIDs']
 						);
 					} else {
 						logger.info(
@@ -780,7 +780,7 @@ app.get('/getWaiters', (req, res) => {
 
 app.get('/getWaitersByOrder', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.query,
 		(msg: string) => {
 			res.send(msg);
@@ -802,7 +802,7 @@ app.get('/getWaitersByOrder', (req, res) => {
 				status => res.status(status),
 				async _id => {
 					const response = await dashboard.getWaiterByOrder(
-						String(req.query['orderId'])
+						String(req.query['orderID'])
 					);
 					sendResponse(
 						response,
@@ -823,7 +823,7 @@ app.get('/getWaitersByOrder', (req, res) => {
 
 app.post('/cancelOrderAdmin', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
@@ -845,7 +845,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 				status => res.status(status),
 				async id => {
 					const response = await dashboard.cancelOrderAdmin(
-						req.body['orderId'],
+						req.body['orderID'],
 						id
 					);
 					sendResponse(
@@ -867,7 +867,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 
 app.post('/changeOrderStatus', (req, res) => {
 	checkInputs(
-		['orderId', 'newStatus'],
+		['orderID', 'newStatus'],
 		req.body,
 		(msg: string) => {
 			res.send(msg);
@@ -889,7 +889,7 @@ app.post('/changeOrderStatus', (req, res) => {
 				status => res.status(status),
 				async id => {
 					const response = await dashboard.changeOrderStatus(
-						req.body['orderId'],
+						req.body['orderID'],
 						req.body['newStatus'],
 						id
 					);

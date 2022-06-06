@@ -8,14 +8,14 @@ import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 
 function createOrder(
-	guestId: string,
+	guestID: string,
 	items: Map<string, number>
 ): Promise<ResponseMsg<string>> {
-	return WaiterOrder.createOrder(guestId, items);
+	return WaiterOrder.createOrder(guestID, items);
 }
 
-function updateLocationGuest(guestId: string, location: Location): void {
-	getGuestOrder(guestId).then(orderResponse => {
+function updateLocationGuest(guestID: string, location: Location): void {
+	getGuestOrder(guestID).then(orderResponse => {
 		orderResponse.ifGood(order => {
 			onOrder(order.id, (o: IOrder) => o.updateGuestLocation(location));
 		});
@@ -27,11 +27,11 @@ async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
 }
 
 function submitReview(
-	orderId: string,
+	orderID: string,
 	details: string,
 	rating: number
 ): Promise<ResponseMsg<void>> {
-	return onOrder(orderId, (o: IOrder) => o.giveFeedback(details, rating));
+	return onOrder(orderID, (o: IOrder) => o.giveFeedback(details, rating));
 }
 
 async function cancelOrder(
