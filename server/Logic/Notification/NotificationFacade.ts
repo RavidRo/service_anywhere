@@ -71,4 +71,17 @@ export class NotificationFacade {
 			waiterId: waiterId,
 		});
 	}
+
+	public notifyReview(
+		receiverID: string,
+		orderID: string,
+		details: string,
+		rating: number
+	){
+		this.notifier.notify(receiverID, 'review', {
+			orderID,
+			details,
+			rating
+		})
+	}
 }
