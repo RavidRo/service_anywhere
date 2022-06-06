@@ -54,7 +54,7 @@ function WaiterDialogView(props: waiterProps) {
 								waiters.find(waiter => waiter.id === id) || {
 									name: 'Cannot find correct waiter',
 								}
-							).name
+							).username
 					)}`
 				)}
 			</Typography>

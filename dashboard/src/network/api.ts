@@ -9,9 +9,9 @@ export default class Api extends Singleton {
 		this.handler = new RequestsHandler();
 	}
 
-	login(name: string, password: string): Promise<string> {
+	login(username: string, password: string): Promise<string> {
 		return this.handler.post<string>('login', {
-			name: name,
+			username: username,
 			password: password,
 		});
 	}

@@ -46,8 +46,9 @@ function Login(props: loginProps) {
 							fullWidth
 							id='username'
 							label='username'
+							type='username'
 							name='username'
-							autoComplete='nausernameme'
+							autoComplete='username'
 							autoFocus
 						/>
 						<TextField
@@ -58,7 +59,7 @@ function Login(props: loginProps) {
 							label='Password'
 							type='password'
 							id='password'
-							autoComplete='current-password'
+							autoComplete='password'
 						/>
 						<Button
 							type='submit'

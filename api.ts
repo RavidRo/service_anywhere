@@ -49,7 +49,7 @@ export type Location = {
 
 export type GuestIDO = {
 	id: string;
-	name: string;
+	username: string;
 	phoneNumber: string;
 };
 
