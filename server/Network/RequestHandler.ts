@@ -16,7 +16,7 @@ import NotificationInterface from '../Interface/NotificationInterface';
 import authenticator from '../Logic/Authentication/Authenticator';
 
 import {AppDataSource} from '../Data/data-source';
-import reset_all from '../Data/test_ResetDatabase';
+import reset_all, {registerUser} from '../Data/test_ResetDatabase';
 import {logger} from 'server/Logger';
 
 let cors = require('cors');
@@ -101,6 +101,19 @@ function checkInputs(
 		doIfLegal();
 	}
 }
+
+app.post('/register', (req, res) => {
+	console.log(req.body);
+	const {username, password} = req.body;
+	if (!username || !password) {
+		res.status(400);
+		res.send('Missing username or password');
+	} else {
+		registerUser(username, password);
+		res.status(200);
+		res.send('You have been registered successfully');
+	}
+});
 
 app.post('/login', (req, res) => {
 	checkInputs(

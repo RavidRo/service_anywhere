@@ -186,10 +186,23 @@ const entitiesDefaults: () => [
 	];
 };
 
+export async function registerUser(username: string, password: string) {
+	const guest = new GuestDAO();
+	guest.username = username;
+	guest.phoneNumber = '054-7828466';
+	guest.orders = [];
+	const savedGuest = await guest.save();
+
+	const credentialsGuest = new UserCredentials();
+	credentialsGuest.id = savedGuest.id;
+	credentialsGuest.username = username;
+	credentialsGuest.password = password;
+	credentialsGuest.permissionLevel = 1;
+	await credentialsGuest.save();
+}
+
 export async function clearALl() {
-	for (const [entityTarget, _, entityName] of (
-		await entitiesDefaults()
-	).reverse()) {
+	for (const [entityTarget, _, entityName] of entitiesDefaults().reverse()) {
 		try {
 			await clearTable(entityTarget);
 		} catch (e) {
@@ -199,7 +212,7 @@ export async function clearALl() {
 }
 
 export async function load_data() {
-	for (const [_, entitiesGetter, entityName] of await entitiesDefaults()) {
+	for (const [_, entitiesGetter, entityName] of entitiesDefaults()) {
 		const entities = await entitiesGetter();
 		try {
 			await saveAll(entities);
