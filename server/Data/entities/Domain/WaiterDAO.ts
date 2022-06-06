@@ -15,13 +15,16 @@ export class WaiterDAO extends BaseEntity {
 	id: string;
 
 	@Column()
-	name: string;
+	username: string;
 
 	@ManyToMany(() => OrderDAO, order => order.waiters)
 	@JoinTable()
 	orders: OrderDAO[];
 
 	getDetails(): WaiterIDO {
-		return {id: this.id, name: this.name};
+		return {
+			id: this.id,
+			username: this.username,
+		};
 	}
 }

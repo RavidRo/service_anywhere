@@ -1,15 +1,13 @@
 import {Location, OrderIDO, OrderStatus} from 'api';
-import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
-
-import * as WaiterStore from '../Data/Stores/WaiterStore';
-import * as OrderStore from '../Data/Stores/OrderStore';
-import {getItems} from '../Data/Stores/ItemStore';
-import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
-
-import {onOrder, getGuestActiveOrder, getOrder} from './Orders';
-import {OrderNotifier} from './OrderNotifier';
-
 import config from '../config.json';
+import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
+import {getItems} from '../Data/Stores/ItemStore';
+import * as OrderStore from '../Data/Stores/OrderStore';
+import * as WaiterStore from '../Data/Stores/WaiterStore';
+import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
+import {NotificationFacade} from './Notification/NotificationFacade';
+import {OrderNotifier} from './OrderNotifier';
+import {getGuestActiveOrder, onOrder} from './Orders';
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
@@ -159,10 +157,27 @@ export async function changeOrderStatus(
 async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
 	const response = await WaiterStore.getWaiter(waiterID);
 	if (response !== null) {
-		return makeGood(response.name);
+		return makeGood(response.username);
 	} else {
 		return makeFail('There is no waiter with that token');
 	}
+}
+
+export function locationErrorGuest(orderId: string, errorMsg: string) {
+	const facade = new NotificationFacade();
+	facade.notifyErrorGuest(config.admin_id, errorMsg, orderId);
+	getWaiterByOrder(orderId).then(response =>
+		response.ifGood(waiters =>
+			waiters.forEach(waiter => {
+				facade.notifyErrorGuest(waiter, errorMsg, orderId);
+			})
+		)
+	);
+}
+
+export function locationErrorWaiter(errorMsg: string, waiterID: string) {
+	const facade = new NotificationFacade();
+	facade.notifyErrorWaiter(config.admin_id, errorMsg, waiterID);
 }
 
 export default {
@@ -175,4 +190,6 @@ export default {
 	updateWaiterLocation,
 	changeOrderStatus,
 	getWaiterName,
+	locationErrorGuest,
+	locationErrorWaiter,
 };

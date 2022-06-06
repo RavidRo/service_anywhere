@@ -7,7 +7,7 @@ export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 	}
 	return (
 		(waiter as WaiterIDO).id !== undefined &&
-		(waiter as WaiterIDO).name !== undefined
+		(waiter as WaiterIDO).username !== undefined
 	);
 }
 
