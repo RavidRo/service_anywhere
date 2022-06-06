@@ -149,7 +149,6 @@ app.get('/getMaps', (_req, res) => {
 			res.send('Getting maps failed, try again later');
 			logger.error('An error occured while getting maps data');
 		});
-	res.send(maps.getMaps());
 });
 
 //Guest
