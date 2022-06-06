@@ -62,15 +62,13 @@ test('Assigning a waiter who is assigned to the order result with a failure', as
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID: orderID1} = await createOrder({index: 0});
 
-	const assignResponse1 = await DashboardInterface.assignWaiter(
-		orderID1,
-		[waitersIDs.getData()[0].id]
-	);
+	await DashboardInterface.assignWaiter(orderID1, [
+		waitersIDs.getData()[0].id,
+	]);
 
-	const assignResponse2 = await DashboardInterface.assignWaiter(
-		orderID1,
-		[waitersIDs.getData()[0].id]
-	);
+	const assignResponse2 = await DashboardInterface.assignWaiter(orderID1, [
+		waitersIDs.getData()[0].id,
+	]);
 
 	expect(assignResponse2.isSuccess()).toBeFalsy();
 });
@@ -79,6 +77,7 @@ test('Getting the assigned waiters successfully', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
 	const {orderID: orderID1} = await createOrder({index: 0});
 	const {orderID: orderID2} = await createOrder({index: 1});
+
 	await DashboardInterface.assignWaiter(orderID1, [
 		waitersIDs[0].id,
 		waitersIDs[1].id,

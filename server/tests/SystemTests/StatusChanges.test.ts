@@ -104,7 +104,7 @@ test("Assigning a waiter results in changes the order's status to assigned", asy
 		'ready to deliver',
 		adminID
 	);
-	const assigned = await DashboardInterface.assignWaiter(orderID, [waiterIds.getData()[0].id]);
+	await DashboardInterface.assignWaiter(orderID, [waiterIds.getData()[0].id]);
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(orderResponse.getData().status).toBe('assigned');
