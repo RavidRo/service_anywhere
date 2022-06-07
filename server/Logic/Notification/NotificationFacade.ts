@@ -28,11 +28,11 @@ export class NotificationFacade {
 
 	public updateWaiterLocation(
 		receiverID: string,
-		orderID: string,
+		waiterID: string,
 		location: Location
 	) {
 		this.notifier.notify(receiverID, 'updateWaiterLocation', {
-			orderID,
+			waiterID,
 			location,
 		});
 		//console.debug('updateWaiterLocation', receiverID);
@@ -50,10 +50,25 @@ export class NotificationFacade {
 		//console.debug('changeOrderStatus', receiverID);
 	}
 
-	public notifyError(
+	public notifyErrorGuest(
 		receiverID: string,
-		errorMsg: string
-	){
-		this.notifier.notify(receiverID, 'error', {errorMsg})
+		errorMsg: string,
+		orderId: string
+	) {
+		this.notifier.notify(receiverID, 'errorGuest', {
+			errorMsg: errorMsg,
+			orderId: orderId,
+		});
+	}
+
+	public notifyErrorWaiter(
+		receiverID: string,
+		errorMsg: string,
+		waiterId: string
+	) {
+		this.notifier.notify(receiverID, 'errorWaiter', {
+			errorMsg: errorMsg,
+			waiterId: waiterId,
+		});
 	}
 }

@@ -69,22 +69,26 @@ export abstract class OrderNotifier implements IOrder {
 	updateGuestLocation(location: Location): ResponseMsg<void> {
 		return this.order.updateGuestLocation(location);
 	}
-	updateWaiterLocation(location: Location): ResponseMsg<void> {
-		return this.order.updateWaiterLocation(location);
+	updateWaiterLocation(
+		waiterID: string,
+		location: Location
+	): ResponseMsg<void> {
+		return this.order.updateWaiterLocation(waiterID, location);
 	}
 
-	async assign(waiterID: string): Promise<ResponseMsg<void>> {
-		//todo: why no call to this.order.assign()?
+	async assign(waiterIDs: string[]): Promise<ResponseMsg<void>> {
 		const oldStatus = this.getDetails().status;
 		const newStatus = oldStatus === 'on the way' ? oldStatus : 'assigned';
 		return (await this.changeOrderStatus(newStatus, true, true)).ifGood(
 			() => {
-				const orderWaiter = new WaiterNotifier(this.order, waiterID);
-				this.order = orderWaiter;
-				this.notificationFacade.assignedToOrder(
-					waiterID,
-					this.getDetails()
-				);
+				waiterIDs.forEach(id => {
+					const orderWaiter = new WaiterNotifier(this.order, id);
+					this.order = orderWaiter;
+					this.notificationFacade.assignedToOrder(
+						id,
+						this.getDetails()
+					);
+				});
 			}
 		);
 	}
@@ -109,7 +113,7 @@ export abstract class OrderNotifier implements IOrder {
 		);
 	}
 
-	giveFeedback(review: string, score: number): boolean {
+	giveFeedback(review: string, score: number): Promise<ResponseMsg<void>> {
 		return this.order.giveFeedback(review, score);
 	}
 }
@@ -123,14 +127,13 @@ class GuestNotifier extends OrderNotifier {
 	}
 
 	override updateWaiterLocation(
-		...params: [location: Location]
+		...params: [waitertID: string, location: Location]
 	): ResponseMsg<void> {
 		return super
 			.updateWaiterLocation(...params)
 			.ifGood(() =>
 				this.notificationFacade.updateWaiterLocation(
 					this.receiverId,
-					this.getID(),
 					...params
 				)
 			);

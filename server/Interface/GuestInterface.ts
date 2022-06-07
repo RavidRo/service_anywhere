@@ -30,11 +30,8 @@ function submitReview(
 	orderId: string,
 	details: string,
 	rating: number
-): ResponseMsg<void> {
-	orderId;
-	details;
-	rating;
-	throw new Error('Method not implemented');
+): Promise<ResponseMsg<void>> {
+	return onOrder(orderId, (o: IOrder) => o.giveFeedback(details, rating));
 }
 
 async function cancelOrder(
@@ -44,10 +41,19 @@ async function cancelOrder(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
+function locationErrorGuest(guestID: string, errorMsg: string): void {
+	getGuestOrder(guestID).then(orderResponse =>
+		orderResponse.ifGood(order =>
+			WaiterOrder.locationErrorGuest(order.id, errorMsg)
+		)
+	);
+}
+
 export default {
 	createOrder,
 	updateLocationGuest,
 	getGuestOrder,
 	submitReview,
 	cancelOrder,
+	locationErrorGuest,
 };

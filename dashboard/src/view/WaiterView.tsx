@@ -54,7 +54,7 @@ function WaiterDialogView(props: waiterProps) {
 								waiters.find(waiter => waiter.id === id) || {
 									name: 'Cannot find correct waiter',
 								}
-							).name
+							).username
 					)}`
 				)}
 			</Typography>
@@ -71,10 +71,9 @@ function WaiterDialogView(props: waiterProps) {
 											key={waiter.id}
 											onChange={handleCheckboxChange}
 											name={waiter.id}
-											disabled={!waiter.available}
 										/>
 									}
-									label={waiter.name}
+									label={waiter.username}
 								/>
 							);
 						})}

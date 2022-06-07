@@ -10,6 +10,7 @@ import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
 import waiter from '../Interface/WaiterInterface';
 import items from '../Interface/ItemsInterface';
+import maps from '../Interface/MapsInterface';
 import NotificationInterface from '../Interface/NotificationInterface';
 
 import authenticator from '../Logic/Authentication/Authenticator';
@@ -27,6 +28,8 @@ app.use(cors({origin: '*', credentials: true}));
 
 import * as http from 'http';
 import * as socketIO from 'socket.io';
+import GuestInterface from '../Interface/GuestInterface';
+import WaiterInterface from '../Interface/WaiterInterface';
 
 const httpServer = new http.Server(app);
 const io = new socketIO.Server(httpServer, {
@@ -105,7 +108,9 @@ app.post('/login', (req, res) => {
 		req.body,
 		(msg: string) => {
 			res.send(msg);
-			logger.info('A user tried to log in without a password or username');
+			logger.info(
+				'A user tried to log in without a password or username'
+			);
 		},
 		status => res.status(status),
 		() => {
@@ -137,7 +142,14 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/getMaps', (_req, res) => {
-	res.send(config['maps'])
+	maps.getMaps()
+		.then(maps => res.send(maps))
+		.catch(() => {
+			res.status(500);
+			res.send('Getting maps failed, try again later');
+			logger.error('An error occured while getting maps data');
+		});
+	res.send(maps.getMaps());
 });
 
 //Guest
@@ -591,7 +603,7 @@ io.on('connection', function (socket: socketio.Socket) {
 				)
 		);
 	});
-	socket.on('locationError', (message: any) => {
+	socket.on('locationErrorGuest', (message: any) => {
 		checkInputs(
 			['errorMsg'],
 			message,
@@ -609,13 +621,46 @@ io.on('connection', function (socket: socketio.Socket) {
 					(msg: string) => {
 						socket.emit('Error', msg);
 						logger.info(
-							"A user tried to send an error regarding their location but used an unmatched token"
+							'A user tried to send an error regarding their location but used an unmatched token'
 						);
 					},
 					_status => {},
 					(id: string) => {
-						//console.debug('location error: ', message);
-						NotificationInterface.locationError(id, message['errorMsg']);
+						GuestInterface.locationErrorGuest(
+							id,
+							message['errorMsg']
+						);
+					}
+				)
+		);
+	});
+	socket.on('locationErrorWaiter', (message: any) => {
+		checkInputs(
+			['errorMsg'],
+			message,
+			(msg: string) => {
+				socket.emit('Error', msg);
+				logger.info(
+					"A user tried to send an error regarding their location and didn't include an error message."
+				);
+			},
+			_status => {},
+			() =>
+				authenticate(
+					socket.handshake.auth['token'],
+					2,
+					(msg: string) => {
+						socket.emit('Error', msg);
+						logger.info(
+							'A user tried to send an error regarding their location but used an unmatched token'
+						);
+					},
+					_status => {},
+					(id: string) => {
+						WaiterInterface.locationErrorWaiter(
+							message['errorMsg'],
+							id
+						);
 					}
 				)
 		);

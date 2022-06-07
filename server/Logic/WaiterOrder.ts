@@ -1,15 +1,13 @@
 import {Location, OrderIDO, OrderStatus} from 'api';
-import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
-
-import * as WaiterStore from '../Data/Stores/WaiterStore';
-import * as OrderStore from '../Data/Stores/OrderStore';
-import {getItems} from '../Data/Stores/ItemStore';
-import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
-
-import {onOrder, getGuestActiveOrder} from './Orders';
-import {OrderNotifier} from './OrderNotifier';
-
 import config from '../config.json';
+import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
+import {getItems} from '../Data/Stores/ItemStore';
+import * as OrderStore from '../Data/Stores/OrderStore';
+import * as WaiterStore from '../Data/Stores/WaiterStore';
+import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
+import {NotificationFacade} from './Notification/NotificationFacade';
+import {OrderNotifier} from './OrderNotifier';
+import {getGuestActiveOrder, onOrder} from './Orders';
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
@@ -26,44 +24,46 @@ export async function updateWaiterLocation(
 	const orders = await getOrdersByWaiter(waiterId);
 	orders.ifGood(orders =>
 		orders.forEach(order =>
-			onOrder(order.id, o => o.updateWaiterLocation(location))
+			onOrder(order.id, o => o.updateWaiterLocation(waiterId, location))
 		)
 	);
 }
 
 export async function assignWaiter(
-	orderIDs: string[],
-	waiterID: string
+	orderID: string,
+	waiterIDs: string[]
 ): Promise<ResponseMsg<void>> {
-	const waiter = await WaiterStore.getWaiter(waiterID);
-	if (waiter === null) {
-		return makeFail('The requested waiter does not exit', 400);
-	}
-	if (!waiter.available) {
-		return makeFail('The requested waiter is not available', 400);
-	}
-	const canAssignResponses = await Promise.all(
-		orderIDs.map(orderId =>
-			onOrder(orderId, order => makeGood(order.canAssign()))
-		)
+	const waiters = await Promise.all(
+		waiterIDs.map(id => WaiterStore.getWaiter(id))
 	);
-	const canAssignResponse = mapResponse(canAssignResponses);
+	if (waiters.includes(null)) {
+		return makeFail('A requested waiter does not exit', 400);
+	}
+	const existingWaiters = await getWaiterByOrder(orderID);
+	const overlap = waiterIDs.filter(w =>
+		existingWaiters.getData().includes(w)
+	);
+	if (overlap.length > 0) {
+		return makeFail(
+			'Some requested waiters are already assigned to this order: ' +
+				overlap,
+			400
+		);
+	}
+	const canAssignResponse = await onOrder(orderID, order =>
+		makeGood(order.canAssign())
+	);
 	if (canAssignResponse.isSuccess()) {
-		const canAssignToOrders = canAssignResponse.getData();
-		if (canAssignToOrders.some(can => !can)) {
-			return makeFail(
-				'All orders must be in a ready status to assign waiters to them',
-				400
-			);
+		// Change the order status
+		const statusChaneResponse = await onOrder(orderID, order =>
+			order.assign(waiterIDs)
+		);
+		if (!statusChaneResponse.isSuccess()) {
+			return statusChaneResponse;
 		}
 
-		// Change the order status
-		orderIDs.forEach(orderId =>
-			onOrder(orderId, order => order.assign(waiterID))
-		);
-
 		// Saves order <-> waiters assignments
-		return await OrderStore.assignWaiter(orderIDs, waiterID);
+		return await OrderStore.assignWaiter(orderID, waiterIDs);
 	}
 	return makeFail(canAssignResponse.getError());
 }
@@ -163,6 +163,23 @@ async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
 	}
 }
 
+export function locationErrorGuest(orderId: string, errorMsg: string) {
+	const facade = new NotificationFacade();
+	facade.notifyErrorGuest(config.admin_id, errorMsg, orderId);
+	getWaiterByOrder(orderId).then(response =>
+		response.ifGood(waiters =>
+			waiters.forEach(waiter => {
+				facade.notifyErrorGuest(waiter, errorMsg, orderId);
+			})
+		)
+	);
+}
+
+export function locationErrorWaiter(errorMsg: string, waiterID: string) {
+	const facade = new NotificationFacade();
+	facade.notifyErrorWaiter(config.admin_id, errorMsg, waiterID);
+}
+
 export default {
 	createOrder,
 	assignWaiter,
@@ -173,4 +190,6 @@ export default {
 	updateWaiterLocation,
 	changeOrderStatus,
 	getWaiterName,
+	locationErrorGuest,
+	locationErrorWaiter,
 };

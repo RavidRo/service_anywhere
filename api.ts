@@ -1,11 +1,13 @@
-export type OrderStatus =
-	| 'received'
-	| 'in preparation'
-	| 'ready to deliver'
-	| 'assigned'
-	| 'on the way'
-	| 'delivered'
-	| 'canceled';
+export const STATUSES = [
+	'received',
+	'in preparation',
+	'ready to deliver',
+	'assigned',
+	'on the way',
+	'delivered',
+	'canceled',
+] as const;
+export type OrderStatus = typeof STATUSES[number];
 type OrderID = string;
 
 export type OrderIDO = {
@@ -23,11 +25,15 @@ export type ItemIDO = {
 	preparationTime: number;
 };
 
+export type ReviewIDO = {
+	details: string;
+	rating: number;
+};
+
 type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
 	username: string;
-	available: boolean;
 };
 
 // export type WaiterDAO = {
@@ -35,6 +41,23 @@ export type WaiterIDO = {
 // 	name: string;
 // 	orders: OrderDAO[];
 // };
+
+export type GPS = {
+	longitude: number;
+	latitude: number;
+};
+export type Corners = {
+	topRightGPS: GPS;
+	topLeftGPS: GPS;
+	bottomRightGPS: GPS;
+	bottomLeftGPS: GPS;
+};
+export type MapIDO = {
+	id: string;
+	name: string;
+	corners: Corners;
+	imageURL: string;
+};
 
 export type Location = {
 	x: number;
@@ -55,7 +78,7 @@ interface GuestAPI {
 	login(password: string): Promise<string>;
 	getItems: () => Promise<ItemIDO[]>;
 	/* need to decide on maps */
-	getMaps: () => Promise<string>;
+	getMaps: () => Promise<MapIDO[]>;
 	getGuestOrder: () => Promise<OrderIDO>;
 	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
@@ -68,7 +91,7 @@ interface GuestAPI {
 
 interface guestCommunication {
 	updateGuestLocation: (guestLocation: Location) => void;
-	locationError: (errorMsg: string) => void;
+	locationErrorGuest: (errorMsg: string) => void;
 }
 
 // guests Notifications from server:
@@ -83,7 +106,7 @@ interface GuestNotificationHandler {
 interface WaiterAPI {
 	login: (password: string) => Promise<void>;
 	getItems: () => Promise<ItemIDO[]>;
-	getMaps: () => Promise<string>;
+	getMaps: () => Promise<MapIDO[]>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
 	orderArrived: (orderId: OrderID) => Promise<void>;
@@ -91,7 +114,7 @@ interface WaiterAPI {
 }
 interface WaiterCommunication {
 	updateWaiterLocation: (waiterLocation: Location) => void;
-	locationError: (errorMsg: string) => void;
+	locationErrorWaiter: (errorMsg: string) => void;
 }
 interface WaiterNotificationHandler {
 	updateGuestLocation(guestId: string, guestLocation: Location): void;

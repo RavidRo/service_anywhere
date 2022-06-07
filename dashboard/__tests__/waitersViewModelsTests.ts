@@ -32,13 +32,11 @@ const mockListOfOrders: OrderIDO[] = [
 const mockListOfWaiters: WaiterIDO[] = [
 	{
 		id: '1',
-		name: 'waiter 1',
-		available: false,
+		username: 'waiter 1',
 	},
 	{
 		id: '2',
-		name: 'waiter 2',
-		available: true,
+		username: 'waiter 2',
 	},
 ];
 const mockGetOrders = jest.fn(() => mockMakePromise(mockListOfOrders));
