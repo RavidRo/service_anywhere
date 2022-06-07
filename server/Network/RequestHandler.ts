@@ -1,36 +1,32 @@
 require('dotenv').config();
-import config from 'server/config.json';
-
 import express from 'express';
+import * as http from 'http';
+import { logger } from 'server/Logger';
 import * as socketio from 'socket.io';
-
-import {ResponseMsg} from '../Response';
-
-import guest from '../Interface/GuestInterface';
+import * as socketIO from 'socket.io';
+import { AppDataSource } from '../Data/data-source';
+import reset_all from '../Data/test_ResetDatabase';
 import dashboard from '../Interface/DashboardInterface';
-import waiter from '../Interface/WaiterInterface';
+import { default as guest, default as GuestInterface } from '../Interface/GuestInterface';
 import items from '../Interface/ItemsInterface';
 import maps from '../Interface/MapsInterface';
 import NotificationInterface from '../Interface/NotificationInterface';
-
+import { default as waiter, default as WaiterInterface } from '../Interface/WaiterInterface';
 import authenticator from '../Logic/Authentication/Authenticator';
+import { ResponseMsg } from '../Response';
 
-import {AppDataSource} from '../Data/data-source';
-import reset_all from '../Data/test_ResetDatabase';
-import {logger} from 'server/Logger';
+//-------------------setup---------------------------
 
 let cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const statusFail = 400;
+const statusFailClient = 400;
+const statusFailServer = 500;
+const adminPermissionLevel = 3;
+const waiterPermissionLevel = 2;
+const guestPermissionLevel = 1;
 app.use(express.json());
 app.use(cors({origin: '*', credentials: true}));
-
-import * as http from 'http';
-import * as socketIO from 'socket.io';
-import GuestInterface from '../Interface/GuestInterface';
-import WaiterInterface from '../Interface/WaiterInterface';
-
 const httpServer = new http.Server(app);
 const io = new socketIO.Server(httpServer, {
 	cors: {
@@ -38,17 +34,25 @@ const io = new socketIO.Server(httpServer, {
 	},
 });
 
-// use it before all route definitions
-
 app.get('/', (_req, res) => {
-	res.send("Ima shel Tommer ve'aba shel Tommer");
+	res.send("Hello");
 });
 
+//---------------auxillary functions----------------
+
+/**
+ * used for checking if the token received is a valid token, if the user has the permission to perform
+ * requested action and to extract the user's ID from the token.
+ * 
+ * @param token The user's token
+ * @param permissionLevel Minimum permission level needed for the request
+ * @param sendErrorMsg If any requirement is not met, invoke method with the error msg and status code to send it to the client
+ * @param doIfLegal If all requirements are met, invoke method with the ID extracted to perform the action requested
+ */
 function authenticate(
 	token: string | undefined,
 	permissionLevel: number,
-	sendErrorMsg: (msg: string) => void,
-	setErrorStatus: (status: number) => void,
+	sendErrorMsg: (msg: string, status: number) => void,
 	doIfLegal: (id: string) => void
 ) {
 	if (token) {
@@ -56,15 +60,20 @@ function authenticate(
 		if (response.isSuccess()) {
 			response.ifGood(doIfLegal);
 		} else {
-			setErrorStatus(statusFail);
-			sendErrorMsg(response.getError());
+			sendErrorMsg(response.getError(), statusFailClient);
 		}
 	} else {
-		setErrorStatus(statusFail);
-		sendErrorMsg('Token does not match any id');
+		sendErrorMsg('Token does not match any id', statusFailClient);
 	}
 }
 
+/**
+ * used for sending the response data if succeded or error message if not
+ * 
+ * @param response The action's response
+ * @param setStatus Used to set the status for the response sent to client
+ * @param send Used to send the response to client
+ */
 function sendResponse(
 	response: ResponseMsg<any>,
 	setStatus: (st: number) => void,
@@ -78,11 +87,18 @@ function sendResponse(
 	send(response.getError());
 }
 
+/**
+ * used for checking that every input expected is received
+ * 
+ * @param inputs List of expected inputs
+ * @param reqBody Body of the request to check for the inputs in
+ * @param sendErrorMsg If any requirement is not met, invoke method with the error msg and status code to send it to the client
+ * @param doIfLegal If all requirements are met, invoke method with the ID extracted to perform the action requested
+ */
 function checkInputs(
 	inputs: string[],
 	reqBody: any,
-	sendErrorMsg: (msg: string) => void,
-	setErrorStatus: (status: number) => void,
+	sendErrorMsg: (msg: string, status: number) => void,
 	doIfLegal: () => void
 ) {
 	let answer = '';
@@ -95,24 +111,24 @@ function checkInputs(
 	}
 	if (missing) {
 		answer = answer.substring(0, answer.length - 2) + ' not in request.';
-		setErrorStatus(statusFail);
-		sendErrorMsg(answer);
+		sendErrorMsg(answer, statusFailClient);
 	} else {
 		doIfLegal();
 	}
 }
 
+//---------------general requests---------------------
 app.post('/login', (req, res) => {
 	checkInputs(
 		['password', 'username'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A user tried to log in without a password or username'
 			);
 		},
-		status => res.status(status),
 		() => {
 			authenticator
 				.login(req.body['username'], req.body['password'])
@@ -131,7 +147,7 @@ app.post('/login', (req, res) => {
 					}
 				})
 				.catch(reason => {
-					res.status(statusFail);
+					res.status(statusFailClient);
 					res.send(reason);
 					logger.error(
 						'An unknown error occured during user data retreival'
@@ -145,21 +161,21 @@ app.get('/getMaps', (_req, res) => {
 	maps.getMaps()
 		.then(maps => res.send(maps))
 		.catch(() => {
-			res.status(500);
+			res.status(statusFailServer);
 			res.send('Getting maps failed, try again later');
 			logger.error('An error occured while getting maps data');
 		});
 	res.send(maps.getMaps());
 });
 
-//Guest
+//---------------------Guest requests----------------------------
 
 app.get('/getItems', (_req, res) => {
 	items
 		.getItems()
 		.then(items => res.send(items))
 		.catch(() => {
-			res.status(500);
+			res.status(statusFailServer);
 			res.send('Getting items failed, try again later');
 			logger.error('An error occured while getting items data');
 		});
@@ -168,14 +184,14 @@ app.get('/getItems', (_req, res) => {
 app.get('/getGuestOrder', (req, res) => {
 	authenticate(
 		req.headers.authorization,
-		1,
-		(msg: string) => {
+		guestPermissionLevel,
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				"A user tried to get a guest's active order but used an unmatched token"
 			);
 		},
-		status => res.status(status),
 		async (id: string) => {
 			const response = await guest.getGuestOrder(id);
 			sendResponse(
@@ -197,25 +213,25 @@ app.post('/createOrder', (req, res) => {
 	checkInputs(
 		['orderItems'],
 		req.body,
-		(msg: string) => {
-			res.status(statusFail);
+		(msg: string, status: number) => {
+			res.status(status)
+			res.status(statusFailClient);
 			res.send(msg);
 			logger.info(
 				"A guest tried to create an order but didn't enter items"
 			);
 		},
-		status => res.status(status),
 		() => {
 			authenticate(
 				req.headers.authorization,
-				1,
-				(msg: string) => {
+				guestPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A guest tried to create an order with an unmatched token'
 					);
 				},
-				status => res.status(status),
 				(id: string) => {
 					guest
 						.createOrder(
@@ -256,8 +272,10 @@ app.post('/submitReview', (req, res) => {
 	checkInputs(
 		['orderId', 'details', 'rating'],
 		req.body,
-		(msg: string) => res.send(msg),
-		status => res.status(status),
+		(msg: string, status: number) =>{ 
+			res.status(status)
+			res.send(msg)
+		},
 		() =>
 			res.send(
 				guest.submitReview(
@@ -273,24 +291,24 @@ app.post('/cancelOrderGuest', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A guest tried to cancel their order but did not enter order ID'
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				1,
-				(msg: string) => {
+				guestPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A guest tried to cancel their order but used an unmatched token'
 					);
 				},
-				status => res.status(status),
 				async guestId => {
 					const response = await guest.cancelOrder(
 						req.body['orderId'],
@@ -318,30 +336,30 @@ app.post('/cancelOrderGuest', (req, res) => {
 	);
 });
 
-//waiter
+//---------------waiter requests--------------------
 
 app.get('/getGuestsDetails', (req, res) => {
 	checkInputs(
 		['ids'],
 		req.query,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A waiter tried to get a guest details but gave no id list'
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				2,
-				(msg: string) => {
+				waiterPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A user tried to get a guest details but had no permission or used an unmatched token'
 					);
 				},
-				status => res.status(status),
 				async _waiterId => {
 					const ids = req.query['ids'];
 					if (ids && Array.isArray(ids) && isStringArray(ids)) {
@@ -349,7 +367,7 @@ app.get('/getGuestsDetails', (req, res) => {
 							.getGuestsDetails(ids)
 							.then(guests => res.send(guests))
 							.catch(() => {
-								res.status(500);
+								res.status(statusFailServer);
 								res.send(
 									'Getting guests failed, try again later'
 								);
@@ -379,14 +397,14 @@ function isStringArray(arr: any): arr is string[] {
 app.get('/getWaiterOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,
-		2,
-		(msg: string) => {
+		waiterPermissionLevel,
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				"A user tried to watch a waiter's orders without permission or with an unmatched token"
 			);
 		},
-		status => res.status(status),
 		async (id: string) => {
 			const response = await waiter.getWaiterOrders(id);
 			sendResponse(
@@ -408,24 +426,24 @@ app.post('/orderArrived', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				"A waiter tried to change order status to 'arrived' and didn't give an order ID"
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				2,
-				(msg: string) => {
+				waiterPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						"A user tried to change order status to 'arrived' but had no permission or used an unmatched token"
 					);
 				},
-				status => res.status(status),
 				async waiterId => {
 					const response = await waiter.orderArrived(
 						req.body['orderId'],
@@ -457,24 +475,24 @@ app.post('/orderOnTheWay', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				"A waiter tried to change order status to 'on the way' and didn't give an order ID"
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				2,
-				(msg: string) => {
+				waiterPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						"A waiter tried to change order status to 'on the way' but had no permission or used an unmatched token"
 					);
 				},
-				status => res.status(status),
 				async waiterId => {
 					const response = await waiter.orderOnTheWay(
 						req.body['orderId'],
@@ -505,14 +523,14 @@ app.post('/orderOnTheWay', (req, res) => {
 app.get('/getWaiterName', (req, res) => {
 	authenticate(
 		req.headers.authorization,
-		2,
-		(msg: string) => {
+		waiterPermissionLevel,
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A waiter tried to get their name but had no permission or used an unmatched token'
 			);
 		},
-		status => res.status(status),
 		async waiterId => {
 			const response = await waiter.getWaiterName(waiterId);
 			sendResponse(
@@ -530,15 +548,15 @@ app.get('/getWaiterName', (req, res) => {
 	);
 });
 
+//----------------------------websocket requests-----------------------
 io.on('connection', function (socket: socketio.Socket) {
 	authenticate(
 		socket.handshake.auth['token'],
 		0,
-		(msg: string) => {
+		(msg: string, _status: number) => {
 			socket.emit('Error', msg);
 			logger.error('Could not connect a user to the websocket');
 		},
-		_status => {},
 		(id: string) =>
 			NotificationInterface.addSubscriber(
 				id,
@@ -549,24 +567,22 @@ io.on('connection', function (socket: socketio.Socket) {
 		checkInputs(
 			['location'],
 			message,
-			(msg: string) => {
+			(msg: string, _status: number) => {
 				socket.emit('Error', msg);
 				logger.info(
 					"A user tried to update a guest's location but didn't include the location"
 				);
 			},
-			_status => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
-					1,
-					(msg: string) => {
+					guestPermissionLevel,
+					(msg: string, _status: number) => {
 						socket.emit('Error', msg);
 						logger.info(
 							"A user tried to update a guest's location but used an unmatched token"
 						);
 					},
-					_status => {},
 					(id: string) => {
 						//console.debug('guest updates location: ', message);
 						guest.updateLocationGuest(id, message['location']);
@@ -578,24 +594,22 @@ io.on('connection', function (socket: socketio.Socket) {
 		checkInputs(
 			['location'],
 			message,
-			(msg: string) => {
+			(msg: string, _status: number) => {
 				socket.emit('Error', msg);
 				logger.info(
 					"A user tried to update a waiter's location but didn't include the location"
 				);
 			},
-			_status => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
-					2,
-					(msg: string) => {
+					waiterPermissionLevel,
+					(msg: string, _status: number) => {
 						socket.emit('Error', msg);
 						logger.info(
 							"A user tried to update a guest's location but used an unmatched token or has no permission"
 						);
 					},
-					_status => {},
 					(id: string) => {
 						//console.debug('waiter updates location: ', message);
 						waiter.updateLocationWaiter(id, message['location']);
@@ -607,24 +621,22 @@ io.on('connection', function (socket: socketio.Socket) {
 		checkInputs(
 			['errorMsg'],
 			message,
-			(msg: string) => {
+			(msg: string, _status: number) => {
 				socket.emit('Error', msg);
 				logger.info(
 					"A user tried to send an error regarding their location and didn't include an error message."
 				);
 			},
-			_status => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
-					1,
-					(msg: string) => {
+					guestPermissionLevel,
+					(msg: string, _status: number) => {
 						socket.emit('Error', msg);
 						logger.info(
 							'A user tried to send an error regarding their location but used an unmatched token'
 						);
 					},
-					_status => {},
 					(id: string) => {
 						GuestInterface.locationErrorGuest(
 							id,
@@ -638,24 +650,22 @@ io.on('connection', function (socket: socketio.Socket) {
 		checkInputs(
 			['errorMsg'],
 			message,
-			(msg: string) => {
+			(msg: string, _status: number) => {
 				socket.emit('Error', msg);
 				logger.info(
 					"A user tried to send an error regarding their location and didn't include an error message."
 				);
 			},
-			_status => {},
 			() =>
 				authenticate(
 					socket.handshake.auth['token'],
-					2,
-					(msg: string) => {
+					waiterPermissionLevel,
+					(msg: string, _status: number) => {
 						socket.emit('Error', msg);
 						logger.info(
 							'A user tried to send an error regarding their location but used an unmatched token'
 						);
 					},
-					_status => {},
 					(id: string) => {
 						WaiterInterface.locationErrorWaiter(
 							message['errorMsg'],
@@ -667,30 +677,30 @@ io.on('connection', function (socket: socketio.Socket) {
 	});
 });
 
-//Dashboard
+//-------------------------admin requests------------------------------
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
 		['orderId', 'waiterId'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				"A user tried to assign a waiter but didn't include order IDs or waiter ID"
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				3,
-				(msg: string) => {
+				adminPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A user tried to assign a waiter but had no permission or used an unmatched token'
 					);
 				},
-				status => res.status(status),
 				async _adminId => {
 					const response = await dashboard.assignWaiter(
 						req.body['orderIds'],
@@ -723,14 +733,14 @@ app.post('/assignWaiter', (req, res) => {
 app.get('/getOrders', (req, res) => {
 	authenticate(
 		req.headers.authorization,
-		3,
-		(msg: string) => {
+		adminPermissionLevel,
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A user tried to get all orders but has no permission or used an unmatched token'
 			);
 		},
-		status => res.status(status),
 		_id => {
 			dashboard.getAllOrders().then(response => {
 				sendResponse(
@@ -752,14 +762,14 @@ app.get('/getOrders', (req, res) => {
 app.get('/getWaiters', (req, res) => {
 	authenticate(
 		req.headers.authorization,
-		3,
-		(msg: string) => {
+		adminPermissionLevel,
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A user tried to get all orders but has no permission or used an unmatched token'
 			);
 		},
-		status => res.status(status),
 		_id => {
 			dashboard.getWaiters().then(response => {
 				sendResponse(
@@ -782,24 +792,24 @@ app.get('/getWaitersByOrder', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.query,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A user tried to get waiters by order but did not include an order ID'
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				3,
-				(msg: string) => {
+				adminPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A user tried to get waiters by order but did not have permission or used an unmatched token'
 					);
 				},
-				status => res.status(status),
 				async _id => {
 					const response = await dashboard.getWaiterByOrder(
 						String(req.query['orderId'])
@@ -825,24 +835,24 @@ app.post('/cancelOrderAdmin', (req, res) => {
 	checkInputs(
 		['orderId'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A user tried to cancel an order but did not include an order ID'
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				3,
-				(msg: string) => {
+				adminPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A user tried to cancel an order but did not have permission or used an unmatched token'
 					);
 				},
-				status => res.status(status),
 				async id => {
 					const response = await dashboard.cancelOrderAdmin(
 						req.body['orderId'],
@@ -869,24 +879,24 @@ app.post('/changeOrderStatus', (req, res) => {
 	checkInputs(
 		['orderId', 'newStatus'],
 		req.body,
-		(msg: string) => {
+		(msg: string, status: number) => {
+			res.status(status)
 			res.send(msg);
 			logger.info(
 				'A user tried to change order status but did not include an order ID or a new status'
 			);
 		},
-		status => res.status(status),
 		async () => {
 			authenticate(
 				req.headers.authorization,
-				3,
-				(msg: string) => {
+				adminPermissionLevel,
+				(msg: string, status: number) => {
+					res.status(status)
 					res.send(msg);
 					logger.info(
 						'A user tried to change order status but did not have permission or used an unmatched token'
 					);
 				},
-				status => res.status(status),
 				async id => {
 					const response = await dashboard.changeOrderStatus(
 						req.body['orderId'],
