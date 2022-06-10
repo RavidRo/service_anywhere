@@ -12,17 +12,10 @@ type waiterDialogViewControllerProps = {
 	ordersViewModel: OrdersViewModel;
 	orderID: string;
 	status: OrderStatus;
-	assignedWaiters: string[];
 	// updateAssignedWaiters: (orderID: string, waiterIds: string[]) => void;
 };
 function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
-	const {
-		waitersViewModel,
-		ordersViewModel,
-		orderID,
-		status,
-		assignedWaiters,
-	} = props;
+	const {waitersViewModel, ordersViewModel, orderID, status} = props;
 	const [open, setOpen] = React.useState(false);
 	const [selectedWaiters, setSelectedWaiters] = React.useState<string[]>([]);
 
@@ -67,7 +60,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	};
 	return (
 		<WaiterDialogView
-			assignedWaiters={assignedWaiters}
+			assignedWaiters={ordersViewModel.getAssignedWaiters(orderID)}
 			waiters={waitersViewModel.getWaiters()}
 			handleOpen={handleOpen}
 			handleClose={handleClose}

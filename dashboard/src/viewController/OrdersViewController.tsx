@@ -136,9 +136,6 @@ const OrdersViewController = (props: viewModelProps) => {
 						ordersViewModel={ordersViewModel}
 						orderID={orderID}
 						status={renderProps.row.status}
-						assignedWaiters={ordersViewModel.getAssignedWaiters(
-							orderID
-						)}
 					/>
 				) : (
 					<ReviewViewController
