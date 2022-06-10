@@ -1,8 +1,8 @@
 import {makeAutoObservable} from 'mobx';
 import {ItemIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../../api';
 
-export type assignedWaitersType = {orderId: string; waiterIds: string[]}[];
-export type orderReviews = {orderId: string; review: ReviewIDO}[];
+export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
+export type orderReviews = {orderID: string; review: ReviewIDO}[];
 
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
@@ -53,21 +53,24 @@ export default class ordersModel {
 		this._assignedWaiters = assignedWaiters;
 	}
 
-	addReview(orderId: string, review: ReviewIDO): void {
-		console.info('Updating reviews with ', orderId, review);
-		this._reviews.push({orderId: orderId, review: review});
+	addReview(orderID: string, details: string, rating: number): void {
+		console.info('Updating reviews with ', orderID, details, rating);
+		this._reviews.push({
+			orderID: orderID,
+			review: {details: details, rating: rating},
+		});
 	}
 
-	updateAssignedWaiters(orderId: string, waiterIds: string[]): void {
-		console.info('Updating assigned waiters with ', orderId, waiterIds);
+	updateAssignedWaiters(orderID: string, waiterIds: string[]): void {
+		console.info('Updating assigned waiters with ', orderID, waiterIds);
 		const assignedWaiterObject = this._assignedWaiters.find(
-			entry => entry.orderId === orderId
+			entry => entry.orderID === orderID
 		);
 		if (assignedWaiterObject !== undefined) {
 			assignedWaiterObject.waiterIds = waiterIds;
 		} else {
 			this._assignedWaiters.push({
-				orderId: orderId,
+				orderID: orderID,
 				waiterIds: waiterIds,
 			});
 		}
@@ -78,9 +81,9 @@ export default class ordersModel {
 		this._orders.push(order);
 	}
 
-	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
+	changeOrderStatus(orderID: string, newStatus: OrderStatus) {
 		this._orders.forEach(order => {
-			if (order.id === orderId) {
+			if (order.id === orderID) {
 				if (newStatus === 'delivered' || newStatus === 'canceled') {
 					order.completionTime = new Date();
 				}

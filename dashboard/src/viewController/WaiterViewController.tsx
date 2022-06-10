@@ -10,16 +10,16 @@ import OrdersViewModel from '../viewModel/ordersViewModel';
 type waiterDialogViewControllerProps = {
 	waitersViewModel: WaitersViewModel;
 	ordersViewModel: OrdersViewModel;
-	orderId: string;
+	orderID: string;
 	status: OrderStatus;
 	assignedWaiters: string[];
-	// updateAssignedWaiters: (orderId: string, waiterIds: string[]) => void;
+	// updateAssignedWaiters: (orderID: string, waiterIds: string[]) => void;
 };
 function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	const {
 		waitersViewModel,
 		ordersViewModel,
-		orderId,
+		orderID,
 		status,
 		assignedWaiters,
 	} = props;
@@ -53,10 +53,10 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 			return;
 		}
 		waitersViewModel
-			.assignWaiter(orderId, selectedWaiters)
+			.assignWaiter(orderID, selectedWaiters)
 			.then(() => {
 				console.log('Selected waiters ', selectedWaiters);
-				ordersViewModel.updateAssignedWaiter(orderId, selectedWaiters);
+				ordersViewModel.updateAssignedWaiter(orderID, selectedWaiters);
 				handleClose();
 			})
 			.catch(_ => alert('Could not assign waiters to order'));

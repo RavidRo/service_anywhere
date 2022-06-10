@@ -49,7 +49,7 @@ const OrdersViewController = (props: viewModelProps) => {
 			renderCell: ExpandCellGrid,
 		},
 		{
-			field: 'guestId',
+			field: 'guestID',
 			headerName: 'Guest Id',
 			editable: false,
 			flex: 1,
@@ -110,11 +110,11 @@ const OrdersViewController = (props: viewModelProps) => {
 			type: 'actions',
 			flex: 1,
 			renderCell: (params: GridRenderCellParams) => {
-				const orderId = params.row.id;
+				const orderID = params.row.id;
 				const status = params.row.status;
 				return (
 					<StatusViewController
-						orderId={orderId}
+						orderID={orderID}
 						status={status}
 						orderViewModel={ordersViewModel}
 						width={params.colDef.computedWidth}
@@ -129,21 +129,21 @@ const OrdersViewController = (props: viewModelProps) => {
 			cellClassName: 'assignWaiter',
 			flex: 1.5,
 			renderCell: (renderProps: GridRenderCellParams) => {
-				const orderId = renderProps.row.id;
+				const orderID = renderProps.row.id;
 				return renderProps.row.status !== 'delivered' ? (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
 						ordersViewModel={ordersViewModel}
-						orderId={orderId}
+						orderID={orderID}
 						status={renderProps.row.status}
 						assignedWaiters={ordersViewModel.getAssignedWaiters(
-							orderId
+							orderID
 						)}
 					/>
 				) : (
 					<ReviewViewController
 						ordersViewModel={ordersViewModel}
-						orderId={orderId}
+						orderID={orderID}
 					/>
 				);
 			},

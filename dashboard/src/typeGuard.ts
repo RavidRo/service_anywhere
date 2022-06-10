@@ -22,22 +22,23 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 	}
 	return (
 		(order as OrderIDO).creationTime !== undefined &&
-		(order as OrderIDO).guestId !== undefined &&
+		(order as OrderIDO).guestID !== undefined &&
 		(order as OrderIDO).id !== undefined &&
 		(order as OrderIDO).items !== undefined &&
 		(order as OrderIDO).status !== undefined
 	);
 }
 
-type orderReview = {orderId: string; review: ReviewIDO};
+type orderReview = {orderID: string; details: string; rating: number};
 export function isReview(review: object): review is orderReview {
 	console.log('is Review: ', review);
 	if (!review) {
 		return false;
 	}
 	return (
-		(review as orderReview).orderId !== undefined &&
-		(review as orderReview).review !== undefined
+		(review as orderReview).orderID !== undefined &&
+		(review as orderReview).details !== undefined &&
+		(review as orderReview).rating !== undefined
 	);
 }
 

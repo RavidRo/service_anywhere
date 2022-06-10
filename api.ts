@@ -12,7 +12,7 @@ type OrderID = string;
 
 export type OrderIDO = {
 	id: OrderID;
-	guestId: string;
+	guestID: string;
 	items: Record<string, number>;
 	status: OrderStatus;
 	creationTime: Date;
@@ -23,11 +23,6 @@ export type ItemIDO = {
 	name: string;
 	price: number;
 	preparationTime: number;
-};
-
-export type ReviewIDO = {
-	details: string;
-	rating: number;
 };
 
 type WaiterID = string;

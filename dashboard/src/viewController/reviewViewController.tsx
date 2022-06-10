@@ -6,10 +6,10 @@ import ReviewView from '../view/ReviewView';
 
 type reviewProps = {
 	ordersViewModel: OrdersViewModel;
-	orderId: string;
+	orderID: string;
 };
 function ReviewViewController(props: reviewProps) {
-	const {ordersViewModel, orderId} = props;
+	const {ordersViewModel, orderID} = props;
 	const [open, setOpen] = React.useState(false);
 
 	const handleOpen = () => {
@@ -22,7 +22,7 @@ function ReviewViewController(props: reviewProps) {
 
 	return (
 		<ReviewView
-			review={ordersViewModel.getReview(orderId)}
+			review={ordersViewModel.getReview(orderID)}
 			handleOpen={handleOpen}
 			handleClose={handleClose}
 			open={open}

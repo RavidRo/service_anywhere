@@ -33,25 +33,25 @@ export default class OrdersViewModel {
 		this.ordersModel.items = items;
 	}
 
-	updateAssignedWaiter(orderId: string, waiterIds: string[]) {
-		console.info('Updating orderId: ' + orderId, 'waiters ' + waiterIds);
-		this.ordersModel.updateAssignedWaiters(orderId, waiterIds);
+	updateAssignedWaiter(orderID: string, waiterIds: string[]) {
+		console.info('Updating orderID: ' + orderID, 'waiters ' + waiterIds);
+		this.ordersModel.updateAssignedWaiters(orderID, waiterIds);
 	}
 
-	getReview(orderId: string): ReviewIDO | undefined {
-		return this.ordersModel.reviews.find(entry => entry.orderId === orderId)
+	getReview(orderID: string): ReviewIDO | undefined {
+		return this.ordersModel.reviews.find(entry => entry.orderID === orderID)
 			?.review;
 	}
 
-	addReview(orderId: string, review: ReviewIDO): void {
-		this.ordersModel.addReview(orderId, review);
+	addReview(orderID: string, details: string, rating: number): void {
+		this.ordersModel.addReview(orderID, details, rating);
 	}
 
-	getAssignedWaiters(orderId: string): string[] {
-		console.info('Getting assigned waiters of ', orderId);
+	getAssignedWaiters(orderID: string): string[] {
+		console.info('Getting assigned waiters of ', orderID);
 		const assignedWaiters = this.ordersModel.assignedWaiters;
 		const assignedWaiter = assignedWaiters.find(
-			entry => entry.orderId === orderId
+			entry => entry.orderID === orderID
 		);
 		if (assignedWaiter !== undefined) {
 			return assignedWaiter.waiterIds;
@@ -110,27 +110,27 @@ export default class OrdersViewModel {
 				alert('Could not get orders please reload, Error: ' + err)
 			);
 	}
-	changeOrderStatusNotification(orderId: string, newStatus: OrderStatus) {
-		console.log(orderId, newStatus);
+	changeOrderStatusNotification(orderID: string, newStatus: OrderStatus) {
+		console.log(orderID, newStatus);
 		if (
 			newStatus !== 'assigned' &&
 			newStatus !== 'on the way' &&
 			newStatus !== 'delivered'
 		) {
 			console.log('Changing assigned waiters');
-			this.ordersModel.updateAssignedWaiters(orderId, []);
+			this.ordersModel.updateAssignedWaiters(orderID, []);
 		}
-		this.ordersModel.changeOrderStatus(orderId, newStatus);
+		this.ordersModel.changeOrderStatus(orderID, newStatus);
 	}
 
 	changeOrderStatus(
-		orderId: string,
+		orderID: string,
 		newStatus: OrderStatus
 	): Promise<boolean> {
 		return this.api
-			.changeOrderStatus(orderId, newStatus)
+			.changeOrderStatus(orderID, newStatus)
 			.then(() => {
-				this.ordersModel.changeOrderStatus(orderId, newStatus);
+				this.ordersModel.changeOrderStatus(orderID, newStatus);
 				return true;
 			})
 			.catch(() => false);

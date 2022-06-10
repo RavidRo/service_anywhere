@@ -44,8 +44,16 @@ export default class Notificiations {
 	addReview(params: object) {
 		if (isReview(params)) {
 			console.info('adding review', params);
-			const review = params as {orderId: string; review: ReviewIDO};
-			this.ordersViewModel.addReview(review.orderId, review.review);
+			const review = params as {
+				orderID: string;
+				details: string;
+				rating: number;
+			};
+			this.ordersViewModel.addReview(
+				review.orderID,
+				review.details,
+				review.rating
+			);
 		} else {
 			console.warn(
 				"Haven't received the correct arguments, the param should be a order review"
@@ -56,7 +64,7 @@ export default class Notificiations {
 	eventCallbacks: Record<string, (params: object) => void> = {
 		newOrder: params => this.addNewOrder(params),
 		changeOrderStatus: params => this.changeOrderStatus(params),
-		addReview: params => this.addReview(params), // TODO: when notification is added in server, change name to match
+		review: params => this.addReview(params), // TODO: when notification is added in server, change name to match
 		// updateWaiters: params => this.updateWaiters(params),
 	};
 }

@@ -25,29 +25,29 @@ export default class Api extends Singleton {
 		return this.handler.get<WaiterIDO[]>('getWaiters');
 	}
 
-	assignWaiter(orderId: string, waiterId: string[]): Promise<void> {
+	assignWaiter(orderID: string, waiterID: string[]): Promise<void> {
 		return this.handler.post<void>('assignWaiter', {
-			orderId: [orderId],
-			waiterId: waiterId,
+			orderID: [orderID],
+			waiterID: waiterID,
 		});
 	}
 
-	getWaitersByOrder(orderId: string): Promise<string[]> {
+	getWaitersByOrder(orderID: string): Promise<string[]> {
 		return this.handler.get<string[]>('getWaitersByOrder', {
-			orderId: orderId,
+			orderID: orderID,
 		});
 	}
 
-	changeOrderStatus(orderId: string, newStatus: string): Promise<void> {
+	changeOrderStatus(orderID: string, newStatus: string): Promise<void> {
 		return this.handler.post<void>('changeOrderStatus', {
-			orderId: orderId,
+			orderID: orderID,
 			newStatus: newStatus,
 		});
 	}
 
-	cancelOrder(orderId: string): Promise<void> {
+	cancelOrder(orderID: string): Promise<void> {
 		return this.handler.post<void>('cancelOrder', {
-			orderId: orderId,
+			orderID: orderID,
 		});
 	}
 
