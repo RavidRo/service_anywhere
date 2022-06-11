@@ -692,7 +692,7 @@ app.post('/assignWaiter', (req, res) => {
 				status => res.status(status),
 				async _adminId => {
 					const response = await dashboard.assignWaiter(
-						req.body['orderIDs'],
+						req.body['orderID'],
 						req.body['waiterID']
 					);
 					sendResponse(
@@ -705,7 +705,7 @@ app.post('/assignWaiter', (req, res) => {
 							'A waiter was assigned successfuly. Waiter ID: ' +
 								req.body['waiterID'] +
 								' Order IDs: ' +
-								req.body['orderIDs']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
