@@ -72,7 +72,7 @@ test('Guests can get their order details', async () => {
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(createResponse.isSuccess()).toBeTruthy();
-	expect(orderResponse.getData().guestId).toBe(guestID);
+	expect(orderResponse.getData().guestID).toBe(guestID);
 	expect(orderResponse.getData().items).toEqual(
 		Object.fromEntries(items.entries())
 	);

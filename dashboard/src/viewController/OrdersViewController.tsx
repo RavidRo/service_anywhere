@@ -48,7 +48,7 @@ const OrdersViewController = (props: viewModelProps) => {
 			renderCell: ExpandCellGrid,
 		},
 		{
-			field: 'guestId',
+			field: 'guestID',
 			headerName: 'Guest Id',
 			editable: false,
 			flex: 1,

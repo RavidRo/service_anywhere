@@ -73,7 +73,7 @@ function getOrders(guests: GuestDAO[], waiters: WaiterDAO[]) {
 
 function getMaps() {
 	const map1 = new MapDAO();
-	map1.name = 'Bet HaStudent';
+	map1.name = 'Beit Ha Student';
 	map1.imageURL =
 		'https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png';
 	map1.bottomLeftLat = 31.261649;
@@ -85,7 +85,33 @@ function getMaps() {
 	map1.topRightLat = 31.26355;
 	map1.topRightLong = 34.802516;
 
-	return [map1];
+	const map2 = new MapDAO();
+	map2.name = 'Dan Jerusalem';
+	map2.imageURL =
+		'https://res.cloudinary.com/noa-health/image/upload/v1654535608/Dan_Jerusalem_cijcod.png';
+	map2.bottomRightLong = 35.238558;
+	map2.bottomRightLat = 31.795908;
+	map2.bottomLeftLong = 35.232014;
+	map2.bottomLeftLat = 31.795908;
+	map2.topRightLong = 35.238558;
+	map2.topRightLat = 31.799504;
+	map2.topLeftLong = 35.232014;
+	map2.topLeftLat = 31.799504;
+
+	const map3 = new MapDAO();
+	map3.name = 'Soroka Bridge';
+	map3.imageURL =
+		'https://res.cloudinary.com/noa-health/image/upload/v1654536564/Soroka_Bridge_jcqlnq.png';
+	map3.bottomRightLong = 34.80257;
+	map3.bottomRightLat = 31.259808;
+	map3.bottomLeftLong = 34.800838;
+	map3.bottomLeftLat = 31.259808;
+	map3.topRightLong = 34.80257;
+	map3.topRightLat = 31.26355;
+	map3.topLeftLong = 34.800838;
+	map3.topLeftLat = 31.26355;
+
+	return [map1, map2, map3];
 }
 
 async function getUsersCredentials() {
