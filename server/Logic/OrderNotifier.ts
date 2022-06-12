@@ -69,8 +69,11 @@ export abstract class OrderNotifier implements IOrder {
 	updateGuestLocation(location: Location): ResponseMsg<void> {
 		return this.order.updateGuestLocation(location);
 	}
-	updateWaiterLocation(location: Location): ResponseMsg<void> {
-		return this.order.updateWaiterLocation(location);
+	updateWaiterLocation(
+		waiterID: string,
+		location: Location
+	): ResponseMsg<void> {
+		return this.order.updateWaiterLocation(waiterID, location);
 	}
 
 	async assign(waiterIDs: string[]): Promise<ResponseMsg<void>> {
@@ -124,14 +127,13 @@ class GuestNotifier extends OrderNotifier {
 	}
 
 	override updateWaiterLocation(
-		...params: [location: Location]
+		...params: [waitertID: string, location: Location]
 	): ResponseMsg<void> {
 		return super
 			.updateWaiterLocation(...params)
 			.ifGood(() =>
 				this.notificationFacade.updateWaiterLocation(
 					this.receiverId,
-					this.getID(),
 					...params
 				)
 			);
@@ -165,5 +167,18 @@ class DashboardNotifier extends OrderNotifier {
 	constructor(order: IOrder) {
 		super(order);
 		this.receiverId = config.admin_id;
+	}
+
+	override giveFeedback(
+		review: string,
+		score: number
+	): Promise<ResponseMsg<void, void>> {
+		this.notificationFacade.notifyReview(
+			config.admin_id,
+			this.getID(),
+			review,
+			score
+		);
+		return super.giveFeedback(review, score);
 	}
 }

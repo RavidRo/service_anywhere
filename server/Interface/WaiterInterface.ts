@@ -13,21 +13,21 @@ async function getOrdersByWaiter(
 }
 
 async function orderArrived(
-	orderId: string,
+	orderID: string,
 	waiterID: string
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderId, 'delivered', waiterID);
+	return WaiterOrder.changeOrderStatus(orderID, 'delivered', waiterID);
 }
 
-function updateLocationWaiter(waiterId: string, location: Location): void {
-	WaiterOrder.updateWaiterLocation(waiterId, location);
+function updateLocationWaiter(waiterID: string, location: Location): void {
+	WaiterOrder.updateWaiterLocation(waiterID, location);
 }
 
 async function orderOnTheWay(
-	orderId: string,
+	orderID: string,
 	waiterID: string
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.changeOrderStatus(orderId, 'on the way', waiterID);
+	return WaiterOrder.changeOrderStatus(orderID, 'on the way', waiterID);
 }
 
 function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
