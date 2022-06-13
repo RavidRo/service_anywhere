@@ -832,8 +832,8 @@ app.get('/getReviews', (req, res) => {
 		},
 		status => res.status(status),
 		async _id => {
-			const response = await dashboard.getReviews()
-			res.send(response)
+			const response = await dashboard.getReviews();
+			res.send(response);
 		}
 	);
 });

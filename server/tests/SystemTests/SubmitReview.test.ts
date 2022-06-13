@@ -91,15 +91,11 @@ test('submit review success for rating in range 1-5', async () => {
 test('get review success', async () => {
 	const {orderID, guestID} = await createOrder();
 	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
-	await GuestInterface.submitReview(
-		orderID,
-		'Good service',
-		4
-	);
-	const response = await DashboardInterface.getReviews()
+	await GuestInterface.submitReview(orderID, 'Good service', 4);
+	const response = await DashboardInterface.getReviews();
 	expect(response.length).toBeGreaterThan(0);
-	if(response.length === 1){
-		expect(response[0].content).toBe('Good service')
-		expect(response[0].rating).toBe(4)
+	if (response.length === 1) {
+		expect(response[0].content).toBe('Good service');
+		expect(response[0].rating).toBe(4);
 	}
 });
