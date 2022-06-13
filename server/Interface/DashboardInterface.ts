@@ -2,6 +2,8 @@ import {OrderIDO, OrderStatus, STATUSES, WaiterIDO} from '../../api';
 import {getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
+import {getReviews as getAllReviews} from '../Data/Stores/OrderStore'
+import { ReviewDAO } from 'server/Data/entities/Domain/ReviewDAO';
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
@@ -24,6 +26,10 @@ async function getWaiterByOrder(
 	orderID: string
 ): Promise<ResponseMsg<string[]>> {
 	return await WaiterOrder.getWaiterByOrder(orderID);
+}
+
+async function getReviews(): Promise<ReviewDAO[]>{
+	return await getAllReviews()
 }
 
 async function cancelOrderAdmin(
@@ -55,4 +61,5 @@ export default {
 	getWaiterByOrder,
 	cancelOrderAdmin,
 	changeOrderStatus,
+	getReviews
 };
