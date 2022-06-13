@@ -66,7 +66,10 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	updateWaiterLocation(_location: Location): ResponseMsg<void> {
+	updateWaiterLocation(
+		_waiterID: string,
+		_location: Location
+	): ResponseMsg<void> {
 		return makeGood();
 	}
 
@@ -94,7 +97,7 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	async assign(_waiterIds: string[]): Promise<ResponseMsg<void>> {
+	async assign(_waiterIDs: string[]): Promise<ResponseMsg<void>> {
 		return this.changeOrderStatus('assigned', true, true);
 	}
 
