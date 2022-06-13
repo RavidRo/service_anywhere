@@ -53,7 +53,10 @@ const ConnectViewController = (props: Props) => {
 		const password: string = data.get('password')?.toString() || '';
 		login(username, password)
 			.then(establishConnection)
-			.catch(() => alertViewModel.addAlert("Can't login to server"));
+			.catch(() => {
+				alertViewModel.addAlert("Can't login to server");
+				alert("Can't login to server");
+			});
 	};
 
 	if (isConnected) {

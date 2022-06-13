@@ -142,4 +142,8 @@ export default class OrdersViewModel {
 			})
 			.catch(() => false);
 	}
+
+	guestError(orderID: string, errorMsg: string) {
+		alertViewModel.addAlert(`${orderID} Error: ${errorMsg}`);
+	}
 }

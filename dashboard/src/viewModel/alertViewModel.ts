@@ -23,4 +23,25 @@ export default class AlertViewModel {
 	removeAlert(alert: string): void {
 		this.alertModel.removeAlert(alert);
 	}
+
+	setShownAlerts(shownAlerts: string[]) {
+		console.info('setting alerts to ', shownAlerts);
+		this.alertModel.shownAlerts = shownAlerts;
+	}
+
+	getShownAlerts(): string[] {
+		return this.alertModel.shownAlerts;
+	}
+
+	showAlert(alert: string): void {
+		this.alertModel.showAlert(alert);
+	}
+
+	hideAlert(alert: string): void {
+		this.alertModel.hideAlert(alert);
+	}
+
+	showAllAlerts(): void {
+		this.alertModel.showAllAlerts();
+	}
 }

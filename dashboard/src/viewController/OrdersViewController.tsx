@@ -76,11 +76,9 @@ const OrdersViewController = (props: viewModelProps) => {
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				// (entry: (number | string)[])
 				if (params.value !== undefined)
 					return new Date(params.value).toLocaleTimeString();
 				return '';
-				// return params.value?.toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,
 		},

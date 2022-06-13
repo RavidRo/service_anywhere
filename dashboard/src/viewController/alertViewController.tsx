@@ -2,6 +2,7 @@ import * as React from 'react';
 import {observer} from 'mobx-react';
 import AlertViewModel from '../viewModel/alertViewModel';
 import AlertView from '../view/alertView';
+import alertView from '../view/alertView';
 
 type alertProps = {
 	alertViewModel: AlertViewModel;
@@ -23,12 +24,18 @@ const AlertViewController = (props: alertProps) => {
 			setState(open);
 		};
 
+	const onAlertDismiss = (content: string) => {
+		alertViewModel.hideAlert(content);
+	};
+
 	return (
 		<AlertView
-			alerts={alertViewModel.getAlerts()}
+			alerts={alertViewModel.getShownAlerts()}
+			onClick={onAlertDismiss}
 			state={state}
 			anchor={anchor}
 			toggleDrawer={toggleDrawer}
+			onShowAllClick={() => alertViewModel.showAllAlerts()}
 		/>
 	);
 };

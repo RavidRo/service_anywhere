@@ -5,9 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {observer} from 'mobx-react';
 
 function CustomAlert(props) {
-	const [open, setOpen] = React.useState(true);
-	const {content, ...rest} = props;
-
+	const {content, onClick, ...rest} = props;
 	return (
 		<Alert
 			{...rest}
@@ -16,9 +14,7 @@ function CustomAlert(props) {
 					aria-label='close'
 					color='inherit'
 					size='small'
-					onClick={() => {
-						setOpen(false);
-					}}>
+					onClick={() => onClick(content)}>
 					<CloseIcon fontSize='inherit' />
 				</IconButton>
 			}

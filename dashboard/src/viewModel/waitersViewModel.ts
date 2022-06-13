@@ -38,4 +38,11 @@ export default class WaitersViewModel {
 	getWaitersByOrder(orderID: string) {
 		return this.api.getWaitersByOrder(orderID);
 	}
+
+	waiterError(waiterID: string, errorMsg: string) {
+		alertViewModel.addAlert(`Waiter ${
+			this.getWaiters().find(waiter => waiter.id === waiterID)?.username
+		}
+		 Error: ${errorMsg}`);
+	}
 }
