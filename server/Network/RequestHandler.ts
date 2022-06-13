@@ -820,6 +820,24 @@ app.get('/getWaitersByOrder', (req, res) => {
 	);
 });
 
+app.get('/getReviews', (req, res) => {
+	authenticate(
+		req.headers.authorization,
+		3,
+		(msg: string) => {
+			res.send(msg);
+			logger.info(
+				'A user tried to get reviews but did not have permission or used an unmatched token'
+			);
+		},
+		status => res.status(status),
+		async _id => {
+			const response = await dashboard.getReviews();
+			res.send(response);
+		}
+	);
+});
+
 app.post('/cancelOrderAdmin', (req, res) => {
 	checkInputs(
 		['orderID'],
