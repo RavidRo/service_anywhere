@@ -168,4 +168,17 @@ class DashboardNotifier extends OrderNotifier {
 		super(order);
 		this.receiverId = config.admin_id;
 	}
+
+	override giveFeedback(
+		review: string,
+		score: number
+	): Promise<ResponseMsg<void, void>> {
+		this.notificationFacade.notifyReview(
+			config.admin_id,
+			this.getID(),
+			review,
+			score
+		);
+		return super.giveFeedback(review, score);
+	}
 }

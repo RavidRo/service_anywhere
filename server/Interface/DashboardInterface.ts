@@ -8,10 +8,10 @@ async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 }
 
 function assignWaiter(
-	orderId: string,
+	orderID: string,
 	waiterIDs: string[]
 ): Promise<ResponseMsg<void>> {
-	return WaiterOrder.assignWaiter(orderId, waiterIDs);
+	return WaiterOrder.assignWaiter(orderID, waiterIDs);
 }
 
 async function getWaiters(): Promise<ResponseMsg<WaiterIDO[]>> {

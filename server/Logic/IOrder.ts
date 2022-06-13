@@ -15,7 +15,7 @@ export interface IOrder {
 	): ResponseMsg<void>;
 	updateGuestLocation(location: Location): ResponseMsg<void>;
 
-	assign(waiterIds: string[]): Promise<ResponseMsg<void>>;
+	assign(waiterIDs: string[]): Promise<ResponseMsg<void>>;
 	changeOrderStatus(
 		status: OrderStatus,
 		assigningWaiter: boolean,
