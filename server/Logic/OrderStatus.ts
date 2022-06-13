@@ -25,9 +25,16 @@ export abstract class OrderStatus {
 				400
 			);
 		}
+		if(!newStatus.adjacent(this)){
+			return makeFail(
+				"You can't change the status of the order to a non-adjacent one",
+				400
+			)
+		}
 		return makeGood();
 	}
 
+	abstract adjacent(status: OrderStatus): boolean;
 	abstract isEndStatus(): boolean;
 	abstract needsAssignedWaiters(): boolean;
 	abstract needsChangePrivileges(): boolean; // For example, do you need to be admin to cancel this order?
@@ -61,6 +68,9 @@ class Received extends OrderStatus {
 	needsChangePrivileges(): boolean {
 		return false;
 	}
+	adjacent(status: OrderStatus): boolean {
+		return status instanceof InPreparation
+	}
 }
 
 class InPreparation extends OrderStatus {
@@ -73,6 +83,9 @@ class InPreparation extends OrderStatus {
 
 	needsChangePrivileges(): boolean {
 		return true;
+	}
+	adjacent(status: OrderStatus): boolean {
+		return status instanceof Received || status instanceof ReadyToDeliver
 	}
 }
 
@@ -87,6 +100,9 @@ class ReadyToDeliver extends OrderStatus {
 	needsChangePrivileges(): boolean {
 		return true;
 	}
+	adjacent(status: OrderStatus): boolean {
+		return status instanceof InPreparation || status instanceof Assigned
+	}
 }
 
 class Assigned extends OrderStatus {
@@ -98,6 +114,9 @@ class Assigned extends OrderStatus {
 	}
 	needsChangePrivileges(): boolean {
 		return true;
+	}
+	adjacent(status: OrderStatus): boolean {
+		return status instanceof ReadyToDeliver || status instanceof OnTheWay
 	}
 }
 
@@ -111,6 +130,9 @@ class OnTheWay extends OrderStatus {
 	needsChangePrivileges(): boolean {
 		return true;
 	}
+	adjacent(status: OrderStatus): boolean {
+		return status instanceof Assigned || status instanceof Delivered
+	}
 }
 
 class Delivered extends OrderStatus {
@@ -123,6 +145,9 @@ class Delivered extends OrderStatus {
 	needsChangePrivileges(): boolean {
 		return true;
 	}
+	adjacent(_status: OrderStatus): boolean {
+		return false
+	}
 }
 
 class Canceled extends OrderStatus {
@@ -134,5 +159,8 @@ class Canceled extends OrderStatus {
 	}
 	needsChangePrivileges(): boolean {
 		return true;
+	}
+	adjacent(status: OrderStatus): boolean {
+		return !(status instanceof Received) 
 	}
 }
