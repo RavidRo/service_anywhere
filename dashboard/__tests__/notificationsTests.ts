@@ -166,3 +166,114 @@ describe('update order status', () => {
 		expect(model.orders[0].completionTime).toBeDefined();
 	});
 });
+
+describe('update orders', () => {
+	it('Sending no arguments', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.addNewOrder([]);
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending wrong arguments than required', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.addNewOrder([null, 'asd']);
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending exactly the needed arguments', () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrdersViewModel(model, new Api());
+		const notifications = new Notifications(
+			ordersViewModel,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.addNewOrder([mockListOfOrders]);
+		expect(model.orders).toEqual(ordersViewModel.getOrders());
+	});
+
+	it('Sending extra argument is rejected', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.addNewOrder([[], 'inprogress', 'Hola Mr. Almog']);
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending something else than OrderIDO[] as orders', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+
+		notifications.addNewOrder(['asd']);
+		console.log(ordersViewModels.getOrders());
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+});
+
+describe('adding a review', () => {
+	it('Sending no arguments', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.addReview({});
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending wrong arguments than required', () => {
+		const ordersViewModels = new OrdersViewModel(
+			new ordersModel(),
+			new Api()
+		);
+		const notifications = new Notifications(
+			ordersViewModels,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		notifications.addReview([null, 'asd']);
+		expect(mockWarn).toBeCalledTimes(1);
+	});
+
+	it('Sending exactly the needed arguments', () => {
+		const model = new ordersModel();
+		const ordersViewModel = new OrdersViewModel(model, new Api());
+		const notifications = new Notifications(
+			ordersViewModel,
+			new WaitersViewModel(new waiterModel(), new Api())
+		);
+		ordersViewModel.setOrders(mockListOfOrders);
+		const review = {
+			details: 'details',
+			rating: 3,
+		};
+		notifications.addReview({orderID: '1', ...review});
+		expect(ordersViewModel.getReview('1')).toEqual(review);
+	});
+});

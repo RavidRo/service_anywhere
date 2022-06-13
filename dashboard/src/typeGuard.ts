@@ -38,7 +38,7 @@ export function isReview(review: object): review is orderReview {
 	return (
 		isString((review as orderReview).orderID) &&
 		isString((review as orderReview).details) &&
-		isString((review as orderReview).rating)
+		isNumber((review as orderReview).rating)
 	);
 }
 
@@ -50,7 +50,7 @@ export function isOrderStatus(status: object): status is orderStatusType {
 	}
 	return (
 		isString((status as orderStatusType).orderID) &&
-		isStatus((status as orderStatusType).orderStatus)
+		isString((status as orderStatusType).orderStatus)
 	);
 }
 
