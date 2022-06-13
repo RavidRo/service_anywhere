@@ -44,11 +44,7 @@ export default class Notificiations {
 	addReview(params: object) {
 		if (isReview(params)) {
 			console.info('adding review', params);
-			const review = params as {
-				orderID: string;
-				details: string;
-				rating: number;
-			};
+			const review = params;
 			this.ordersViewModel.addReview(
 				review.orderID,
 				review.details,
