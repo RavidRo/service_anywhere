@@ -29,7 +29,9 @@ async function getWaiterByOrder(
 }
 
 async function getReviews(): Promise<ReviewIDO[]> {
-	return (await getAllReviews()).map(r => {return {details: r.content, rating: r.rating}});
+	return (await getAllReviews()).map(r => {
+		return {details: r.content, rating: r.rating};
+	});
 }
 
 async function cancelOrderAdmin(

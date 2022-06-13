@@ -103,22 +103,14 @@ test('get review success', async () => {
 test('get review for an illegal review (out of range rating) would return an empty list', async () => {
 	const {orderID, guestID} = await createOrder();
 	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
-	await GuestInterface.submitReview(
-		orderID,
-		'Very good service',
-		6
-	);
+	await GuestInterface.submitReview(orderID, 'Very good service', 6);
 	const response = await DashboardInterface.getReviews();
-	expect(response.length).toBe(0)
+	expect(response.length).toBe(0);
 });
 
 test('get review for an illegal review (order status is not "delivered") would return an empty list', async () => {
 	const {orderID, guestID} = await createOrder({advance: false});
-	await GuestInterface.submitReview(
-		orderID,
-		'Very good service',
-		5
-	);
+	await GuestInterface.submitReview(orderID, 'Very good service', 5);
 	const response = await DashboardInterface.getReviews();
-	expect(response.length).toBe(0)
+	expect(response.length).toBe(0);
 });
