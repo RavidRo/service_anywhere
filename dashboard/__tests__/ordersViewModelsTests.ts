@@ -87,9 +87,7 @@ var ordersViewModel;
 beforeEach(() => {
 	api = new Api();
 	orderModel = new ordersModel();
-	ordersViewModel = new OrderViewModel(
-		orderModel, api
-	);
+	ordersViewModel = new OrderViewModel(orderModel, api);
 	(Api as unknown as jest.Mock).mockClear();
 	mockGetOrders.mockClear();
 
@@ -121,7 +119,7 @@ describe('Constructor', () => {
 		expect(ordersViewModel.getOrders()).toEqual(orderModel.orders);
 	});
 
-	test('synchronise orders in model', async () => {;
+	test('synchronise orders in model', async () => {
 		ordersViewModel.synchroniseOrders();
 		await flushPromises();
 		const _ = ordersViewModel.getOrders();

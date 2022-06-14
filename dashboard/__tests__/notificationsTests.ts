@@ -40,9 +40,7 @@ var notifications;
 beforeEach(() => {
 	api = new Api();
 	orderModel = new ordersModel();
-	ordersViewModel = new OrdersViewModel(
-		orderModel, api
-	);
+	ordersViewModel = new OrdersViewModel(orderModel, api);
 	notifications = new Notifications(
 		ordersViewModel,
 		new WaitersViewModel(new waiterModel(), api)
@@ -57,7 +55,6 @@ beforeEach(() => {
 
 describe('update orders', () => {
 	it('Sending no arguments', () => {
-		
 		notifications.addNewOrder([]);
 		expect(ordersViewModel.getOrders().length).toBe(0);
 	});

@@ -98,9 +98,7 @@ var connectViewModel;
 beforeEach(() => {
 	api = new Api();
 	orderModel = new ordersModel();
-	ordersViewModel = new OrdersViewModel(
-		orderModel, api
-	);
+	ordersViewModel = new OrdersViewModel(orderModel, api);
 	waitersModel = new waiterModel();
 	waitersViewModel = new WaitersViewModel(waitersModel, api);
 	connectViewModel = new ConnectViewModel(
