@@ -80,8 +80,16 @@ jest.mock('../src/network/api', () => {
 		};
 	});
 });
+var api;
+var orderModel;
+var ordersViewModel;
 
 beforeEach(() => {
+	api = new Api();
+	orderModel = new ordersModel();
+	ordersViewModel = new OrderViewModel(
+		orderModel, api
+	);
 	(Api as unknown as jest.Mock).mockClear();
 	mockGetOrders.mockClear();
 
@@ -92,18 +100,10 @@ beforeEach(() => {
 
 describe('Constructor', () => {
 	test('The class can be created successfully', async () => {
-		const ordersViewModel = new OrderViewModel(
-			new ordersModel(),
-			new Api()
-		);
 		expect(ordersViewModel).toBeTruthy();
 	});
 
 	test('Change order status in server expect false', async () => {
-		const ordersViewModel = new OrderViewModel(
-			new ordersModel(),
-			new Api()
-		);
 		ordersViewModel
 			.changeOrderStatus('1', 'in preparation')
 			.then(r => expect(r).toBeTruthy());
@@ -111,25 +111,17 @@ describe('Constructor', () => {
 
 	test('Change order status in server expect true', async () => {
 		mockChangeOrderStatus.mockImplementation(() => Promise.reject());
-		const ordersViewModel = new OrderViewModel(
-			new ordersModel(),
-			new Api()
-		);
 		ordersViewModel
 			.changeOrderStatus('1', 'in preparation')
 			.catch(r => expect(r).toBeTruthy());
 	});
 
 	test('Set and get orders in model', async () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrderViewModel(model, new Api());
 		ordersViewModel.setOrders(mockListOfOrders);
-		expect(ordersViewModel.getOrders()).toEqual(model.orders);
+		expect(ordersViewModel.getOrders()).toEqual(orderModel.orders);
 	});
 
-	test('synchronise orders in model', async () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrderViewModel(model, new Api());
+	test('synchronise orders in model', async () => {;
 		ordersViewModel.synchroniseOrders();
 		await flushPromises();
 		const _ = ordersViewModel.getOrders();
@@ -137,8 +129,6 @@ describe('Constructor', () => {
 	});
 
 	test('synchronise items in model', async () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrderViewModel(model, new Api());
 		ordersViewModel.synchroniseItems();
 		await flushPromises();
 		const items = ordersViewModel.getItems();
@@ -146,8 +136,6 @@ describe('Constructor', () => {
 	});
 
 	test('update waiters of order', async () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrderViewModel(model, new Api());
 		ordersViewModel.setOrders(mockListOfOrders);
 		ordersViewModel.updateAssignedWaiter(mockListOfOrders[0].id, [
 			mockListOfWaiters[0].id,
@@ -159,8 +147,6 @@ describe('Constructor', () => {
 	});
 
 	test('update waiters of order to empty array', async () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrderViewModel(model, new Api());
 		ordersViewModel.setOrders(mockListOfOrders);
 		ordersViewModel.updateAssignedWaiter(mockListOfOrders[0].id, [
 			mockListOfWaiters[0].id,
