@@ -109,9 +109,15 @@ app.post('/register', (req, res) => {
 		res.status(400);
 		res.send('Missing username or password');
 	} else {
-		registerUser(username, password);
-		res.status(200);
-		res.send('You have been registered successfully');
+		registerUser(username, password)
+			.then(() => {
+				res.status(200);
+				res.send('You have been registered successfully');
+			})
+			.catch(() => {
+				res.status(500);
+				res.send('Unexpected error occurred');
+			});
 	}
 });
 
