@@ -1,11 +1,11 @@
 import {WaiterIDO} from 'api';
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
 	BaseEntity,
+	Column,
+	Entity,
 	JoinTable,
 	ManyToMany,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import {OrderDAO} from './OrderDAO';
 

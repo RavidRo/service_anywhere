@@ -1,9 +1,9 @@
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
 	BaseEntity,
+	Column,
+	Entity,
 	ManyToOne,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import {ItemDAO} from './ItemDAO';
 import {OrderDAO} from './OrderDAO';

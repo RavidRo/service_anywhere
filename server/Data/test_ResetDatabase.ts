@@ -1,14 +1,14 @@
+import config from 'server/config.json';
 import {BaseEntity, EntityTarget} from 'typeorm';
 import {AppDataSource} from './data-source';
 import {UserCredentials} from './entities/Authentication/UserCredentials';
 import {GuestDAO} from './entities/Domain/GuestDAO';
 import {ItemDAO} from './entities/Domain/ItemDAO';
+import {MapDAO} from './entities/Domain/MapDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
 import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
-import {MapDAO} from './entities/Domain/MapDAO';
-import {WaiterDAO} from './entities/Domain/WaiterDAO';
-import config from 'server/config.json';
 import {ReviewDAO} from './entities/Domain/ReviewDAO';
+import {WaiterDAO} from './entities/Domain/WaiterDAO';
 
 async function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
 	const saves = entities.map(item => item.save());

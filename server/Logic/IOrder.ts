@@ -1,4 +1,4 @@
-import {OrderStatus, Location, OrderIDO} from 'api';
+import {Location, OrderIDO, OrderStatus} from 'api';
 import {ResponseMsg} from '../Response';
 
 export interface IOrder {

@@ -5,8 +5,8 @@ import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 import * as OrderStore from '../Data/Stores/OrderStore';
 
-import {OrderNotifier} from './OrderNotifier';
 import {IOrder} from './IOrder';
+import {OrderNotifier} from './OrderNotifier';
 
 export async function onOrder<T>(
 	orderID: string,
