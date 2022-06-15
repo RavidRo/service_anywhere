@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 
-import { DataSource } from 'typeorm';
-import { UserCredentials } from './entities/Authentication/UserCredentials';
-import { GuestDAO } from './entities/Domain/GuestDAO';
-import { ItemDAO } from './entities/Domain/ItemDAO';
-import { MapDAO } from './entities/Domain/MapDAO';
-import { OrderDAO } from './entities/Domain/OrderDAO';
-import { OrderToItemDAO } from './entities/Domain/OrderToItemDAO';
-import { ReviewDAO } from './entities/Domain/ReviewDAO';
-import { WaiterDAO } from './entities/Domain/WaiterDAO';
+import {DataSource} from 'typeorm';
+import {UserCredentials} from './entities/Authentication/UserCredentials';
+import {GuestDAO} from './entities/Domain/GuestDAO';
+import {ItemDAO} from './entities/Domain/ItemDAO';
+import {MapDAO} from './entities/Domain/MapDAO';
+import {OrderDAO} from './entities/Domain/OrderDAO';
+import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
+import {ReviewDAO} from './entities/Domain/ReviewDAO';
+import {WaiterDAO} from './entities/Domain/WaiterDAO';
 
 const entities = [
 	GuestDAO,

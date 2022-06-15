@@ -1,12 +1,12 @@
-import { Location, OrderIDO, OrderStatus } from 'api';
+import {Location, OrderIDO, OrderStatus} from 'api';
 import config from '../config.json';
-import { ResponseMsg } from '../Response';
+import {ResponseMsg} from '../Response';
 
-import { OrderDAO } from '../Data/entities/Domain/OrderDAO';
+import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
 
-import { IOrder } from './IOrder';
-import { NotificationFacade } from './Notification/NotificationFacade';
-import { Order } from './Order';
+import {IOrder} from './IOrder';
+import {NotificationFacade} from './Notification/NotificationFacade';
+import {Order} from './Order';
 
 export abstract class OrderNotifier implements IOrder {
 	protected notificationFacade: NotificationFacade = new NotificationFacade();

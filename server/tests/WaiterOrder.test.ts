@@ -1,11 +1,11 @@
 import DashboardInterface from '../Interface/DashboardInterface';
 import ItemsInterface from '../Interface/ItemsInterface';
 import WaiterOrder from '../Logic/WaiterOrder';
-import { ResponseMsg } from '../Response';
+import {ResponseMsg} from '../Response';
 
 import config from '../config.json';
-import { AppDataSource } from '../Data/data-source';
-import { getGuests } from '../Data/Stores/GuestStore';
+import {AppDataSource} from '../Data/data-source';
+import {getGuests} from '../Data/Stores/GuestStore';
 import reset_all from '../Data/test_ResetDatabase';
 import GuestInterface from '../Interface/GuestInterface';
 

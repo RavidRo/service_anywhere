@@ -1,5 +1,5 @@
-import { AppDataSource } from './data-source';
-import { UserCredentials } from './entities/Authentication/UserCredentials';
+import {AppDataSource} from './data-source';
+import {UserCredentials} from './entities/Authentication/UserCredentials';
 
 export async function getDetails(
 	username: string

@@ -1,12 +1,12 @@
 import config from '../../config.json';
-import { AppDataSource } from '../../Data/data-source';
-import { getGuests } from '../../Data/Stores/GuestStore';
+import {AppDataSource} from '../../Data/data-source';
+import {getGuests} from '../../Data/Stores/GuestStore';
 import reset_all from '../../Data/test_ResetDatabase';
 import DashboardInterface from '../../Interface/DashboardInterface';
 import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
 import WaiterInterface from '../../Interface/WaiterInterface';
-import { Notifier } from '../../Logic/Notification/Notifier';
+import {Notifier} from '../../Logic/Notification/Notifier';
 
 const adminID = config['admin_id'];
 

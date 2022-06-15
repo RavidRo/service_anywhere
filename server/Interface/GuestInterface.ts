@@ -1,9 +1,9 @@
-import { Location, OrderIDO } from '../../api';
+import {Location, OrderIDO} from '../../api';
 
-import { ResponseMsg } from '../Response';
+import {ResponseMsg} from '../Response';
 
-import { IOrder } from '../Logic/IOrder';
-import { getGuestActiveOrder, onOrder } from '../Logic/Orders';
+import {IOrder} from '../Logic/IOrder';
+import {getGuestActiveOrder, onOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
 

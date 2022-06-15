@@ -1,12 +1,20 @@
-import { OrderIDO, OrderStatus } from 'api';
+import {OrderIDO, OrderStatus} from 'api';
 import {
-	BaseEntity, Column, Entity, JoinColumn, JoinTable,
-	ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn
+	BaseEntity,
+	Column,
+	Entity,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
-import { GuestDAO } from './GuestDAO';
-import { OrderToItemDAO } from './OrderToItemDAO';
-import { ReviewDAO } from './ReviewDAO';
-import { WaiterDAO } from './WaiterDAO';
+import {GuestDAO} from './GuestDAO';
+import {OrderToItemDAO} from './OrderToItemDAO';
+import {ReviewDAO} from './ReviewDAO';
+import {WaiterDAO} from './WaiterDAO';
 
 @Entity()
 export class OrderDAO extends BaseEntity {

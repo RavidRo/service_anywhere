@@ -1,6 +1,6 @@
 import config from '../../config.json';
-import { AppDataSource } from '../../Data/data-source';
-import { getGuests } from '../../Data/Stores/GuestStore';
+import {AppDataSource} from '../../Data/data-source';
+import {getGuests} from '../../Data/Stores/GuestStore';
 import reset_all from '../../Data/test_ResetDatabase';
 import DashboardInterface from '../../Interface/DashboardInterface';
 import GuestInterface from '../../Interface/GuestInterface';

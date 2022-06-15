@@ -1,15 +1,15 @@
-import { IOrder } from '../Logic/IOrder';
-import { onOrder } from '../Logic/Orders';
+import {IOrder} from '../Logic/IOrder';
+import {onOrder} from '../Logic/Orders';
 
-import { AppDataSource } from '../Data/data-source';
+import {AppDataSource} from '../Data/data-source';
 import reset_all from '../Data/test_ResetDatabase';
 
 import config from '../config.json';
-import { getGuests } from '../Data/Stores/GuestStore';
+import {getGuests} from '../Data/Stores/GuestStore';
 import DashboardInterface from '../Interface/DashboardInterface';
 import GuestInterface from '../Interface/GuestInterface';
 import ItemsInterface from '../Interface/ItemsInterface';
-import { makeGood } from '../Response';
+import {makeGood} from '../Response';
 
 const adminID = config['admin_id'];
 

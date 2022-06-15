@@ -1,5 +1,5 @@
-import { Location, OrderIDO, OrderStatus } from 'api';
-import { Notifier } from './Notifier';
+import {Location, OrderIDO, OrderStatus} from 'api';
+import {Notifier} from './Notifier';
 
 export class NotificationFacade {
 	private notifier: Notifier = Notifier.getInstance();

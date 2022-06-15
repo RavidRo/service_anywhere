@@ -1,6 +1,6 @@
-import { MapDAO } from 'server/Data/entities/Domain/MapDAO';
-import { MapIDO } from '../../api';
-import { getMaps as getPersistentMaps } from '../Data/Stores/MapStore';
+import {MapDAO} from 'server/Data/entities/Domain/MapDAO';
+import {MapIDO} from '../../api';
+import {getMaps as getPersistentMaps} from '../Data/Stores/MapStore';
 
 function DAOToIDO(mapDAO: MapDAO): MapIDO {
 	return {

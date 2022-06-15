@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import * as AuthenticatorChecker from '../../Data/AuthenticatorChecker';
-import { makeFail, makeGood, ResponseMsg } from '../../Response';
+import {makeFail, makeGood, ResponseMsg} from '../../Response';
 
 const unauthorizedStatusCode = 401;
 const forbiddenStatusCode = 403;

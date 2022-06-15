@@ -3,7 +3,7 @@ require('dotenv').config();
 import express from 'express';
 import * as socketio from 'socket.io';
 
-import { ResponseMsg } from '../Response';
+import {ResponseMsg} from '../Response';
 
 import dashboard from '../Interface/DashboardInterface';
 import guest from '../Interface/GuestInterface';
@@ -14,8 +14,8 @@ import waiter from '../Interface/WaiterInterface';
 
 import authenticator from '../Logic/Authentication/Authenticator';
 
-import { logger } from 'server/Logger';
-import { AppDataSource } from '../Data/data-source';
+import {logger} from 'server/Logger';
+import {AppDataSource} from '../Data/data-source';
 import reset_all from '../Data/test_ResetDatabase';
 
 let cors = require('cors');

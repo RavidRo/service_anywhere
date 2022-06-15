@@ -1,7 +1,11 @@
 import {
-	BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn
+	BaseEntity,
+	Column,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderToItemDAO } from './OrderToItemDAO';
+import {OrderToItemDAO} from './OrderToItemDAO';
 
 @Entity()
 export class ItemDAO extends BaseEntity {

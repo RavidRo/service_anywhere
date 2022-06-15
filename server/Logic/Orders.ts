@@ -1,12 +1,12 @@
-import { isPromise } from 'util/types';
+import {isPromise} from 'util/types';
 
-import { OrderIDO } from 'api';
-import { makeFail, makeGood, ResponseMsg } from '../Response';
+import {OrderIDO} from 'api';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 
 import * as OrderStore from '../Data/Stores/OrderStore';
 
-import { IOrder } from './IOrder';
-import { OrderNotifier } from './OrderNotifier';
+import {IOrder} from './IOrder';
+import {OrderNotifier} from './OrderNotifier';
 
 export async function onOrder<T>(
 	orderID: string,

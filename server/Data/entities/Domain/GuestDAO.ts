@@ -1,7 +1,11 @@
 import {
-	BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn
+	BaseEntity,
+	Column,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrderDAO } from './OrderDAO';
+import {OrderDAO} from './OrderDAO';
 
 @Entity()
 export class GuestDAO extends BaseEntity {
