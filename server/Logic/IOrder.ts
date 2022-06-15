@@ -1,5 +1,5 @@
-import {OrderStatus, Location, OrderIDO} from 'api';
-import {ResponseMsg} from '../Response';
+import { Location, OrderIDO, OrderStatus } from 'api';
+import { ResponseMsg } from '../Response';
 
 export interface IOrder {
 	getID(): string;

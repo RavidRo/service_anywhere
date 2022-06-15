@@ -1,10 +1,10 @@
-import {GuestIDO, Location, OrderIDO} from '../../api';
+import { GuestIDO, Location, OrderIDO } from '../../api';
 
-import {ResponseMsg} from '../Response';
+import { ResponseMsg } from '../Response';
 
 import WaiterOrder from '../Logic/WaiterOrder';
 
-import {getGuestsDetails as getDetails} from '../Data/Stores/GuestStore';
+import { getGuestsDetails as getDetails } from '../Data/Stores/GuestStore';
 
 async function getOrdersByWaiter(
 	waiterID: string

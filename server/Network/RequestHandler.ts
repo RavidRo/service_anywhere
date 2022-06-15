@@ -1,23 +1,22 @@
 require('dotenv').config();
-import config from 'server/config.json';
 
 import express from 'express';
 import * as socketio from 'socket.io';
 
-import {ResponseMsg} from '../Response';
+import { ResponseMsg } from '../Response';
 
-import guest from '../Interface/GuestInterface';
 import dashboard from '../Interface/DashboardInterface';
-import waiter from '../Interface/WaiterInterface';
+import guest from '../Interface/GuestInterface';
 import items from '../Interface/ItemsInterface';
 import maps from '../Interface/MapsInterface';
 import NotificationInterface from '../Interface/NotificationInterface';
+import waiter from '../Interface/WaiterInterface';
 
 import authenticator from '../Logic/Authentication/Authenticator';
 
-import {AppDataSource} from '../Data/data-source';
+import { logger } from 'server/Logger';
+import { AppDataSource } from '../Data/data-source';
 import reset_all from '../Data/test_ResetDatabase';
-import {logger} from 'server/Logger';
 
 let cors = require('cors');
 const app = express();

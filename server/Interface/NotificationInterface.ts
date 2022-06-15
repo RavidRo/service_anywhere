@@ -1,4 +1,4 @@
-import {Notifier} from '../Logic/Notification/Notifier';
+import { Notifier } from '../Logic/Notification/Notifier';
 
 function addSubscriber(
 	id: string,

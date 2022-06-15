@@ -1,9 +1,6 @@
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
-	BaseEntity,
-	OneToMany,
+	BaseEntity, Column, Entity,
+	PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity()

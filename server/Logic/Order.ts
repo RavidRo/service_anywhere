@@ -1,10 +1,10 @@
-import {Location, OrderIDO, OrderStatus as OrderStatusName} from 'api';
-import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
+import { Location, OrderIDO, OrderStatus as OrderStatusName } from 'api';
+import { ReviewDAO } from 'server/Data/entities/Domain/ReviewDAO';
+import { OrderDAO } from '../Data/entities/Domain/OrderDAO';
 import * as OrderStore from '../Data/Stores/OrderStore';
-import {makeGood, ResponseMsg, makeFail} from '../Response';
-import {IOrder} from './IOrder';
-import {OrderStatus} from './OrderStatus';
-import {ReviewDAO} from 'server/Data/entities/Domain/ReviewDAO';
+import { makeFail, makeGood, ResponseMsg } from '../Response';
+import { IOrder } from './IOrder';
+import { OrderStatus } from './OrderStatus';
 
 class Review {
 	content: string;

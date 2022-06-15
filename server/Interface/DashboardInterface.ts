@@ -1,9 +1,8 @@
-import {OrderIDO, OrderStatus, ReviewIDO, STATUSES, WaiterIDO} from '../../api';
-import {getOrders} from '../Logic/Orders';
+import { OrderIDO, OrderStatus, ReviewIDO, STATUSES, WaiterIDO } from '../../api';
+import { getReviews as getAllReviews } from '../Data/Stores/OrderStore';
+import { getOrders } from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
-import {makeFail, makeGood, ResponseMsg} from '../Response';
-import {getReviews as getAllReviews} from '../Data/Stores/OrderStore';
-import {ReviewDAO} from 'server/Data/entities/Domain/ReviewDAO';
+import { makeFail, makeGood, ResponseMsg } from '../Response';
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));

@@ -1,13 +1,13 @@
-import {Location, OrderIDO, OrderStatus} from 'api';
+import { Location, OrderIDO, OrderStatus } from 'api';
 import config from '../config.json';
-import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
-import {getItems} from '../Data/Stores/ItemStore';
+import { WaiterDAO } from '../Data/entities/Domain/WaiterDAO';
+import { getItems } from '../Data/Stores/ItemStore';
 import * as OrderStore from '../Data/Stores/OrderStore';
 import * as WaiterStore from '../Data/Stores/WaiterStore';
-import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
-import {NotificationFacade} from './Notification/NotificationFacade';
-import {OrderNotifier} from './OrderNotifier';
-import {getGuestActiveOrder, onOrder} from './Orders';
+import { makeFail, makeGood, ResponseMsg } from '../Response';
+import { NotificationFacade } from './Notification/NotificationFacade';
+import { OrderNotifier } from './OrderNotifier';
+import { getGuestActiveOrder, onOrder } from './Orders';
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();

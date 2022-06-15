@@ -1,13 +1,9 @@
-import {WaiterIDO} from 'api';
+import { WaiterIDO } from 'api';
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
-	BaseEntity,
-	JoinTable,
-	ManyToMany,
+	BaseEntity, Column, Entity, JoinTable,
+	ManyToMany, PrimaryGeneratedColumn
 } from 'typeorm';
-import {OrderDAO} from './OrderDAO';
+import { OrderDAO } from './OrderDAO';
 
 @Entity()
 export class WaiterDAO extends BaseEntity {

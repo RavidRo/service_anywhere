@@ -1,5 +1,5 @@
-import {OrderStatus as OrderStatusName} from 'api';
-import {makeFail, makeGood, ResponseMsg} from '../Response';
+import { OrderStatus as OrderStatusName } from 'api';
+import { makeFail, makeGood, ResponseMsg } from '../Response';
 
 export abstract class OrderStatus {
 	to(

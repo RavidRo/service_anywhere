@@ -1,7 +1,7 @@
-import {makeFail, makeGood, ResponseMsg} from '../../Response';
-import {AppDataSource} from '../data-source';
-import {OrderDAO} from '../entities/Domain/OrderDAO';
-import {WaiterDAO} from '../entities/Domain/WaiterDAO';
+import { makeFail, makeGood, ResponseMsg } from '../../Response';
+import { AppDataSource } from '../data-source';
+import { OrderDAO } from '../entities/Domain/OrderDAO';
+import { WaiterDAO } from '../entities/Domain/WaiterDAO';
 
 export async function getWaiters(): Promise<WaiterDAO[]> {
 	const waiterRepository = AppDataSource.getRepository(WaiterDAO);
