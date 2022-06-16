@@ -10,9 +10,8 @@
 		"npm": "8.x"
 	},
 	"scripts": {
-		"start": "npm run build && npm run dev",
+		"start": "npm run start --workspace=server",
 		"build": "npm run build --workspace=dashboard && rm -rf server/build && mv -f dashboard/build server/build",
-		"dev": "npm run start --workspace=server",
 		"dashboard": "npm run start --workspace=dashboard",
 		"test": "npm run test --workspaces",
 		"format": "npx prettier --write .",
