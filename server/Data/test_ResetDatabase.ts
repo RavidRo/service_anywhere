@@ -99,20 +99,7 @@ function getMaps() {
 	map2.topLeftLong = 35.232014;
 	map2.topLeftLat = 31.799504;
 
-	const map3 = new MapDAO();
-	map3.name = 'Soroka Bridge';
-	map3.imageURL =
-		'https://res.cloudinary.com/noa-health/image/upload/v1654536564/Soroka_Bridge_jcqlnq.png';
-	map3.bottomRightLong = 34.80257;
-	map3.bottomRightLat = 31.259808;
-	map3.bottomLeftLong = 34.800838;
-	map3.bottomLeftLat = 31.259808;
-	map3.topRightLong = 34.80257;
-	map3.topRightLat = 31.26355;
-	map3.topLeftLong = 34.800838;
-	map3.topLeftLat = 31.26355;
-
-	return [map1, map2, map3];
+	return [map1, map2];
 }
 
 async function getUsersCredentials() {
@@ -174,6 +161,7 @@ const entitiesDefaults: () => [
 	// ! The order here matters, dont change it (SQL FOREIGN-KEY CONSTRAINT)
 	return [
 		[ItemDAO, async () => items, 'ItemDAO'],
+		[ReviewDAO, async () => [], 'ReviewDAO'],
 		[WaiterDAO, async () => waiters, 'WaiterDAO'],
 		[GuestDAO, async () => guests, 'GuestDAO'],
 		[OrderDAO, async () => orders, 'OrderDAO'],
@@ -184,14 +172,11 @@ const entitiesDefaults: () => [
 		],
 		[UserCredentials, getUsersCredentials, 'UserCredentials'],
 		[MapDAO, async () => maps, 'MapDAO'],
-		[ReviewDAO, async () => [], 'ReviewDAO'],
 	];
 };
 
 export async function clearALl() {
-	for (const [entityTarget, _, entityName] of (
-		await entitiesDefaults()
-	).reverse()) {
+	for (const [entityTarget, _, entityName] of entitiesDefaults().reverse()) {
 		try {
 			await clearTable(entityTarget);
 		} catch (e) {
@@ -201,7 +186,7 @@ export async function clearALl() {
 }
 
 export async function load_data() {
-	for (const [_, entitiesGetter, entityName] of await entitiesDefaults()) {
+	for (const [_, entitiesGetter, entityName] of entitiesDefaults()) {
 		const entities = await entitiesGetter();
 		try {
 			await saveAll(entities);
@@ -212,6 +197,8 @@ export async function load_data() {
 }
 
 export default async function reset_all() {
-	await clearALl();
-	await load_data();
+	if (process.env['NODE_ENV'] === 'development') {
+		await clearALl();
+		await load_data();
+	}
 }
