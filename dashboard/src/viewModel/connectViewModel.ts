@@ -27,8 +27,8 @@ export default class ConnectViewModel {
 		);
 	}
 
-	login(name: string, password: string): Promise<string> {
-		return this.api.login(name, password).then(token => {
+	login(username: string, password: string): Promise<string> {
+		return this.api.login(username, password).then(token => {
 			this.model.token = token;
 			return token;
 		});

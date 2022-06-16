@@ -1,4 +1,4 @@
-import {WaiterIDO, OrderIDO, OrderStatus} from '../../api';
+import {WaiterIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../api';
 
 export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 	console.log('Received ' + waiter);
@@ -6,8 +6,8 @@ export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 		return false;
 	}
 	return (
-		(waiter as WaiterIDO).id !== undefined &&
-		(waiter as WaiterIDO).username !== undefined
+		isString((waiter as WaiterIDO).id) &&
+		isString((waiter as WaiterIDO).username)
 	);
 }
 
@@ -22,10 +22,23 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 	}
 	return (
 		(order as OrderIDO).creationTime !== undefined &&
-		(order as OrderIDO).guestID !== undefined &&
-		(order as OrderIDO).id !== undefined &&
+		isString((order as OrderIDO).guestID) &&
+		isString((order as OrderIDO).id) &&
 		(order as OrderIDO).items !== undefined &&
-		(order as OrderIDO).status !== undefined
+		isStatus((order as OrderIDO).status)
+	);
+}
+
+type orderReview = {orderID: string; details: string; rating: number};
+export function isReview(review: object): review is orderReview {
+	console.log('is Review: ', review);
+	if (!review) {
+		return false;
+	}
+	return (
+		isString((review as orderReview).orderID) &&
+		isString((review as orderReview).details) &&
+		isNumber((review as orderReview).rating)
 	);
 }
 
@@ -36,11 +49,22 @@ export function isOrderStatus(status: object): status is orderStatusType {
 		return false;
 	}
 	return (
-		(status as orderStatusType).orderID !== undefined &&
-		(status as orderStatusType).orderStatus !== undefined
+		isString((status as orderStatusType).orderID) &&
+		isString((status as orderStatusType).orderStatus)
 	);
+}
+
+export function isStatus(status: any): status is OrderStatus {
+	const result = ['unassigned', 'inprogress', 'completed', 'delivered'].find(
+		availableStatus => availableStatus === status
+	);
+	return result !== undefined;
 }
 
 export function isString(someString: unknown): someString is string {
 	return typeof someString === 'string';
+}
+
+export function isNumber(someNumber: unknown): someNumber is number {
+	return typeof someNumber === 'number';
 }

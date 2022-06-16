@@ -13,12 +13,12 @@ import WarningIcon from '@mui/icons-material/Warning';
 import {observer} from 'mobx-react';
 
 function StatusViewController(props: {
-	orderId: string;
+	orderID: string;
 	status: string;
 	orderViewModel: OrdersViewModel;
 	width: number;
 }) {
-	const {orderId, status, orderViewModel, width} = props;
+	const {orderID, status, orderViewModel, width} = props;
 
 	const sn = StatusToNumber.get(status);
 	const currentStep: number = sn === undefined ? 0 : sn;
@@ -54,7 +54,7 @@ function StatusViewController(props: {
 			console.error('This step is not nextable');
 		}
 		orderViewModel
-			.changeOrderStatus(orderId, Status[currentStep + 1])
+			.changeOrderStatus(orderID, Status[currentStep + 1])
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep + 1);
 			// })
@@ -66,7 +66,7 @@ function StatusViewController(props: {
 			console.error('This step is not backable');
 		}
 		orderViewModel
-			.changeOrderStatus(orderId, Status[currentStep - 1])
+			.changeOrderStatus(orderID, Status[currentStep - 1])
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep - 1);
 			// })
@@ -78,7 +78,7 @@ function StatusViewController(props: {
 		}
 
 		orderViewModel
-			.changeOrderStatus(orderId, 'canceled')
+			.changeOrderStatus(orderID, 'canceled')
 			// .then(boolean => {
 			// 	if (boolean)
 			// 		setCurrentStep(StatusToNumber.get('canceled') || 6);

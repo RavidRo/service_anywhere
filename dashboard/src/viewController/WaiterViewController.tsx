@@ -10,41 +10,14 @@ import OrdersViewModel from '../viewModel/ordersViewModel';
 type waiterDialogViewControllerProps = {
 	waitersViewModel: WaitersViewModel;
 	ordersViewModel: OrdersViewModel;
-	orderId: string;
+	orderID: string;
 	status: OrderStatus;
-	assignedWaiters: string[];
-	// updateAssignedWaiters: (orderId: string, waiterIds: string[]) => void;
+	// updateAssignedWaiters: (orderID: string, waiterIds: string[]) => void;
 };
 function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
-	const {
-		waitersViewModel,
-		ordersViewModel,
-		orderId,
-		status,
-		assignedWaiters,
-	} = props;
+	const {waitersViewModel, ordersViewModel, orderID, status} = props;
 	const [open, setOpen] = React.useState(false);
-	// const [assignedWaiters, setAssignedWaiters] = React.useState<string[]>([]);
 	const [selectedWaiters, setSelectedWaiters] = React.useState<string[]>([]);
-
-	// React.useEffect(() => {
-	// 	let mounted = true;
-
-	// 	waitersViewModel
-	// 		.getWaitersByOrder(orderId)
-	// 		.then((waiterIds: string[]) => {
-	// 			if (mounted) {
-	// 				setAssignedWaiters(waiterIds);
-	// 			}
-	// 		})
-	// 		.catch((err: string) =>
-	// 			alert('Could not find waiter by order ' + err)
-	// 		);
-	// 	return () => {
-	// 		mounted = false;
-	// 	};
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -68,11 +41,15 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	};
 
 	const handleOk = () => {
+		if (selectedWaiters.length === 0) {
+			handleClose();
+			return;
+		}
 		waitersViewModel
-			.assignWaiter(orderId, selectedWaiters)
+			.assignWaiter(orderID, selectedWaiters)
 			.then(() => {
 				console.log('Selected waiters ', selectedWaiters);
-				ordersViewModel.updateAssignedWaiter(orderId, selectedWaiters);
+				ordersViewModel.updateAssignedWaiter(orderID, selectedWaiters);
 				handleClose();
 			})
 			.catch(_ => alert('Could not assign waiters to order'));
@@ -83,7 +60,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	};
 	return (
 		<WaiterDialogView
-			assignedWaiters={assignedWaiters}
+			assignedWaiters={ordersViewModel.getAssignedWaiters(orderID)}
 			waiters={waitersViewModel.getWaiters()}
 			handleOpen={handleOpen}
 			handleClose={handleClose}

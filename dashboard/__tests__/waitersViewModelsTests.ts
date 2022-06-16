@@ -65,7 +65,14 @@ jest.mock('../src/network/api', () => {
 	});
 });
 
+var api;
+var waitersModel;
+var waiterViewModel;
+
 beforeEach(() => {
+	api = new Api();
+	waitersModel = new waiterModel();
+	waiterViewModel = new WaitersViewModel(waitersModel, api);
 	(Api as unknown as jest.Mock).mockClear();
 	mockGetOrders.mockClear();
 	mockGetWaiters.mockClear();
@@ -77,42 +84,26 @@ beforeEach(() => {
 
 describe('Constructor', () => {
 	test('The class can be created successfully', async () => {
-		const waiterViewModel = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
 		expect(waiterViewModel).toBeTruthy();
 	});
 
 	test('call assign waiter in server', async () => {
-		const waiterViewModel = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
 		waiterViewModel.assignWaiter('1', ['1', '2']);
 		expect(mockAssignWaiter).toHaveBeenCalled();
 	});
 
 	test('call get waiters by order in server', async () => {
-		const waiterViewModel = new WaitersViewModel(
-			new waiterModel(),
-			new Api()
-		);
 		waiterViewModel.getWaitersByOrder('1');
 		expect(mockGetWaitersByOrder).toHaveBeenCalled();
 	});
 
 	test('get waiters in model', async () => {
-		const model = new waiterModel();
-		const waiterViewModel = new WaitersViewModel(model, new Api());
 		waiterViewModel.setWaiters(mockListOfWaiters);
 		const waiters = waiterViewModel.getWaiters();
 		expect(waiters).toEqual(mockListOfWaiters);
 	});
 
 	test('synchronise waiters in model', async () => {
-		const model = new waiterModel();
-		const waiterViewModel = new WaitersViewModel(model, new Api());
 		waiterViewModel.synchroniseWaiters();
 		await flushPromises();
 		const waiters = waiterViewModel.getWaiters();
