@@ -15,7 +15,7 @@
 		"format": "npx prettier --write .",
 		"lint": "npx eslint . && npx tsc --noEmit --jsx react-native",
 		"dashboard": "npm run start --workspace=dashboard",
-		"waiter": "npm run android --workspace=waiters_app"
+		"build": "npm run build --workspace=dashboard"
 	},
 	"devDependencies": {
 		"@types/jest": "^27.4.0",
@@ -27,7 +27,6 @@
 	},
 	"workspaces": [
 		"dashboard",
-		"guests_app",
 		"server"
 	]
 }
