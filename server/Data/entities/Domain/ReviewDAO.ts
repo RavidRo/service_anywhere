@@ -1,4 +1,5 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import { OrderDAO } from './OrderDAO';
 
 @Entity()
 export class ReviewDAO extends BaseEntity {
@@ -10,4 +11,10 @@ export class ReviewDAO extends BaseEntity {
 
 	@Column('text')
 	content: string;
+
+	@OneToOne(() => OrderDAO, {
+		nullable: false,
+	})
+	@JoinColumn()
+	order: OrderDAO
 }
