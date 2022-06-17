@@ -1,5 +1,11 @@
 import {makeAutoObservable} from 'mobx';
-import {ItemIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../../api';
+import {
+	GuestIDO,
+	ItemIDO,
+	OrderIDO,
+	OrderStatus,
+	ReviewIDO,
+} from '../../../api';
 
 export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
 export type orderReviews = {orderID: string; review: ReviewIDO}[];
@@ -9,10 +15,20 @@ export default class ordersModel {
 	_items: ItemIDO[] = [];
 	_assignedWaiters: assignedWaitersType = [];
 	_reviews: orderReviews = [];
+	_guestDetails: GuestIDO[] = [];
 
 	constructor() {
 		console.log('Starting the order model');
 		makeAutoObservable(this);
+	}
+
+	set guestDetails(guestDetails: GuestIDO[]) {
+		console.info('setting guest details to ', guestDetails);
+		this._guestDetails = guestDetails;
+	}
+
+	get guestDetails(): GuestIDO[] {
+		return this._guestDetails;
 	}
 
 	set reviews(orderReviews: orderReviews) {
@@ -51,6 +67,15 @@ export default class ordersModel {
 	set assignedWaiters(assignedWaiters: assignedWaitersType) {
 		console.info('Setting assigned waiters');
 		this._assignedWaiters = assignedWaiters;
+	}
+
+	addGuestDetails(guestDetails: GuestIDO[]) {
+		console.info('adding guest details', guestDetails);
+		guestDetails.forEach(details => this._guestDetails.push(details));
+	}
+
+	getGuestDetails(guestID: string): GuestIDO | undefined {
+		return this._guestDetails.find(details => details.id === guestID);
 	}
 
 	addReview(orderID: string, details: string, rating: number): void {

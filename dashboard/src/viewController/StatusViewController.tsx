@@ -207,7 +207,9 @@ function StatusViewController(props: {
 						<Typography variant='body2' style={{padding: 8}}>
 							<Box sx={{width: '100%'}}>
 								<StatusView
-									steps={Status}
+									steps={Status.filter(
+										entry => entry !== 'canceled'
+									)}
 									isStepNextable={isStepNextable}
 									isStepBackable={isStepBackable}
 									isStepCancelable={isStepCancelable}

@@ -24,7 +24,7 @@ export default class Notificiations {
 	addNewOrder(params: object) {
 		if (isOrder(params)) {
 			console.log('Updating new orders', params);
-			this.ordersViewModel.updateOrder(params.order);
+			this.ordersViewModel.addOrder(params.order);
 		} else {
 			console.warn(
 				"Haven't received the correct arguments, the argument should be an order"
@@ -85,7 +85,7 @@ export default class Notificiations {
 				errorMsg: string;
 				orderID: string;
 			};
-			this.ordersViewModel.guestError(error.orderID, error.errorMsg);
+			this.ordersViewModel.addGuestError(error.orderID, error.errorMsg);
 		} else {
 			console.warn(
 				"Haven't received the correct arguments, the param should be a guest error"

@@ -17,7 +17,7 @@ export const Status: OrderStatus[] = [
 	'assigned',
 	'on the way',
 	'delivered',
-	// 'canceled',
+	'canceled',
 ];
 
 export const StatusToNumber: Map<string, number> = new Map([
@@ -27,5 +27,5 @@ export const StatusToNumber: Map<string, number> = new Map([
 	['assigned', 3],
 	['on the way', 4],
 	['delivered', 5],
-	// ['canceled', 6],
+	['canceled', 6],
 ]);

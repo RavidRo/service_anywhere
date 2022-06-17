@@ -52,9 +52,20 @@ const OrdersViewController = (props: viewModelProps) => {
 		},
 		{
 			field: 'guestID',
-			headerName: 'Guest Id',
+			headerName: 'Guest details',
 			editable: false,
 			flex: 1,
+			valueGetter: (params: GridValueGetterParams) => {
+				const details = ordersViewModel.getGuestDetails(
+					params.value || ''
+				);
+				return (
+					<>
+						<p>{`Name: ${details?.username}`}</p>
+						<p>{`Phone number: ${details?.phoneNumber}`}</p>
+					</>
+				);
+			},
 			renderCell: ExpandCellGrid,
 		},
 		{

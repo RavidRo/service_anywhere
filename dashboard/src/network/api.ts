@@ -1,5 +1,5 @@
 import RequestsHandler from './RequestsHandler';
-import {ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
+import {GuestIDO, ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
 
 export default class Api {
 	private handler: RequestsHandler;
@@ -21,6 +21,13 @@ export default class Api {
 
 	getWaiters(): Promise<WaiterIDO[]> {
 		return this.handler.get<WaiterIDO[]>('getWaiters');
+	}
+
+	getGuestsDetails(ids: string[]): Promise<GuestIDO[]> {
+		if (ids.length === 0) {
+			return Promise.resolve([]);
+		}
+		return this.handler.get('getGuestsDetails', {ids});
 	}
 
 	assignWaiter(orderID: string, waiterID: string[]): Promise<void> {
