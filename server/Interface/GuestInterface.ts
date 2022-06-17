@@ -3,7 +3,7 @@ import {Location, OrderIDO} from '../../api';
 import {ResponseMsg} from '../Response';
 
 import {IOrder} from '../Logic/IOrder';
-import {onOrder, getGuestActiveOrder} from '../Logic/Orders';
+import {getGuestActiveOrder, onOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
 
