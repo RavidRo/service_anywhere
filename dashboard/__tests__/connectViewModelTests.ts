@@ -11,6 +11,8 @@ import ordersModel from '../src/model/ordersModel';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO, WaiterIDO} from '../../api';
 import ConnectionHandler from '../src/network/connectionHandler';
+import {alertViewModel, initViewModels} from '../src/context';
+import AlertViewModel from '../src/viewModel/alertViewModel';
 
 const mockListOfOrders: OrderIDO[] = [
 	{
@@ -96,6 +98,7 @@ let waitersViewModel: WaitersViewModel;
 let connectViewModel: ConnectViewModel;
 
 beforeEach(() => {
+	initViewModels();
 	api = new Api();
 	orderModel = new ordersModel();
 	ordersViewModel = new OrdersViewModel(orderModel, api);
