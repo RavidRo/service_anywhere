@@ -32,10 +32,10 @@ const mockListOfOrders: OrderIDO[] = [
 ];
 
 const mockWarn = jest.fn();
-var api;
-var orderModel;
-var ordersViewModel;
-var notifications;
+let api;
+let orderModel;
+let ordersViewModel;
+let notifications;
 
 beforeEach(() => {
 	api = new Api();

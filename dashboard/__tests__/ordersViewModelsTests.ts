@@ -80,9 +80,9 @@ jest.mock('../src/network/api', () => {
 		};
 	});
 });
-var api;
-var orderModel;
-var ordersViewModel;
+let api;
+let orderModel;
+let ordersViewModel;
 
 beforeEach(() => {
 	api = new Api();

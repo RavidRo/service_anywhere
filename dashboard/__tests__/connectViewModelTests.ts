@@ -88,12 +88,12 @@ jest.mock('../src/network/connectionHandler', () => {
 	});
 });
 
-var api;
-var orderModel;
-var ordersViewModel;
-var waitersModel;
-var waitersViewModel;
-var connectViewModel;
+let api;
+let orderModel;
+let ordersViewModel;
+let waitersModel;
+let waitersViewModel;
+let connectViewModel;
 
 beforeEach(() => {
 	api = new Api();

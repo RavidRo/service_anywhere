@@ -65,9 +65,9 @@ jest.mock('../src/network/api', () => {
 	});
 });
 
-var api;
-var waitersModel;
-var waiterViewModel;
+let api;
+let waitersModel;
+let waiterViewModel;
 
 beforeEach(() => {
 	api = new Api();
