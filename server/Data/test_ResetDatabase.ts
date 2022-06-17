@@ -99,6 +99,22 @@ function getMaps() {
 	map2.topLeftLong = 35.232014;
 	map2.topLeftLat = 31.799504;
 
+	const map3 = new MapDAO();
+	map3.name = 'Dan Jerusalem';
+	map1.imageURL =
+		'https://res.cloudinary.com/noa-health/image/upload/v1655453363/Screenshot_2022-06-17_110241_ruyf2i.png';
+	map2.bottomRightLong = 35.236847;
+	map2.bottomRightLat = 31.796538;
+
+	map2.bottomLeftLong = 35.234078;
+	map2.bottomLeftLat = 31.796538;
+
+	map2.topRightLong = 35.236847;
+	map2.topRightLat = 31.798879;
+
+	map2.topLeftLong = 35.234078;
+	map2.topLeftLat = 31.798879;
+
 	return [map1, map2];
 }
 

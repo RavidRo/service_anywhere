@@ -1,4 +1,4 @@
-import {WaiterIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../api';
+import {WaiterIDO, OrderIDO, OrderStatus} from '../../api';
 
 export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 	console.log('Received ' + waiter);
@@ -54,7 +54,7 @@ export function isOrderStatus(status: object): status is orderStatusType {
 	);
 }
 
-export function isStatus(status: any): status is OrderStatus {
+export function isStatus(status: unknown): status is OrderStatus {
 	const result = ['unassigned', 'inprogress', 'completed', 'delivered'].find(
 		availableStatus => availableStatus === status
 	);

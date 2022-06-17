@@ -1,8 +1,6 @@
-/* eslint-disable max-len */
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
 import {isOrder, isOrderStatus, orderStatusType, isReview} from '../typeGuard';
-import {ReviewIDO} from '../../../api';
 
 export default class Notificiations {
 	private ordersViewModel: OrdersViewModel;
@@ -60,7 +58,8 @@ export default class Notificiations {
 	eventCallbacks: Record<string, (params: object) => void> = {
 		newOrder: params => this.addNewOrder(params),
 		changeOrderStatus: params => this.changeOrderStatus(params),
-		review: params => this.addReview(params), // TODO: when notification is added in server, change name to match
+		// TODO: when notification is added in server, change name to match
+		review: params => this.addReview(params),
 		// updateWaiters: params => this.updateWaiters(params),
 	};
 }
