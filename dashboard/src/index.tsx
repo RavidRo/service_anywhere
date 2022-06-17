@@ -7,6 +7,7 @@ import {
 	ordersViewModel,
 	waitersViewModel,
 	connectViewModel,
+	initViewModels,
 } from './context';
 
 if (
@@ -18,7 +19,7 @@ if (
 	throw new Error('Transpiler is not configured correctly');
 
 console.log('Starting Log');
-
+initViewModels();
 ReactDOM.render(
 	<React.StrictMode>
 		<ConnectViewController

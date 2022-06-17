@@ -11,6 +11,7 @@ export default class ordersModel {
 	set alerts(alerts: string[]) {
 		console.info('setting alerts to ', alerts);
 		this._alerts = alerts;
+		this._shownAlerts = alerts;
 	}
 
 	get alerts(): string[] {

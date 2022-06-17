@@ -25,7 +25,7 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 		isString((order as OrderIDO).guestID) &&
 		isString((order as OrderIDO).id) &&
 		(order as OrderIDO).items !== undefined &&
-		isStatus((order as OrderIDO).status)
+		isString((order as OrderIDO).status)
 	);
 }
 
@@ -76,13 +76,6 @@ export function isGuestError(error: object): error is guestError {
 		(error as guestError).orderID !== undefined &&
 		(error as guestError).errorMsg !== undefined
 	);
-}
-
-export function isStatus(status: any): status is OrderStatus {
-	const result = ['unassigned', 'inprogress', 'completed', 'delivered'].find(
-		availableStatus => availableStatus === status
-	);
-	return result !== undefined;
 }
 
 export function isString(someString: unknown): someString is string {

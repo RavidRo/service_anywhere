@@ -8,16 +8,23 @@ import Api from './network/api';
 import AlertViewModel from './viewModel/alertViewModel';
 import AlertModel from './model/alertModel';
 
-const waiterModel = new waitersModel();
-const orderModel = new ordersModel();
-const alertModel = new AlertModel();
-const api: Api = new Api();
+export let alertViewModel: AlertViewModel;
+export let ordersViewModel: OrdersViewModel;
+export let waitersViewModel: WaitersViewModel;
+export let connectViewModel: ConnectViewModel;
 
-export const alertViewModel = new AlertViewModel(alertModel);
-export const ordersViewModel = new OrdersViewModel(orderModel, api);
-export const waitersViewModel = new WaitersViewModel(waiterModel, api);
-export const connectViewModel = new ConnectViewModel(
-	api,
-	ordersViewModel,
-	waitersViewModel
-);
+export const initViewModels = (): void => {
+	const waiterModel = new waitersModel();
+	const orderModel = new ordersModel();
+	const alertModel = new AlertModel();
+	const api: Api = new Api();
+
+	alertViewModel = new AlertViewModel(alertModel);
+	ordersViewModel = new OrdersViewModel(orderModel, api);
+	waitersViewModel = new WaitersViewModel(waiterModel, api);
+	connectViewModel = new ConnectViewModel(
+		api,
+		ordersViewModel,
+		waitersViewModel
+	);
+};
