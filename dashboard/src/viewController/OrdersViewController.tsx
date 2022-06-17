@@ -46,7 +46,7 @@ const OrdersViewController = (props: viewModelProps) => {
 	const columns = [
 		{
 			field: 'id',
-			headerName: 'id',
+			headerName: 'Order Id',
 			editable: false,
 			renderCell: ExpandCellGrid,
 		},
