@@ -25,17 +25,16 @@ export type ItemIDO = {
 	preparationTime: number;
 };
 
-export type ReviewIDO = {
-	details: string;
-	rating: number;
-};
-
 type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
 	username: string;
 };
 
+export type ReviewIDO = {
+	details: string;
+	rating: number;
+};
 // export type WaiterDAO = {
 // 	id: string;
 // 	name: string;
