@@ -5,6 +5,7 @@ import ordersModel from '../src/model/ordersModel';
 import Api from '../src/network/api';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO} from '../../api';
+import {Not} from 'reselect/es/types';
 
 const mockListOfOrders: OrderIDO[] = [
 	{
@@ -32,10 +33,10 @@ const mockListOfOrders: OrderIDO[] = [
 ];
 
 const mockWarn = jest.fn();
-var api;
-var orderModel;
-var ordersViewModel;
-var notifications;
+let api: Api;
+let orderModel: ordersModel;
+let ordersViewModel: OrdersViewModel;
+let notifications: Notifications;
 
 beforeEach(() => {
 	api = new Api();

@@ -3,6 +3,7 @@ import OrderViewModel from '../src/viewModel/ordersViewModel';
 import Api from '../src/network/api';
 import ordersModel from '../src/model/ordersModel';
 import {ItemIDO, OrderIDO, WaiterIDO} from '../../api';
+import OrdersViewModel from '../src/viewModel/ordersViewModel';
 
 const mockListOfItems: ItemIDO[] = [
 	{
@@ -80,9 +81,9 @@ jest.mock('../src/network/api', () => {
 		};
 	});
 });
-var api;
-var orderModel;
-var ordersViewModel;
+let api: Api;
+let orderModel: ordersModel;
+let ordersViewModel: OrdersViewModel;
 
 beforeEach(() => {
 	api = new Api();

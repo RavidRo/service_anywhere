@@ -17,14 +17,16 @@ import {
 import {observer} from 'mobx-react';
 import {Divider} from '@mui/material';
 import ReviewViewController from './reviewViewController';
+import AlertViewModel from '../viewModel/alertViewModel';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaiterViewModel;
+	alertViewModel: AlertViewModel;
 }
 const OrdersViewController = (props: viewModelProps) => {
 	console.info('Starting orders view controller');
-	const {ordersViewModel, waitersViewModel} = props;
+	const {ordersViewModel, waitersViewModel, alertViewModel} = props;
 	const handleRowEditStart = (_params: GridRowParams, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
@@ -74,11 +76,9 @@ const OrdersViewController = (props: viewModelProps) => {
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				// (entry: (number | string)[])
 				if (params.value !== undefined)
 					return new Date(params.value).toLocaleTimeString();
 				return '';
-				// return params.value?.toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,
 		},
@@ -148,7 +148,7 @@ const OrdersViewController = (props: viewModelProps) => {
 	];
 	return (
 		<div>
-			<AppBarView />
+			<AppBarView alertViewModel={alertViewModel} />
 			<OrdersView
 				orders={ordersViewModel.getOrders()}
 				columns={columns}

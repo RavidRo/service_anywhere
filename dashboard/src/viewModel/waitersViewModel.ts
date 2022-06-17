@@ -1,6 +1,7 @@
 import Api from '../network/api';
 import WaiterModel from '../model/waiterModel';
 import {WaiterIDO} from '../../../api';
+import {alertViewModel} from '../context';
 
 export default class WaitersViewModel {
 	private waitersModel: WaiterModel;
@@ -25,7 +26,9 @@ export default class WaitersViewModel {
 				this.waitersModel.waiters = waiters;
 			})
 			.catch(err =>
-				alert('Could not get waiters please reload, Error:' + err)
+				alertViewModel.addAlert(
+					'Could not get waiters please reload, Error:' + err
+				)
 			);
 	}
 	assignWaiter(orderID: string, waiters: string[]) {
@@ -34,5 +37,12 @@ export default class WaitersViewModel {
 
 	getWaitersByOrder(orderID: string) {
 		return this.api.getWaitersByOrder(orderID);
+	}
+
+	waiterError(waiterID: string, errorMsg: string) {
+		alertViewModel.addAlert(`Waiter ${
+			this.getWaiters().find(waiter => waiter.id === waiterID)?.username
+		}
+		 Error: ${errorMsg}`);
 	}
 }
