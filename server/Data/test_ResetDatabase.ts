@@ -86,36 +86,33 @@ function getMaps() {
 	map1.topRightLat = 31.26355;
 	map1.topRightLong = 34.802516;
 
-	const map2 = new MapDAO();
-	map2.name = 'Dan Jerusalem';
-	map2.imageURL =
-		'https://res.cloudinary.com/noa-health/image/upload/v1654535608/Dan_Jerusalem_cijcod.png';
-	map2.bottomRightLong = 35.238558;
-	map2.bottomRightLat = 31.795908;
-	map2.bottomLeftLong = 35.232014;
-	map2.bottomLeftLat = 31.795908;
-	map2.topRightLong = 35.238558;
-	map2.topRightLat = 31.799504;
-	map2.topLeftLong = 35.232014;
-	map2.topLeftLat = 31.799504;
+	// const map2 = new MapDAO();
+	// map2.name = 'Dan Jerusalem';
+	// map2.imageURL =
+	// 	'https://res.cloudinary.com/noa-health/image/upload/v1654535608/Dan_Jerusalem_cijcod.png';
+	// map2.bottomRightLong = 35.238558;
+	// map2.bottomRightLat = 31.795908;
+	// map2.bottomLeftLong = 35.232014;
+	// map2.bottomLeftLat = 31.795908;
+	// map2.topRightLong = 35.238558;
+	// map2.topRightLat = 31.799504;
+	// map2.topLeftLong = 35.232014;
+	// map2.topLeftLat = 31.799504;
 
 	const map3 = new MapDAO();
 	map3.name = 'Dan Jerusalem';
-	map1.imageURL =
+	map3.imageURL =
 		'https://res.cloudinary.com/noa-health/image/upload/v1655453363/Screenshot_2022-06-17_110241_ruyf2i.png';
-	map2.bottomRightLong = 35.236847;
-	map2.bottomRightLat = 31.796538;
+	map3.bottomRightLong = 35.236847;
+	map3.bottomRightLat = 31.796538;
+	map3.bottomLeftLong = 35.234078;
+	map3.bottomLeftLat = 31.796538;
+	map3.topRightLong = 35.236847;
+	map3.topRightLat = 31.798879;
+	map3.topLeftLong = 35.234078;
+	map3.topLeftLat = 31.798879;
 
-	map2.bottomLeftLong = 35.234078;
-	map2.bottomLeftLat = 31.796538;
-
-	map2.topRightLong = 35.236847;
-	map2.topRightLat = 31.798879;
-
-	map2.topLeftLong = 35.234078;
-	map2.topLeftLat = 31.798879;
-
-	return [map1, map2];
+	return [map1, map3];
 }
 
 async function getUsersCredentials() {
