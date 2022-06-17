@@ -4,7 +4,12 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import {observer} from 'mobx-react';
 
-function CustomAlert(props) {
+type props = {
+	content: string;
+	onClick: (content: string) => void;
+	[x: string]: unknown;
+};
+function CustomAlert(props: props) {
 	const {content, onClick, ...rest} = props;
 	return (
 		<Alert
