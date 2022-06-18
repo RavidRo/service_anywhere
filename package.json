@@ -11,10 +11,11 @@
 	},
 	"scripts": {
 		"start": "npm run start --workspace=server",
+		"build": "npm run build --workspace=dashboard && rm -rf server/build && mv -f dashboard/build server/build",
+		"dashboard": "npm run start --workspace=dashboard",
 		"test": "npm run test --workspaces",
 		"format": "npx prettier --write .",
-		"lint": "npx eslint . && npx tsc --noEmit --jsx react-native",
-		"dashboard": "npm run start --workspace=dashboard"
+		"lint": "npx eslint . && npx tsc --noEmit --jsx react-native"
 	},
 	"devDependencies": {
 		"@types/jest": "^27.4.0",
@@ -26,8 +27,6 @@
 	},
 	"workspaces": [
 		"dashboard",
-		"guests_app",
-		"waiters_app",
 		"server"
 	]
 }

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
 import {
