@@ -55,7 +55,6 @@ function StatusView(props: statusProps) {
 					<Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
 						{isStepBackable(currentStep) && (
 							<Button
-								color='inherit'
 								disabled={currentStep === 0}
 								onClick={handleBack}
 								sx={{mr: 1}}>
@@ -65,7 +64,7 @@ function StatusView(props: statusProps) {
 						<Box sx={{flex: '1 1 auto'}} />
 						{isStepCancelable(currentStep) && (
 							<Button
-								color='inherit'
+								color='warning'
 								onClick={handleCancel}
 								sx={{mr: 1}}>
 								Cancel
