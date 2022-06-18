@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
-import AlertViewModel from '../viewModel/alertViewModel';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';

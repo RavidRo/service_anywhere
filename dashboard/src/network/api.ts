@@ -30,10 +30,10 @@ export default class Requests {
 		return this.handler.get('getGuestsDetails', {ids});
 	}
 
-	assignWaiter(orderID: string, waiterID: string[]): Promise<void> {
+	assignWaiter(orderID: string, waiterIDs: string[]): Promise<void> {
 		return this.handler.post<void>('assignWaiter', {
-			orderID: [orderID],
-			waiterID: waiterID,
+			orderID: orderID,
+			waiterIDs: waiterIDs,
 		});
 	}
 

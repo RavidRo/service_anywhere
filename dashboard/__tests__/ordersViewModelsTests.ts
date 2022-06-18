@@ -3,7 +3,6 @@ import OrderViewModel from '../src/viewModel/ordersViewModel';
 import Api from '../src/network/api';
 import ordersModel from '../src/model/ordersModel';
 import {ItemIDO, OrderIDO, WaiterIDO} from '../../api';
-import OrdersViewModel from '../src/viewModel/ordersViewModel';
 import {initViewModels} from '../src/context';
 
 const mockListOfItems: ItemIDO[] = [

@@ -1,10 +1,8 @@
-/* eslint-disable max-len */
 import * as React from 'react';
 import WaiterDialogView from '../view/WaiterView';
 import {observer} from 'mobx-react';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 import {OrderStatus} from '../../../api';
-import {StatusToNumber} from '../Status';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import {alertViewModel} from '../context';
 
