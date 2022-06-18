@@ -7,13 +7,7 @@ export default class Requests {
 		this.handler = new RequestsHandler();
 	}
 
-	login(username: string, password: string): Promise<string> {
-		return this.handler.post<string>('login', {
-			username: username,
-			password: password,
-		});
-	}
-
+	// ------------GET---------------------------
 	getOrders(): Promise<OrderIDO[]> {
 		console.log('Getting orders');
 		return this.handler.get<OrderIDO[]>('getOrders');
@@ -30,16 +24,26 @@ export default class Requests {
 		return this.handler.get('getGuestsDetails', {ids});
 	}
 
+	getWaitersByOrder(orderID: string): Promise<string[]> {
+		return this.handler.get<string[]>('getWaitersByOrder', {
+			orderID: orderID,
+		});
+	}
+
+	getItems(): Promise<ItemIDO[]> {
+		return this.handler.get<ItemIDO[]>('getItems');
+	}
+	// ------------------POST-------------------------
+	login(username: string, password: string): Promise<string> {
+		return this.handler.post<string>('login', {
+			username: username,
+			password: password,
+		});
+	}
 	assignWaiter(orderID: string, waiterID: string[]): Promise<void> {
 		return this.handler.post<void>('assignWaiter', {
 			orderID: [orderID],
 			waiterID: waiterID,
-		});
-	}
-
-	getWaitersByOrder(orderID: string): Promise<string[]> {
-		return this.handler.get<string[]>('getWaitersByOrder', {
-			orderID: orderID,
 		});
 	}
 
@@ -54,9 +58,5 @@ export default class Requests {
 		return this.handler.post<void>('cancelOrder', {
 			orderID: orderID,
 		});
-	}
-
-	getItems(): Promise<ItemIDO[]> {
-		return this.handler.get<ItemIDO[]>('getItems');
 	}
 }

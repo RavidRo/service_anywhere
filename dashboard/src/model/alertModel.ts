@@ -8,23 +8,23 @@ export default class ordersModel {
 		makeAutoObservable(this);
 	}
 
+	get alerts(): string[] {
+		return this._alerts;
+	}
+
 	set alerts(alerts: string[]) {
 		console.info('setting alerts to ', alerts);
 		this._alerts = alerts;
 		this._shownAlerts = alerts;
 	}
 
-	get alerts(): string[] {
-		return this._alerts;
+	get shownAlerts(): string[] {
+		return this._shownAlerts;
 	}
 
 	set shownAlerts(shownAlerts: string[]) {
 		console.info('setting alerts to ', shownAlerts);
 		this._shownAlerts = shownAlerts;
-	}
-
-	get shownAlerts(): string[] {
-		return this._shownAlerts;
 	}
 
 	showAlert(alert: string): void {

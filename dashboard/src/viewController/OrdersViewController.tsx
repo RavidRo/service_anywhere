@@ -43,6 +43,7 @@ const OrdersViewController = (props: viewModelProps) => {
 		event.defaultMuiPrevented = true;
 	};
 
+	//Definition of columns according to mui x-data-grid https://mui.com/x/react-data-grid/
 	const columns = [
 		{
 			field: 'id',
