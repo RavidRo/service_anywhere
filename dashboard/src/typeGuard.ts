@@ -1,4 +1,4 @@
-import {WaiterIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../api';
+import {WaiterIDO, OrderIDO, OrderStatus} from '../../api';
 
 export function isWaiterArray(waiter: object): waiter is WaiterIDO {
 	console.log('Received ' + waiter);

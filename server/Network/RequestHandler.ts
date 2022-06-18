@@ -23,12 +23,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const statusFail = 400;
 app.use(express.json());
+app.use(express.static('build'));
 app.use(cors({origin: '*', credentials: true}));
 
 import * as http from 'http';
 import * as socketIO from 'socket.io';
 import GuestInterface from '../Interface/GuestInterface';
 import WaiterInterface from '../Interface/WaiterInterface';
+import path from 'path';
 
 const httpServer = new http.Server(app);
 const io = new socketIO.Server(httpServer, {
@@ -38,9 +40,8 @@ const io = new socketIO.Server(httpServer, {
 });
 
 // use it before all route definitions
-
 app.get('/', (_req, res) => {
-	res.send('Welcome');
+	res.sendFile(path.join(__dirname, '/build/index.html'));
 });
 
 function authenticate(
