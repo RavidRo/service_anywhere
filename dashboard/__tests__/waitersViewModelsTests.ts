@@ -1,6 +1,6 @@
 import {flushPromises, makePromise as mockMakePromise} from '../PromiseUtils';
 import WaitersViewModel from '../src/viewModel/waitersViewModel';
-import Api from '../src/network/api';
+import Api from '../src/network/requests';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO, WaiterIDO} from '../../api';
 

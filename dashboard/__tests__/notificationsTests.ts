@@ -2,7 +2,7 @@ import Notifications from '../src/network/notifications';
 import WaitersViewModel from 'dashboard/src/viewModel/waitersViewModel';
 import OrdersViewModel from 'dashboard/src/viewModel/ordersViewModel';
 import ordersModel from '../src/model/ordersModel';
-import Api from '../src/network/api';
+import Api from '../src/network/requests';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO} from '../../api';
 import {Not} from 'reselect/es/types';
