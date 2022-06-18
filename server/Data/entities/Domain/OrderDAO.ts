@@ -27,7 +27,7 @@ export class OrderDAO extends BaseEntity {
 	@Column('bigint', {default: () => `${Date.now()}`})
 	creationTime: number;
 
-	@Column({
+	@Column('bigint', {
 		nullable: true,
 	})
 	completionTime?: number;
@@ -53,14 +53,26 @@ export class OrderDAO extends BaseEntity {
 			orderToItem.item.id,
 			orderToItem.quantity,
 		]);
+
+		// Seems like PostgreSQL is outputting a string but sqlite is outputting a number
+		const creationTime =
+			typeof this.creationTime === 'string'
+				? Number.parseInt(this.creationTime)
+				: this.creationTime;
+
+		const completionTime =
+			typeof this.completionTime === 'string'
+				? Number.parseInt(this.completionTime)
+				: this.completionTime;
+
 		return {
 			id: this.id,
 			guestID: this.guest.id,
 			items: Object.fromEntries(items),
 			status: this.status,
-			creationTime: new Date(this.creationTime),
-			completionTime: this.completionTime
-				? new Date(this.completionTime)
+			creationTime: new Date(creationTime),
+			completionTime: completionTime
+				? new Date(completionTime)
 				: undefined,
 		};
 	}

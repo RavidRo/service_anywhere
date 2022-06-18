@@ -63,9 +63,9 @@ export async function assignWaiter(
 		}
 	}
 
-	return order.save().then(() => {
-		return makeGood();
-	});
+	await order.save();
+
+	return makeGood();
 }
 export function getOrder(orderID: string) {
 	const orderRepository = AppDataSource.getRepository(OrderDAO);
