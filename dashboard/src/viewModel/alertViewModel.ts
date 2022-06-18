@@ -16,8 +16,9 @@ export default class AlertViewModel {
 		this.alertModel.alerts = alerts;
 	}
 
-	addAlert(alert: string): void {
-		this.alertModel.addAlert(alert);
+	addAlert(alertMsg: string, popUp = false): void {
+		if (popUp) alert(alertMsg);
+		this.alertModel.addAlert(alertMsg);
 	}
 
 	removeAlert(alert: string): void {
