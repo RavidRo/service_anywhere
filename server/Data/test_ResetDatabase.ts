@@ -210,7 +210,7 @@ export async function load_data() {
 }
 
 export default async function reset_all() {
-	if (process.env['NODE_ENV'] === 'development') {
+	if (process.env['NODE_ENV'] !== 'production') {
 		await clearALl();
 		await load_data();
 	}
