@@ -4,7 +4,7 @@ import {
 	makePromise as mockMakePromise,
 } from '../PromiseUtils';
 import ConnectViewModel from '../src/viewModel/connectViewModel';
-import Api from '../src/network/api';
+import Api from '../src/network/requests';
 import OrdersViewModel from '../src/viewModel/ordersViewModel';
 import WaitersViewModel from '../src/viewModel/waitersViewModel';
 import ordersModel from '../src/model/ordersModel';

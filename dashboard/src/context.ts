@@ -4,7 +4,7 @@ import OrdersViewModel from './viewModel/ordersViewModel';
 import WaitersViewModel from './viewModel/waitersViewModel';
 import waitersModel from './model/waiterModel';
 import ordersModel from './model/ordersModel';
-import Api from './network/api';
+import Api from './network/requests';
 import AlertViewModel from './viewModel/alertViewModel';
 import AlertModel from './model/alertModel';
 

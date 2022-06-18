@@ -1,4 +1,4 @@
-import Api from '../network/api';
+import Api from '../network/requests';
 import OrderModel from '../model/ordersModel';
 import {
 	GuestIDO,
@@ -134,19 +134,20 @@ export default class OrdersViewModel {
 		);
 	}
 
-	synchroniseOrders(): Promise<void | void[]> {
+	synchroniseOrders(): Promise<unknown> {
 		return this.api
 			.getOrders()
 			.then(orders => {
 				console.info('Synchronized orders');
 				this.ordersModel.orders = orders;
-				this.fetchGuestDetails(
-					orders.map(order => order.guestID)
-				).catch(e => {
-					console.warn("Could not fetch a guest's details", e);
-				});
-
-				return this.synchroniseAssignedWaiters();
+				return Promise.all([
+					this.synchroniseAssignedWaiters(),
+					this.fetchGuestDetails(
+						orders.map(order => order.guestID)
+					).catch(e => {
+						console.warn("Could not fetch a guest's details", e);
+					}),
+				]);
 			})
 			.catch(err =>
 				alertViewModel.addAlert(

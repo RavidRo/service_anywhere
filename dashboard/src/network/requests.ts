@@ -1,7 +1,7 @@
 import RequestsHandler from './RequestsHandler';
 import {GuestIDO, ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
 
-export default class Api {
+export default class Requests {
 	private handler: RequestsHandler;
 	constructor() {
 		this.handler = new RequestsHandler();
