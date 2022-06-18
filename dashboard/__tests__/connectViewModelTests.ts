@@ -11,8 +11,7 @@ import ordersModel from '../src/model/ordersModel';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO, WaiterIDO} from '../../api';
 import ConnectionHandler from '../src/network/connectionHandler';
-import {alertViewModel, initViewModels} from '../src/context';
-import AlertViewModel from '../src/viewModel/alertViewModel';
+import {initViewModels} from '../src/context';
 
 const mockListOfOrders: OrderIDO[] = [
 	{
