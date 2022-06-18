@@ -1,4 +1,4 @@
-import Api from '../network/requests';
+import Api from '../network/api';
 import WaiterModel from '../model/waiterModel';
 import {WaiterIDO} from '../../../api';
 import {alertViewModel} from '../context';

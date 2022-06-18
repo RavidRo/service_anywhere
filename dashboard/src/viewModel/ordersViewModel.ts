@@ -1,4 +1,4 @@
-import Api from '../network/requests';
+import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
 import {
 	GuestIDO,

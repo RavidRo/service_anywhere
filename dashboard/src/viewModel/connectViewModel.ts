@@ -1,6 +1,6 @@
 import {alertViewModel} from '../context';
 import ConnectModel from '../model/ConnectModel';
-import Api from '../network/requests';
+import Api from '../network/api';
 import ConnectionHandler from '../network/connectionHandler';
 import OrdersViewModel from './ordersViewModel';
 import WaitersViewModel from './waitersViewModel';
