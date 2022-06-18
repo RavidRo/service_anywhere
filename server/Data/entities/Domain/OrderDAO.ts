@@ -27,7 +27,7 @@ export class OrderDAO extends BaseEntity {
 	@Column('bigint', {default: () => `${Date.now()}`})
 	creationTime: number;
 
-	@Column({
+	@Column('bigint', {
 		nullable: true,
 	})
 	completionTime?: number;
