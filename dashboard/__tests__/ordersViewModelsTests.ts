@@ -6,7 +6,6 @@ import {ItemIDO, OrderIDO, WaiterIDO} from '../../api';
 import OrdersViewModel from '../src/viewModel/ordersViewModel';
 import {initViewModels} from '../src/context';
 
-
 const mockListOfItems: ItemIDO[] = [
 	{
 		id: '57480f63-1361-45ee-9fab-46b8042464ce',
