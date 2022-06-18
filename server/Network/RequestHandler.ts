@@ -56,7 +56,7 @@ function authenticate(
 		if (response.isSuccess()) {
 			response.ifGood(doIfLegal);
 		} else {
-			setErrorStatus(statusFail);
+			setErrorStatus(response.getStatusCode());
 			sendErrorMsg(response.getError());
 		}
 	} else {
