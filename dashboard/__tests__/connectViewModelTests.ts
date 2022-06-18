@@ -136,6 +136,7 @@ describe('Constructor', () => {
 		await flushPromises();
 		connectViewModel.connect();
 		await flushPromises();
+		await flushPromises();
 		expect(mockGetOrders).toHaveBeenCalled();
 		expect(mockGetWaiters).toHaveBeenCalled();
 		expect(mockGetItems).toHaveBeenCalled();
