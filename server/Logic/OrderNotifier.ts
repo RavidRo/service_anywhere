@@ -1,12 +1,12 @@
-import {OrderStatus, Location, OrderIDO} from 'api';
+import {Location, OrderIDO, OrderStatus} from 'api';
 import config from '../config.json';
 import {ResponseMsg} from '../Response';
 
 import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
 
 import {IOrder} from './IOrder';
-import {Order} from './Order';
 import {NotificationFacade} from './Notification/NotificationFacade';
+import {Order} from './Order';
 
 export abstract class OrderNotifier implements IOrder {
 	protected notificationFacade: NotificationFacade = new NotificationFacade();
@@ -167,5 +167,18 @@ class DashboardNotifier extends OrderNotifier {
 	constructor(order: IOrder) {
 		super(order);
 		this.receiverId = config.admin_id;
+	}
+
+	override giveFeedback(
+		review: string,
+		score: number
+	): Promise<ResponseMsg<void, void>> {
+		this.notificationFacade.notifyReview(
+			config.admin_id,
+			this.getID(),
+			review,
+			score
+		);
+		return super.giveFeedback(review, score);
 	}
 }

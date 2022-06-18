@@ -1,15 +1,15 @@
 import {IOrder} from '../Logic/IOrder';
 import {onOrder} from '../Logic/Orders';
 
-import reset_all from '../Data/test_ResetDatabase';
 import {AppDataSource} from '../Data/data-source';
+import reset_all from '../Data/test_ResetDatabase';
 
+import config from '../config.json';
+import {getGuests} from '../Data/Stores/GuestStore';
 import DashboardInterface from '../Interface/DashboardInterface';
 import GuestInterface from '../Interface/GuestInterface';
 import ItemsInterface from '../Interface/ItemsInterface';
-import {getGuests} from '../Data/Stores/GuestStore';
 import {makeGood} from '../Response';
-import config from '../config.json';
 
 const adminID = config['admin_id'];
 
@@ -59,7 +59,7 @@ test("Creating an order with a none existent guest' id returns a failure", async
 test('createOrder should return an order with matching guest ID', async () => {
 	const {guestID} = await createOrder();
 	// const order = (await GuestInterface.getGuestOrder(guestID)).getData();
-	// expect(order.guestId).toBe(guestID);
+	// expect(order.guestID).toBe(guestID);
 	expect(true).toBeTruthy();
 });
 
@@ -98,7 +98,7 @@ test('createOrder should create unique order Ids', async () => {
 	expect(orderID1).not.toBe(orderID2);
 });
 
-test('delegate with a none existent orderId should fail', async () => {
+test('delegate with a none existent orderID should fail', async () => {
 	expect(
 		(await onOrder('', (_o: IOrder) => makeGood())).isSuccess()
 	).toBeFalsy();

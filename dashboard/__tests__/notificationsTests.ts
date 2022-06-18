@@ -5,6 +5,7 @@ import ordersModel from '../src/model/ordersModel';
 import Api from '../src/network/api';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO} from '../../api';
+import {Not} from 'reselect/es/types';
 
 const mockListOfOrders: OrderIDO[] = [
 	{
@@ -14,7 +15,7 @@ const mockListOfOrders: OrderIDO[] = [
 			b: 3,
 		},
 		status: 'received',
-		guestId: '1',
+		guestID: '1',
 		creationTime: new Date(),
 		completionTime: undefined,
 	},
@@ -25,14 +26,27 @@ const mockListOfOrders: OrderIDO[] = [
 			d: 5,
 		},
 		status: 'delivered',
-		guestId: '2',
+		guestID: '2',
 		creationTime: new Date(),
 		completionTime: new Date(),
 	},
 ];
 
 const mockWarn = jest.fn();
+let api: Api;
+let orderModel: ordersModel;
+let ordersViewModel: OrdersViewModel;
+let notifications: Notifications;
+
 beforeEach(() => {
+	api = new Api();
+	orderModel = new ordersModel();
+	ordersViewModel = new OrdersViewModel(orderModel, api);
+	notifications = new Notifications(
+		ordersViewModel,
+		new WaitersViewModel(new waiterModel(), api)
+	);
+
 	(mockWarn as unknown as jest.Mock).mockClear();
 	jest.spyOn(console, 'warn').mockImplementation(mockWarn);
 
@@ -42,127 +56,86 @@ beforeEach(() => {
 
 describe('update orders', () => {
 	it('Sending no arguments', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
 		notifications.addNewOrder([]);
-		expect(mockWarn).toBeCalledTimes(1);
+		expect(ordersViewModel.getOrders().length).toBe(0);
 	});
 
 	it('Sending wrong arguments than required', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
 		notifications.addNewOrder([null, 'asd']);
-		expect(mockWarn).toBeCalledTimes(1);
+		expect(ordersViewModel.getOrders().length).toBe(0);
 	});
 
 	it('Sending exactly the needed arguments', () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrdersViewModel(model, new Api());
-		const notifications = new Notifications(
-			ordersViewModel,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
 		notifications.addNewOrder([mockListOfOrders]);
-		expect(model.orders).toEqual(ordersViewModel.getOrders());
+		expect(orderModel.orders).toEqual(ordersViewModel.getOrders());
 	});
 
 	it('Sending extra argument is rejected', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
 		notifications.addNewOrder([[], 'inprogress', 'Hola Mr. Almog']);
-		expect(mockWarn).toBeCalledTimes(1);
+		expect(ordersViewModel.getOrders().length).toBe(0);
 	});
 
 	it('Sending something else than OrderIDO[] as orders', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
-
 		notifications.addNewOrder(['asd']);
-		console.log(ordersViewModels.getOrders());
-		expect(mockWarn).toBeCalledTimes(1);
+		console.log(ordersViewModel.getOrders());
+		expect(ordersViewModel.getOrders().length).toBe(0);
 	});
 });
 
 //  {orderID: string; orderStatus: OrderStatus};
 describe('update order status', () => {
 	it('Sending no arguments', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
+		ordersViewModel.setOrders(mockListOfOrders);
 		notifications.changeOrderStatus({});
-		expect(mockWarn).toBeCalledTimes(1);
+		expect(ordersViewModel.getOrders()).toEqual(mockListOfOrders);
 	});
 
 	it('Sending wrong arguments than required', () => {
-		const ordersViewModels = new OrdersViewModel(
-			new ordersModel(),
-			new Api()
-		);
-		const notifications = new Notifications(
-			ordersViewModels,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
+		ordersViewModel.setOrders(mockListOfOrders);
 		notifications.changeOrderStatus([null, 'asd']);
-		expect(mockWarn).toBeCalledTimes(1);
+		expect(ordersViewModel.getOrders()).toEqual(mockListOfOrders);
 	});
 
 	it('Sending exactly the needed arguments', () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrdersViewModel(model, new Api());
-		const notifications = new Notifications(
-			ordersViewModel,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
 		ordersViewModel.setOrders(mockListOfOrders);
 		notifications.changeOrderStatus({
 			orderID: '1',
 			orderStatus: 'on the way',
 		});
-		expect(model.orders[0].status).toEqual('on the way');
+		expect(orderModel.orders[0].status).toEqual('on the way');
 	});
 
 	it('Checking if completion time is updated ', () => {
-		const model = new ordersModel();
-		const ordersViewModel = new OrdersViewModel(model, new Api());
-		const notifications = new Notifications(
-			ordersViewModel,
-			new WaitersViewModel(new waiterModel(), new Api())
-		);
 		ordersViewModel.setOrders(mockListOfOrders);
 		notifications.changeOrderStatus({
 			orderID: '1',
 			orderStatus: 'delivered',
 		});
-		expect(model.orders[0].status).toEqual('delivered');
-		expect(model.orders[0].completionTime).toBeDefined();
+		expect(orderModel.orders[0].status).toEqual('delivered');
+		expect(orderModel.orders[0].completionTime).toBeDefined();
+	});
+});
+
+describe('adding a review', () => {
+	it('Sending no arguments', () => {
+		ordersViewModel.setOrders(mockListOfOrders);
+		notifications.addReview({});
+		expect(orderModel.reviews).toEqual([]);
+	});
+
+	it('Sending wrong arguments than required', () => {
+		ordersViewModel.setOrders(mockListOfOrders);
+		notifications.addReview([null, 'asd']);
+		expect(orderModel.reviews).toEqual([]);
+	});
+
+	it('Sending exactly the needed arguments', () => {
+		ordersViewModel.setOrders(mockListOfOrders);
+		const review = {
+			details: 'details',
+			rating: 3,
+		};
+		notifications.addReview({orderID: '1', ...review});
+		expect(orderModel.reviews).toEqual([{orderID: '1', review: review}]);
 	});
 });

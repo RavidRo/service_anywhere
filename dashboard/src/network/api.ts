@@ -1,17 +1,15 @@
 import RequestsHandler from './RequestsHandler';
-import Singleton from '../singleton';
-import {ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
+import {GuestIDO, ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
 
-export default class Api extends Singleton {
+export default class Requests {
 	private handler: RequestsHandler;
 	constructor() {
-		super();
 		this.handler = new RequestsHandler();
 	}
 
-	login(name: string, password: string): Promise<string> {
+	login(username: string, password: string): Promise<string> {
 		return this.handler.post<string>('login', {
-			name: name,
+			username: username,
 			password: password,
 		});
 	}
@@ -25,29 +23,36 @@ export default class Api extends Singleton {
 		return this.handler.get<WaiterIDO[]>('getWaiters');
 	}
 
-	assignWaiter(orderId: string, waiterId: string[]): Promise<void> {
+	getGuestsDetails(ids: string[]): Promise<GuestIDO[]> {
+		if (ids.length === 0) {
+			return Promise.resolve([]);
+		}
+		return this.handler.get('getGuestsDetails', {ids});
+	}
+
+	assignWaiter(orderID: string, waiterID: string[]): Promise<void> {
 		return this.handler.post<void>('assignWaiter', {
-			orderIds: [orderId],
-			waiterId: waiterId,
+			orderID: [orderID],
+			waiterID: waiterID,
 		});
 	}
 
-	getWaitersByOrder(orderId: string): Promise<string[]> {
+	getWaitersByOrder(orderID: string): Promise<string[]> {
 		return this.handler.get<string[]>('getWaitersByOrder', {
-			orderId: orderId,
+			orderID: orderID,
 		});
 	}
 
-	changeOrderStatus(orderId: string, newStatus: string): Promise<void> {
+	changeOrderStatus(orderID: string, newStatus: string): Promise<void> {
 		return this.handler.post<void>('changeOrderStatus', {
-			orderId: orderId,
+			orderID: orderID,
 			newStatus: newStatus,
 		});
 	}
 
-	cancelOrder(orderId: string): Promise<void> {
+	cancelOrder(orderID: string): Promise<void> {
 		return this.handler.post<void>('cancelOrder', {
-			orderId: orderId,
+			orderID: orderID,
 		});
 	}
 

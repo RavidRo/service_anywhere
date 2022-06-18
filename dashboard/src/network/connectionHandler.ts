@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import {io, Socket} from 'socket.io-client';
-import Singleton from '../singleton';
 import Notification from './notifications';
 import ordersViewModel from '../viewModel/ordersViewModel';
 import waitersViewModel from '../viewModel/waitersViewModel';
@@ -8,7 +7,7 @@ import ConnectModel from '../model/ConnectModel';
 import {DefaultEventsMap} from 'socket.io/dist/typed-events';
 
 import config from './config.json';
-export default class ConnectionHandler extends Singleton {
+export default class ConnectionHandler {
 	private socket: Socket;
 	private notifications: Notification;
 	private connectionModel: ConnectModel;
@@ -17,7 +16,6 @@ export default class ConnectionHandler extends Singleton {
 		orderViewModel: ordersViewModel,
 		waiterViewModel: waitersViewModel
 	) {
-		super();
 		this.notifications = new Notification(orderViewModel, waiterViewModel);
 		this.socket = io(config['host'], {autoConnect: false});
 		this.connectionModel = ConnectModel.getInstance();

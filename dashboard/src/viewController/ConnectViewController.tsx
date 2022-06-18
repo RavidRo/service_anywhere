@@ -7,15 +7,22 @@ import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 import Button from '@mui/material/Button';
 import {observer} from 'mobx-react';
+import AlertViewModel from '../viewModel/alertViewModel';
 
 interface Props {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaitersViewModel;
 	connectViewModel: ConnectViewModel;
+	alertViewModel: AlertViewModel;
 }
 
 const ConnectViewController = (props: Props) => {
-	const {ordersViewModel, waitersViewModel, connectViewModel} = props;
+	const {
+		ordersViewModel,
+		waitersViewModel,
+		connectViewModel,
+		alertViewModel,
+	} = props;
 
 	const token = connectViewModel.connection.token;
 	const isLoggedIn = token !== undefined;
@@ -27,24 +34,29 @@ const ConnectViewController = (props: Props) => {
 		connectViewModel
 			.connect()
 			.then(() => setIsConnected(true))
-			.catch(() => alert("Can't establish connection to server"))
+			.catch(() =>
+				alertViewModel.addAlert("Can't establish connection to server")
+			)
 			.finally(() => setIsLoading(false));
 	};
 
-	const login = (name: string, password: string) => {
+	const login = (username: string, password: string) => {
 		return connectViewModel
-			.login(name, password)
+			.login(username, password)
 			.finally(() => setIsLoading(false));
 	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		const name: string = data.get('name')?.toString() || '';
+		const username: string = data.get('username')?.toString() || '';
 		const password: string = data.get('password')?.toString() || '';
-		login(name, password)
+		login(username, password)
 			.then(establishConnection)
-			.catch(() => alert("Can't login to server"));
+			.catch(() => {
+				alertViewModel.addAlert("Can't login to server");
+				alert("Can't login to server");
+			});
 	};
 
 	if (isConnected) {
@@ -52,10 +64,13 @@ const ConnectViewController = (props: Props) => {
 			<>
 				{console.info('opening orders View Controller')}
 				{connectViewModel.connection.isReconnecting &&
-					alert('Connection lost, trying to reconnect...')}
+					alertViewModel.addAlert(
+						'Connection lost, trying to reconnect...'
+					)}
 				<OrdersViewController
 					ordersViewModel={ordersViewModel}
 					waitersViewModel={waitersViewModel}
+					alertViewModel={alertViewModel}
 				/>
 			</>
 		);
@@ -64,7 +79,7 @@ const ConnectViewController = (props: Props) => {
 		return (
 			<>
 				{isLoading ? (
-					alert('Establishing connection...')
+					alertViewModel.addAlert('Establishing connection...')
 				) : (
 					<Button onClick={establishConnection} disabled={isLoading}>
 						Retry

@@ -3,19 +3,20 @@ import express from 'express';
 import * as http from 'http';
 import { logger } from 'server/Logger';
 import * as socketio from 'socket.io';
-import * as socketIO from 'socket.io';
-import { AppDataSource } from '../Data/data-source';
-import reset_all from '../Data/test_ResetDatabase';
+
+import {ResponseMsg} from '../Response';
+
 import dashboard from '../Interface/DashboardInterface';
-import { default as guest, default as GuestInterface } from '../Interface/GuestInterface';
+import guest from '../Interface/GuestInterface';
 import items from '../Interface/ItemsInterface';
 import maps from '../Interface/MapsInterface';
 import NotificationInterface from '../Interface/NotificationInterface';
-import { default as waiter, default as WaiterInterface } from '../Interface/WaiterInterface';
-import authenticator from '../Logic/Authentication/Authenticator';
-import { ResponseMsg } from '../Response';
+import waiter from '../Interface/WaiterInterface';
 
-//-------------------setup---------------------------
+import authenticator from '../Logic/Authentication/Authenticator';
+
+import {AppDataSource} from '../Data/data-source';
+import reset_all from '../Data/test_ResetDatabase';
 
 let cors = require('cors');
 const app = express();
@@ -26,7 +27,14 @@ const adminPermissionLevel = 3;
 const waiterPermissionLevel = 2;
 const guestPermissionLevel = 1;
 app.use(express.json());
+app.use(express.static('build'));
 app.use(cors({origin: '*', credentials: true}));
+
+import * as socketIO from 'socket.io';
+import GuestInterface from '../Interface/GuestInterface';
+import WaiterInterface from '../Interface/WaiterInterface';
+import path from 'path';
+
 const httpServer = new http.Server(app);
 const io = new socketIO.Server(httpServer, {
 	cors: {
@@ -34,8 +42,9 @@ const io = new socketIO.Server(httpServer, {
 	},
 });
 
+// use it before all route definitions
 app.get('/', (_req, res) => {
-	res.send("Hello");
+	res.sendFile(path.join(__dirname, '/build/index.html'));
 });
 
 //---------------auxillary functions----------------
@@ -165,7 +174,6 @@ app.get('/getMaps', (_req, res) => {
 			res.send('Getting maps failed, try again later');
 			logger.error('An error occured while getting maps data');
 		});
-	res.send(maps.getMaps());
 });
 
 //---------------------Guest requests----------------------------
@@ -270,7 +278,7 @@ app.post('/createOrder', (req, res) => {
 
 app.post('/submitReview', (req, res) => {
 	checkInputs(
-		['orderId', 'details', 'rating'],
+		['orderID', 'details', 'rating'],
 		req.body,
 		(msg: string, status: number) =>{ 
 			res.status(status)
@@ -279,7 +287,7 @@ app.post('/submitReview', (req, res) => {
 		() =>
 			res.send(
 				guest.submitReview(
-					req.body['orderId'],
+					req.body['orderID'],
 					req.body['details'],
 					req.body['rating']
 				)
@@ -289,7 +297,7 @@ app.post('/submitReview', (req, res) => {
 
 app.post('/cancelOrderGuest', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -309,10 +317,10 @@ app.post('/cancelOrderGuest', (req, res) => {
 						'A guest tried to cancel their order but used an unmatched token'
 					);
 				},
-				async guestId => {
+				async guestID => {
 					const response = await guest.cancelOrder(
-						req.body['orderId'],
-						guestId
+						req.body['orderID'],
+						guestID
 					);
 					sendResponse(
 						response,
@@ -322,7 +330,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							'A guest canceled their order. Order ID: ' +
-								req.body['orderId']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -360,7 +368,7 @@ app.get('/getGuestsDetails', (req, res) => {
 						'A user tried to get a guest details but had no permission or used an unmatched token'
 					);
 				},
-				async _waiterId => {
+				async _waiterID => {
 					const ids = req.query['ids'];
 					if (ids && Array.isArray(ids) && isStringArray(ids)) {
 						const response = await waiter
@@ -424,7 +432,7 @@ app.get('/getWaiterOrders', (req, res) => {
 
 app.post('/orderArrived', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -444,10 +452,10 @@ app.post('/orderArrived', (req, res) => {
 						"A user tried to change order status to 'arrived' but had no permission or used an unmatched token"
 					);
 				},
-				async waiterId => {
+				async waiterID => {
 					const response = await waiter.orderArrived(
-						req.body['orderId'],
-						waiterId
+						req.body['orderID'],
+						waiterID
 					);
 					sendResponse(
 						response,
@@ -457,7 +465,7 @@ app.post('/orderArrived', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							"A waiter changes order status to 'arrived'. Order ID: " +
-								req.body['orderId']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -473,7 +481,7 @@ app.post('/orderArrived', (req, res) => {
 
 app.post('/orderOnTheWay', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -493,10 +501,10 @@ app.post('/orderOnTheWay', (req, res) => {
 						"A waiter tried to change order status to 'on the way' but had no permission or used an unmatched token"
 					);
 				},
-				async waiterId => {
+				async waiterID => {
 					const response = await waiter.orderOnTheWay(
-						req.body['orderId'],
-						waiterId
+						req.body['orderID'],
+						waiterID
 					);
 					sendResponse(
 						response,
@@ -506,7 +514,7 @@ app.post('/orderOnTheWay', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							"Order status was changed to 'on the way'. Order ID: " +
-								req.body['orderId']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -531,8 +539,8 @@ app.get('/getWaiterName', (req, res) => {
 				'A waiter tried to get their name but had no permission or used an unmatched token'
 			);
 		},
-		async waiterId => {
-			const response = await waiter.getWaiterName(waiterId);
+		async waiterID => {
+			const response = await waiter.getWaiterName(waiterID);
 			sendResponse(
 				response,
 				st => res.status(st),
@@ -681,7 +689,7 @@ io.on('connection', function (socket: socketio.Socket) {
 
 app.post('/assignWaiter', (req, res) => {
 	checkInputs(
-		['orderId', 'waiterId'],
+		['orderID', 'waiterID'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -703,8 +711,8 @@ app.post('/assignWaiter', (req, res) => {
 				},
 				async _adminId => {
 					const response = await dashboard.assignWaiter(
-						req.body['orderIds'],
-						req.body['waiterId']
+						req.body['orderID'],
+						req.body['waiterID']
 					);
 					sendResponse(
 						response,
@@ -714,9 +722,9 @@ app.post('/assignWaiter', (req, res) => {
 					if (response.isSuccess()) {
 						logger.info(
 							'A waiter was assigned successfuly. Waiter ID: ' +
-								req.body['waiterId'] +
+								req.body['waiterID'] +
 								' Order IDs: ' +
-								req.body['orderIds']
+								req.body['orderID']
 						);
 					} else {
 						logger.info(
@@ -790,7 +798,7 @@ app.get('/getWaiters', (req, res) => {
 
 app.get('/getWaitersByOrder', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.query,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -812,7 +820,7 @@ app.get('/getWaitersByOrder', (req, res) => {
 				},
 				async _id => {
 					const response = await dashboard.getWaiterByOrder(
-						String(req.query['orderId'])
+						String(req.query['orderID'])
 					);
 					sendResponse(
 						response,
@@ -831,9 +839,26 @@ app.get('/getWaitersByOrder', (req, res) => {
 	);
 });
 
+app.get('/getReviews', (req, res) => {
+	authenticate(
+		req.headers.authorization,
+		3,
+		(msg: string) => {
+			res.send(msg);
+			logger.info(
+				'A user tried to get reviews but did not have permission or used an unmatched token'
+			);
+		},
+		async _id => {
+			const response = await dashboard.getReviews();
+			res.send(response);
+		}
+	);
+});
+
 app.post('/cancelOrderAdmin', (req, res) => {
 	checkInputs(
-		['orderId'],
+		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -855,7 +880,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 				},
 				async id => {
 					const response = await dashboard.cancelOrderAdmin(
-						req.body['orderId'],
+						req.body['orderID'],
 						id
 					);
 					sendResponse(
@@ -877,7 +902,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 
 app.post('/changeOrderStatus', (req, res) => {
 	checkInputs(
-		['orderId', 'newStatus'],
+		['orderID', 'newStatus'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -899,7 +924,7 @@ app.post('/changeOrderStatus', (req, res) => {
 				},
 				async id => {
 					const response = await dashboard.changeOrderStatus(
-						req.body['orderId'],
+						req.body['orderID'],
 						req.body['newStatus'],
 						id
 					);

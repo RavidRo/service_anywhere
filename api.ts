@@ -12,7 +12,7 @@ type OrderID = string;
 
 export type OrderIDO = {
 	id: OrderID;
-	guestId: string;
+	guestID: string;
 	items: Record<string, number>;
 	status: OrderStatus;
 	creationTime: Date;
@@ -25,17 +25,16 @@ export type ItemIDO = {
 	preparationTime: number;
 };
 
-export type ReviewIDO = {
-	details: string;
-	rating: number;
-};
-
 type WaiterID = string;
 export type WaiterIDO = {
 	id: WaiterID;
 	username: string;
 };
 
+export type ReviewIDO = {
+	details: string;
+	rating: number;
+};
 // export type WaiterDAO = {
 // 	id: string;
 // 	name: string;
@@ -82,11 +81,11 @@ interface GuestAPI {
 	getGuestOrder: () => Promise<OrderIDO>;
 	createOrder(orderItems: Map<string, number>): Promise<OrderID>;
 	submitReview(
-		orderId: string,
+		orderID: string,
 		details: string,
 		rating: number
 	): Promise<void>;
-	cancelOrderGuest: (orderId: OrderID) => Promise<void>;
+	cancelOrderGuest: (orderID: OrderID) => Promise<void>;
 }
 
 interface guestCommunication {
@@ -97,10 +96,10 @@ interface guestCommunication {
 // guests Notifications from server:
 interface GuestNotificationHandler {
 	waiterLocationUpdate: (
-		waiterId: WaiterID,
+		waiterID: WaiterID,
 		waiterLocation: Location
 	) => void;
-	changeOrderStatus: (orderId: string, status: OrderStatus) => void;
+	changeOrderStatus: (orderID: string, status: OrderStatus) => void;
 }
 
 interface WaiterAPI {
@@ -109,26 +108,26 @@ interface WaiterAPI {
 	getMaps: () => Promise<MapIDO[]>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
 	getGuestsDetails: (ids: string[]) => Promise<GuestIDO[]>;
-	orderArrived: (orderId: OrderID) => Promise<void>;
-	orderOnTheWay: (orderId: OrderID) => Promise<void>;
+	orderArrived: (orderID: OrderID) => Promise<void>;
+	orderOnTheWay: (orderID: OrderID) => Promise<void>;
 }
 interface WaiterCommunication {
 	updateWaiterLocation: (waiterLocation: Location) => void;
 	locationErrorWaiter: (errorMsg: string) => void;
 }
 interface WaiterNotificationHandler {
-	updateGuestLocation(guestId: string, guestLocation: Location): void;
-	changeOrderStatus(orderId: OrderID, status: OrderStatus): void;
+	updateGuestLocation(guestID: string, guestLocation: Location): void;
+	changeOrderStatus(orderID: OrderID, status: OrderStatus): void;
 	assignedToOrder(order: OrderIDO): void;
 }
 
 interface DashboardAPI {
 	// Dashboard
 	login: (password: string) => Promise<void>;
-	assignWaiter: (orderId: OrderID, waiterId: WaiterID) => Promise<void>;
+	assignWaiter: (orderID: OrderID, waiterID: WaiterID) => Promise<void>;
 	getOrders: () => Promise<OrderIDO[]>;
 	getWaiters: () => Promise<WaiterIDO[]>;
-	getWaitersByOrder: (orderId: OrderID) => WaiterID[];
-	cancelOrderAdmin: (orderId: OrderID) => Promise<void>;
-	changeOrderStatus: (orderId: string, newStatus: string) => Promise<void>;
+	getWaitersByOrder: (orderID: OrderID) => WaiterID[];
+	cancelOrderAdmin: (orderID: OrderID) => Promise<void>;
+	changeOrderStatus: (orderID: string, newStatus: string) => Promise<void>;
 }

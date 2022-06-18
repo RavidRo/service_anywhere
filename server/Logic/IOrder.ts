@@ -1,4 +1,4 @@
-import {OrderStatus, Location, OrderIDO} from 'api';
+import {Location, OrderIDO, OrderStatus} from 'api';
 import {ResponseMsg} from '../Response';
 
 export interface IOrder {
@@ -15,7 +15,7 @@ export interface IOrder {
 	): ResponseMsg<void>;
 	updateGuestLocation(location: Location): ResponseMsg<void>;
 
-	assign(waiterIds: string[]): Promise<ResponseMsg<void>>;
+	assign(waiterIDs: string[]): Promise<ResponseMsg<void>>;
 	changeOrderStatus(
 		status: OrderStatus,
 		assigningWaiter: boolean,

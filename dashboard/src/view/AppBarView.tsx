@@ -3,8 +3,13 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {observer} from 'mobx-react';
+import AlertViewController from '../viewController/alertViewController';
+import AlertViewModel from '../viewModel/alertViewModel';
 
-function AppBarView() {
+type props = {alertViewModel: AlertViewModel};
+function AppBarView(props: props) {
+	const {alertViewModel} = props;
+
 	console.log('Starting the app bar');
 	return (
 		<div className='App'>
@@ -18,6 +23,7 @@ function AppBarView() {
 							align='center'>
 							Order Dashboard
 						</Typography>
+						<AlertViewController alertViewModel={alertViewModel} />
 					</Toolbar>
 				</AppBar>
 			</Box>

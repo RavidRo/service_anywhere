@@ -16,14 +16,17 @@ import {
 } from '@mui/x-data-grid';
 import {observer} from 'mobx-react';
 import {Divider} from '@mui/material';
+import ReviewViewController from './reviewViewController';
+import AlertViewModel from '../viewModel/alertViewModel';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaiterViewModel;
+	alertViewModel: AlertViewModel;
 }
 const OrdersViewController = (props: viewModelProps) => {
 	console.info('Starting orders view controller');
-	const {ordersViewModel, waitersViewModel} = props;
+	const {ordersViewModel, waitersViewModel, alertViewModel} = props;
 	const handleRowEditStart = (_params: GridRowParams, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
@@ -43,15 +46,26 @@ const OrdersViewController = (props: viewModelProps) => {
 	const columns = [
 		{
 			field: 'id',
-			headerName: 'id',
+			headerName: 'Order Id',
 			editable: false,
 			renderCell: ExpandCellGrid,
 		},
 		{
-			field: 'guestId',
-			headerName: 'Guest Id',
+			field: 'guestID',
+			headerName: 'Guest details',
 			editable: false,
 			flex: 1,
+			valueGetter: (params: GridValueGetterParams) => {
+				const details = ordersViewModel.getGuestDetails(
+					params.value || ''
+				);
+				return (
+					<>
+						<p>{`Name: ${details?.username}`}</p>
+						<p>{`Phone number: ${details?.phoneNumber}`}</p>
+					</>
+				);
+			},
 			renderCell: ExpandCellGrid,
 		},
 		{
@@ -73,11 +87,9 @@ const OrdersViewController = (props: viewModelProps) => {
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				// (entry: (number | string)[])
 				if (params.value !== undefined)
 					return new Date(params.value).toLocaleTimeString();
 				return '';
-				// return params.value?.toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,
 		},
@@ -109,11 +121,11 @@ const OrdersViewController = (props: viewModelProps) => {
 			type: 'actions',
 			flex: 1,
 			renderCell: (params: GridRenderCellParams) => {
-				const orderId = params.row.id;
+				const orderID = params.row.id;
 				const status = params.row.status;
 				return (
 					<StatusViewController
-						orderId={orderId}
+						orderID={orderID}
 						status={status}
 						orderViewModel={ordersViewModel}
 						width={params.colDef.computedWidth}
@@ -128,16 +140,18 @@ const OrdersViewController = (props: viewModelProps) => {
 			cellClassName: 'assignWaiter',
 			flex: 1.5,
 			renderCell: (renderProps: GridRenderCellParams) => {
-				const orderId = renderProps.row.id;
-				return (
+				const orderID = renderProps.row.id;
+				return renderProps.row.status !== 'delivered' ? (
 					<WaiterDialogViewController
 						waitersViewModel={waitersViewModel}
 						ordersViewModel={ordersViewModel}
-						orderId={orderId}
+						orderID={orderID}
 						status={renderProps.row.status}
-						assignedWaiters={ordersViewModel.getAssignedWaiters(
-							orderId
-						)}
+					/>
+				) : (
+					<ReviewViewController
+						ordersViewModel={ordersViewModel}
+						orderID={orderID}
 					/>
 				);
 			},
@@ -145,7 +159,7 @@ const OrdersViewController = (props: viewModelProps) => {
 	];
 	return (
 		<div>
-			<AppBarView />
+			<AppBarView alertViewModel={alertViewModel} />
 			<OrdersView
 				orders={ordersViewModel.getOrders()}
 				columns={columns}

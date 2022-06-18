@@ -1,10 +1,10 @@
 import {Location, OrderIDO, OrderStatus as OrderStatusName} from 'api';
+import {ReviewDAO} from 'server/Data/entities/Domain/ReviewDAO';
 import {OrderDAO} from '../Data/entities/Domain/OrderDAO';
 import * as OrderStore from '../Data/Stores/OrderStore';
-import {makeGood, ResponseMsg, makeFail} from '../Response';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 import {IOrder} from './IOrder';
 import {OrderStatus} from './OrderStatus';
-import {ReviewDAO} from 'server/Data/entities/Domain/ReviewDAO';
 
 class Review {
 	content: string;
@@ -97,7 +97,7 @@ export class Order implements IOrder {
 		return makeGood();
 	}
 
-	async assign(_waiterIds: string[]): Promise<ResponseMsg<void>> {
+	async assign(_waiterIDs: string[]): Promise<ResponseMsg<void>> {
 		return this.changeOrderStatus('assigned', true, true);
 	}
 

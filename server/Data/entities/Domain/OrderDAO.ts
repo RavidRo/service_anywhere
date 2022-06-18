@@ -1,15 +1,15 @@
 import {OrderIDO, OrderStatus} from 'api';
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
 	BaseEntity,
+	Column,
+	Entity,
 	JoinColumn,
-	OneToOne,
-	ManyToOne,
 	JoinTable,
 	ManyToMany,
+	ManyToOne,
 	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import {GuestDAO} from './GuestDAO';
 import {OrderToItemDAO} from './OrderToItemDAO';
@@ -24,7 +24,7 @@ export class OrderDAO extends BaseEntity {
 	@Column({default: 'received'})
 	status: OrderStatus;
 
-	@Column({default: () => `${Date.now()}`})
+	@Column('bigint', {default: () => `${Date.now()}`})
 	creationTime: number;
 
 	@Column({
@@ -55,7 +55,7 @@ export class OrderDAO extends BaseEntity {
 		]);
 		return {
 			id: this.id,
-			guestId: this.guest.id,
+			guestID: this.guest.id,
 			items: Object.fromEntries(items),
 			status: this.status,
 			creationTime: new Date(this.creationTime),

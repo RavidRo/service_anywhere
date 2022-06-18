@@ -4,7 +4,7 @@ import {WaiterDAO} from '../Data/entities/Domain/WaiterDAO';
 import {getItems} from '../Data/Stores/ItemStore';
 import * as OrderStore from '../Data/Stores/OrderStore';
 import * as WaiterStore from '../Data/Stores/WaiterStore';
-import {makeFail, makeGood, mapResponse, ResponseMsg} from '../Response';
+import {makeFail, makeGood, ResponseMsg} from '../Response';
 import {NotificationFacade} from './Notification/NotificationFacade';
 import {OrderNotifier} from './OrderNotifier';
 import {getGuestActiveOrder, onOrder} from './Orders';
@@ -18,13 +18,13 @@ export function unassignWaiters(orderID: string): Promise<ResponseMsg<void>> {
 }
 
 export async function updateWaiterLocation(
-	waiterId: string,
+	waiterID: string,
 	location: Location
 ) {
-	const orders = await getOrdersByWaiter(waiterId);
+	const orders = await getOrdersByWaiter(waiterID);
 	orders.ifGood(orders =>
 		orders.forEach(order =>
-			onOrder(order.id, o => o.updateWaiterLocation(waiterId, location))
+			onOrder(order.id, o => o.updateWaiterLocation(waiterID, location))
 		)
 	);
 }
@@ -69,20 +69,20 @@ export async function assignWaiter(
 }
 
 export function getWaiterByOrder(
-	orderId: string
+	orderID: string
 ): Promise<ResponseMsg<string[]>> {
-	return WaiterStore.getWaitersByOrder(orderId);
+	return WaiterStore.getWaitersByOrder(orderID);
 }
 
 export async function getOrdersByWaiter(
-	waiterId: string
+	waiterID: string
 ): Promise<ResponseMsg<OrderIDO[]>> {
-	const orders = await WaiterStore.getOrdersByWaiter(waiterId);
+	const orders = await WaiterStore.getOrdersByWaiter(waiterID);
 	return orders.ifGood(orders => orders.map(order => order.getDetails()));
 }
 
 export async function createOrder(
-	guestId: string,
+	guestID: string,
 	items: Map<string, number>
 ): Promise<ResponseMsg<string>> {
 	const entries = Array.from(items.entries());
@@ -99,7 +99,7 @@ export async function createOrder(
 	if (itemsIds.some(id => !allItemsIds.includes(id))) {
 		return makeFail('The items you chose does not exists', 400);
 	}
-	const currentOrderResponse = await getGuestActiveOrder(guestId);
+	const currentOrderResponse = await getGuestActiveOrder(guestID);
 	if (currentOrderResponse.isSuccess()) {
 		return makeFail(
 			"You can't order while having another order active",
@@ -107,7 +107,7 @@ export async function createOrder(
 		);
 	}
 	const newOrderResponse = await OrderNotifier.createNewOrder(
-		guestId,
+		guestID,
 		new Map(filteredEntries)
 	);
 	return newOrderResponse.ifGood(newOrder => newOrder.getID());
@@ -163,13 +163,13 @@ async function getWaiterName(waiterID: string): Promise<ResponseMsg<string>> {
 	}
 }
 
-export function locationErrorGuest(orderId: string, errorMsg: string) {
+export function locationErrorGuest(orderID: string, errorMsg: string) {
 	const facade = new NotificationFacade();
-	facade.notifyErrorGuest(config.admin_id, errorMsg, orderId);
-	getWaiterByOrder(orderId).then(response =>
+	facade.notifyErrorGuest(config.admin_id, errorMsg, orderID);
+	getWaiterByOrder(orderID).then(response =>
 		response.ifGood(waiters =>
 			waiters.forEach(waiter => {
-				facade.notifyErrorGuest(waiter, errorMsg, orderId);
+				facade.notifyErrorGuest(waiter, errorMsg, orderID);
 			})
 		)
 	);

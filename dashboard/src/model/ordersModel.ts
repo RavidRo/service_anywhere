@@ -1,17 +1,45 @@
 import {makeAutoObservable} from 'mobx';
-import {ItemIDO, OrderIDO, OrderStatus} from '../../../api';
+import {
+	GuestIDO,
+	ItemIDO,
+	OrderIDO,
+	OrderStatus,
+	ReviewIDO,
+} from '../../../api';
 
-export type assignedWaitersType = {orderId: string; waiterIds: string[]}[];
+export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
+export type orderReviews = {orderID: string; review: ReviewIDO}[];
 
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
 	_assignedWaiters: assignedWaitersType = [];
+	_reviews: orderReviews = [];
+	_guestDetails: GuestIDO[] = [];
 
 	constructor() {
 		console.log('Starting the order model');
 		makeAutoObservable(this);
 	}
+
+	set guestDetails(guestDetails: GuestIDO[]) {
+		console.info('setting guest details to ', guestDetails);
+		this._guestDetails = guestDetails;
+	}
+
+	get guestDetails(): GuestIDO[] {
+		return this._guestDetails;
+	}
+
+	set reviews(orderReviews: orderReviews) {
+		console.info('setting review to ', orderReviews);
+		this._reviews = orderReviews;
+	}
+
+	get reviews(): orderReviews {
+		return this._reviews;
+	}
+
 	set orders(orders: OrderIDO[]) {
 		console.info('Setting orders to ', orders);
 		this._orders = orders;
@@ -41,33 +69,46 @@ export default class ordersModel {
 		this._assignedWaiters = assignedWaiters;
 	}
 
-	updateAssignedWaiters(orderId: string, waiterIds: string[]): void {
-		console.info('Updating assigned waiters with ', orderId, waiterIds);
+	addGuestDetails(guestDetails: GuestIDO[]) {
+		console.info('adding guest details', guestDetails);
+		guestDetails.forEach(details => this._guestDetails.push(details));
+	}
+
+	getGuestDetails(guestID: string): GuestIDO | undefined {
+		return this._guestDetails.find(details => details.id === guestID);
+	}
+
+	addReview(orderID: string, details: string, rating: number): void {
+		console.info('Updating reviews with ', orderID, details, rating);
+		this._reviews.push({
+			orderID: orderID,
+			review: {details: details, rating: rating},
+		});
+	}
+
+	updateAssignedWaiters(orderID: string, waiterIds: string[]): void {
+		console.info('Updating assigned waiters with ', orderID, waiterIds);
 		const assignedWaiterObject = this._assignedWaiters.find(
-			entry => entry.orderId === orderId
+			entry => entry.orderID === orderID
 		);
 		if (assignedWaiterObject !== undefined) {
 			assignedWaiterObject.waiterIds = waiterIds;
 		} else {
 			this._assignedWaiters.push({
-				orderId: orderId,
+				orderID: orderID,
 				waiterIds: waiterIds,
 			});
 		}
-		// const assigned = this._assignedWaiters;
-		// this.assignedWaiters = assigned;
 	}
 
 	addOrder(order: OrderIDO) {
 		console.log('Adding a new order', order);
 		this._orders.push(order);
-		// const orders = this._orders;
-		// this.orders = orders;
 	}
 
-	changeOrderStatus(orderId: string, newStatus: OrderStatus) {
+	changeOrderStatus(orderID: string, newStatus: OrderStatus) {
 		this._orders.forEach(order => {
-			if (order.id === orderId) {
+			if (order.id === orderID) {
 				if (newStatus === 'delivered' || newStatus === 'canceled') {
 					order.completionTime = new Date();
 				}

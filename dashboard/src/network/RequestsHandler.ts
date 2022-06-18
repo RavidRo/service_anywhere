@@ -2,6 +2,7 @@ import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import configuration from './config.json';
 import ConnectionModel from '../model/ConnectModel';
 import {isString} from '../typeGuard';
+import {alertViewModel} from '../context';
 
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
@@ -69,7 +70,7 @@ class RequestsHandler {
 			console.info('The server response:', data);
 			return Promise.resolve(data);
 		} else {
-			alert(response.data);
+			alertViewModel.addAlert(`${response.data}`);
 			console.warn(`HTTP Error - ${response.status} - ${response.data}`);
 			return Promise.reject(`HTTP Error - ${response.status}`);
 		}

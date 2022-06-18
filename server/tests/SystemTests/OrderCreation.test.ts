@@ -1,5 +1,5 @@
-import {getGuests} from '../../Data/Stores/GuestStore';
 import {AppDataSource} from '../../Data/data-source';
+import {getGuests} from '../../Data/Stores/GuestStore';
 import reset_all from '../../Data/test_ResetDatabase';
 import GuestInterface from '../../Interface/GuestInterface';
 import ItemsInterface from '../../Interface/ItemsInterface';
@@ -72,7 +72,7 @@ test('Guests can get their order details', async () => {
 	const orderResponse = await GuestInterface.getGuestOrder(guestID);
 
 	expect(createResponse.isSuccess()).toBeTruthy();
-	expect(orderResponse.getData().guestId).toBe(guestID);
+	expect(orderResponse.getData().guestID).toBe(guestID);
 	expect(orderResponse.getData().items).toEqual(
 		Object.fromEntries(items.entries())
 	);

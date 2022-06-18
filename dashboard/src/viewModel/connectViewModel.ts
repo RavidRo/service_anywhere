@@ -1,3 +1,4 @@
+import {alertViewModel} from '../context';
 import ConnectModel from '../model/ConnectModel';
 import Api from '../network/api';
 import ConnectionHandler from '../network/connectionHandler';
@@ -27,8 +28,8 @@ export default class ConnectViewModel {
 		);
 	}
 
-	login(name: string, password: string): Promise<string> {
-		return this.api.login(name, password).then(token => {
+	login(username: string, password: string): Promise<string> {
+		return this.api.login(username, password).then(token => {
 			this.model.token = token;
 			return token;
 		});
@@ -61,7 +62,11 @@ export default class ConnectViewModel {
 				.then(() =>
 					console.info('Finished synchronising and connecting')
 				)
-				.catch(() => alert('Error in synchronisation or connecting'));
+				.catch(() =>
+					alertViewModel.addAlert(
+						'Error in synchronisation or connecting'
+					)
+				);
 		} else {
 			return new Promise<void>((_, reject) => {
 				reject(

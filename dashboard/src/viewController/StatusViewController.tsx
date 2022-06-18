@@ -11,14 +11,15 @@ import {blue, red} from '@mui/material/colors';
 import {CardHeader} from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import {observer} from 'mobx-react';
+import {alertViewModel} from '../context';
 
 function StatusViewController(props: {
-	orderId: string;
+	orderID: string;
 	status: string;
 	orderViewModel: OrdersViewModel;
 	width: number;
 }) {
-	const {orderId, status, orderViewModel, width} = props;
+	const {orderID, status, orderViewModel, width} = props;
 
 	const sn = StatusToNumber.get(status);
 	const currentStep: number = sn === undefined ? 0 : sn;
@@ -54,11 +55,13 @@ function StatusViewController(props: {
 			console.error('This step is not nextable');
 		}
 		orderViewModel
-			.changeOrderStatus(orderId, Status[currentStep + 1])
+			.changeOrderStatus(orderID, Status[currentStep + 1])
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep + 1);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert("Can't change order status " + err)
+			);
 	};
 
 	const handleBack = () => {
@@ -66,11 +69,13 @@ function StatusViewController(props: {
 			console.error('This step is not backable');
 		}
 		orderViewModel
-			.changeOrderStatus(orderId, Status[currentStep - 1])
+			.changeOrderStatus(orderID, Status[currentStep - 1])
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep - 1);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert("Can't change order status " + err)
+			);
 	};
 	const handleCancel = () => {
 		if (!isStepCancelable(currentStep)) {
@@ -78,12 +83,14 @@ function StatusViewController(props: {
 		}
 
 		orderViewModel
-			.changeOrderStatus(orderId, 'canceled')
+			.changeOrderStatus(orderID, 'canceled')
 			// .then(boolean => {
 			// 	if (boolean)
 			// 		setCurrentStep(StatusToNumber.get('canceled') || 6);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert("Can't change order status " + err)
+			);
 	};
 
 	const wrapper = React.useRef<HTMLDivElement | null>(null);
@@ -200,7 +207,9 @@ function StatusViewController(props: {
 						<Typography variant='body2' style={{padding: 8}}>
 							<Box sx={{width: '100%'}}>
 								<StatusView
-									steps={Status}
+									steps={Status.filter(
+										entry => entry !== 'canceled'
+									)}
 									isStepNextable={isStepNextable}
 									isStepBackable={isStepBackable}
 									isStepCancelable={isStepCancelable}

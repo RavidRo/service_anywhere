@@ -1,13 +1,14 @@
+import config from 'server/config.json';
 import {BaseEntity, EntityTarget} from 'typeorm';
 import {AppDataSource} from './data-source';
 import {UserCredentials} from './entities/Authentication/UserCredentials';
 import {GuestDAO} from './entities/Domain/GuestDAO';
 import {ItemDAO} from './entities/Domain/ItemDAO';
+import {MapDAO} from './entities/Domain/MapDAO';
 import {OrderDAO} from './entities/Domain/OrderDAO';
 import {OrderToItemDAO} from './entities/Domain/OrderToItemDAO';
-import {MapDAO} from './entities/Domain/MapDAO';
+import {ReviewDAO} from './entities/Domain/ReviewDAO';
 import {WaiterDAO} from './entities/Domain/WaiterDAO';
-import config from 'server/config.json';
 
 async function saveAll<T extends BaseEntity>(entities: T[]): Promise<void> {
 	const saves = entities.map(item => item.save());
@@ -73,7 +74,7 @@ function getOrders(guests: GuestDAO[], waiters: WaiterDAO[]) {
 
 function getMaps() {
 	const map1 = new MapDAO();
-	map1.name = 'Bet HaStudent';
+	map1.name = 'Beit Ha Student';
 	map1.imageURL =
 		'https://res.cloudinary.com/noa-health/image/upload/v1640287601/bengurion-map_q32yck.png';
 	map1.bottomLeftLat = 31.261649;
@@ -85,7 +86,33 @@ function getMaps() {
 	map1.topRightLat = 31.26355;
 	map1.topRightLong = 34.802516;
 
-	return [map1];
+	// const map2 = new MapDAO();
+	// map2.name = 'Dan Jerusalem';
+	// map2.imageURL =
+	// 	'https://res.cloudinary.com/noa-health/image/upload/v1654535608/Dan_Jerusalem_cijcod.png';
+	// map2.bottomRightLong = 35.238558;
+	// map2.bottomRightLat = 31.795908;
+	// map2.bottomLeftLong = 35.232014;
+	// map2.bottomLeftLat = 31.795908;
+	// map2.topRightLong = 35.238558;
+	// map2.topRightLat = 31.799504;
+	// map2.topLeftLong = 35.232014;
+	// map2.topLeftLat = 31.799504;
+
+	const map3 = new MapDAO();
+	map3.name = 'Dan Jerusalem';
+	map3.imageURL =
+		'https://res.cloudinary.com/noa-health/image/upload/v1655453363/Screenshot_2022-06-17_110241_ruyf2i.png';
+	map3.bottomRightLong = 35.236847;
+	map3.bottomRightLat = 31.796538;
+	map3.bottomLeftLong = 35.234078;
+	map3.bottomLeftLat = 31.796538;
+	map3.topRightLong = 35.236847;
+	map3.topRightLat = 31.798879;
+	map3.topLeftLong = 35.234078;
+	map3.topLeftLat = 31.798879;
+
+	return [map1, map3];
 }
 
 async function getUsersCredentials() {
@@ -147,6 +174,7 @@ const entitiesDefaults: () => [
 	// ! The order here matters, dont change it (SQL FOREIGN-KEY CONSTRAINT)
 	return [
 		[ItemDAO, async () => items, 'ItemDAO'],
+		[ReviewDAO, async () => [], 'ReviewDAO'],
 		[WaiterDAO, async () => waiters, 'WaiterDAO'],
 		[GuestDAO, async () => guests, 'GuestDAO'],
 		[OrderDAO, async () => orders, 'OrderDAO'],
@@ -161,9 +189,7 @@ const entitiesDefaults: () => [
 };
 
 export async function clearALl() {
-	for (const [entityTarget, _, entityName] of (
-		await entitiesDefaults()
-	).reverse()) {
+	for (const [entityTarget, _, entityName] of entitiesDefaults().reverse()) {
 		try {
 			await clearTable(entityTarget);
 		} catch (e) {
@@ -173,7 +199,7 @@ export async function clearALl() {
 }
 
 export async function load_data() {
-	for (const [_, entitiesGetter, entityName] of await entitiesDefaults()) {
+	for (const [_, entitiesGetter, entityName] of entitiesDefaults()) {
 		const entities = await entitiesGetter();
 		try {
 			await saveAll(entities);
@@ -184,6 +210,8 @@ export async function load_data() {
 }
 
 export default async function reset_all() {
-	await clearALl();
-	await load_data();
+	if (process.env['NODE_ENV'] !== 'production') {
+		await clearALl();
+		await load_data();
+	}
 }
