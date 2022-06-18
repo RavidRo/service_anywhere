@@ -11,6 +11,7 @@ import {blue, red} from '@mui/material/colors';
 import {CardHeader} from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import {observer} from 'mobx-react';
+import {alertViewModel} from '../context';
 
 function StatusViewController(props: {
 	orderID: string;
@@ -58,7 +59,9 @@ function StatusViewController(props: {
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep + 1);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert("Can't change order status " + err)
+			);
 	};
 
 	const handleBack = () => {
@@ -70,7 +73,9 @@ function StatusViewController(props: {
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep - 1);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert("Can't change order status " + err)
+			);
 	};
 	const handleCancel = () => {
 		if (!isStepCancelable(currentStep)) {
@@ -83,7 +88,9 @@ function StatusViewController(props: {
 			// 	if (boolean)
 			// 		setCurrentStep(StatusToNumber.get('canceled') || 6);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert("Can't change order status " + err)
+			);
 	};
 
 	const wrapper = React.useRef<HTMLDivElement | null>(null);

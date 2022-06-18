@@ -1,11 +1,9 @@
 import RequestsHandler from './RequestsHandler';
-import Singleton from '../singleton';
 import {ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
 
-export default class Api extends Singleton {
+export default class Api {
 	private handler: RequestsHandler;
 	constructor() {
-		super();
 		this.handler = new RequestsHandler();
 	}
 

@@ -1,6 +1,7 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
 import {ItemIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../../api';
+import {alertViewModel} from '../context';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -72,7 +73,9 @@ export default class OrdersViewModel {
 						);
 					})
 					.catch((err: string) =>
-						alert('Could not find waiter by order ' + err)
+						alertViewModel.addAlert(
+							'Could not find waiter by order ' + err
+						)
 					)
 			)
 		);
@@ -87,7 +90,9 @@ export default class OrdersViewModel {
 				return this.synchroniseAssignedWaiters();
 			})
 			.catch(err =>
-				alert('Could not get orders please reload, Error: ' + err)
+				alertViewModel.addAlert(
+					'Could not get orders please reload, Error: ' + err
+				)
 			);
 	}
 
@@ -107,7 +112,9 @@ export default class OrdersViewModel {
 				this.ordersModel.items = items;
 			})
 			.catch(err =>
-				alert('Could not get orders please reload, Error: ' + err)
+				alertViewModel.addAlert(
+					'Could not get orders please reload, Error: ' + err
+				)
 			);
 	}
 	changeOrderStatusNotification(orderID: string, newStatus: OrderStatus) {
@@ -134,5 +141,9 @@ export default class OrdersViewModel {
 				return true;
 			})
 			.catch(() => false);
+	}
+
+	guestError(orderID: string, errorMsg: string) {
+		alertViewModel.addAlert(`${orderID} Error: ${errorMsg}`);
 	}
 }

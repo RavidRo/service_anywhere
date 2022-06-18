@@ -25,7 +25,7 @@ export function isOrder(params: object): params is {order: OrderIDO} {
 		isString((order as OrderIDO).guestID) &&
 		isString((order as OrderIDO).id) &&
 		(order as OrderIDO).items !== undefined &&
-		isStatus((order as OrderIDO).status)
+		isString((order as OrderIDO).status)
 	);
 }
 
@@ -54,11 +54,28 @@ export function isOrderStatus(status: object): status is orderStatusType {
 	);
 }
 
-export function isStatus(status: unknown): status is OrderStatus {
-	const result = ['unassigned', 'inprogress', 'completed', 'delivered'].find(
-		availableStatus => availableStatus === status
+type waiterError = {errorMsg: string; waiterID: string};
+export function isWaiterError(error: object): error is waiterError {
+	console.log('is waiter error: ', error);
+	if (!error) {
+		return false;
+	}
+	return (
+		(error as waiterError).waiterID !== undefined &&
+		(error as waiterError).errorMsg !== undefined
 	);
-	return result !== undefined;
+}
+
+type guestError = {errorMsg: string; orderID: string};
+export function isGuestError(error: object): error is guestError {
+	console.log('is guest error: ', error);
+	if (!error) {
+		return false;
+	}
+	return (
+		(error as guestError).orderID !== undefined &&
+		(error as guestError).errorMsg !== undefined
+	);
 }
 
 export function isString(someString: unknown): someString is string {

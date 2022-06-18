@@ -5,6 +5,7 @@ import ordersModel from '../src/model/ordersModel';
 import Api from '../src/network/api';
 import waiterModel from '../src/model/waiterModel';
 import {OrderIDO} from '../../api';
+import {Not} from 'reselect/es/types';
 
 const mockListOfOrders: OrderIDO[] = [
 	{
