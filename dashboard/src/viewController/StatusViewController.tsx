@@ -60,7 +60,10 @@ function StatusViewController(props: {
 			// 	if (boolean) setCurrentStep(currentStep + 1);
 			// })
 			.catch(err =>
-				alertViewModel.addAlert("Can't change order status " + err)
+				alertViewModel.addAlert(
+					"Can't change order status " + err,
+					true
+				)
 			);
 	};
 
@@ -74,7 +77,10 @@ function StatusViewController(props: {
 			// 	if (boolean) setCurrentStep(currentStep - 1);
 			// })
 			.catch(err =>
-				alertViewModel.addAlert("Can't change order status " + err)
+				alertViewModel.addAlert(
+					"Can't change order status " + err,
+					true
+				)
 			);
 	};
 	const handleCancel = () => {
@@ -89,7 +95,10 @@ function StatusViewController(props: {
 			// 		setCurrentStep(StatusToNumber.get('canceled') || 6);
 			// })
 			.catch(err =>
-				alertViewModel.addAlert("Can't change order status " + err)
+				alertViewModel.addAlert(
+					"Can't change order status " + err,
+					true
+				)
 			);
 	};
 

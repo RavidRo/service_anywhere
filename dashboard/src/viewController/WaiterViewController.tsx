@@ -53,7 +53,10 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 				handleClose();
 			})
 			.catch(_ =>
-				alertViewModel.addAlert('Could not assign waiters to order')
+				alertViewModel.addAlert(
+					'Could not assign waiters to order',
+					true
+				)
 			);
 	};
 
