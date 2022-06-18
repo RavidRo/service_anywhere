@@ -124,7 +124,7 @@ interface WaiterNotificationHandler {
 interface DashboardAPI {
 	// Dashboard
 	login: (password: string) => Promise<void>;
-	assignWaiter: (orderID: OrderID, waiterID: WaiterID) => Promise<void>;
+	assignWaiter: (orderID: OrderID, waiterIDs: WaiterID[]) => Promise<void>;
 	getOrders: () => Promise<OrderIDO[]>;
 	getWaiters: () => Promise<WaiterIDO[]>;
 	getWaitersByOrder: (orderID: OrderID) => WaiterID[];
