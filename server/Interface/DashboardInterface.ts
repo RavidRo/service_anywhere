@@ -4,6 +4,8 @@ import {getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
+const userErrorStatus = 400
+
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
 }
@@ -50,7 +52,7 @@ async function changeOrderStatus(
 	ID: string
 ): Promise<ResponseMsg<void>> {
 	if (!isStatus(newStatus)) {
-		return makeFail('There is no such status', 400);
+		return makeFail('There is no such status', userErrorStatus);
 	}
 	return WaiterOrder.changeOrderStatus(orderID, newStatus, ID);
 }

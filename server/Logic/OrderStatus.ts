@@ -1,6 +1,8 @@
 import {OrderStatus as OrderStatusName} from 'api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
+const userErrorStatus = 400
+
 export abstract class OrderStatus {
 	to(
 		newStatus: OrderStatus,
@@ -10,27 +12,33 @@ export abstract class OrderStatus {
 		if (this.isEndStatus()) {
 			return makeFail(
 				"You can't change the status of a none active order",
-				400
+				userErrorStatus
 			);
 		}
 		if (newStatus.needsAssignedWaiters() !== assigningWaiters) {
 			return makeFail(
 				'You must assign waiters to the order before changing to this status',
-				400
+				userErrorStatus
 			);
 		}
 		if (!adminPrivileges && this.needsChangePrivileges()) {
 			return makeFail(
 				"You can't change the status of the order at this point",
-				400
+				userErrorStatus
 			);
 		}
 		return makeGood();
 	}
 
-	abstract isEndStatus(): boolean;
-	abstract needsAssignedWaiters(): boolean;
-	abstract needsChangePrivileges(): boolean; // For example, do you need to be admin to cancel this order?
+	isEndStatus(): boolean{
+		return false
+	};
+	needsAssignedWaiters(): boolean{
+		return false
+	};
+	needsChangePrivileges(): boolean{
+		return true
+	}; // For example, do you need to be admin to cancel this order?
 
 	static makeStatus(status: OrderStatusName): OrderStatus {
 		return status === 'assigned'
@@ -52,87 +60,37 @@ export abstract class OrderStatus {
 }
 
 class Received extends OrderStatus {
-	isEndStatus(): boolean {
-		return false;
-	}
-	needsAssignedWaiters() {
-		return false;
-	}
-	needsChangePrivileges(): boolean {
+	override needsChangePrivileges(): boolean {
 		return false;
 	}
 }
 
 class InPreparation extends OrderStatus {
-	isEndStatus(): boolean {
-		return false;
-	}
-	needsAssignedWaiters() {
-		return false;
-	}
-
-	needsChangePrivileges(): boolean {
-		return true;
-	}
 }
 
 class ReadyToDeliver extends OrderStatus {
-	isEndStatus(): boolean {
-		return false;
-	}
-	needsAssignedWaiters() {
-		return false;
-	}
-
-	needsChangePrivileges(): boolean {
-		return true;
-	}
 }
 
 class Assigned extends OrderStatus {
-	isEndStatus(): boolean {
-		return false;
-	}
-	needsAssignedWaiters(): boolean {
-		return true;
-	}
-	needsChangePrivileges(): boolean {
+	override needsAssignedWaiters(): boolean {
 		return true;
 	}
 }
 
 class OnTheWay extends OrderStatus {
-	isEndStatus(): boolean {
-		return false;
-	}
-	needsAssignedWaiters(): boolean {
-		return true;
-	}
-	needsChangePrivileges(): boolean {
+	override needsAssignedWaiters(): boolean {
 		return true;
 	}
 }
 
 class Delivered extends OrderStatus {
-	isEndStatus(): boolean {
-		return true;
-	}
-	needsAssignedWaiters(): boolean {
-		return false;
-	}
-	needsChangePrivileges(): boolean {
+	override isEndStatus(): boolean {
 		return true;
 	}
 }
 
 class Canceled extends OrderStatus {
-	isEndStatus(): boolean {
-		return true;
-	}
-	needsAssignedWaiters(): boolean {
-		return false;
-	}
-	needsChangePrivileges(): boolean {
+	override isEndStatus(): boolean {
 		return true;
 	}
 }
