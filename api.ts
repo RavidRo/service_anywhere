@@ -103,7 +103,7 @@ interface GuestNotificationHandler {
 }
 
 interface WaiterAPI {
-	login: (password: string) => Promise<void>;
+	login: (username: string, password: string) => Promise<string>;
 	getItems: () => Promise<ItemIDO[]>;
 	getMaps: () => Promise<MapIDO[]>;
 	getWaiterOrders: () => Promise<OrderIDO[]>;
