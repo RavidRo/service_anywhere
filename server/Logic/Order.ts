@@ -6,16 +6,6 @@ import {makeFail, makeGood, ResponseMsg} from '../Response';
 import {IOrder} from './IOrder';
 import {OrderStatus} from './OrderStatus';
 
-class Review {
-	content: string;
-	rating: number;
-
-	constructor(cont: string, rate: number) {
-		this.content = cont;
-		this.rating = rate;
-	}
-}
-
 export class Order implements IOrder {
 	private orderDAO: OrderDAO;
 
