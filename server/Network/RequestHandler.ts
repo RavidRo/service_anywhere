@@ -541,9 +541,7 @@ io.on('connection', function (socket: socketio.Socket) {
 				logger.info(
 					"A user tried to update a guest's location but didn't include the location"
 				);
-			},
-			true,
-			socket.handshake.auth['token']
+			}
 		);
 		response.ifGood(
 			(id: string) => {
@@ -560,10 +558,7 @@ io.on('connection', function (socket: socketio.Socket) {
 				logger.info(
 					"A user tried to update a waiter's location but didn't include the location"
 				);
-			},
-			true,
-			socket.handshake.auth['token'],
-			waiterPermissionLevel
+			}
 		);
 		response.ifGood(
 			(id: string) => {
@@ -580,9 +575,7 @@ io.on('connection', function (socket: socketio.Socket) {
 				logger.info(
 					"A user tried to send an error regarding their location and didn't include an error message."
 				);
-			},
-			true,
-			socket.handshake.auth['token']
+			}
 		);
 		response.ifGood(
 			(id: string) => {
@@ -602,10 +595,7 @@ io.on('connection', function (socket: socketio.Socket) {
 				logger.info(
 					"A user tried to send an error regarding their location and didn't include an error message."
 				);
-			},
-			true,
-			socket.handshake.auth['token'],
-			waiterPermissionLevel
+			}
 		);
 		(id: string) => {
 			WaiterInterface.locationErrorWaiter(
