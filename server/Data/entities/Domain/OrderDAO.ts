@@ -2,6 +2,7 @@ import {OrderIDO, OrderStatus} from 'api';
 import {
 	BaseEntity,
 	Column,
+	CreateDateColumn,
 	Entity,
 	JoinColumn,
 	JoinTable,
@@ -24,8 +25,12 @@ export class OrderDAO extends BaseEntity {
 	@Column({default: 'received'})
 	status: OrderStatus;
 
-	@Column('bigint', {default: () => `${Date.now()}`})
-	creationTime: number;
+	@Column(
+		process.env['NODE_ENV'] === 'production'
+			? {type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP'}
+			: {type: 'datetime', default: () => 'DATE()'}
+	)
+	creationTime: Date;
 
 	@Column('bigint', {
 		nullable: true,
@@ -55,11 +60,6 @@ export class OrderDAO extends BaseEntity {
 		]);
 
 		// Seems like PostgreSQL is outputting a string but sqlite is outputting a number
-		const creationTime =
-			typeof this.creationTime === 'string'
-				? Number.parseInt(this.creationTime)
-				: this.creationTime;
-
 		const completionTime =
 			typeof this.completionTime === 'string'
 				? Number.parseInt(this.completionTime)
@@ -70,7 +70,7 @@ export class OrderDAO extends BaseEntity {
 			guestID: this.guest.id,
 			items: Object.fromEntries(items),
 			status: this.status,
-			creationTime: new Date(creationTime),
+			creationTime: this.creationTime,
 			completionTime: completionTime
 				? new Date(completionTime)
 				: undefined,
