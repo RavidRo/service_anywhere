@@ -37,7 +37,7 @@ async function login(
 function authenticate(
 	token: string,
 	neededPermissionLevel: number
-): ResponseMsg<string> {
+): ResponseMsg<{id: string, permissionLevel: number}> {
 	try {
 		// remove Bearer if using Bearer Authorization mechanism
 		if (!jwt) {
@@ -61,7 +61,7 @@ function authenticate(
 				forbiddenStatusCode
 			);
 		}
-		return makeGood(payLoad.userId);
+		return makeGood({id: payLoad.userId, permissionLevel: payLoad.permissionLevel});
 	} catch (err) {
 		return makeFail("Token can't be verified", unauthorizedStatusCode);
 	}

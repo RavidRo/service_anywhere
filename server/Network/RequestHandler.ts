@@ -81,9 +81,9 @@ function checkValidity(
 		return makeFail(answer)
 	} else if(toAuthenticate){
 		if (token) {
-			let response = authenticator.authenticate(token, permissionLevel);
+			const response = authenticator.authenticate(token, permissionLevel);
 			if (response.isSuccess()) {
-				return response
+				return makeGood(response.getData().id)
 			} else {
 				sendErrorMsg(response.getError(), statusFailClient);
 				return makeFail('')
@@ -515,95 +515,99 @@ app.get('/getWaiterName', (req, res) => {
 
 //----------------------------websocket requests-----------------------
 io.on('connection', function (socket: socketio.Socket) {
-	const response = checkValidity(
-		[],
-		{},
-		(msg: string, _status: number) => {
-			socket.emit('Error', msg);
-			logger.error('Could not connect a user to the websocket');
-		},
-		true,
-		socket.handshake.auth['token']
-	);
-	response.ifGood(
-		(id: string) =>
-			NotificationInterface.addSubscriber(
+	const response = authenticator.authenticate(
+		socket.handshake.auth['token'],
+		guestPermissionLevel
+	)
+	if(!response.isSuccess()){
+		socket.emit('Error', 'the user could not be authenticated')
+		logger.error('Could not connect a user to the websocket');
+	}
+	else{
+		const {id, permissionLevel} = response.getData()
+		NotificationInterface.addSubscriber(
 				id,
 				(eventName: string, o: object) => socket.emit(eventName, o)
 			)
-	)
-	socket.on('updateGuestLocation', (message: any) => {
-		const response = checkValidity(
-			['location'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to update a guest's location but didn't include the location"
+		if(permissionLevel >= guestPermissionLevel){
+			socket.on('updateGuestLocation', (message: any) => {
+				const response = checkValidity(
+					['location'],
+					message,
+					(msg: string, _status: number) => {
+						socket.emit('Error', msg);
+						logger.info(
+							"A user tried to update a guest's location but didn't include the location"
+						);
+					}
 				);
-			}
-		);
-		response.ifGood(
-			(id: string) => {
-				guest.updateLocationGuest(id, message['location']);
-			}
-		)
-	});
-	socket.on('updateWaiterLocation', (message: any) => {
-		const response = checkValidity(
-			['location'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to update a waiter's location but didn't include the location"
+				response.ifGood(
+					(id: string) => {
+						guest.updateLocationGuest(id, message['location']);
+					}
+				)
+			});
+
+			socket.on('locationErrorGuest', (message: any) => {
+				const response = checkValidity(
+					['errorMsg'],
+					message,
+					(msg: string, _status: number) => {
+						socket.emit('Error', msg);
+						logger.info(
+							"A user tried to send an error regarding their location and didn't include an error message."
+						);
+					}
 				);
-			}
-		);
-		response.ifGood(
-			(id: string) => {
-				waiter.updateLocationWaiter(id, message['location']);
-			}
-		)
-	});
-	socket.on('locationErrorGuest', (message: any) => {
-		const response = checkValidity(
-			['errorMsg'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to send an error regarding their location and didn't include an error message."
-				);
-			}
-		);
-		response.ifGood(
-			(id: string) => {
-				GuestInterface.locationErrorGuest(
-					id,
-					message['errorMsg']
-				);
-			}
-		)
-	});
-	socket.on('locationErrorWaiter', (message: any) => {
-		const response = checkValidity(
-			['errorMsg'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to send an error regarding their location and didn't include an error message."
-				);
-			}
-		);
-		(id: string) => {
-			WaiterInterface.locationErrorWaiter(
-				message['errorMsg'],
-				id
-			);
+				response.ifGood(
+					(id: string) => {
+						GuestInterface.locationErrorGuest(
+							id,
+							message['errorMsg']
+						);
+					}
+				)
+			});
 		}
-	});
+		if(permissionLevel >= waiterPermissionLevel){
+			socket.on('updateWaiterLocation', (message: any) => {
+				const response = checkValidity(
+					['location'],
+					message,
+					(msg: string, _status: number) => {
+						socket.emit('Error', msg);
+						logger.info(
+							"A user tried to update a waiter's location but didn't include the location"
+						);
+					}
+				);
+				response.ifGood(
+					(id: string) => {
+						waiter.updateLocationWaiter(id, message['location']);
+					}
+				)
+			});
+			
+			socket.on('locationErrorWaiter', (message: any) => {
+				const response = checkValidity(
+					['errorMsg'],
+					message,
+					(msg: string, _status: number) => {
+						socket.emit('Error', msg);
+						logger.info(
+							"A user tried to send an error regarding their location and didn't include an error message."
+						);
+					}
+				);
+				(id: string) => {
+					WaiterInterface.locationErrorWaiter(
+						message['errorMsg'],
+						id
+					);
+				}
+			});
+		}
+	}
 });
 
 //-------------------------admin requests------------------------------
