@@ -124,7 +124,7 @@ export async function saveOrder(
 	const order = new OrderDAO();
 	order.guest = guest;
 	order.orderToItems = ordersToItems;
-	order.completionTime = Date.now();
+	order.creationTime = Date.now();
 	const savedOrder = await order.save();
 	savedOrder.guest = guest;
 
