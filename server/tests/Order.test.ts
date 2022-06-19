@@ -103,3 +103,20 @@ test('delegate with a none existent orderID should fail', async () => {
 		(await onOrder('', (_o: IOrder) => makeGood())).isSuccess()
 	).toBeFalsy();
 });
+
+
+function timeout(time: number) {
+	return new Promise<void>(resolve => {
+		setTimeout(() => resolve(), time);
+	});
+}
+
+test('createOrder creation times should be different', async () => {
+	const {orderID: orderID1} = await createOrder({index: 0});
+	timeout(500)
+	const {orderID: orderID2} = await createOrder({index: 1});
+	const order1 = (await DashboardInterface.getAllOrders()).getData().filter(o => o.id === orderID1)[0]
+	const order2 = (await DashboardInterface.getAllOrders()).getData().filter(o => o.id === orderID2)[0]
+
+	expect(order1.creationTime).not.toBe(order2.creationTime);
+});
