@@ -107,6 +107,7 @@ export class Order implements IOrder {
 		this.orderDAO.review.content = review;
 		this.orderDAO.review.rating = score;
 		await this.orderDAO.review.save();
+		await this.orderDAO.save()
 		return makeGood();
 	}
 }

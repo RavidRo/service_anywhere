@@ -1,3 +1,4 @@
+import { ReviewIDO } from 'api';
 import {BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import { OrderDAO } from './OrderDAO';
 
@@ -12,9 +13,7 @@ export class ReviewDAO extends BaseEntity {
 	@Column('text')
 	content: string;
 
-	@OneToOne(() => OrderDAO, {
-		nullable: false,
-	})
-	@JoinColumn()
-	order: OrderDAO
+	getDetails(): ReviewIDO {
+		return {details: this.content, rating: this.rating}
+	}
 }

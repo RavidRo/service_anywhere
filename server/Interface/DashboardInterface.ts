@@ -29,12 +29,6 @@ async function getWaiterByOrder(
 	return await WaiterOrder.getWaiterByOrder(orderID);
 }
 
-async function getReviews(): Promise<ReviewIDO[]> {
-	return (await getAllReviews()).map(r => {
-		return {details: r.content, rating: r.rating};
-	});
-}
-
 async function cancelOrderAdmin(
 	orderID: string,
 	ID: string
@@ -64,5 +58,4 @@ export default {
 	getWaiterByOrder,
 	cancelOrderAdmin,
 	changeOrderStatus,
-	getReviews,
 };

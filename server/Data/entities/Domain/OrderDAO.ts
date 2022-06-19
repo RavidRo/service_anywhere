@@ -74,6 +74,7 @@ export class OrderDAO extends BaseEntity {
 			completionTime: completionTime
 				? new Date(completionTime)
 				: undefined,
+			review: this.review ? this.review.getDetails(): undefined
 		};
 	}
 }

@@ -16,6 +16,7 @@ export async function getOrders(): Promise<OrderDAO[]> {
 				item: true,
 			},
 			waiters: true,
+			review: true
 		},
 	});
 }
