@@ -52,11 +52,11 @@ const OrdersView = (props: orderProps) => {
 					color: 'text.primary',
 				},
 				'& .ongoing': {
-					backgroundColor: '#89e0c3',
+					backgroundColor: '#cdfad2',
 					color: '#1a3e72',
 				},
 				'& .done': {
-					backgroundColor: '#d6d6d6',
+					backgroundColor: '#edf0ee',
 					// color: '#1a3e72',
 				},
 			}}>
