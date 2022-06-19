@@ -7,6 +7,8 @@ import {getGuestActiveOrder, onOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
 
+const guestPermissionLevel = 1
+
 function createOrder(
 	guestID: string,
 	items: Map<string, number>
@@ -14,7 +16,10 @@ function createOrder(
 	return WaiterOrder.createOrder(guestID, items);
 }
 
-function updateLocationGuest(guestID: string, location: Location): void {
+function updateLocationGuest(guestID: string, location: Location, permissionLevel: number): void {
+	if(permissionLevel < guestPermissionLevel){
+		return
+	}
 	getGuestOrder(guestID).then(orderResponse => {
 		orderResponse.ifGood(order => {
 			onOrder(order.id, (o: IOrder) => o.updateGuestLocation(location));
@@ -41,7 +46,10 @@ async function cancelOrder(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
-function locationErrorGuest(guestID: string, errorMsg: string): void {
+function locationErrorGuest(guestID: string, errorMsg: string, permissionLevel: number): void {
+	if(permissionLevel < guestPermissionLevel){
+		return
+	}
 	getGuestOrder(guestID).then(orderResponse =>
 		orderResponse.ifGood(order =>
 			WaiterOrder.locationErrorGuest(order.id, errorMsg)
