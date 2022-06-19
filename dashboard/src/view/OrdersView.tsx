@@ -56,7 +56,7 @@ const OrdersView = (props: orderProps) => {
 					color: '#1a3e72',
 				},
 				'& .done': {
-					backgroundColor: '#b5bdbd',
+					backgroundColor: '#d6d6d6',
 					// color: '#1a3e72',
 				},
 			}}>
