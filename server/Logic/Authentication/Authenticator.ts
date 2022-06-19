@@ -29,7 +29,7 @@ async function login(
 	return makeGood(
 		jwt.sign(payLoad, process.env['ACCESS_TOKEN_SECRET']!, {
 			algorithm: 'HS256',
-			expiresIn: '1h',
+			expiresIn: '1m',
 		})
 	);
 }
