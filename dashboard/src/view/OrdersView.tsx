@@ -51,6 +51,14 @@ const OrdersView = (props: orderProps) => {
 				'& .textPrimary': {
 					color: 'text.primary',
 				},
+				'& .ongoing': {
+					backgroundColor: '#cdfad2',
+					color: '#1a3e72',
+				},
+				'& .done': {
+					backgroundColor: '#edf0ee',
+					// color: '#1a3e72',
+				},
 			}}>
 			<DataGrid
 				className={classes.dataGrid}
@@ -62,6 +70,12 @@ const OrdersView = (props: orderProps) => {
 				onCellFocusOut={handleCellFocusOut}
 				rowHeight={100}
 				autoPageSize
+				getCellClassName={(params: GridCellParams<string>) => {
+					return params.row.status === 'canceled' ||
+						params.row.status === 'delivered'
+						? 'done'
+						: 'ongoing';
+				}}
 			/>
 		</Box>
 	);
