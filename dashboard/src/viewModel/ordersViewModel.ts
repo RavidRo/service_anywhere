@@ -7,7 +7,7 @@ import {
 	OrderStatus,
 	ReviewIDO,
 } from '../../../api';
-import {alertViewModel} from '../context';
+import {alertViewModel, waitersViewModel} from '../context';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -45,17 +45,17 @@ export default class OrdersViewModel {
 		return items.filter(item => item.id === itemId)[0].name;
 	}
 
-	getAssignedWaiters(orderID: string): string[] {
-		console.info('Getting assigned waiters of ', orderID);
-		const assignedWaiters = this.ordersModel.assignedWaiters;
-		const assignedWaiter = assignedWaiters.find(
-			entry => entry.orderID === orderID
-		);
-		if (assignedWaiter !== undefined) {
-			return assignedWaiter.waiterIds;
-		}
-		return [];
-	}
+	// getAssignedWaiters(orderID: string): string[] {
+	// 	console.info('Getting assigned waiters of ', orderID);
+	// 	const assignedWaiters = this.ordersModel.assignedWaiters;
+	// 	const assignedWaiter = assignedWaiters.find(
+	// 		entry => entry.orderID === orderID
+	// 	);
+	// 	if (assignedWaiter !== undefined) {
+	// 		return assignedWaiter.waiterIds;
+	// 	}
+	// 	return [];
+	// }
 	// -------------SETTERS----------------
 	setOrders(orders: OrderIDO[]) {
 		this.ordersModel.orders = orders;
@@ -79,7 +79,7 @@ export default class OrdersViewModel {
 
 	updateAssignedWaiter(orderID: string, waiterIds: string[]) {
 		console.info('Updating orderID: ' + orderID, 'waiters ' + waiterIds);
-		this.ordersModel.updateAssignedWaiters(orderID, waiterIds);
+		waitersViewModel.updateAssignedWaiters(orderID, waiterIds);
 	}
 
 	addReview(orderID: string, details: string, rating: number): void {
@@ -94,7 +94,7 @@ export default class OrdersViewModel {
 			newStatus !== 'delivered'
 		) {
 			console.log('Changing assigned waiters');
-			this.ordersModel.updateAssignedWaiters(orderID, []);
+			this.updateAssignedWaiter(orderID, []);
 		}
 		this.ordersModel.changeOrderStatus(orderID, newStatus);
 	}
@@ -120,10 +120,7 @@ export default class OrdersViewModel {
 					.getWaitersByOrder(order.id)
 					.then((waiterIds: string[]) => {
 						console.info('Synchronised assigned waiters ');
-						this.ordersModel.updateAssignedWaiters(
-							order.id,
-							waiterIds
-						);
+						this.updateAssignedWaiter(order.id, waiterIds);
 					})
 					.catch((err: string) =>
 						alertViewModel.addAlert(

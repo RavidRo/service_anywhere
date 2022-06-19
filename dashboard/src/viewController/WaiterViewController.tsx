@@ -64,7 +64,7 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 	};
 	return (
 		<WaiterDialogView
-			assignedWaiters={ordersViewModel.getAssignedWaiters(orderID)}
+			assignedWaiters={waitersViewModel.getAssignedWaiters(orderID)}
 			waiters={waitersViewModel.getWaiters()}
 			handleOpen={handleOpen}
 			handleClose={handleClose}

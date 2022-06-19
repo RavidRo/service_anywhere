@@ -99,7 +99,6 @@ test('get waiter order with our waiter should return nothing', async () => {
 	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
 	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
 
-
 	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0].id);
 	expect(orders.isSuccess()).toBeTruthy();
 	expect(orders.getData().length).toBe(0);

@@ -1,7 +1,7 @@
 import {OrderStatus as OrderStatusName} from 'api';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
-const userErrorStatus = 400
+const userErrorStatus = 400;
 
 export abstract class OrderStatus {
 	to(
@@ -30,15 +30,15 @@ export abstract class OrderStatus {
 		return makeGood();
 	}
 
-	isEndStatus(): boolean{
-		return false
-	};
-	needsAssignedWaiters(): boolean{
-		return false
-	};
-	needsChangePrivileges(): boolean{
-		return true
-	}; // For example, do you need to be admin to cancel this order?
+	isEndStatus(): boolean {
+		return false;
+	}
+	needsAssignedWaiters(): boolean {
+		return false;
+	}
+	needsChangePrivileges(): boolean {
+		return true;
+	} // For example, do you need to be admin to cancel this order?
 
 	static makeStatus(status: OrderStatusName): OrderStatus {
 		return status === 'assigned'
@@ -65,11 +65,9 @@ class Received extends OrderStatus {
 	}
 }
 
-class InPreparation extends OrderStatus {
-}
+class InPreparation extends OrderStatus {}
 
-class ReadyToDeliver extends OrderStatus {
-}
+class ReadyToDeliver extends OrderStatus {}
 
 class Assigned extends OrderStatus {
 	override needsAssignedWaiters(): boolean {

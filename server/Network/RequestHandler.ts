@@ -1,7 +1,7 @@
 require('dotenv').config();
-import express, { response } from 'express';
+import express, {response} from 'express';
 import * as http from 'http';
-import { logger } from 'server/Logger';
+import {logger} from 'server/Logger';
 import * as socketio from 'socket.io';
 
 import {makeFail, makeGood, ResponseMsg} from '../Response';
@@ -42,7 +42,6 @@ const io = new socketIO.Server(httpServer, {
 	},
 });
 
-
 // use it before all route definitions
 app.get('/', (_req, res) => {
 	res.sendFile(path.join(__dirname, '/build/index.html'));
@@ -81,29 +80,28 @@ function checkValidity(
 	if (missing) {
 		answer = answer.substring(0, answer.length - 2) + ' not in request.';
 		sendErrorMsg(answer, statusFailClient);
-		return makeFail(answer)
-	} else if(toAuthenticate){
+		return makeFail(answer);
+	} else if (toAuthenticate) {
 		if (token) {
 			let response = authenticator.authenticate(token, permissionLevel);
 			if (response.isSuccess()) {
-				return response
+				return response;
 			} else {
 				sendErrorMsg(response.getError(), statusFailClient);
-				return makeFail('')
+				return makeFail('');
 			}
 		} else {
 			sendErrorMsg('Token does not match any id', statusFailClient);
-			return makeFail('')
+			return makeFail('');
 		}
-	}
-	else{
-		return makeGood('')
+	} else {
+		return makeGood('');
 	}
 }
 
 /**
  * used for sending the response data if succeded or error message if not
- * 
+ *
  * @param response The action's response
  * @param setStatus Used to set the status for the response sent to client
  * @param send Used to send the response to client
@@ -127,38 +125,36 @@ app.post('/login', (req, res) => {
 		['password', 'username'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to log in without a password or username'
 			);
 		}
-	)
-	response.ifGood((_) => {
-			authenticator
-				.login(req.body['username'], req.body['password'])
-				.then(response => {
-					sendResponse(
-						response,
-						st => res.status(st),
-						msg => res.send(msg)
-					);
-					if (response.isSuccess()) {
-						logger.info('A user connected successfully');
-					} else {
-						logger.info(
-							'A user failed to connect (wrong password)'
-						);
-					}
-				})
-				.catch(reason => {
-					res.status(statusFailClient);
-					res.send(reason);
-					logger.error(
-						'An unknown error occured during user data retreival'
-					);
-				});
-		})
+	);
+	response.ifGood(_ => {
+		authenticator
+			.login(req.body['username'], req.body['password'])
+			.then(response => {
+				sendResponse(
+					response,
+					st => res.status(st),
+					msg => res.send(msg)
+				);
+				if (response.isSuccess()) {
+					logger.info('A user connected successfully');
+				} else {
+					logger.info('A user failed to connect (wrong password)');
+				}
+			})
+			.catch(reason => {
+				res.status(statusFailClient);
+				res.send(reason);
+				logger.error(
+					'An unknown error occured during user data retreival'
+				);
+			});
+	});
 });
 
 app.get('/getMaps', (_req, res) => {
@@ -189,7 +185,7 @@ app.get('/getGuestOrder', (req, res) => {
 		[],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				"A user tried to get a guest's active order but used an unmatched token"
@@ -197,21 +193,21 @@ app.get('/getGuestOrder', (req, res) => {
 		},
 		true,
 		req.headers.authorization
-	)
+	);
 	response.ifGood(async (id: string) => {
-			const response = await guest.getGuestOrder(id);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
+		const response = await guest.getGuestOrder(id);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (!response.isSuccess()) {
+			logger.info(
+				'A guest failed to get their active order. Error: ' +
+					response.getError()
 			);
-			if (!response.isSuccess()) {
-				logger.info(
-					'A guest failed to get their active order. Error: ' +
-						response.getError()
-				);
-			}
-		})
+		}
+	});
 });
 
 app.post('/createOrder', (req, res) => {
@@ -219,7 +215,7 @@ app.post('/createOrder', (req, res) => {
 		['orderItems'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.status(statusFailClient);
 			res.send(msg);
 			logger.info(
@@ -229,58 +225,53 @@ app.post('/createOrder', (req, res) => {
 		true,
 		req.headers.authorization
 	);
-	response.ifGood(
-		(id: string) => {
-					guest
-						.createOrder(
-							id,
-							new Map(Object.entries(req.body['orderItems']))
-						)
-						.then(response => {
-							sendResponse(
-								response,
-								st => res.status(st),
-								msg => res.send(msg)
-							);
-							if (response.isSuccess()) {
-								logger.info(
-									'A guest created a new order. Order ID: ' +
-										response.getData()
-								);
-							} else {
-								logger.info(
-									'A guest could not create a new order. Error: ' +
-										response.getError()
-								);
-							}
-						})
-						.catch(e =>
-							logger.error(
-								'An error occured while trying to save the new order: ' +
-									e
-							)
-						);
+	response.ifGood((id: string) => {
+		guest
+			.createOrder(id, new Map(Object.entries(req.body['orderItems'])))
+			.then(response => {
+				sendResponse(
+					response,
+					st => res.status(st),
+					msg => res.send(msg)
+				);
+				if (response.isSuccess()) {
+					logger.info(
+						'A guest created a new order. Order ID: ' +
+							response.getData()
+					);
+				} else {
+					logger.info(
+						'A guest could not create a new order. Error: ' +
+							response.getError()
+					);
 				}
-	)
+			})
+			.catch(e =>
+				logger.error(
+					'An error occured while trying to save the new order: ' + e
+				)
+			);
+	});
 });
 
 app.post('/submitReview', (req, res) => {
 	const response = checkValidity(
 		['orderID', 'details', 'rating'],
 		req.body,
-		(msg: string, status: number) =>{ 
-			res.status(status)
-			res.send(msg)
+		(msg: string, status: number) => {
+			res.status(status);
+			res.send(msg);
 		}
 	);
-	response.ifGood((_) =>
+	response.ifGood(_ =>
 		res.send(
 			guest.submitReview(
 				req.body['orderID'],
 				req.body['details'],
 				req.body['rating']
 			)
-		))
+		)
+	);
 });
 
 app.post('/cancelOrderGuest', (req, res) => {
@@ -288,7 +279,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A guest tried to cancel their order but did not enter order ID'
@@ -298,10 +289,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 		req.headers.authorization
 	);
 	response.ifGood(async guestID => {
-		const response = await guest.cancelOrder(
-			req.body['orderID'],
-			guestID
-		);
+		const response = await guest.cancelOrder(req.body['orderID'], guestID);
 		sendResponse(
 			response,
 			st => res.status(st),
@@ -309,8 +297,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 		);
 		if (response.isSuccess()) {
 			logger.info(
-				'A guest canceled their order. Order ID: ' +
-					req.body['orderID']
+				'A guest canceled their order. Order ID: ' + req.body['orderID']
 			);
 		} else {
 			logger.info(
@@ -318,7 +305,7 @@ app.post('/cancelOrderGuest', (req, res) => {
 					response.getError()
 			);
 		}
-	})
+	});
 });
 
 //---------------waiter requests--------------------
@@ -328,7 +315,7 @@ app.get('/getGuestsDetails', (req, res) => {
 		['ids'],
 		req.query,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A waiter tried to get a guest details but gave no id list'
@@ -345,12 +332,8 @@ app.get('/getGuestsDetails', (req, res) => {
 				.then(guests => res.send(guests))
 				.catch(() => {
 					res.status(statusFailServer);
-					res.send(
-						'Getting guests failed, try again later'
-					);
-					logger.error(
-						'An error occured while getting guests data'
-					);
+					res.send('Getting guests failed, try again later');
+					logger.error('An error occured while getting guests data');
 				});
 		} else {
 			res.status(400);
@@ -361,7 +344,7 @@ app.get('/getGuestsDetails', (req, res) => {
 				'A user tried to get guests details but gave the list of ids in the wrong type'
 			);
 		}
-	})
+	});
 });
 
 function isStringArray(arr: any): arr is string[] {
@@ -373,7 +356,7 @@ app.get('/getWaiterOrders', (req, res) => {
 		[],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				"A user tried to watch a waiter's orders without permission or with an unmatched token"
@@ -382,23 +365,21 @@ app.get('/getWaiterOrders', (req, res) => {
 		true,
 		req.headers.authorization,
 		waiterPermissionLevel
-	)
-	response.ifGood(
-		async (id: string) => {
-			const response = await waiter.getWaiterOrders(id);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
+	);
+	response.ifGood(async (id: string) => {
+		const response = await waiter.getWaiterOrders(id);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (!response.isSuccess()) {
+			logger.info(
+				"A user failed to get a waiter's order. Error: " +
+					response.getError()
 			);
-			if (!response.isSuccess()) {
-				logger.info(
-					"A user failed to get a waiter's order. Error: " +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 app.post('/orderArrived', (req, res) => {
@@ -406,7 +387,7 @@ app.post('/orderArrived', (req, res) => {
 		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				"A waiter tried to change order status to 'arrived' and didn't give an order ID"
@@ -415,31 +396,29 @@ app.post('/orderArrived', (req, res) => {
 		true,
 		req.headers.authorization,
 		waiterPermissionLevel
-	)
-	response.ifGood(
-		async waiterID => {
-			const response = await waiter.orderArrived(
-				req.body['orderID'],
-				waiterID
+	);
+	response.ifGood(async waiterID => {
+		const response = await waiter.orderArrived(
+			req.body['orderID'],
+			waiterID
+		);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (response.isSuccess()) {
+			logger.info(
+				"A waiter changes order status to 'arrived'. Order ID: " +
+					req.body['orderID']
 			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
+		} else {
+			logger.info(
+				"A waiter failed to change order status to 'arrived'. Error: " +
+					response.getError()
 			);
-			if (response.isSuccess()) {
-				logger.info(
-					"A waiter changes order status to 'arrived'. Order ID: " +
-						req.body['orderID']
-				);
-			} else {
-				logger.info(
-					"A waiter failed to change order status to 'arrived'. Error: " +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 app.post('/orderOnTheWay', (req, res) => {
@@ -447,7 +426,7 @@ app.post('/orderOnTheWay', (req, res) => {
 		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				"A waiter tried to change order status to 'on the way' and didn't give an order ID"
@@ -457,38 +436,36 @@ app.post('/orderOnTheWay', (req, res) => {
 		req.headers.authorization,
 		waiterPermissionLevel
 	);
-	response.ifGood(
-		async waiterID => {
-			const response = await waiter.orderOnTheWay(
-				req.body['orderID'],
-				waiterID
+	response.ifGood(async waiterID => {
+		const response = await waiter.orderOnTheWay(
+			req.body['orderID'],
+			waiterID
+		);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
+		if (response.isSuccess()) {
+			logger.info(
+				"Order status was changed to 'on the way'. Order ID: " +
+					req.body['orderID']
 			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			); //todo: connect waiter should notify dashboard? add the waiter to waiter list?
-			if (response.isSuccess()) {
-				logger.info(
-					"Order status was changed to 'on the way'. Order ID: " +
-						req.body['orderID']
-				);
-			} else {
-				logger.info(
-					"A waiter failed to change order status to 'on the way'. Error: " +
-						response.getError()
-				);
-			}
+		} else {
+			logger.info(
+				"A waiter failed to change order status to 'on the way'. Error: " +
+					response.getError()
+			);
 		}
-	)
+	});
 });
 
-app.get('/getWaiterName', (req, res) => { 
+app.get('/getWaiterName', (req, res) => {
 	const response = checkValidity(
 		[],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A waiter tried to get their name but had no permission or used an unmatched token'
@@ -498,22 +475,20 @@ app.get('/getWaiterName', (req, res) => {
 		req.headers.authorization,
 		waiterPermissionLevel
 	);
-	response.ifGood(
-		async waiterID => {
-			const response = await waiter.getWaiterName(waiterID);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
+	response.ifGood(async waiterID => {
+		const response = await waiter.getWaiterName(waiterID);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (!response.isSuccess()) {
+			logger.info(
+				'A waiter failed to get their name. Error: ' +
+					response.getError()
 			);
-			if (!response.isSuccess()) {
-				logger.info(
-					'A waiter failed to get their name. Error: ' +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 //----------------------------websocket requests-----------------------
@@ -528,13 +503,12 @@ io.on('connection', function (socket: socketio.Socket) {
 		true,
 		socket.handshake.auth['token']
 	);
-	response.ifGood(
-		(id: string) =>
-			NotificationInterface.addSubscriber(
-				id,
-				(eventName: string, o: object) => socket.emit(eventName, o)
-			)
-	)
+	response.ifGood((id: string) =>
+		NotificationInterface.addSubscriber(
+			id,
+			(eventName: string, o: object) => socket.emit(eventName, o)
+		)
+	);
 	socket.on('updateGuestLocation', (message: any) => {
 		const response = checkValidity(
 			['location'],
@@ -546,11 +520,9 @@ io.on('connection', function (socket: socketio.Socket) {
 				);
 			}
 		);
-		response.ifGood(
-			(id: string) => {
-				guest.updateLocationGuest(id, message['location']);
-			}
-		)
+		response.ifGood((id: string) => {
+			guest.updateLocationGuest(id, message['location']);
+		});
 	});
 	socket.on('updateWaiterLocation', (message: any) => {
 		const response = checkValidity(
@@ -563,11 +535,9 @@ io.on('connection', function (socket: socketio.Socket) {
 				);
 			}
 		);
-		response.ifGood(
-			(id: string) => {
-				waiter.updateLocationWaiter(id, message['location']);
-			}
-		)
+		response.ifGood((id: string) => {
+			waiter.updateLocationWaiter(id, message['location']);
+		});
 	});
 	socket.on('locationErrorGuest', (message: any) => {
 		const response = checkValidity(
@@ -580,14 +550,9 @@ io.on('connection', function (socket: socketio.Socket) {
 				);
 			}
 		);
-		response.ifGood(
-			(id: string) => {
-				GuestInterface.locationErrorGuest(
-					id,
-					message['errorMsg']
-				);
-			}
-		)
+		response.ifGood((id: string) => {
+			GuestInterface.locationErrorGuest(id, message['errorMsg']);
+		});
 	});
 	socket.on('locationErrorWaiter', (message: any) => {
 		const response = checkValidity(
@@ -618,7 +583,7 @@ app.post('/assignWaiter', (req, res) => {
 		['orderID', 'waiterIDs'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				"A user tried to assign a waiter but didn't include order IDs or waiter ID"
@@ -628,32 +593,29 @@ app.post('/assignWaiter', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		async _adminId => {
-			const response = await dashboard.assignWaiter(
-				req.body['orderID'],
-				req.body['waiterIDs']
+	response.ifGood(async _adminId => {
+		const response = await dashboard.assignWaiter(
+			req.body['orderID'],
+			req.body['waiterIDs']
+		);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (response.isSuccess()) {
+			logger.info(
+				'The waiters were assigned successfuly. Waiter IDs: ' +
+					req.body['waiterIDs'] +
+					' Order ID: ' +
+					req.body['orderID']
 			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
+		} else {
+			logger.info(
+				'A waiter could not be assigned. Error: ' + response.getError()
 			);
-			if (response.isSuccess()) {
-				logger.info(
-					'The waiters were assigned successfuly. Waiter IDs: ' +
-						req.body['waiterIDs'] +
-						' Order ID: ' +
-						req.body['orderID']
-				);
-			} else {
-				logger.info(
-					'A waiter could not be assigned. Error: ' +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 app.get('/getOrders', (req, res) => {
@@ -661,7 +623,7 @@ app.get('/getOrders', (req, res) => {
 		[],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to get all orders but has no permission or used an unmatched token'
@@ -671,23 +633,20 @@ app.get('/getOrders', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		_id => {
-			dashboard.getAllOrders().then(response => {
-				sendResponse(
-					response,
-					st => res.status(st),
-					msg => res.send(msg)
+	response.ifGood(_id => {
+		dashboard.getAllOrders().then(response => {
+			sendResponse(
+				response,
+				st => res.status(st),
+				msg => res.send(msg)
+			);
+			if (!response.isSuccess()) {
+				logger.info(
+					'Admin could not get orders. Error: ' + response.getError()
 				);
-				if (!response.isSuccess()) {
-					logger.info(
-						'Admin could not get orders. Error: ' +
-							response.getError()
-					);
-				}
-			});
-		}
-	)
+			}
+		});
+	});
 });
 
 app.get('/getWaiters', (req, res) => {
@@ -695,7 +654,7 @@ app.get('/getWaiters', (req, res) => {
 		[],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to get all orders but has no permission or used an unmatched token'
@@ -705,23 +664,20 @@ app.get('/getWaiters', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		_id => {
-			dashboard.getWaiters().then(response => {
-				sendResponse(
-					response,
-					st => res.status(st),
-					msg => res.send(msg)
+	response.ifGood(_id => {
+		dashboard.getWaiters().then(response => {
+			sendResponse(
+				response,
+				st => res.status(st),
+				msg => res.send(msg)
+			);
+			if (!response.isSuccess()) {
+				logger.info(
+					'Admin could not get waiters. Error: ' + response.getError()
 				);
-				if (!response.isSuccess()) {
-					logger.info(
-						'Admin could not get waiters. Error: ' +
-							response.getError()
-					);
-				}
-			});
-		}
-	)
+			}
+		});
+	});
 });
 
 app.get('/getWaitersByOrder', (req, res) => {
@@ -729,7 +685,7 @@ app.get('/getWaitersByOrder', (req, res) => {
 		['orderID'],
 		req.query,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to get waiters by order but did not include an order ID'
@@ -739,24 +695,22 @@ app.get('/getWaitersByOrder', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		async _id => {
-			const response = await dashboard.getWaiterByOrder(
-				String(req.query['orderID'])
+	response.ifGood(async _id => {
+		const response = await dashboard.getWaiterByOrder(
+			String(req.query['orderID'])
+		);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (!response.isSuccess()) {
+			logger.info(
+				'Admin could not get waiters by order. Error: ' +
+					response.getError()
 			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if (!response.isSuccess()) {
-				logger.info(
-					'Admin could not get waiters by order. Error: ' +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 app.get('/getReviews', (req, res) => {
@@ -764,7 +718,7 @@ app.get('/getReviews', (req, res) => {
 		[],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to get reviews but did not have permission or used an unmatched token'
@@ -774,12 +728,10 @@ app.get('/getReviews', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		async _id => {
-			const response = await dashboard.getReviews();
-			res.send(response);
-		}
-	)
+	response.ifGood(async _id => {
+		const response = await dashboard.getReviews();
+		res.send(response);
+	});
 });
 
 app.post('/cancelOrderAdmin', (req, res) => {
@@ -787,7 +739,7 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		['orderID'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to cancel an order but did not include an order ID'
@@ -797,25 +749,22 @@ app.post('/cancelOrderAdmin', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		async id => {
-			const response = await dashboard.cancelOrderAdmin(
-				req.body['orderID'],
-				id
+	response.ifGood(async id => {
+		const response = await dashboard.cancelOrderAdmin(
+			req.body['orderID'],
+			id
+		);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (!response.isSuccess()) {
+			logger.info(
+				'Admin could not cancel order. Error: ' + response.getError()
 			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if (!response.isSuccess()) {
-				logger.info(
-					'Admin could not cancel order. Error: ' +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 app.post('/changeOrderStatus', (req, res) => {
@@ -823,7 +772,7 @@ app.post('/changeOrderStatus', (req, res) => {
 		['orderID', 'newStatus'],
 		req.body,
 		(msg: string, status: number) => {
-			res.status(status)
+			res.status(status);
 			res.send(msg);
 			logger.info(
 				'A user tried to change order status but did not include an order ID or a new status'
@@ -833,26 +782,24 @@ app.post('/changeOrderStatus', (req, res) => {
 		req.headers.authorization,
 		adminPermissionLevel
 	);
-	response.ifGood(
-		async id => {
-			const response = await dashboard.changeOrderStatus(
-				req.body['orderID'],
-				req.body['newStatus'],
-				id
+	response.ifGood(async id => {
+		const response = await dashboard.changeOrderStatus(
+			req.body['orderID'],
+			req.body['newStatus'],
+			id
+		);
+		sendResponse(
+			response,
+			st => res.status(st),
+			msg => res.send(msg)
+		);
+		if (!response.isSuccess()) {
+			logger.info(
+				'Admin could not change order status. Error: ' +
+					response.getError()
 			);
-			sendResponse(
-				response,
-				st => res.status(st),
-				msg => res.send(msg)
-			);
-			if (!response.isSuccess()) {
-				logger.info(
-					'Admin could not change order status. Error: ' +
-						response.getError()
-				);
-			}
 		}
-	)
+	});
 });
 
 AppDataSource.initialize().then(() => {
