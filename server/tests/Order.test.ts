@@ -58,7 +58,9 @@ test("Creating an order with a none existent guest' id returns a failure", async
 
 test('createOrder should return an order with matching guest ID', async () => {
 	const {orderID, guestID} = await createOrder();
-	const orderGuest = (await onOrder(orderID, (o) => makeGood(o.getGuestId()))).getData()
+	const orderGuest = (
+		await onOrder(orderID, o => makeGood(o.getGuestId()))
+	).getData();
 	expect(orderGuest).toBe(guestID);
 	expect(true).toBeTruthy();
 });
@@ -88,7 +90,7 @@ test('createOrder should return an order with a status of "received"', async () 
 
 test("getId should return the order's id", async () => {
 	const {orderID, guestID} = await createOrder();
-	const newID = (await onOrder(orderID, o => makeGood(o.getID()))).getData()
+	const newID = (await onOrder(orderID, o => makeGood(o.getID()))).getData();
 	expect(newID).toBe(orderID);
 });
 
@@ -101,15 +103,19 @@ test('createOrder should create unique order Ids', async () => {
 test('createOrder from two different guests results with different guest IDs for the orders', async () => {
 	const {orderID: orderID1} = await createOrder({index: 0});
 	const {orderID: orderID2} = await createOrder({index: 1});
-	const orderGuest1 = (await onOrder(orderID1, (o) => makeGood(o.getGuestId()))).getData()
-	const orderGuest2 = (await onOrder(orderID2, (o) => makeGood(o.getGuestId()))).getData()
+	const orderGuest1 = (
+		await onOrder(orderID1, o => makeGood(o.getGuestId()))
+	).getData();
+	const orderGuest2 = (
+		await onOrder(orderID2, o => makeGood(o.getGuestId()))
+	).getData();
 	expect(orderGuest1).not.toBe(orderGuest2);
 });
 
 test('createOrder with no items fails', async () => {
 	const guests = await getGuests();
 	const guestID = guests[0].id;
-	const response = await GuestInterface.createOrder(guestID, new Map())
+	const response = await GuestInterface.createOrder(guestID, new Map());
 	expect(response.isSuccess()).toBeFalsy();
 });
 
@@ -117,8 +123,11 @@ test('createOrder with negative item quantity fails', async () => {
 	const guests = await getGuests();
 	const guestID = guests[0].id;
 	const itemsList = await ItemsInterface.getItems();
-	const items = new Map([[itemsList[0].id, 5], [itemsList[1].id, -1]]);
-	const response = await GuestInterface.createOrder(guestID, items)
+	const items = new Map([
+		[itemsList[0].id, 5],
+		[itemsList[1].id, -1],
+	]);
+	const response = await GuestInterface.createOrder(guestID, items);
 	expect(response.isSuccess()).toBeFalsy();
 });
 
@@ -126,8 +135,11 @@ test('createOrder with a zero and positive item quantities succeeds', async () =
 	const guests = await getGuests();
 	const guestID = guests[0].id;
 	const itemsList = await ItemsInterface.getItems();
-	const items = new Map([[itemsList[0].id, 5], [itemsList[1].id, 0]]);
-	const response = await GuestInterface.createOrder(guestID, items)
+	const items = new Map([
+		[itemsList[0].id, 5],
+		[itemsList[1].id, 0],
+	]);
+	const response = await GuestInterface.createOrder(guestID, items);
 	expect(response.isSuccess()).toBeTruthy();
 });
 
@@ -135,8 +147,11 @@ test('createOrder with only zero item quantities fails', async () => {
 	const guests = await getGuests();
 	const guestID = guests[0].id;
 	const itemsList = await ItemsInterface.getItems();
-	const items = new Map([[itemsList[0].id, 0], [itemsList[1].id, 0]]);
-	const response = await GuestInterface.createOrder(guestID, items)
+	const items = new Map([
+		[itemsList[0].id, 0],
+		[itemsList[1].id, 0],
+	]);
+	const response = await GuestInterface.createOrder(guestID, items);
 	expect(response.isSuccess()).toBeFalsy();
 });
 

@@ -3,7 +3,7 @@ import OrderViewModel from '../src/viewModel/ordersViewModel';
 import Api from '../src/network/api';
 import ordersModel from '../src/model/ordersModel';
 import {ItemIDO, OrderIDO, WaiterIDO} from '../../api';
-import {initViewModels} from '../src/context';
+import {initViewModels, waitersViewModel} from '../src/context';
 
 const mockListOfItems: ItemIDO[] = [
 	{
@@ -142,7 +142,7 @@ describe('Constructor', () => {
 		]);
 		await flushPromises();
 		expect(
-			ordersViewModel.getAssignedWaiters(mockListOfOrders[0].id)
+			waitersViewModel.getAssignedWaiters(mockListOfOrders[0].id)
 		).toEqual([mockListOfWaiters[0].id]);
 	});
 
@@ -154,7 +154,7 @@ describe('Constructor', () => {
 		ordersViewModel.updateAssignedWaiter(mockListOfOrders[0].id, []);
 		await flushPromises();
 		expect(
-			ordersViewModel.getAssignedWaiters(mockListOfOrders[0].id)
+			waitersViewModel.getAssignedWaiters(mockListOfOrders[0].id)
 		).toEqual([]);
 	});
 });

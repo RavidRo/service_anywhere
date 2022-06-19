@@ -9,7 +9,7 @@ import {NotificationFacade} from './Notification/NotificationFacade';
 import {OrderNotifier} from './OrderNotifier';
 import {getGuestActiveOrder, onOrder} from './Orders';
 
-const userErrorStatus = 400
+const userErrorStatus = 400;
 
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
@@ -95,7 +95,10 @@ export async function createOrder(
 		return makeFail('You must choose items to order', userErrorStatus);
 	}
 	if (quantities.some(quantity => quantity < 0)) {
-		return makeFail("You can't order items with negative quantities", userErrorStatus);
+		return makeFail(
+			"You can't order items with negative quantities",
+			userErrorStatus
+		);
 	}
 	const allItemsIds: string[] = (await getItems()).map(item => item.id);
 	if (itemsIds.some(id => !allItemsIds.includes(id))) {

@@ -53,6 +53,7 @@ class RequestsHandler {
 					const msg = isString(rawMsg)
 						? rawMsg
 						: 'An unknown error has been received from the server';
+					alertViewModel.addAlert(msg, true);
 					return Promise.reject(msg);
 				} else if (error.request) {
 					// The request was made but no response was received
@@ -65,6 +66,7 @@ class RequestsHandler {
 				} else {
 					// Something happened in setting up the request that triggered an Error
 					console.warn(`Request<${endPoint}>`, error.message);
+					alert('There was a problem in sending the request');
 					return Promise.reject(
 						'There was a problem in sending the request'
 					);

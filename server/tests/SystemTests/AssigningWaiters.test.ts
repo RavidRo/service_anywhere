@@ -51,7 +51,8 @@ test('Assigns a free waiter successfully', async () => {
 test('Assigns a busy waiter successfully', async () => {
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID: orderID1} = await createOrder({index: 0});
-	const {orderID: orderID2} = await createOrder({index: 1});await DashboardInterface.assignWaiter(orderID1, [
+	const {orderID: orderID2} = await createOrder({index: 1});
+	await DashboardInterface.assignWaiter(orderID1, [
 		waitersIDs.getData()[0].id,
 	]);
 	const assignResponse = await DashboardInterface.assignWaiter(orderID2, [
@@ -116,12 +117,10 @@ test('Assigns two waiters to the same order at the same time successfully', asyn
 	const {orderID} = await createOrder();
 	const assignResponse = await DashboardInterface.assignWaiter(orderID, [
 		waitersIDs.getData()[0].id,
-		waitersIDs.getData()[1].id
+		waitersIDs.getData()[1].id,
 	]);
 	expect(assignResponse.isSuccess()).toBeTruthy();
-	const waitersResponse = await DashboardInterface.getWaiterByOrder(
-		orderID
-	);
+	const waitersResponse = await DashboardInterface.getWaiterByOrder(orderID);
 	expect(new Set(waitersResponse.getData())).toEqual(
 		new Set([waitersIDs.getData()[0].id, waitersIDs.getData()[1].id])
 	);
@@ -131,14 +130,12 @@ test('Assigns two waiters to the same order at different times successfully', as
 	const waitersIDs = await DashboardInterface.getWaiters();
 	const {orderID} = await createOrder();
 	await DashboardInterface.assignWaiter(orderID, [
-		waitersIDs.getData()[0].id
+		waitersIDs.getData()[0].id,
 	]);
 	const assignResponse = await DashboardInterface.assignWaiter(orderID, [
-		waitersIDs.getData()[1].id
+		waitersIDs.getData()[1].id,
 	]);
-	const waitersResponse = await DashboardInterface.getWaiterByOrder(
-		orderID
-	);
+	const waitersResponse = await DashboardInterface.getWaiterByOrder(orderID);
 	expect(new Set(waitersResponse.getData())).toEqual(
 		new Set([waitersIDs.getData()[0].id, waitersIDs.getData()[1].id])
 	);

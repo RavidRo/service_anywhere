@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import * as AuthenticatorChecker from '../../Data/AuthenticatorChecker';
 import {makeFail, makeGood, ResponseMsg} from '../../Response';
 
@@ -16,11 +17,11 @@ async function login(
 	password: string
 ): Promise<ResponseMsg<string>> {
 	const UserCredentials = await AuthenticatorChecker.getDetails(username);
-	if (!UserCredentials || UserCredentials.password !== password) {
-		return makeFail(
-			'Username and password do not match',
-			unauthorizedStatusCode
-		);
+	if (
+		UserCredentials === null ||
+		!(await bcrypt.compare(UserCredentials.password, password))
+	) {
+		return makeFail('Wrong username or password', unauthorizedStatusCode);
 	}
 	const payLoad: TokenPayload = {
 		userId: UserCredentials.id,
