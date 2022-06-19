@@ -151,7 +151,6 @@ class WaiterNotifier extends OrderNotifier {
 	override updateGuestLocation(
 		...params: [location: Location]
 	): ResponseMsg<void> {
-		console.debug('is updating?')
 		return super.updateGuestLocation(...params).ifGood(() => {
 			this.notificationFacade.updateGuestLocation(
 				this.receiverId,

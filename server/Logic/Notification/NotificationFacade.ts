@@ -19,7 +19,6 @@ export class NotificationFacade {
 		guestID: string,
 		location: Location
 	) {
-		console.debug('yes')
 		this.notifier.notify(receiverID, 'updateGuestLocation', {
 			guestID,
 			location,

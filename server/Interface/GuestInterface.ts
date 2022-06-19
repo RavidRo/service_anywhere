@@ -32,12 +32,7 @@ function updateLocationGuest(
 					o.updateGuestLocation(location)
 				);
 			});
-			if (!orderResponse.isSuccess()) {
-				console.debug(guestID);
-				console.debug(orderResponse.getError());
-			}
-		})
-		.catch(() => console.debug('what'));
+		});
 }
 
 async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
