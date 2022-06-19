@@ -4,7 +4,7 @@ import {getOrders} from '../Logic/Orders';
 import WaiterOrder from '../Logic/WaiterOrder';
 import {makeFail, makeGood, ResponseMsg} from '../Response';
 
-const userErrorStatus = 400
+const userErrorStatus = 400;
 
 async function getAllOrders(): Promise<ResponseMsg<OrderIDO[]>> {
 	return makeGood((await getOrders()).map(order => order.getDetails()));
