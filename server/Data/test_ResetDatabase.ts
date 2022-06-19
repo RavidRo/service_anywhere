@@ -66,7 +66,7 @@ function getOrders(guests: GuestDAO[], waiters: WaiterDAO[]) {
 	}
 	const order1 = new OrderDAO();
 	order1.guest = guests[0];
-	order1.creationTime = new Date();
+	order1.creationTime = Date.now();
 	order1.status = 'assigned';
 	order1.waiters = waiters;
 
