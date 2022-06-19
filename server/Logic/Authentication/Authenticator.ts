@@ -19,7 +19,7 @@ async function login(
 	const UserCredentials = await AuthenticatorChecker.getDetails(username);
 	if (
 		UserCredentials === null ||
-		!(await bcrypt.compare(UserCredentials.password, password))
+		!(await bcrypt.compare(password, UserCredentials.password))
 	) {
 		return makeFail('Wrong username or password', unauthorizedStatusCode);
 	}
