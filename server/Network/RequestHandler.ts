@@ -53,7 +53,7 @@ app.get('/', (_req, res) => {
  * Used for checking every input expected is in the request's body.
  * Also used for checking if the token received is a valid token, if the user has the permission to perform
  * requested action and to extract the user's ID from the token.
- * 
+ *
  * @param inputs The names of the arguments for this request
  * @param reqBody The request's body
  * @param sendErrorMsg If any requirement is not met, invoke method with the error msg and status code to send it to the client
@@ -565,14 +565,9 @@ io.on('connection', function (socket: socketio.Socket) {
 				);
 			}
 		);
-		response.ifGood(
-			(id: string) => {
-				WaiterInterface.locationErrorWaiter(
-					message['errorMsg'],
-					id
-				);
-			}
-		)
+		response.ifGood((id: string) => {
+			WaiterInterface.locationErrorWaiter(message['errorMsg'], id);
+		});
 	});
 });
 
