@@ -7,7 +7,7 @@ import {getGuestActiveOrder, onOrder} from '../Logic/Orders';
 
 import WaiterOrder from '../Logic/WaiterOrder';
 
-const guestPermissionLevel = 1
+const guestPermissionLevel = 1;
 
 function createOrder(
 	guestID: string,
@@ -16,19 +16,28 @@ function createOrder(
 	return WaiterOrder.createOrder(guestID, items);
 }
 
-function updateLocationGuest(guestID: string, location: Location, permissionLevel: number): void {
-	if(permissionLevel < guestPermissionLevel){
-		return
+function updateLocationGuest(
+	guestID: string,
+	location: Location,
+	permissionLevel: number
+): void {
+	if (permissionLevel < guestPermissionLevel) {
+		return;
 	}
-	console.debug('here1')
-	getGuestOrder(guestID).then(orderResponse => {
-		orderResponse.ifGood(order => {
-			onOrder(order.id, (o: IOrder) => o.updateGuestLocation(location));
-		});
-		if(!orderResponse.isSuccess()){
-			console.debug(orderResponse.getError())
-		}
-	}).catch(() => console.debug('what'));
+
+	getGuestOrder(guestID)
+		.then(orderResponse => {
+			orderResponse.ifGood(order => {
+				onOrder(order.id, (o: IOrder) =>
+					o.updateGuestLocation(location)
+				);
+			});
+			if (!orderResponse.isSuccess()) {
+				console.debug(guestID);
+				console.debug(orderResponse.getError());
+			}
+		})
+		.catch(() => console.debug('what'));
 }
 
 async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
@@ -50,9 +59,13 @@ async function cancelOrder(
 	return WaiterOrder.changeOrderStatus(orderID, 'canceled', guestID);
 }
 
-function locationErrorGuest(guestID: string, errorMsg: string, permissionLevel: number): void {
-	if(permissionLevel < guestPermissionLevel){
-		return
+function locationErrorGuest(
+	guestID: string,
+	errorMsg: string,
+	permissionLevel: number
+): void {
+	if (permissionLevel < guestPermissionLevel) {
+		return;
 	}
 	getGuestOrder(guestID).then(orderResponse =>
 		orderResponse.ifGood(order =>
