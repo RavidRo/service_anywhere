@@ -24,7 +24,7 @@ export class OrderDAO extends BaseEntity {
 	@Column({default: 'received'})
 	status: OrderStatus;
 
-	@Column('bigint', {default: () => `${Date.now()}`})
+	@Column('bigint')
 	creationTime: number;
 
 	@Column('bigint', {
