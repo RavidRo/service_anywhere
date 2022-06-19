@@ -76,7 +76,8 @@ const OrdersViewController = (props: viewModelProps) => {
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				// console.log(typeof new Date(params.value));
+				console.log(params.value);
+				console.log(new Date(params.value));
 				return new Date(params.value).toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,

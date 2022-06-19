@@ -25,7 +25,7 @@ function StatusViewController(props: {
 	const currentStep: number = sn === undefined ? 0 : sn;
 
 	const backable: number[] = [
-		1,
+		1, // 'received'
 		2, // 'ready to deliver'
 		3, // 'assigned'
 		4, // 'on the way'
