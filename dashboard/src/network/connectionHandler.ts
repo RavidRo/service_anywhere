@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import {io, Socket} from 'socket.io-client';
-import Singleton from '../singleton';
 import Notification from './notifications';
 import ordersViewModel from '../viewModel/ordersViewModel';
 import waitersViewModel from '../viewModel/waitersViewModel';
@@ -8,7 +7,11 @@ import ConnectModel from '../model/ConnectModel';
 import {DefaultEventsMap} from 'socket.io/dist/typed-events';
 
 import config from './config.json';
-export default class ConnectionHandler extends Singleton {
+
+/**
+ * @description Manages the websocket connection and registers the needed notifications
+ */
+export default class ConnectionHandler {
 	private socket: Socket;
 	private notifications: Notification;
 	private connectionModel: ConnectModel;
@@ -17,7 +20,6 @@ export default class ConnectionHandler extends Singleton {
 		orderViewModel: ordersViewModel,
 		waiterViewModel: waitersViewModel
 	) {
-		super();
 		this.notifications = new Notification(orderViewModel, waiterViewModel);
 		this.socket = io(config['host'], {autoConnect: false});
 		this.connectionModel = ConnectModel.getInstance();
@@ -44,6 +46,7 @@ export default class ConnectionHandler extends Singleton {
 				'A socket connection has been created successfully with the server'
 			);
 		});
+
 		this.socket.on('connect_error', error => {
 			if (!returnedResult) {
 				onError?.();
@@ -51,6 +54,7 @@ export default class ConnectionHandler extends Singleton {
 			}
 			console.error('Could not connect to server', error.message);
 		});
+
 		this.socket.on('disconnect', reason => {
 			this.connectionModel.isReconnecting = true;
 			if (reason === 'io server disconnect') {

@@ -2,6 +2,7 @@ import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import configuration from './config.json';
 import ConnectionModel from '../model/ConnectModel';
 import {isString} from '../typeGuard';
+import {alertViewModel} from '../context';
 
 class RequestsHandler {
 	private axiosInstance: AxiosInstance;
@@ -39,11 +40,20 @@ class RequestsHandler {
 				if (error.response) {
 					// The request was made and the server responded with a status code
 					// that falls out of the range of 2xx
+					if (error.response.status === 401) {
+						//Unauthorized
+						this.connection.token = undefined;
+					}
 					const rawMsg = error?.response?.data;
+					console.warn(
+						`Request<${endPoint},${error.response.status}>`,
+						rawMsg ?? error
+					);
 					console.warn(`Request<${endPoint}>`, rawMsg ?? error);
 					const msg = isString(rawMsg)
 						? rawMsg
 						: 'An unknown error has been received from the server';
+					alertViewModel.addAlert(msg, true);
 					return Promise.reject(msg);
 				} else if (error.request) {
 					// The request was made but no response was received
@@ -56,6 +66,7 @@ class RequestsHandler {
 				} else {
 					// Something happened in setting up the request that triggered an Error
 					console.warn(`Request<${endPoint}>`, error.message);
+					alert('There was a problem in sending the request');
 					return Promise.reject(
 						'There was a problem in sending the request'
 					);
@@ -69,7 +80,7 @@ class RequestsHandler {
 			console.info('The server response:', data);
 			return Promise.resolve(data);
 		} else {
-			alert(response.data);
+			alertViewModel.addAlert(`${response.data}`);
 			console.warn(`HTTP Error - ${response.status} - ${response.data}`);
 			return Promise.reject(`HTTP Error - ${response.status}`);
 		}

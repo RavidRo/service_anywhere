@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import * as AuthenticatorChecker from '../../Data/AuthenticatorChecker';
 import {makeFail, makeGood, ResponseMsg} from '../../Response';
 
@@ -16,11 +17,11 @@ async function login(
 	password: string
 ): Promise<ResponseMsg<string>> {
 	const UserCredentials = await AuthenticatorChecker.getDetails(username);
-	if (!UserCredentials || UserCredentials.password !== password) {
-		return makeFail(
-			'Username and password do not match',
-			unauthorizedStatusCode
-		);
+	if (
+		UserCredentials === null ||
+		!(await bcrypt.compare(password, UserCredentials.password))
+	) {
+		return makeFail('Wrong username or password', unauthorizedStatusCode);
 	}
 	const payLoad: TokenPayload = {
 		userId: UserCredentials.id,
@@ -37,7 +38,7 @@ async function login(
 function authenticate(
 	token: string,
 	neededPermissionLevel: number
-): ResponseMsg<string> {
+): ResponseMsg<{id: string; permissionLevel: number}> {
 	try {
 		// remove Bearer if using Bearer Authorization mechanism
 		if (!jwt) {
@@ -61,7 +62,10 @@ function authenticate(
 				forbiddenStatusCode
 			);
 		}
-		return makeGood(payLoad.userId);
+		return makeGood({
+			id: payLoad.userId,
+			permissionLevel: payLoad.permissionLevel,
+		});
 	} catch (err) {
 		return makeFail("Token can't be verified", unauthorizedStatusCode);
 	}

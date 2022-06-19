@@ -1,6 +1,13 @@
 import Api from '../network/api';
 import OrderModel from '../model/ordersModel';
-import {ItemIDO, OrderIDO, OrderStatus, ReviewIDO} from '../../../api';
+import {
+	GuestIDO,
+	ItemIDO,
+	OrderIDO,
+	OrderStatus,
+	ReviewIDO,
+} from '../../../api';
+import {alertViewModel, waitersViewModel} from '../context';
 
 export default class OrdersViewModel {
 	private ordersModel: OrderModel;
@@ -12,30 +19,13 @@ export default class OrdersViewModel {
 		this.api = api;
 	}
 
+	//-----------GETTERS--------------
 	getOrders(): OrderIDO[] {
 		return this.ordersModel.orders;
 	}
 
-	setOrders(orders: OrderIDO[]) {
-		this.ordersModel.orders = orders;
-	}
-
-	updateOrder(order: OrderIDO) {
-		this.ordersModel.addOrder(order);
-		this.updateAssignedWaiter(order.id, []);
-	}
-
 	getItems(): ItemIDO[] {
 		return this.ordersModel.items;
-	}
-
-	setItems(items: ItemIDO[]) {
-		this.ordersModel.items = items;
-	}
-
-	updateAssignedWaiter(orderID: string, waiterIds: string[]) {
-		console.info('Updating orderID: ' + orderID, 'waiters ' + waiterIds);
-		this.ordersModel.updateAssignedWaiters(orderID, waiterIds);
 	}
 
 	getReview(orderID: string): ReviewIDO | undefined {
@@ -43,52 +33,8 @@ export default class OrdersViewModel {
 			?.review;
 	}
 
-	addReview(orderID: string, details: string, rating: number): void {
-		this.ordersModel.addReview(orderID, details, rating);
-	}
-
-	getAssignedWaiters(orderID: string): string[] {
-		console.info('Getting assigned waiters of ', orderID);
-		const assignedWaiters = this.ordersModel.assignedWaiters;
-		const assignedWaiter = assignedWaiters.find(
-			entry => entry.orderID === orderID
-		);
-		if (assignedWaiter !== undefined) {
-			return assignedWaiter.waiterIds;
-		}
-		return [];
-	}
-
-	synchroniseAssignedWaiters(): Promise<void[]> {
-		return Promise.all(
-			this.ordersModel.orders.map((order: OrderIDO) =>
-				this.api
-					.getWaitersByOrder(order.id)
-					.then((waiterIds: string[]) => {
-						console.info('Synchronised assigned waiters ');
-						this.ordersModel.updateAssignedWaiters(
-							order.id,
-							waiterIds
-						);
-					})
-					.catch((err: string) =>
-						alert('Could not find waiter by order ' + err)
-					)
-			)
-		);
-	}
-
-	synchroniseOrders(): Promise<void | void[]> {
-		return this.api
-			.getOrders()
-			.then(orders => {
-				console.info('Synchronized orders');
-				this.ordersModel.orders = orders;
-				return this.synchroniseAssignedWaiters();
-			})
-			.catch(err =>
-				alert('Could not get orders please reload, Error: ' + err)
-			);
+	getGuestDetails(guestID: string): GuestIDO | undefined {
+		return this.ordersModel.getGuestDetails(guestID);
 	}
 
 	getItemName(itemId: string): string {
@@ -99,17 +45,47 @@ export default class OrdersViewModel {
 		return items.filter(item => item.id === itemId)[0].name;
 	}
 
-	synchroniseItems(): Promise<void> {
-		return this.api
-			.getItems()
-			.then(items => {
-				console.info('Synchronized items');
-				this.ordersModel.items = items;
-			})
-			.catch(err =>
-				alert('Could not get orders please reload, Error: ' + err)
-			);
+	// getAssignedWaiters(orderID: string): string[] {
+	// 	console.info('Getting assigned waiters of ', orderID);
+	// 	const assignedWaiters = this.ordersModel.assignedWaiters;
+	// 	const assignedWaiter = assignedWaiters.find(
+	// 		entry => entry.orderID === orderID
+	// 	);
+	// 	if (assignedWaiter !== undefined) {
+	// 		return assignedWaiter.waiterIds;
+	// 	}
+	// 	return [];
+	// }
+	// -------------SETTERS----------------
+	setOrders(orders: OrderIDO[]) {
+		this.ordersModel.orders = orders;
 	}
+
+	setItems(items: ItemIDO[]) {
+		this.ordersModel.items = items;
+	}
+	// -------------------UPDATES---------------------
+	addOrder(order: OrderIDO) {
+		this.ordersModel.addOrder(order);
+		this.fetchGuestDetails([order.guestID]).catch(e => {
+			console.warn("Could not fetch a guest's details", e);
+		});
+		this.updateAssignedWaiter(order.id, []);
+	}
+
+	addGuestError(orderID: string, errorMsg: string) {
+		alertViewModel.addAlert(`${orderID} Error: ${errorMsg}`);
+	}
+
+	updateAssignedWaiter(orderID: string, waiterIds: string[]) {
+		console.info('Updating orderID: ' + orderID, 'waiters ' + waiterIds);
+		waitersViewModel.updateAssignedWaiters(orderID, waiterIds);
+	}
+
+	addReview(orderID: string, details: string, rating: number): void {
+		this.ordersModel.addReview(orderID, details, rating);
+	}
+
 	changeOrderStatusNotification(orderID: string, newStatus: OrderStatus) {
 		console.log(orderID, newStatus);
 		if (
@@ -118,7 +94,7 @@ export default class OrdersViewModel {
 			newStatus !== 'delivered'
 		) {
 			console.log('Changing assigned waiters');
-			this.ordersModel.updateAssignedWaiters(orderID, []);
+			this.updateAssignedWaiter(orderID, []);
 		}
 		this.ordersModel.changeOrderStatus(orderID, newStatus);
 	}
@@ -134,5 +110,66 @@ export default class OrdersViewModel {
 				return true;
 			})
 			.catch(() => false);
+	}
+
+	// ------------------SYNCHRONISE--------------------
+	synchroniseAssignedWaiters(): Promise<void[]> {
+		return Promise.all(
+			this.ordersModel.orders.map((order: OrderIDO) =>
+				this.api
+					.getWaitersByOrder(order.id)
+					.then((waiterIds: string[]) => {
+						console.info('Synchronised assigned waiters ');
+						this.updateAssignedWaiter(order.id, waiterIds);
+					})
+					.catch((err: string) =>
+						alertViewModel.addAlert(
+							'Could not find waiter by order ' + err
+						)
+					)
+			)
+		);
+	}
+
+	synchroniseOrders(): Promise<unknown> {
+		return this.api
+			.getOrders()
+			.then(orders => {
+				console.info('Synchronized orders');
+				this.ordersModel.orders = orders;
+				return Promise.all([
+					this.synchroniseAssignedWaiters(),
+					this.fetchGuestDetails(
+						orders.map(order => order.guestID)
+					).catch(e => {
+						console.warn("Could not fetch a guest's details", e);
+					}),
+				]);
+			})
+			.catch(err =>
+				alertViewModel.addAlert(
+					'Could not get orders please reload, Error: ' + err
+				)
+			);
+	}
+
+	synchroniseItems(): Promise<void> {
+		return this.api
+			.getItems()
+			.then(items => {
+				console.info('Synchronized items');
+				this.ordersModel.items = items;
+			})
+			.catch(err =>
+				alertViewModel.addAlert(
+					'Could not get orders please reload, Error: ' + err
+				)
+			);
+	}
+
+	fetchGuestDetails(guestIDs: string[]) {
+		return this.api.getGuestsDetails(guestIDs).then(guestsDetails => {
+			this.ordersModel.addGuestDetails(guestsDetails);
+		});
 	}
 }

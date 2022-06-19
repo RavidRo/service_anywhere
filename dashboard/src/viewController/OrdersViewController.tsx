@@ -17,14 +17,16 @@ import {
 import {observer} from 'mobx-react';
 import {Divider} from '@mui/material';
 import ReviewViewController from './reviewViewController';
+import AlertViewModel from '../viewModel/alertViewModel';
 
 interface viewModelProps {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaiterViewModel;
+	alertViewModel: AlertViewModel;
 }
 const OrdersViewController = (props: viewModelProps) => {
 	console.info('Starting orders view controller');
-	const {ordersViewModel, waitersViewModel} = props;
+	const {ordersViewModel, waitersViewModel, alertViewModel} = props;
 	const handleRowEditStart = (_params: GridRowParams, event: MuiEvent) => {
 		event.defaultMuiPrevented = true;
 	};
@@ -41,44 +43,55 @@ const OrdersViewController = (props: viewModelProps) => {
 		event.defaultMuiPrevented = true;
 	};
 
+	//Definition of columns according to mui x-data-grid https://mui.com/x/react-data-grid/
 	const columns = [
 		{
 			field: 'id',
-			headerName: 'id',
+			headerName: 'Order Id',
 			editable: false,
 			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'guestID',
-			headerName: 'Guest Id',
+			headerName: 'Guest details',
+			type: 'string',
 			editable: false,
 			flex: 1,
+			valueGetter: (params: GridValueGetterParams) => {
+				const details = ordersViewModel.getGuestDetails(
+					params.value || ''
+				);
+				return `Name: ${details?.username} \n
+						Phone number: ${details?.phoneNumber}`;
+			},
 			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'creationTime',
 			headerName: 'Creation Time',
-			type: 'date',
+			type: 'string',
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				// console.log(typeof new Date(params.value));
-				return new Date(params.value).toLocaleTimeString();
+				console.log(params.value);
+				console.log(new Date(params.value));
+
+				return `${new Date(params.value).toLocaleTimeString()} \n
+							${new Date(params.value).toLocaleDateString()}`;
 			},
 			renderCell: ExpandCellGrid,
 		},
 		{
 			field: 'completionTime',
 			headerName: 'Completion Time',
-			type: 'date',
+			type: 'string',
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				// (entry: (number | string)[])
 				if (params.value !== undefined)
-					return new Date(params.value).toLocaleTimeString();
+					return `${new Date(params.value).toLocaleTimeString()} \n
+							${new Date(params.value).toLocaleDateString()}`;
 				return '';
-				// return params.value?.toLocaleTimeString();
 			},
 			renderCell: ExpandCellGrid,
 		},
@@ -90,16 +103,13 @@ const OrdersViewController = (props: viewModelProps) => {
 			type: 'string',
 			valueGetter: (params: GridValueGetterParams) => {
 				//(entry: (number | string)[])
-				return Object.keys(params.value).map((key: string) => {
-					return (
-						<React.Fragment key={key}>
-							{`${ordersViewModel.getItemName(key)} - ${
-								params.value[key]
-							}`}
-							<Divider variant='fullWidth' />
-						</React.Fragment>
-					);
-				});
+				return Object.keys(params.value)
+					.map((key: string) => {
+						return `${ordersViewModel.getItemName(key)} - ${
+							params.value[key]
+						}`;
+					})
+					.join('\n');
 			},
 			renderCell: ExpandCellGrid,
 		},
@@ -107,7 +117,7 @@ const OrdersViewController = (props: viewModelProps) => {
 			field: 'status',
 			headerName: 'Status',
 			alignHeaderName: 'left',
-			type: 'actions',
+			type: 'string',
 			flex: 1,
 			renderCell: (params: GridRenderCellParams) => {
 				const orderID = params.row.id;
@@ -148,7 +158,7 @@ const OrdersViewController = (props: viewModelProps) => {
 	];
 	return (
 		<div>
-			<AppBarView />
+			<AppBarView alertViewModel={alertViewModel} />
 			<OrdersView
 				orders={ordersViewModel.getOrders()}
 				columns={columns}

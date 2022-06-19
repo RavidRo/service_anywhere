@@ -1,8 +1,13 @@
-/* eslint-disable max-len */
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaiterViewModel from '../viewModel/waitersViewModel';
-import {isOrder, isOrderStatus, orderStatusType, isReview} from '../typeGuard';
-import {ReviewIDO} from '../../../api';
+import {
+	isOrder,
+	isOrderStatus,
+	orderStatusType,
+	isReview,
+	isGuestError,
+	isWaiterError,
+} from '../typeGuard';
 
 export default class Notificiations {
 	private ordersViewModel: OrdersViewModel;
@@ -18,7 +23,7 @@ export default class Notificiations {
 	addNewOrder(params: object) {
 		if (isOrder(params)) {
 			console.log('Updating new orders', params);
-			this.ordersViewModel.updateOrder(params.order);
+			this.ordersViewModel.addOrder(params.order);
 		} else {
 			console.warn(
 				"Haven't received the correct arguments, the argument should be an order"
@@ -57,11 +62,40 @@ export default class Notificiations {
 		}
 	}
 
+	errorWaiter(params: object) {
+		if (isWaiterError(params)) {
+			console.info('receiving waiter review', params);
+			const error = params as {
+				errorMsg: string;
+				waiterID: string;
+			};
+			this.waitersViewModel.waiterError(error.waiterID, error.errorMsg);
+		} else {
+			console.warn(
+				"Haven't received the correct arguments, the param should be a waiter error"
+			);
+		}
+	}
+
+	errorGuest(params: object) {
+		if (isGuestError(params)) {
+			console.info('receiving waiter review', params);
+			const error = params as {
+				errorMsg: string;
+				orderID: string;
+			};
+			this.ordersViewModel.addGuestError(error.orderID, error.errorMsg);
+		} else {
+			console.warn(
+				"Haven't received the correct arguments, the param should be a guest error"
+			);
+		}
+	}
 	eventCallbacks: Record<string, (params: object) => void> = {
 		newOrder: params => this.addNewOrder(params),
 		changeOrderStatus: params => this.changeOrderStatus(params),
-		review: params => this.addReview(params), // TODO: when notification is added in server, change name to match
-		// updateWaiters: params => this.updateWaiters(params),
+		review: params => this.addReview(params),
+		errorGuest: params => this.errorGuest(params),
+		errorWaiter: params => this.errorWaiter(params),
 	};
 }
-// updateOrderStatus: params => this.updateOrderStatus(params),

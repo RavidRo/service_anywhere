@@ -7,15 +7,22 @@ import OrdersViewModel from '../viewModel/ordersViewModel';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 import Button from '@mui/material/Button';
 import {observer} from 'mobx-react';
+import AlertViewModel from '../viewModel/alertViewModel';
 
 interface Props {
 	ordersViewModel: OrdersViewModel;
 	waitersViewModel: WaitersViewModel;
 	connectViewModel: ConnectViewModel;
+	alertViewModel: AlertViewModel;
 }
 
 const ConnectViewController = (props: Props) => {
-	const {ordersViewModel, waitersViewModel, connectViewModel} = props;
+	const {
+		ordersViewModel,
+		waitersViewModel,
+		connectViewModel,
+		alertViewModel,
+	} = props;
 
 	const token = connectViewModel.connection.token;
 	const isLoggedIn = token !== undefined;
@@ -27,7 +34,9 @@ const ConnectViewController = (props: Props) => {
 		connectViewModel
 			.connect()
 			.then(() => setIsConnected(true))
-			.catch(() => alert("Can't establish connection to server"))
+			.catch(() =>
+				alertViewModel.addAlert("Can't establish connection to server")
+			)
 			.finally(() => setIsLoading(false));
 	};
 
@@ -44,10 +53,12 @@ const ConnectViewController = (props: Props) => {
 		const password: string = data.get('password')?.toString() || '';
 		login(username, password)
 			.then(establishConnection)
-			.catch(() => alert("Can't login to server"));
+			.catch(() => {
+				alert("Can't login to server");
+			});
 	};
 
-	if (isConnected) {
+	if (isConnected && isLoggedIn) {
 		return (
 			<>
 				{console.info('opening orders View Controller')}
@@ -56,6 +67,7 @@ const ConnectViewController = (props: Props) => {
 				<OrdersViewController
 					ordersViewModel={ordersViewModel}
 					waitersViewModel={waitersViewModel}
+					alertViewModel={alertViewModel}
 				/>
 			</>
 		);
@@ -64,7 +76,7 @@ const ConnectViewController = (props: Props) => {
 		return (
 			<>
 				{isLoading ? (
-					alert('Establishing connection...')
+					alertViewModel.addAlert('Establishing connection...')
 				) : (
 					<Button onClick={establishConnection} disabled={isLoading}>
 						Retry

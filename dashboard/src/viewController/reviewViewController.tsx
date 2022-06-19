@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
-import WaitersViewModel from '../viewModel/waitersViewModel';
 import OrdersViewModel from '../viewModel/ordersViewModel';
 import ReviewView from '../view/ReviewView';
 

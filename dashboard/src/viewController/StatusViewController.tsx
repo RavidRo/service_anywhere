@@ -11,6 +11,7 @@ import {blue, red} from '@mui/material/colors';
 import {CardHeader} from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import {observer} from 'mobx-react';
+import {alertViewModel} from '../context';
 
 function StatusViewController(props: {
 	orderID: string;
@@ -24,7 +25,7 @@ function StatusViewController(props: {
 	const currentStep: number = sn === undefined ? 0 : sn;
 
 	const backable: number[] = [
-		1,
+		1, // 'received'
 		2, // 'ready to deliver'
 		3, // 'assigned'
 		4, // 'on the way'
@@ -58,7 +59,12 @@ function StatusViewController(props: {
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep + 1);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert(
+					"Can't change order status " + err,
+					true
+				)
+			);
 	};
 
 	const handleBack = () => {
@@ -70,7 +76,12 @@ function StatusViewController(props: {
 			// .then(boolean => {
 			// 	if (boolean) setCurrentStep(currentStep - 1);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert(
+					"Can't change order status " + err,
+					true
+				)
+			);
 	};
 	const handleCancel = () => {
 		if (!isStepCancelable(currentStep)) {
@@ -83,7 +94,12 @@ function StatusViewController(props: {
 			// 	if (boolean)
 			// 		setCurrentStep(StatusToNumber.get('canceled') || 6);
 			// })
-			.catch(err => alert("Can't change order status " + err));
+			.catch(err =>
+				alertViewModel.addAlert(
+					"Can't change order status " + err,
+					true
+				)
+			);
 	};
 
 	const wrapper = React.useRef<HTMLDivElement | null>(null);
@@ -200,7 +216,9 @@ function StatusViewController(props: {
 						<Typography variant='body2' style={{padding: 8}}>
 							<Box sx={{width: '100%'}}>
 								<StatusView
-									steps={Status}
+									steps={Status.filter(
+										entry => entry !== 'canceled'
+									)}
 									isStepNextable={isStepNextable}
 									isStepBackable={isStepBackable}
 									isStepCancelable={isStepCancelable}

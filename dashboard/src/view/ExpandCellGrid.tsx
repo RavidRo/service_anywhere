@@ -23,7 +23,6 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [showFullCell, setShowFullCell] = React.useState(false);
 	const [showPopper, setShowPopper] = React.useState(false);
-
 	const handleMouseEnter = () => {
 		const current = cellValue.current;
 		const isCurrentlyOverflown =
@@ -57,6 +56,12 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 	}, [setShowFullCell, showFullCell]);
 
 	const wrapperCurrent = wrapper.current;
+	const formatString = (val: any) => {
+		if (typeof val === 'string') {
+			return val.split('\n').map(str => <p>{str}</p>);
+		}
+		return val;
+	};
 
 	return (
 		<Box
@@ -88,7 +93,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 					overflow: 'hidden',
 					textOverflow: 'ellipsis',
 				}}>
-				{value}
+				{formatString(value)}
 			</Box>
 			{showPopper && (
 				<Popper
@@ -104,7 +109,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 									: wrapperCurrent.offsetHeight - 3,
 						}}>
 						<Typography variant='body2' style={{padding: 8}}>
-							{value}
+							{formatString(value)}
 						</Typography>
 					</Paper>
 				</Popper>
@@ -112,6 +117,13 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 		</Box>
 	);
 });
+
+/**
+ * @description if the element that is received in params is large than the allocated space in the grid,
+ *  opens a box that is big enough to view the element
+ * @param params
+ * @returns element
+ */
 export default function ExpandCellGrid(params: GridRenderCellParams<string>) {
 	return (
 		<GridCellExpand

@@ -70,7 +70,11 @@ test('Notified waiter on updateGuestLocation', async () => {
 	// console.log('Waiter ID', waiterID);
 	// console.log('Guest ID', waiterID);
 	await DashboardInterface.assignWaiter(orderID, [waiterID]);
-	GuestInterface.updateLocationGuest(guestID, {x: 0.5, y: 0.5, mapID: '1'});
+	GuestInterface.updateLocationGuest(
+		guestID,
+		{x: 0.5, y: 0.5, mapID: '1'},
+		1
+	);
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(2);
 });
@@ -148,11 +152,15 @@ test('Notified guest on updateWaiterLocation', async () => {
 	const func = jest.fn();
 	await timeout(200);
 	notifier.addSubscriber(guestID, func);
-	await WaiterInterface.updateLocationWaiter(waiterID, {
-		x: 0.5,
-		y: 0.5,
-		mapID: '1',
-	});
+	await WaiterInterface.updateLocationWaiter(
+		waiterID,
+		{
+			x: 0.5,
+			y: 0.5,
+			mapID: '1',
+		},
+		2
+	);
 	await timeout(200);
 	expect(func).toHaveBeenCalledTimes(1);
 });

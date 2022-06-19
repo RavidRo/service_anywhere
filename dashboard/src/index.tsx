@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import ConnectViewController from './viewController/ConnectViewController';
-import ConnectViewModel from './viewModel/connectViewModel';
-import OrdersViewModel from './viewModel/ordersViewModel';
-import WaitersViewModel from './viewModel/waitersViewModel';
-import waitersModel from './model/waiterModel';
-import ordersModel from './model/ordersModel';
-import Api from './network/api';
+import {
+	alertViewModel,
+	ordersViewModel,
+	waitersViewModel,
+	connectViewModel,
+	initViewModels,
+} from './context';
 
 if (
 	!new (class {
@@ -18,25 +19,14 @@ if (
 	throw new Error('Transpiler is not configured correctly');
 
 console.log('Starting Log');
-
-const waiterModel = new waitersModel();
-const orderModel = new ordersModel();
-const api: Api = new Api();
-
-const ordersViewModel = new OrdersViewModel(orderModel, api);
-const waitersViewModel = new WaitersViewModel(waiterModel, api);
-const connectViewModel = new ConnectViewModel(
-	api,
-	ordersViewModel,
-	waitersViewModel
-);
-
+initViewModels();
 ReactDOM.render(
 	<React.StrictMode>
 		<ConnectViewController
 			ordersViewModel={ordersViewModel}
 			waitersViewModel={waitersViewModel}
 			connectViewModel={connectViewModel}
+			alertViewModel={alertViewModel}
 		/>
 	</React.StrictMode>,
 	document.getElementById('root')

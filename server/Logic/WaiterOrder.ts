@@ -9,6 +9,8 @@ import {NotificationFacade} from './Notification/NotificationFacade';
 import {OrderNotifier} from './OrderNotifier';
 import {getGuestActiveOrder, onOrder} from './Orders';
 
+const userErrorStatus = 400;
+
 export function getAllWaiters(): Promise<WaiterDAO[]> {
 	return WaiterStore.getWaiters();
 }
@@ -37,7 +39,7 @@ export async function assignWaiter(
 		waiterIDs.map(id => WaiterStore.getWaiter(id))
 	);
 	if (waiters.includes(null)) {
-		return makeFail('A requested waiter does not exit', 400);
+		return makeFail('A requested waiter does not exit', userErrorStatus);
 	}
 	const existingWaiters = await getWaiterByOrder(orderID);
 	const overlap = waiterIDs.filter(w =>
@@ -47,7 +49,7 @@ export async function assignWaiter(
 		return makeFail(
 			'Some requested waiters are already assigned to this order: ' +
 				overlap,
-			400
+			userErrorStatus
 		);
 	}
 	const canAssignResponse = await onOrder(orderID, order =>
@@ -90,20 +92,23 @@ export async function createOrder(
 	const quantities = filteredEntries.map(([_, quantity]) => quantity);
 	const itemsIds = filteredEntries.map(([id, _]) => id);
 	if (filteredEntries.length === 0) {
-		return makeFail('You must choose items to order', 400);
+		return makeFail('You must choose items to order', userErrorStatus);
 	}
 	if (quantities.some(quantity => quantity < 0)) {
-		return makeFail("You can't order items with negative quantities", 400);
+		return makeFail(
+			"You can't order items with negative quantities",
+			userErrorStatus
+		);
 	}
 	const allItemsIds: string[] = (await getItems()).map(item => item.id);
 	if (itemsIds.some(id => !allItemsIds.includes(id))) {
-		return makeFail('The items you chose does not exists', 400);
+		return makeFail('The items you chose does not exists', userErrorStatus);
 	}
 	const currentOrderResponse = await getGuestActiveOrder(guestID);
 	if (currentOrderResponse.isSuccess()) {
 		return makeFail(
 			"You can't order while having another order active",
-			400
+			userErrorStatus
 		);
 	}
 	const newOrderResponse = await OrderNotifier.createNewOrder(

@@ -1,11 +1,10 @@
-/* eslint-disable max-len */
 import * as React from 'react';
 import WaiterDialogView from '../view/WaiterView';
 import {observer} from 'mobx-react';
 import WaitersViewModel from '../viewModel/waitersViewModel';
 import {OrderStatus} from '../../../api';
-import {StatusToNumber} from '../Status';
 import OrdersViewModel from '../viewModel/ordersViewModel';
+import {alertViewModel} from '../context';
 
 type waiterDialogViewControllerProps = {
 	waitersViewModel: WaitersViewModel;
@@ -52,15 +51,20 @@ function WaiterDialogViewController(props: waiterDialogViewControllerProps) {
 				ordersViewModel.updateAssignedWaiter(orderID, selectedWaiters);
 				handleClose();
 			})
-			.catch(_ => alert('Could not assign waiters to order'));
+			.catch(_ =>
+				alertViewModel.addAlert(
+					'Could not assign waiters to order',
+					true
+				)
+			);
 	};
 
 	const isDisabled = () => {
-		return (StatusToNumber.get(status) || 0) >= 3;
+		return status !== 'ready to deliver';
 	};
 	return (
 		<WaiterDialogView
-			assignedWaiters={ordersViewModel.getAssignedWaiters(orderID)}
+			assignedWaiters={waitersViewModel.getAssignedWaiters(orderID)}
 			waiters={waitersViewModel.getWaiters()}
 			handleOpen={handleOpen}
 			handleClose={handleClose}
