@@ -25,14 +25,11 @@ function updateLocationGuest(
 		return;
 	}
 
-	getGuestOrder(guestID)
-		.then(orderResponse => {
-			orderResponse.ifGood(order => {
-				onOrder(order.id, (o: IOrder) =>
-					o.updateGuestLocation(location)
-				);
-			});
+	getGuestOrder(guestID).then(orderResponse => {
+		orderResponse.ifGood(order => {
+			onOrder(order.id, (o: IOrder) => o.updateGuestLocation(location));
 		});
+	});
 }
 
 async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {

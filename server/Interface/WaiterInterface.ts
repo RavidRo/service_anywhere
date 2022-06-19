@@ -6,7 +6,7 @@ import WaiterOrder from '../Logic/WaiterOrder';
 
 import {getGuestsDetails as getDetails} from '../Data/Stores/GuestStore';
 
-const waiterPermissionLevel = 2
+const waiterPermissionLevel = 2;
 
 async function getOrdersByWaiter(
 	waiterID: string
@@ -21,9 +21,13 @@ async function orderArrived(
 	return WaiterOrder.changeOrderStatus(orderID, 'delivered', waiterID);
 }
 
-function updateLocationWaiter(waiterID: string, location: Location, permissionLevel: number): void {
-	if(permissionLevel < waiterPermissionLevel){
-		return
+function updateLocationWaiter(
+	waiterID: string,
+	location: Location,
+	permissionLevel: number
+): void {
+	if (permissionLevel < waiterPermissionLevel) {
+		return;
 	}
 	WaiterOrder.updateWaiterLocation(waiterID, location);
 }
@@ -43,9 +47,13 @@ function getGuestsDetails(ids: string[]): Promise<GuestIDO[]> {
 	return getDetails(ids);
 }
 
-function locationErrorWaiter(errorMsg: string, waiterID: string, permissionLevel: number) {
-	if(permissionLevel < waiterPermissionLevel){
-		return
+function locationErrorWaiter(
+	errorMsg: string,
+	waiterID: string,
+	permissionLevel: number
+) {
+	if (permissionLevel < waiterPermissionLevel) {
+		return;
 	}
 	WaiterOrder.locationErrorWaiter(errorMsg, waiterID);
 }
