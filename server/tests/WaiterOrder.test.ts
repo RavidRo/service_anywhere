@@ -92,3 +92,15 @@ test('get waiter order with our waiter should return our order', async () => {
 	expect(orders.getData().length).toBe(1);
 	expect(orders.getData()[0].id).toEqual(orderID);
 });
+
+test('get waiter order with our waiter should return nothing', async () => {
+	const {orderID} = await createOrder();
+
+	const waitersIDs = (await DashboardInterface.getWaiters()).getData();
+	DashboardInterface.changeOrderStatus(orderID, 'ready to deliver', adminID);
+
+
+	const orders = await WaiterOrder.getOrdersByWaiter(waitersIDs[0].id);
+	expect(orders.isSuccess()).toBeTruthy();
+	expect(orders.getData().length).toBe(0);
+});
