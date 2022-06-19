@@ -2,7 +2,6 @@ import * as React from 'react';
 import {observer} from 'mobx-react';
 import AlertViewModel from '../viewModel/alertViewModel';
 import AlertView from '../view/alertView';
-import alertView from '../view/alertView';
 
 type alertProps = {
 	alertViewModel: AlertViewModel;

@@ -112,6 +112,13 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 		</Box>
 	);
 });
+
+/**
+ * @description if the element that is received in params is large than the allocated space in the grid,
+ *  opens a box that is big enough to view the element
+ * @param params
+ * @returns element
+ */
 export default function ExpandCellGrid(params: GridRenderCellParams<string>) {
 	return (
 		<GridCellExpand

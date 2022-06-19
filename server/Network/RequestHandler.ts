@@ -620,7 +620,7 @@ io.on('connection', function (socket: socketio.Socket) {
 
 app.post('/assignWaiter', (req, res) => {
 	const response = checkValidity(
-		['orderID', 'waiterID'],
+		['orderID', 'waiterIDs'],
 		req.body,
 		(msg: string, status: number) => {
 			res.status(status)
@@ -637,7 +637,7 @@ app.post('/assignWaiter', (req, res) => {
 		async _adminId => {
 			const response = await dashboard.assignWaiter(
 				req.body['orderID'],
-				req.body['waiterID']
+				req.body['waiterIDs']
 			);
 			sendResponse(
 				response,
@@ -646,9 +646,9 @@ app.post('/assignWaiter', (req, res) => {
 			);
 			if (response.isSuccess()) {
 				logger.info(
-					'A waiter was assigned successfuly. Waiter ID: ' +
-						req.body['waiterID'] +
-						' Order IDs: ' +
+					'The waiters were assigned successfuly. Waiter IDs: ' +
+						req.body['waiterIDs'] +
+						' Order ID: ' +
 						req.body['orderID']
 				);
 			} else {

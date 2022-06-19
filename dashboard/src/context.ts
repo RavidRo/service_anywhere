@@ -1,4 +1,3 @@
-import ConnectViewController from './viewController/ConnectViewController';
 import ConnectViewModel from './viewModel/connectViewModel';
 import OrdersViewModel from './viewModel/ordersViewModel';
 import WaitersViewModel from './viewModel/waitersViewModel';

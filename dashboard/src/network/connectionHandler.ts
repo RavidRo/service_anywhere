@@ -7,6 +7,10 @@ import ConnectModel from '../model/ConnectModel';
 import {DefaultEventsMap} from 'socket.io/dist/typed-events';
 
 import config from './config.json';
+
+/**
+ * @description Manages the websocket connection and registers the needed notifications
+ */
 export default class ConnectionHandler {
 	private socket: Socket;
 	private notifications: Notification;
@@ -42,6 +46,7 @@ export default class ConnectionHandler {
 				'A socket connection has been created successfully with the server'
 			);
 		});
+
 		this.socket.on('connect_error', error => {
 			if (!returnedResult) {
 				onError?.();
@@ -49,6 +54,7 @@ export default class ConnectionHandler {
 			}
 			console.error('Could not connect to server', error.message);
 		});
+
 		this.socket.on('disconnect', reason => {
 			this.connectionModel.isReconnecting = true;
 			if (reason === 'io server disconnect') {

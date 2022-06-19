@@ -54,19 +54,16 @@ const ConnectViewController = (props: Props) => {
 		login(username, password)
 			.then(establishConnection)
 			.catch(() => {
-				alertViewModel.addAlert("Can't login to server");
 				alert("Can't login to server");
 			});
 	};
 
-	if (isConnected) {
+	if (isConnected && isLoggedIn) {
 		return (
 			<>
 				{console.info('opening orders View Controller')}
 				{connectViewModel.connection.isReconnecting &&
-					alertViewModel.addAlert(
-						'Connection lost, trying to reconnect...'
-					)}
+					alert('Connection lost, trying to reconnect...')}
 				<OrdersViewController
 					ordersViewModel={ordersViewModel}
 					waitersViewModel={waitersViewModel}
