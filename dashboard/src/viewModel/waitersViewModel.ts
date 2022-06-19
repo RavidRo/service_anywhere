@@ -31,6 +31,24 @@ export default class WaitersViewModel {
 				)
 			);
 	}
+
+	getAssignedWaiters(orderID: string): string[] {
+		console.info('Getting assigned waiters of ', orderID);
+		const assignedWaiters = this.waitersModel.assignedWaiters;
+		const assignedWaiter = assignedWaiters.find(
+			entry => entry.orderID === orderID
+		);
+		if (assignedWaiter !== undefined) {
+			return assignedWaiter.waiterIds;
+		}
+		return [];
+	}
+
+	updateAssignedWaiters(orderID: string, waiterIds: string[]) {
+		console.info('Updating orderID: ' + orderID, 'waiters ' + waiterIds);
+		this.waitersModel.updateAssignedWaiters(orderID, waiterIds);
+	}
+
 	assignWaiter(orderID: string, waiters: string[]) {
 		return this.api.assignWaiter(orderID, waiters);
 	}

@@ -7,13 +7,13 @@ import {
 	ReviewIDO,
 } from '../../../api';
 
-export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
+// export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
 export type orderReviews = {orderID: string; review: ReviewIDO}[];
 
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
-	_assignedWaiters: assignedWaitersType = [];
+	// _assignedWaiters: assignedWaitersType = [];
 	_reviews: orderReviews = [];
 	_guestDetails: GuestIDO[] = [];
 
@@ -53,29 +53,29 @@ export default class ordersModel {
 		console.log(this.orders);
 	}
 	// ------------assigned waiters---------------
-	get assignedWaiters(): assignedWaitersType {
-		return this._assignedWaiters;
-	}
+	// get assignedWaiters(): assignedWaitersType {
+	// 	return this._assignedWaiters;
+	// }
 
-	set assignedWaiters(assignedWaiters: assignedWaitersType) {
-		console.info('Setting assigned waiters');
-		this._assignedWaiters = assignedWaiters;
-	}
+	// set assignedWaiters(assignedWaiters: assignedWaitersType) {
+	// 	console.info('Setting assigned waiters');
+	// 	this._assignedWaiters = assignedWaiters;
+	// }
 
-	updateAssignedWaiters(orderID: string, waiterIds: string[]): void {
-		console.info('Updating assigned waiters with ', orderID, waiterIds);
-		const assignedWaiterObject = this._assignedWaiters.find(
-			entry => entry.orderID === orderID
-		);
-		if (assignedWaiterObject !== undefined) {
-			assignedWaiterObject.waiterIds = waiterIds;
-		} else {
-			this._assignedWaiters.push({
-				orderID: orderID,
-				waiterIds: waiterIds,
-			});
-		}
-	}
+	// updateAssignedWaiters(orderID: string, waiterIds: string[]): void {
+	// 	console.info('Updating assigned waiters with ', orderID, waiterIds);
+	// 	const assignedWaiterObject = this._assignedWaiters.find(
+	// 		entry => entry.orderID === orderID
+	// 	);
+	// 	if (assignedWaiterObject !== undefined) {
+	// 		assignedWaiterObject.waiterIds = waiterIds;
+	// 	} else {
+	// 		this._assignedWaiters.push({
+	// 			orderID: orderID,
+	// 			waiterIds: waiterIds,
+	// 		});
+	// 	}
+	// }
 
 	//  ---------reviews------------------
 	set reviews(orderReviews: orderReviews) {
