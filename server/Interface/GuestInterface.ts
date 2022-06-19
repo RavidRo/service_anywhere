@@ -20,11 +20,15 @@ function updateLocationGuest(guestID: string, location: Location, permissionLeve
 	if(permissionLevel < guestPermissionLevel){
 		return
 	}
+	console.debug('here1')
 	getGuestOrder(guestID).then(orderResponse => {
 		orderResponse.ifGood(order => {
 			onOrder(order.id, (o: IOrder) => o.updateGuestLocation(location));
 		});
-	});
+		if(!orderResponse.isSuccess()){
+			console.debug(orderResponse.getError())
+		}
+	}).catch(() => console.debug('what'));
 }
 
 async function getGuestOrder(guestID: string): Promise<ResponseMsg<OrderIDO>> {
