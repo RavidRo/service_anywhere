@@ -1,5 +1,5 @@
 import RequestsHandler from './RequestsHandler';
-import {GuestIDO, ItemIDO, OrderIDO, ReviewIDO, WaiterIDO} from '../../../api';
+import {GuestIDO, ItemIDO, OrderIDO, WaiterIDO} from '../../../api';
 
 export default class Requests {
 	private handler: RequestsHandler;
@@ -33,12 +33,6 @@ export default class Requests {
 	getItems(): Promise<ItemIDO[]> {
 		return this.handler.get<ItemIDO[]>('getItems');
 	}
-
-	getReviews(): Promise<ReviewIDO[]> {
-		console.log('Getting reviews');
-		return this.handler.get<ReviewIDO[]>('getReviews');
-	}
-
 	// ------------------POST-------------------------
 	login(username: string, password: string): Promise<string> {
 		return this.handler.post<string>('login', {

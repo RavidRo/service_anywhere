@@ -1,11 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-import {
-	GuestIDO,
-	ItemIDO,
-	OrderIDO,
-	OrderStatus,
-	ReviewIDO,
-} from '../../../api';
+import {GuestIDO, ItemIDO, OrderIDO, OrderStatus} from '../../../api';
 
 // export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
 // export type orderReviews = {orderID: string; review: ReviewIDO}[];
@@ -50,22 +44,10 @@ export default class ordersModel {
 	}
 
 	//  ---------reviews------------------
-	// set reviews(orderReviews: orderReviews) {
-	// 	console.info('setting review to ', orderReviews);
-	// 	this._reviews = orderReviews;
-	// }
-
-	// get reviews(): orderReviews {
-	// 	return this._reviews;
-	// }
 
 	addReview(orderID: string, details: string, rating: number): void {
 		console.info('Updating reviews with ', orderID, details, rating);
-		// this._reviews.push({
-		// 	orderID: orderID,
-		// 	review: {details: details, rating: rating},
-		// });
-		this._orders.find(order => {
+		this._orders.forEach(order => {
 			if (order.id === orderID) {
 				order.review = {details: details, rating: rating};
 			}

@@ -15,7 +15,6 @@ import {
 	MuiEvent,
 } from '@mui/x-data-grid';
 import {observer} from 'mobx-react';
-import {Divider} from '@mui/material';
 import ReviewViewController from './reviewViewController';
 import AlertViewModel from '../viewModel/alertViewModel';
 
