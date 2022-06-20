@@ -30,6 +30,7 @@ const mockListOfOrders: OrderIDO[] = [
 		guestID: '1',
 		creationTime: new Date(),
 		completionTime: new Date(),
+		review: undefined,
 	},
 	{
 		id: '2',
@@ -41,6 +42,10 @@ const mockListOfOrders: OrderIDO[] = [
 		guestID: '2',
 		creationTime: new Date(),
 		completionTime: new Date(),
+		review: {
+			details: 'details',
+			rating: 3,
+		},
 	},
 ];
 
@@ -119,6 +124,13 @@ describe('Constructor', () => {
 	test('Set and get orders in model', async () => {
 		ordersViewModel.setOrders(mockListOfOrders);
 		expect(ordersViewModel.getOrders()).toEqual(orderModel.orders);
+	});
+
+	test('Set and get review in model', async () => {
+		ordersViewModel.setOrders(mockListOfOrders);
+		expect(ordersViewModel.getReview('2')).toEqual(
+			mockListOfOrders[1].review
+		);
 	});
 
 	test('synchronise orders in model', async () => {

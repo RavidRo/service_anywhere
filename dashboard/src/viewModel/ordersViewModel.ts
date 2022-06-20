@@ -29,7 +29,7 @@ export default class OrdersViewModel {
 	}
 
 	getReview(orderID: string): ReviewIDO | undefined {
-		return this.ordersModel.reviews.find(entry => entry.orderID === orderID)
+		return this.ordersModel.orders.find(entry => entry.id === orderID)
 			?.review;
 	}
 
@@ -44,18 +44,6 @@ export default class OrdersViewModel {
 		}
 		return items.filter(item => item.id === itemId)[0].name;
 	}
-
-	// getAssignedWaiters(orderID: string): string[] {
-	// 	console.info('Getting assigned waiters of ', orderID);
-	// 	const assignedWaiters = this.ordersModel.assignedWaiters;
-	// 	const assignedWaiter = assignedWaiters.find(
-	// 		entry => entry.orderID === orderID
-	// 	);
-	// 	if (assignedWaiter !== undefined) {
-	// 		return assignedWaiter.waiterIds;
-	// 	}
-	// 	return [];
-	// }
 	// -------------SETTERS----------------
 	setOrders(orders: OrderIDO[]) {
 		this.ordersModel.orders = orders;
@@ -113,23 +101,6 @@ export default class OrdersViewModel {
 	}
 
 	// ------------------SYNCHRONISE--------------------
-	synchroniseAssignedWaiters(): Promise<void[]> {
-		return Promise.all(
-			this.ordersModel.orders.map((order: OrderIDO) =>
-				this.api
-					.getWaitersByOrder(order.id)
-					.then((waiterIds: string[]) => {
-						console.info('Synchronised assigned waiters ');
-						this.updateAssignedWaiter(order.id, waiterIds);
-					})
-					.catch((err: string) =>
-						alertViewModel.addAlert(
-							'Could not find waiter by order ' + err
-						)
-					)
-			)
-		);
-	}
 
 	synchroniseOrders(): Promise<unknown> {
 		return this.api
@@ -138,7 +109,7 @@ export default class OrdersViewModel {
 				console.info('Synchronized orders');
 				this.ordersModel.orders = orders;
 				return Promise.all([
-					this.synchroniseAssignedWaiters(),
+					waitersViewModel.synchroniseAssignedWaiters(orders),
 					this.fetchGuestDetails(
 						orders.map(order => order.guestID)
 					).catch(e => {
