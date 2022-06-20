@@ -724,27 +724,6 @@ app.get('/getWaitersByOrder', (req, res) => {
 	});
 });
 
-app.get('/getReviews', (req, res) => {
-	const response = checkValidity(
-		[],
-		req.body,
-		(msg: string, status: number) => {
-			res.status(status);
-			res.send(msg);
-			logger.info(
-				'A user tried to get reviews but did not have permission or used an unmatched token'
-			);
-		},
-		true,
-		req.headers.authorization,
-		adminPermissionLevel
-	);
-	response.ifGood(async _id => {
-		const response = await dashboard.getReviews();
-		res.send(response);
-	});
-});
-
 app.post('/cancelOrderAdmin', (req, res) => {
 	const response = checkValidity(
 		['orderID'],

@@ -1,4 +1,13 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {ReviewIDO} from 'api';
+import {
+	BaseEntity,
+	Column,
+	Entity,
+	JoinColumn,
+	OneToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+import {OrderDAO} from './OrderDAO';
 
 @Entity()
 export class ReviewDAO extends BaseEntity {
@@ -10,4 +19,8 @@ export class ReviewDAO extends BaseEntity {
 
 	@Column('text')
 	content: string;
+
+	getDetails(): ReviewIDO {
+		return {details: this.content, rating: this.rating};
+	}
 }

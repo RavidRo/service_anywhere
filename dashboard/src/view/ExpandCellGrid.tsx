@@ -58,7 +58,9 @@ const GridCellExpand = React.memo(function GridCellExpand(props: {
 	const wrapperCurrent = wrapper.current;
 	const formatString = (val: any) => {
 		if (typeof val === 'string') {
-			return val.split('\n').map(str => <p>{str}</p>);
+			return val
+				.split('\n')
+				.map((str, index) => <p key={index}>{str}</p>);
 		}
 		return val;
 	};

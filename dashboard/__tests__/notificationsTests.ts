@@ -17,6 +17,7 @@ const mockListOfOrders: OrderIDO[] = [
 		guestID: '1',
 		creationTime: new Date(),
 		completionTime: undefined,
+		review: undefined,
 	},
 	{
 		id: '2',
@@ -28,6 +29,10 @@ const mockListOfOrders: OrderIDO[] = [
 		guestID: '2',
 		creationTime: new Date(),
 		completionTime: new Date(),
+		review: {
+			details: 'details',
+			rating: 3,
+		},
 	},
 ];
 
@@ -119,14 +124,14 @@ describe('adding a review', () => {
 	it('Sending no arguments', () => {
 		ordersViewModel.setOrders(mockListOfOrders);
 		notifications.addReview({});
-		expect(orderModel.reviews).toEqual([]);
+		expect(ordersViewModel.getReview('1')).toEqual(undefined);
 	});
 
-	it('Sending wrong arguments than required', () => {
-		ordersViewModel.setOrders(mockListOfOrders);
-		notifications.addReview([null, 'asd']);
-		expect(orderModel.reviews).toEqual([]);
-	});
+	// it('Sending wrong arguments than required', () => {
+	// 	ordersViewModel.setOrders(mockListOfOrders);
+	// 	notifications.addReview([null, 'asd']);
+	// 	expect(orderModel.reviews).toEqual([]);
+	// });
 
 	it('Sending exactly the needed arguments', () => {
 		ordersViewModel.setOrders(mockListOfOrders);
@@ -135,6 +140,6 @@ describe('adding a review', () => {
 			rating: 3,
 		};
 		notifications.addReview({orderID: '1', ...review});
-		expect(orderModel.reviews).toEqual([{orderID: '1', review: review}]);
+		expect(ordersViewModel.getReview('1')).toEqual(review);
 	});
 });

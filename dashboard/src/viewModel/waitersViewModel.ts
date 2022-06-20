@@ -1,6 +1,6 @@
 import Api from '../network/api';
 import WaiterModel from '../model/waiterModel';
-import {WaiterIDO} from '../../../api';
+import {OrderIDO, WaiterIDO} from '../../../api';
 import {alertViewModel} from '../context';
 
 export default class WaitersViewModel {
@@ -30,6 +30,24 @@ export default class WaitersViewModel {
 					'Could not get waiters please reload, Error:' + err
 				)
 			);
+	}
+
+	synchroniseAssignedWaiters(orders: OrderIDO[]): Promise<void[]> {
+		return Promise.all(
+			orders.map((order: OrderIDO) =>
+				this.api
+					.getWaitersByOrder(order.id)
+					.then((waiterIds: string[]) => {
+						console.info('Synchronised assigned waiters ');
+						this.updateAssignedWaiters(order.id, waiterIds);
+					})
+					.catch((err: string) =>
+						alertViewModel.addAlert(
+							'Could not find waiter by order ' + err
+						)
+					)
+			)
+		);
 	}
 
 	getAssignedWaiters(orderID: string): string[] {
