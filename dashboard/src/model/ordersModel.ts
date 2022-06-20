@@ -1,13 +1,9 @@
 import {makeAutoObservable} from 'mobx';
 import {GuestIDO, ItemIDO, OrderIDO, OrderStatus} from '../../../api';
 
-// export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
-// export type orderReviews = {orderID: string; review: ReviewIDO}[];
-
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
-	// _reviews: orderReviews = [];
 	_guestDetails: GuestIDO[] = [];
 
 	constructor() {
