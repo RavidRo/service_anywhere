@@ -92,9 +92,11 @@ test('get review success', async () => {
 	const {orderID, guestID} = await createOrder();
 	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
 	await GuestInterface.submitReview(orderID, 'Good service', 4);
-	const response = await DashboardInterface.getReviews();
+	const res = (await DashboardInterface.getAllOrders()).getData();
+	const response = res.map(o => o.review);
 	expect(response.length).toBeGreaterThan(0);
-	if (response.length === 1) {
+	expect(response[0]).not.toBe(undefined);
+	if (response.length === 1 && response[0]) {
 		expect(response[0].details).toBe('Good service');
 		expect(response[0].rating).toBe(4);
 	}
@@ -104,13 +106,19 @@ test('get review for an illegal review (out of range rating) would return an emp
 	const {orderID, guestID} = await createOrder();
 	await DashboardInterface.changeOrderStatus(orderID, 'delivered', adminID);
 	await GuestInterface.submitReview(orderID, 'Very good service', 6);
-	const response = await DashboardInterface.getReviews();
+	const response = (await DashboardInterface.getAllOrders())
+		.getData()
+		.map(o => o.review)
+		.filter(r => r !== undefined);
 	expect(response.length).toBe(0);
 });
 
 test('get review for an illegal review (order status is not "delivered") would return an empty list', async () => {
 	const {orderID, guestID} = await createOrder({advance: false});
 	await GuestInterface.submitReview(orderID, 'Very good service', 5);
-	const response = await DashboardInterface.getReviews();
+	const response = (await DashboardInterface.getAllOrders())
+		.getData()
+		.map(o => o.review)
+		.filter(r => r !== undefined);
 	expect(response.length).toBe(0);
 });

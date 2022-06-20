@@ -50,13 +50,16 @@ app.get('/', (_req, res) => {
 //---------------auxillary functions----------------
 
 /**
- * used for checking if the token received is a valid token, if the user has the permission to perform
+ * Used for checking every input expected is in the request's body.
+ * Also used for checking if the token received is a valid token, if the user has the permission to perform
  * requested action and to extract the user's ID from the token.
  *
+ * @param inputs The names of the arguments for this request
+ * @param reqBody The request's body
+ * @param sendErrorMsg If any requirement is not met, invoke method with the error msg and status code to send it to the client
+ * @param toAuthenticate Is there a need to authenticate the user
  * @param token The user's token
  * @param permissionLevel Minimum permission level needed for the request
- * @param sendErrorMsg If any requirement is not met, invoke method with the error msg and status code to send it to the client
- * @param doIfLegal If all requirements are met, invoke method with the ID extracted to perform the action requested
  */
 function checkValidity(
 	inputs: string[],
@@ -80,9 +83,9 @@ function checkValidity(
 		return makeFail(answer);
 	} else if (toAuthenticate) {
 		if (token) {
-			let response = authenticator.authenticate(token, permissionLevel);
+			const response = authenticator.authenticate(token, permissionLevel);
 			if (response.isSuccess()) {
-				return response;
+				return makeGood(response.getData().id);
 			} else {
 				sendErrorMsg(response.getError(), statusFailClient);
 				return makeFail('');
@@ -490,92 +493,98 @@ app.get('/getWaiterName', (req, res) => {
 
 //----------------------------websocket requests-----------------------
 io.on('connection', function (socket: socketio.Socket) {
-	const response = checkValidity(
-		[],
-		{},
-		(msg: string, _status: number) => {
-			socket.emit('Error', msg);
-			logger.error('Could not connect a user to the websocket');
-		},
-		true,
-		socket.handshake.auth['token']
+	const response = authenticator.authenticate(
+		socket.handshake.auth['token'],
+		guestPermissionLevel
 	);
-	response.ifGood((id: string) =>
+	if (!response.isSuccess()) {
+		socket.emit('Error', 'the user could not be authenticated');
+		logger.error('Could not connect a user to the websocket');
+	} else {
+		const {id, permissionLevel} = response.getData();
 		NotificationInterface.addSubscriber(
 			id,
 			(eventName: string, o: object) => socket.emit(eventName, o)
-		)
-	);
-	socket.on('updateGuestLocation', (message: any) => {
-		const response = checkValidity(
-			['location'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to update a guest's location but didn't include the location"
-				);
-			},
-			true,
-			socket.handshake.auth['token']
 		);
-		response.ifGood((id: string) => {
-			guest.updateLocationGuest(id, message['location']);
+		socket.on('updateGuestLocation', (message: any) => {
+			const response = checkValidity(
+				['location'],
+				message,
+				(msg: string, _status: number) => {
+					socket.emit('Error', msg);
+					logger.info(
+						"A user tried to update a guest's location but didn't include the location"
+					);
+				}
+			);
+			response.ifGood(() => {
+				guest.updateLocationGuest(
+					id,
+					message['location'],
+					permissionLevel
+				);
+			});
 		});
-	});
-	socket.on('updateWaiterLocation', (message: any) => {
-		const response = checkValidity(
-			['location'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to update a waiter's location but didn't include the location"
+
+		socket.on('locationErrorGuest', (message: any) => {
+			const response = checkValidity(
+				['errorMsg'],
+				message,
+				(msg: string, _status: number) => {
+					socket.emit('Error', msg);
+					logger.info(
+						"A user tried to send an error regarding their location and didn't include an error message."
+					);
+				}
+			);
+			response.ifGood(() => {
+				GuestInterface.locationErrorGuest(
+					id,
+					message['errorMsg'],
+					permissionLevel
 				);
-			},
-			true,
-			socket.handshake.auth['token'],
-			waiterPermissionLevel
-		);
-		response.ifGood((id: string) => {
-			waiter.updateLocationWaiter(id, message['location']);
+			});
 		});
-	});
-	socket.on('locationErrorGuest', (message: any) => {
-		const response = checkValidity(
-			['errorMsg'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to send an error regarding their location and didn't include an error message."
+		socket.on('updateWaiterLocation', (message: any) => {
+			const response = checkValidity(
+				['location'],
+				message,
+				(msg: string, _status: number) => {
+					socket.emit('Error', msg);
+					logger.info(
+						"A user tried to update a waiter's location but didn't include the location"
+					);
+				}
+			);
+			response.ifGood(() => {
+				waiter.updateLocationWaiter(
+					id,
+					message['location'],
+					permissionLevel
 				);
-			},
-			true,
-			socket.handshake.auth['token']
-		);
-		response.ifGood((id: string) => {
-			GuestInterface.locationErrorGuest(id, message['errorMsg']);
+			});
 		});
-	});
-	socket.on('locationErrorWaiter', (message: any) => {
-		const response = checkValidity(
-			['errorMsg'],
-			message,
-			(msg: string, _status: number) => {
-				socket.emit('Error', msg);
-				logger.info(
-					"A user tried to send an error regarding their location and didn't include an error message."
+
+		socket.on('locationErrorWaiter', (message: any) => {
+			const response = checkValidity(
+				['errorMsg'],
+				message,
+				(msg: string, _status: number) => {
+					socket.emit('Error', msg);
+					logger.info(
+						"A user tried to send an error regarding their location and didn't include an error message."
+					);
+				}
+			);
+			response.ifGood(() => {
+				WaiterInterface.locationErrorWaiter(
+					message['errorMsg'],
+					id,
+					permissionLevel
 				);
-			},
-			true,
-			socket.handshake.auth['token'],
-			waiterPermissionLevel
-		);
-		(id: string) => {
-			WaiterInterface.locationErrorWaiter(message['errorMsg'], id);
-		};
-	});
+			});
+		});
+	}
 });
 
 //-------------------------admin requests------------------------------
@@ -712,27 +721,6 @@ app.get('/getWaitersByOrder', (req, res) => {
 					response.getError()
 			);
 		}
-	});
-});
-
-app.get('/getReviews', (req, res) => {
-	const response = checkValidity(
-		[],
-		req.body,
-		(msg: string, status: number) => {
-			res.status(status);
-			res.send(msg);
-			logger.info(
-				'A user tried to get reviews but did not have permission or used an unmatched token'
-			);
-		},
-		true,
-		req.headers.authorization,
-		adminPermissionLevel
-	);
-	response.ifGood(async _id => {
-		const response = await dashboard.getReviews();
-		res.send(response);
 	});
 });
 

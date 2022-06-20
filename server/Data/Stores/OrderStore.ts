@@ -16,6 +16,7 @@ export async function getOrders(): Promise<OrderDAO[]> {
 				item: true,
 			},
 			waiters: true,
+			review: true,
 		},
 	});
 }
@@ -124,6 +125,7 @@ export async function saveOrder(
 	const order = new OrderDAO();
 	order.guest = guest;
 	order.orderToItems = ordersToItems;
+	order.creationTime = Date.now();
 	const savedOrder = await order.save();
 	savedOrder.guest = guest;
 
