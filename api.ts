@@ -17,7 +17,7 @@ export type OrderIDO = {
 	status: OrderStatus;
 	creationTime: Date;
 	completionTime: Date | undefined;
-	review: ReviewIDO | undefined
+	review: ReviewIDO | undefined;
 };
 export type ItemIDO = {
 	id: string;
