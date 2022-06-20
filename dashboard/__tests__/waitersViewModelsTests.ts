@@ -15,6 +15,7 @@ const mockListOfOrders: OrderIDO[] = [
 		guestID: '1',
 		creationTime: new Date(),
 		completionTime: new Date(),
+		review: undefined,
 	},
 	{
 		id: '2',
@@ -26,6 +27,7 @@ const mockListOfOrders: OrderIDO[] = [
 		guestID: '2',
 		creationTime: new Date(),
 		completionTime: new Date(),
+		review: undefined,
 	},
 ];
 

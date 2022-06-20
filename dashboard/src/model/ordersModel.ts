@@ -8,13 +8,12 @@ import {
 } from '../../../api';
 
 // export type assignedWaitersType = {orderID: string; waiterIds: string[]}[];
-export type orderReviews = {orderID: string; review: ReviewIDO}[];
+// export type orderReviews = {orderID: string; review: ReviewIDO}[];
 
 export default class ordersModel {
 	_orders: OrderIDO[] = [];
 	_items: ItemIDO[] = [];
-	// _assignedWaiters: assignedWaitersType = [];
-	_reviews: orderReviews = [];
+	// _reviews: orderReviews = [];
 	_guestDetails: GuestIDO[] = [];
 
 	constructor() {
@@ -47,51 +46,29 @@ export default class ordersModel {
 				order.status = newStatus;
 			}
 		});
-
-		// const orders = this._orders;
-		// this.orders = orders;
 		console.log(this.orders);
 	}
-	// ------------assigned waiters---------------
-	// get assignedWaiters(): assignedWaitersType {
-	// 	return this._assignedWaiters;
-	// }
-
-	// set assignedWaiters(assignedWaiters: assignedWaitersType) {
-	// 	console.info('Setting assigned waiters');
-	// 	this._assignedWaiters = assignedWaiters;
-	// }
-
-	// updateAssignedWaiters(orderID: string, waiterIds: string[]): void {
-	// 	console.info('Updating assigned waiters with ', orderID, waiterIds);
-	// 	const assignedWaiterObject = this._assignedWaiters.find(
-	// 		entry => entry.orderID === orderID
-	// 	);
-	// 	if (assignedWaiterObject !== undefined) {
-	// 		assignedWaiterObject.waiterIds = waiterIds;
-	// 	} else {
-	// 		this._assignedWaiters.push({
-	// 			orderID: orderID,
-	// 			waiterIds: waiterIds,
-	// 		});
-	// 	}
-	// }
 
 	//  ---------reviews------------------
-	set reviews(orderReviews: orderReviews) {
-		console.info('setting review to ', orderReviews);
-		this._reviews = orderReviews;
-	}
+	// set reviews(orderReviews: orderReviews) {
+	// 	console.info('setting review to ', orderReviews);
+	// 	this._reviews = orderReviews;
+	// }
 
-	get reviews(): orderReviews {
-		return this._reviews;
-	}
+	// get reviews(): orderReviews {
+	// 	return this._reviews;
+	// }
 
 	addReview(orderID: string, details: string, rating: number): void {
 		console.info('Updating reviews with ', orderID, details, rating);
-		this._reviews.push({
-			orderID: orderID,
-			review: {details: details, rating: rating},
+		// this._reviews.push({
+		// 	orderID: orderID,
+		// 	review: {details: details, rating: rating},
+		// });
+		this._orders.find(order => {
+			if (order.id === orderID) {
+				order.review = {details: details, rating: rating};
+			}
 		});
 	}
 	//  ------------items--------------

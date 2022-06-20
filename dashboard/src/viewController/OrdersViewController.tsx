@@ -73,8 +73,8 @@ const OrdersViewController = (props: viewModelProps) => {
 			editable: false,
 			flex: 1,
 			valueGetter: (params: GridValueGetterParams) => {
-				console.log(params.value);
-				console.log(new Date(params.value));
+				// console.log(params.value);
+				// console.log(new Date(params.value));
 
 				return `${new Date(params.value).toLocaleTimeString()} \n
 							${new Date(params.value).toLocaleDateString()}`;
